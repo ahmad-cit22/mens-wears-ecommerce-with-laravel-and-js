@@ -20,8 +20,8 @@
         }
 
         /* .featured_category_img {
-                    height: 26vw;
-                } */
+                                        height: 26vw;
+                                    } */
 
         @media only screen and (max-width: 767px) {
             /*        .header-small-mobile {*/
@@ -29,8 +29,8 @@
             /*}*/
 
             /* .featured_category_img {
-                        height: 36vw;
-                    } */
+                                            height: 36vw;
+                                        } */
 
             .slider-area {
                 height: 60vw;
@@ -202,9 +202,17 @@
                 <h2>Best Seller</h2>
             </div>
             <div class="product-slider product-slider-active-2 owl-carousel dot-style-2">
-                @foreach ($top_sales as $product)
+                @forelse ($top_sales as $product)
                     @include('pages.partials.product')
-                @endforeach
+                @empty
+                    {{-- <div class="row"> --}}
+                    @foreach (App\Models\Product::where('is_active', 1)->orderBy('id', 'DESC')->limit(3)->get() as $product)
+                        <div class="">
+                            @include('pages.partials.product')
+                        </div>
+                    @endforeach
+                    {{-- </div> --}}
+                @endforelse
             </div>
         </div>
     </div>

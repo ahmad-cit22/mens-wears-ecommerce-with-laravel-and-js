@@ -41,10 +41,11 @@ class PageController extends Controller {
     public function index() {
         $sliders = Slider::all();
         $featured_categories = Category::where('is_featured', 1)->where('parent_id', 0)->orderBy('position', 'ASC')->limit(5)->get();
-        $featured_products = Product::where('is_featured', 1)->orderBy('id', 'DESC')->limit(8)->get();
+        $featured_products = Product::where('is_featured', 1)->where('is_active', 1)->orderBy('id', 'DESC')->limit(8)->get();
         $trending = Trending::find(1);
         DB::statement("SET SQL_MODE=''"); //this is the trick use it just before your query
         $top_sales = Product::query()
+            ->where('is_active', 1)
             ->join('order_products', 'order_products.product_id', '=', 'products.id')
             ->selectRaw('products.*, SUM(order_products.qty) AS quantity_sold')
             ->groupBy(['products.id']) // should group by primary key

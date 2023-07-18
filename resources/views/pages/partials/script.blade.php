@@ -235,4 +235,11 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 </script>
+
+{{-- @if (session('error'))
+    <script>
+        Swal.fire("{{ session('error') }}");
+        // toastr.error({{ session('error') }});
+    </script>
+@endif --}}
 @include('pages.partials.custom-scripts')
