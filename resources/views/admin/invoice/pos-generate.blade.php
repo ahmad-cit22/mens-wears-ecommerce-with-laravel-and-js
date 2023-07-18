@@ -185,7 +185,7 @@
                     <tr class="tabletitle">
 
                         <td class="Rate" colspan="2" style="text-align: center;">
-                            <h2>Advance</h2>
+                            <h2>Advance(-)</h2>
                         </td>
                         <td class="payment">
                             <h2>{{ env('CURRENCY') }}{{ $order->advance }}</h2>
@@ -195,7 +195,7 @@
                         <tr class="tabletitle">
 
                             <td class="Rate" colspan="2" style="text-align: center;">
-                                <h2>Discount</h2>
+                                <h2>Discount(-)</h2>
                             </td>
                             <td class="payment">
                                 <h2>{{ env('CURRENCY') }}{{ $order->discount_amount }}</h2>
@@ -203,7 +203,6 @@
                         </tr>
                     @endif
                     <tr class="tabletitle">
-
                         <td class="Rate" colspan="2" style="text-align: center;">
                             <h2>Total</h2>
                         </td>

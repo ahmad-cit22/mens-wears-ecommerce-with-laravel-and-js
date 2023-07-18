@@ -94,7 +94,7 @@ class PosController extends Controller {
                 $user->address    = $request->shipping_address;
                 $user->password   = Hash::make(12345678);
                 $user->save();
-                
+
                 $order->customer_id = $user->id;
                 $order->name = $user->name;
                 $order->email = $user->email;
@@ -130,6 +130,9 @@ class PosController extends Controller {
                 $order->delivery_charge = $request->shipping_charge;
             }
             $order->shipping_address = $request->shipping_address;
+            if ($request->advanced_charge != 0) {
+                $order->advance = $request->advanced_charge;
+            }
 
             if (Session::has('wholesale_price')) {
                 $order->source = 'Wholesale';

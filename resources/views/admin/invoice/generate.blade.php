@@ -135,6 +135,13 @@
                     <td style="text-align: right;">{{ $order->price + $order->delivery_charge - $order->wallet_amount }}/-</td>
                 </tr>
 
+                @if ($order->advance > 0)
+                    <tr style="text-align: right;">
+                        <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Advance(-)</b></td>
+                        <td style="text-align: right;">{{ $order->advance }}/-</td>
+                    </tr>
+                @endif
+
                 <tr style="text-align: right;">
                     <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Total Payable</b></td>
                     <td style="text-align: right;">{{ $order->price + $order->delivery_charge - $order->wallet_amount - $order->advance }}/-</td>

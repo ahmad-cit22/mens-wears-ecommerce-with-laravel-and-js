@@ -316,7 +316,7 @@
                                             <div class="col-md-6 text-start" id="showChargeBox" style="display: none">
                                                 <label class="text-body">Enter Charge Amount</label>
                                                 <fieldset class="form-group mb-3">
-                                                    <input type="number" name="advanced_charge" id="advanced_charge" class="form-control" placeholder="Advanced Delivery Charge Amount">
+                                                    <input type="number" name="advanced_charge" id="advanced_charge" class="form-control" placeholder="Advanced Delivery Charge Amount" value="0">
                                                 </fieldset>
                                             </div>
                                         </div>
@@ -436,7 +436,7 @@
                                             <tr class="d-flex align-items-center justify-content-between">
                                                 <th class="border-0">
                                                     <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark">
-                                                        Shipping Cost
+                                                        Shipping Charge
 
                                                     </div>
                                                 </th>
@@ -447,8 +447,19 @@
 
                                             </tr>
                                             <tr class="d-flex align-items-center justify-content-between">
+                                                <th class="border-0">
+                                                    <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark">
+                                                        Charge Advanced
+                                                    </div>
+                                                </th>
+                                                <td class="border-0 justify-content-end d-flex text-dark font-size-base">
+                                                    {{ env('CURRENCY') }}<span id="charge_advanced_label">0</span>
+                                                </td>
+
+                                            </tr>
+                                            <tr class="d-flex align-items-center justify-content-between">
                                                 <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark">
-                                                    Disscount
+                                                    Discount
                                                 </th>
                                                 <td class="border-0 justify-content-end d-flex text-dark font-size-base">
                                                     {{ env('CURRENCY') }}<span id="discount_amount_label">{{ $discount }}</span>
@@ -715,41 +726,28 @@
         $("#advance_shipping_charge").click(function() {
             var subtotal = $('#subtotal_amount').val();
             var discount = $('#discount').val();
+            var shipping_charge = $('#shipping_charge').val();
             if ($("#advance_shipping_charge").is(':checked')) {
                 $('#showChargeBox').show();
-                $('#shipping_charge_label').html(0);
-                $('#shipping_charge').val(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
+                // $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
                 $("#advanced_charge").on("input", function() {
-                    $('#shipping_charge_label').html($(this).val());
-                    $('#shipping_charge').val($(this).val());
-                    $('#total_amount').html(parseInt(subtotal) + parseInt($(this).val()) - parseInt(discount));
+                    let charge_advanced = $(this).val();
+                    if (charge_advanced > 0) {
+                        $('#charge_advanced_label').html(charge_advanced);
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount));
+                    }
                 });
 
             } else {
-                $('#advanced_charge').val('');
+                $('#advanced_charge').val(0);
+                $('#charge_advanced_label').html(0);
                 $('#showChargeBox').hide();
-                var area_id = $('#areas').val();
-                if (area_id == '') {
-                    area_id = -1;
-                }
-                var url = "{{ url('/') }}";
 
+                var shipping_charge = $('#shipping_charge').val();
                 var subtotal = $('#subtotal_amount').val();
                 var discount = $('#discount').val();
-                $.ajax({
-                    url: url + "/get-shipping-charge",
-                    type: "POST",
-                    data: {
-                        area_id: area_id,
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(response) {
-                        $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
-                        $('#shipping_charge').val(response);
-                    }
-                });
+
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(discount));
             }
         })
 
@@ -765,9 +763,7 @@
         function add_cart(stock_id) {
             url = "{{ route('pos.cart.add') }}";
             var stock_id = stock_id;
-            var shipping_charge = $('#shipping_charge').val();
-            var advanced_charge = $('#advanced_charge').val();
-            var discount = $('#discount').val();
+
             $.ajax({
                 url: url,
                 type: "POST",
@@ -776,10 +772,14 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    var shipping_charge = $('#shipping_charge').val();
+                    var advanced_charge = $('#advanced_charge').val();
+                    var discount = $('#discount').val();
+
                     $('#total_count').html(response.total_count);
                     $('#subtotal').html(response.total_amount);
                     $('#subtotal_amount').val(response.total_amount);
-                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) + parseInt(advanced_charge) - parseInt(discount));
+                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount));
                     $('#cart_table').html(response.cart_table);
                 }
             });
@@ -801,7 +801,7 @@
                     $('#subtotal_amount').val(response.total_amount);
                     var shipping_charge = $('#shipping_charge').val();
                     var discount = $('#discount').val();
-                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt(discount));
+                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
                     $('#cart_table').html(response.cart_table);
                 }
             });
@@ -827,7 +827,7 @@
                             $('#subtotal_amount').val(response.total_amount);
                             var shipping_charge = $('#shipping_charge').val();
                             var discount = $('#discount').val();
-                            $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt(discount));
+                            $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
                             $('#cart_table').html(response.cart_table);
                             $("#barcode").val('');
                         }
@@ -858,7 +858,7 @@
                         $('#subtotal_amount').val(response.total_amount);
                         var shipping_charge = $('#shipping_charge').val();
                         var discount = $('#discount').val();
-                        $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt(discount));
+                        $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
                         $('#cart_table').html(response.cart_table);
                     }
                 });
@@ -881,7 +881,7 @@
                     success: function(response) {
                         var shipping_charge = $('#shipping_charge').val();
                         $('#discount_amount_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(response));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
                         $('#discount').val(response);
                     }
                 });
