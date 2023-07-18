@@ -1,0 +1,351 @@
+/* topbar */
+.top-menu {
+    display: flex;
+    padding: 0 80px;
+    /*background-color: var(--ff-accent-color);*/
+    background-color: #FDAF16;
+    height: 45px;
+    align-items: center;
+}
+
+.left-part {
+    width: 50%;
+    color: #fff;
+}
+
+.right-part {
+    width: 50%;
+    text-align: right;
+}
+
+.right-part span a {
+    padding: 5px;
+    color: #fff;
+}
+
+.right-part span a:hover {
+    color: #fff;
+}
+
+.product-wrap .product-img>a img.hover-img:hover{
+    transform: scale(1.1);
+}
+
+@media screen and (max-width: 767px) {
+    .top-menu {
+        padding: 0 15px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .top-menu {
+        padding: 0 40px;
+    }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .top-menu {
+        padding: 0 30px;
+    }
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1365px) {
+    .top-menu {
+        padding: 0 15px;
+    }
+}
+
+@media only screen and (min-width: 1366px) and (max-width: 1600px) {
+    .top-menu {
+        padding: 0 40px;
+    }
+}
+.logo-width a img {
+  width: 100%;
+  max-width: 200px;
+  max-height: 50px;
+}
+
+.slider-btn-2.slider-btn-2-border-white a:hover{
+  background-color: #FDAF16;
+  color: #fff;
+  border: 2px solid #FDAF16;
+}
+/*Custom Price Filter*/
+
+
+.filter-price {
+  width: 220px;
+  border: 0;
+  padding: 0;
+  margin: 0; 
+}
+
+.price-title {
+  position: relative;
+  color: #000;
+  font-size: 14px;
+  line-height: 1.2em;
+  font-weight: 400;
+}
+
+.price-field {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  box-sizing: border-box;
+  background: rgba(248, 247, 244, 0.2);
+  padding-top: 15px;
+  padding-left: 16px;
+  border-radius: 3px;
+}
+
+.price-field input[type=range] {
+    position: absolute;
+}
+
+/* Reset style for input range */
+
+.price-field input[type=range] {
+  width: 188px;
+  height: 2px; 
+  border: 0;
+  outline: 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  pointer-events: none;
+  -webkit-appearance: none;
+}
+
+.price-field input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+.price-field input[type=range]:active,
+.price-field input[type=range]:focus {
+  outline: 0;
+}
+
+.price-field input[type=range]::-ms-track {
+  width: 188px;
+  height: 2px; 
+  border: 0;
+  outline: 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  pointer-events: none;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+  border-radius: 5px;
+}
+
+/* Style toddler input range */
+
+.price-field input[type=range]::-webkit-slider-thumb { 
+  /* WebKit/Blink */
+    position: relative;
+    -webkit-appearance: none;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
+    margin-top: -4px;
+    background-color: #fff;
+    cursor: pointer;
+    cursor: pointer;
+    pointer-events: all;
+    z-index: 100;
+}
+
+.price-field input[type=range]::-moz-range-thumb { 
+  /* Firefox */
+  position: relative;
+  appearance: none;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  margin-top: -5px;
+  background-color: #000;
+  cursor: pointer;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 100;
+}
+
+.price-field input[type=range]::-ms-thumb  { 
+  /* IE */
+  position: relative;
+  appearance: none;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  margin-top: -5px;
+  background-color: #000;
+  cursor: pointer;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 100;
+}
+
+/* Style track input range */
+
+.price-field input[type=range]::-webkit-slider-runnable-track { 
+  /* WebKit/Blink */
+  width: 188px;
+  height: 2px;
+  cursor: pointer;
+  background: #000;
+  border-radius: 5px;
+}
+
+.price-field input[type=range]::-moz-range-track { 
+  /* Firefox */
+  width: 188px;
+  height: 2px;
+  cursor: pointer;
+  background: #000;
+  border-radius: 5px;
+}
+
+.price-field input[type=range]::-ms-track { 
+  /* IE */
+  width: 188px;
+  height: 2px;
+  cursor: pointer;
+  background: #000;
+  border-radius: 5px;
+}
+
+/* Style for input value block */
+
+.price-wrap {
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.2em;
+  font-weight: 400;
+  margin-bottom: 7px;
+}
+
+.price-wrap-1, 
+.price-wrap-2 {
+  display: flex;
+}
+
+.price-title {
+  margin-right: 5px;
+  background: #d58e32;
+}
+
+.price-wrap_line {
+  margin: 0 10px;
+}
+
+.price-wrap #one, 
+.price-wrap #two {
+  width: 60px;
+  /*text-align: right;*/
+  margin: 0;
+  padding: 0;
+  margin-right: 2px;
+  background:  0;
+  border: 0;
+  outline: 0;
+  font-family: 'Karla', 'Arial', sans-serif;
+  font-size: 14px;
+  line-height: 1.2em;
+  font-weight: 400;
+}
+
+.price-wrap label {
+  margin-top: 5px;
+  color: #000;
+}
+
+.price-wrap-1 input,.price-wrap-2 input {
+	height: 25px;
+}   
+
+/* Style for active state input */
+
+.price-field input[type=range]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.5px #000;
+  transition-duration: 0.3s;
+}
+
+.price-field input[type=range]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.5px #000;
+  transition-duration: 0.3s;
+}
+/*Custom Price Filter End*/
+
+/*checkout page*/
+.your-order-area .Place-order button:hover {
+  background-color: #fc4f4f;
+}
+.your-order-area .Place-order button {
+  background-color: #262626;
+  display: block;
+  cursor: pointer;
+  padding: 22px 50px 21px;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+}
+.your-order-area .Place-order button:hover {
+  background-color: #FDAF16;
+}
+/*checkout page end*/
+
+/*track order result page*/
+.order-view {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin: 3.2rem 0;
+}
+
+.list-style-none {
+    list-style: none;
+}
+.order-view li {
+    flex-grow: 1;
+    padding: 1rem;
+    text-align: center;
+}
+.order-view label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+.order-view strong {
+    color: #333;
+    display: block;
+}
+/*track order result page end */
+
+/* my account page */
+.myaccount-tab-menu button {
+  font-weight: 400;
+  font-size: 16px;
+  display: inline-block;
+  padding: 13px 30px 12px;
+  text-transform: capitalize;
+  float: left;
+  margin: 0 3px 0 3px;
+}
+.myaccount-tab-menu button:hover, .myaccount-tab-menu button.active {
+  background-color: #fc4f4f;
+  border-color: #fc4f4f;
+  color: #ffffff;
+}
+/* my account page end */
