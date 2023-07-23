@@ -40,7 +40,7 @@ class PageController extends Controller {
      */
     public function index() {
         $sliders = Slider::all();
-        $featured_categories = Category::where('is_featured', 1)->where('parent_id', 0)->orderBy('position', 'ASC')->limit(5)->get();
+        $featured_categories = Category::where('is_featured', 1)->where('parent_id', 0)->where('is_active', 1)->orderBy('position', 'ASC')->limit(5)->get();
         $featured_products = Product::where('is_featured', 1)->where('is_active', 1)->orderBy('id', 'DESC')->limit(8)->get();
         $trending = Trending::find(1);
         DB::statement("SET SQL_MODE=''"); //this is the trick use it just before your query
@@ -82,7 +82,7 @@ class PageController extends Controller {
                 session()->flash('error', 'This product is not available right now.');
                 return back();
             }
-            $similar_products = Product::where('category_id', $product->category_id)->inRandomOrder()->limit(4)->get();
+            $similar_products = Product::where('is_active', 1)->where('category_id', $product->category_id)->inRandomOrder()->get();
             $share = Share::page(route('single.product', [$product->id, Str::slug($product->title)]), $product->title)
                 ->facebook()
                 ->twitter()
