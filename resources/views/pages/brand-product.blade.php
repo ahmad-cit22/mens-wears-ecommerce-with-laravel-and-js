@@ -1,7 +1,7 @@
 @extends('pages.layouts.master')
 
 @section('title')
-	{{ $brand->title }}
+	{{ $brand->title . ' | ' . $settings->name }}
 @endsection
 
 @section('content')

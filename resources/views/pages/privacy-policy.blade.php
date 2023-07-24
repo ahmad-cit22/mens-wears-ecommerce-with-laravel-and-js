@@ -1,7 +1,11 @@
 @extends('pages.layouts.master')
 
 @section('title')
-    {{ $page->name }}
+    {{ $page->name . ' | ' . $settings->name }}
+@endsection
+
+@section('meta_description')
+    <meta name="description" content="{{ $page->meta_description }}">
 @endsection
 
 @section('content')

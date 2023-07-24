@@ -1,7 +1,7 @@
 @extends('pages.layouts.master')
 
 @section('title')
-    {{ $category->title }}
+    {{ $category->title . ' | ' . $settings->name }}
 @endsection
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="container-fluid">
             @if (count($category->childs) > 0)
                 <div class="row">
-                    <h3 class="text-center p-4">Sub Categories</h3>
+                    <h2 class="text-center p-4 mb-4">Sub Categories</h2>
                     @foreach ($category->childs as $child)
                         <div class="col-6 col-lg-4 mb-2">
                             <div class="card">
@@ -28,7 +28,7 @@
                 <div class="tab-content jump-3 pt-30">
                     <div id="shop-1" class="tab-pane active">
                         <div class="row" id="product_filtered">
-                            <h3 class="text-center p-4">{{ $category->title }}</h3>
+                            <h2 class="text-center p-4 mb-4">{{ $category->title }}</h2>
                             @foreach ($products as $product)
                                 <div class="col-xl-3 col-6 col-lg-4">
                                     @include('pages.partials.product')
@@ -40,8 +40,8 @@
                         <ul>
                             {{ $products->links('pagination::bootstrap-4') }}
                             <!-- <li><a class="active" href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
                         </ul>
                     </div>
                 </div>

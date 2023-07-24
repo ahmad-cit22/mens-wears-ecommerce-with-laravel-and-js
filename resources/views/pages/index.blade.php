@@ -3,6 +3,11 @@
 @php
     $business = App\Models\Setting::find(1);
 @endphp
+
+@section('meta_description')
+    <meta name="description" content="{{ $page->meta_description }}">
+@endsection
+
 @section('style')
     <style type="text/css">
         /*iframe {*/
@@ -20,8 +25,8 @@
         }
 
         /* .featured_category_img {
-                                        height: 26vw;
-                                    } */
+                                                height: 26vw;
+                                            } */
 
         @media only screen and (max-width: 767px) {
             /*        .header-small-mobile {*/
@@ -29,8 +34,8 @@
             /*}*/
 
             /* .featured_category_img {
-                                            height: 36vw;
-                                        } */
+                                                    height: 36vw;
+                                                } */
 
             .slider-area {
                 height: 60vw;

@@ -102,7 +102,7 @@ Checkout
 	                                <div class="billing-select mb-25">
 	                                    <label>Area <abbr class="required" title="required">*</abbr></label>
 	                                    <select class="select-active @error('area_id') is-invalid @enderror" name="area_id" id="areas" required>
-	                                        <option value="">Please Chose an Area</option>
+	                                        <option value="">Please Choose an Area</option>
 	                                    </select>
 	                                    @error('area_id')
 	                                        <span class="invalid-feedback" role="alert">

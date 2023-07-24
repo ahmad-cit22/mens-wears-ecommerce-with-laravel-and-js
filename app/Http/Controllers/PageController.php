@@ -40,6 +40,7 @@ class PageController extends Controller {
      */
     public function index() {
         $sliders = Slider::all();
+        $page = Page::find(1);
         $featured_categories = Category::where('is_featured', 1)->where('parent_id', 0)->where('is_active', 1)->orderBy('position', 'ASC')->limit(5)->get();
         $featured_products = Product::where('is_featured', 1)->where('is_active', 1)->orderBy('id', 'DESC')->limit(8)->get();
         $trending = Trending::find(1);
@@ -53,7 +54,7 @@ class PageController extends Controller {
             ->take(8) // 8 best-selling products
             ->get();
         // dd($top_sales);
-        return view('pages.index', compact('featured_categories', 'featured_products', 'top_sales', 'sliders', 'trending'));
+        return view('pages.index', compact('featured_categories', 'page', 'featured_products', 'top_sales', 'sliders', 'trending'));
     }
 
     public function products() {
@@ -65,13 +66,15 @@ class PageController extends Controller {
     }
 
     public function trending_products() {
+        $page = Page::find(8);
         $products = Product::where('is_active', 1)->where('is_trending', 1)->orderBy('id', 'DESC')->get();
-        return view('pages.trending-product', compact('products'));
+        return view('pages.trending-product', compact('products', 'page'));
     }
 
     public function offer_products() {
+        $page = Page::find(9);
         $products = Product::where('is_active', 1)->where('is_offer', 1)->orderBy('id', 'DESC')->get();
-        return view('pages.offer-product', compact('products'));
+        return view('pages.offer-product', compact('products', 'page'));
     }
 
     public function single_product($id, $slug) {
@@ -237,8 +240,9 @@ class PageController extends Controller {
     }
 
     public function categories() {
+        $page = Page::find(3);
         $categories = Category::where('parent_id',  0)->where('is_active', 1)->orderBy('position', 'ASC')->get();
-        return view('pages.categories', compact('categories'));
+        return view('pages.categories', compact('categories', 'page'));
     }
 
     public function category_products($id, $slug) {
@@ -284,7 +288,8 @@ class PageController extends Controller {
     }
 
     public function contact() {
-        return view('pages.contact');
+        $page = Page::find(10);
+        return view('pages.contact', compact('page'));
     }
 
     public function send_message(Request $request) {
@@ -297,7 +302,6 @@ class PageController extends Controller {
         ]);
 
         Mail::send(new ContactMail($request));
-
 
         session()->flash('success', 'Thank you for contacting us, we will be in touch within 24 to 48 hours');
         return redirect()->route('contact');

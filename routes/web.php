@@ -68,7 +68,6 @@ Route::post('/wallet-use', [App\Http\Controllers\CartController::class, 'wallet_
 Route::get('/remove-wallet', [App\Http\Controllers\CartController::class, 'remove_wallet'])->name('wallet.remove');
 
 // Order routes 
-
 Route::post('/order-create', [App\Http\Controllers\PageController::class, 'order_create'])->name('order.create');
 Route::get('/order-complete/{id}', [App\Http\Controllers\PageController::class, 'order_complete'])->name('order.complete');
 Route::get('/track-order', [App\Http\Controllers\PageController::class, 'order_track'])->name('order.track');

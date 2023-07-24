@@ -1,13 +1,17 @@
 @extends('pages.layouts.master')
 
 @section('title')
-    Categories
+    {{ $page->name . ' | ' . $settings->name }}
+@endsection
+
+@section('meta_description')
+    <meta name="description" content="{{ $page->meta_description }}">
 @endsection
 
 @section('content')
     <div class="shop-area section-padding-3 pt-70 pb-100">
         <div class="container-fluid">
-            <h3 class="text-center p-4">Categories</h3>
+            <h2 class="text-center p-4 mb-5">Categories</h2>
             <div class="row">
                 @foreach ($categories as $category)
                     <div class="col-6 col-lg-4 mb-2">
