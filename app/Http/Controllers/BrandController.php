@@ -9,21 +9,17 @@ use Alert;
 use Image;
 use File;
 
-class BrandController extends Controller
-{
+class BrandController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('brand.index')) {
             $brands = Brand::all();
             return view('admin.brand.index', compact('brands'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -33,8 +29,7 @@ class BrandController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -44,8 +39,7 @@ class BrandController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (auth()->user()->can('brand.create')) {
             $validatedData = $request->validate([
                 'title' => 'required|max:255',
@@ -53,20 +47,19 @@ class BrandController extends Controller
             ]);
             $brand = new Brand;
             $brand->title = $request->title;
+            $brand->meta_description = $request->meta_description;
             // image save
-            if ($request->image){
+            if ($request->image) {
                 $image = $request->file('image');
                 $img = time() . '.' . $image->getClientOriginalExtension();
-                $location = public_path('images/brand/'. $img);
+                $location = public_path('images/brand/' . $img);
                 Image::make($image)->save($location);
                 $brand->image = $img;
             }
             $brand->save();
             Alert::toast('One Brand Added !', 'success');
             return redirect()->route('brand.index');
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -77,8 +70,7 @@ class BrandController extends Controller
      * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function show(Brand $brand)
-    {
+    public function show(Brand $brand) {
         //
     }
 
@@ -88,8 +80,7 @@ class BrandController extends Controller
      * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function edit(Brand $brand)
-    {
+    public function edit(Brand $brand) {
         //
     }
 
@@ -100,27 +91,27 @@ class BrandController extends Controller
      * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         if (auth()->user()->can('brand.edit')) {
             $this->validate($request, [
                 'title' => 'required',
-                'image'=> 'nullable',
+                'image' => 'nullable',
             ]);
 
             $brand = Brand::find($id);
 
             if (!is_null($brand)) {
                 $brand->title = $request->title;
+                $brand->meta_description = $request->meta_description;
 
                 // image save
-                if ($request->image){
-                    if (File::exists('images/brand/'.$brand->image)){
-                        File::delete('images/brand/'.$brand->image);
+                if ($request->image) {
+                    if (File::exists('images/brand/' . $brand->image)) {
+                        File::delete('images/brand/' . $brand->image);
                     }
                     $image = $request->file('image');
                     $img = time() . '.' . $image->getClientOriginalExtension();
-                    $location = public_path('images/brand/'. $img);
+                    $location = public_path('images/brand/' . $img);
                     Image::make($image)->save($location);
                     $brand->image = $img;
                 }
@@ -128,14 +119,11 @@ class BrandController extends Controller
                 $brand->save();
                 Alert::toast('Brand has been updated !', 'success');
                 return redirect()->route('brand.index');
-            }
-            else{
+            } else {
                 Alert::toast('Brand Not Found !', 'warning');
                 return redirect()->route('brand.index');
             }
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -146,26 +134,22 @@ class BrandController extends Controller
      * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         if (auth()->user()->can('brand.create')) {
             $brand = Brand::find($id);
 
             if (!is_null($brand)) {
-                if (File::exists('images/brand/'.$brand->image)){
-                    File::delete('images/brand/'.$brand->image);
+                if (File::exists('images/brand/' . $brand->image)) {
+                    File::delete('images/brand/' . $brand->image);
                 }
                 $brand->delete();
                 Alert::toast('Brand has been deleted !', 'success');
                 return redirect()->route('brand.index');
-            }
-            else{
+            } else {
                 Alert::toast('Brand Not Found !', 'warning');
                 return redirect()->route('brand.index');
             }
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }

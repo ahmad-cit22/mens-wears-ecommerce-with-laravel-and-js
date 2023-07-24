@@ -4,6 +4,10 @@
     {{ $product->title . ' | ' . $settings->name }}
 @endsection
 
+@section('meta_description')
+    <meta name="description" content="{{ $product->meta_description }}">
+@endsection
+
 @section('style')
     <style type="text/css">
         .product-details-peragraph td {

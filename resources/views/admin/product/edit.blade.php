@@ -401,6 +401,19 @@
                                 @endforeach
                             </div>
                         @endif
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Meta Description</label>
+                                    <textarea name="meta_description" class="form-control @error('meta_description') is-invalid @enderror" placeholder="Add Meta Description Here" rows="5">{{ $product->meta_description }}</textarea>
+                                    @error('meta_description')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-group col-md-12">
                             <button type="submit" class="btn btn-primary">Save Changes</button>

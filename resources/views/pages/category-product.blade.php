@@ -4,6 +4,10 @@
     {{ $category->title . ' | ' . $settings->name }}
 @endsection
 
+@section('meta_description')
+    <meta name="description" content="{{ $category->meta_description }}">
+@endsection
+
 @section('content')
     <div class="shop-area section-padding-3 pt-70 pb-100">
         <div class="container-fluid">
@@ -40,8 +44,8 @@
                         <ul>
                             {{ $products->links('pagination::bootstrap-4') }}
                             <!-- <li><a class="active" href="#">1</a></li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
+                                                    <li><a href="#">2</a></li>
+                                                    <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
                         </ul>
                     </div>
                 </div>

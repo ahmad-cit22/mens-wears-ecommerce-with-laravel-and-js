@@ -133,6 +133,7 @@ class ProductController extends Controller {
             $product->description = $request->description;
             $product->short_description = $request->short_description;
             $product->type = $request->type;
+            $product->meta_description = $request->meta_description;
 
             if ($request->has('is_sale')) {
                 $product->is_sale = 1;
@@ -290,6 +291,7 @@ class ProductController extends Controller {
                 $product->description = $request->description;
                 $product->short_description = $request->short_description;
                 $product->is_active = $request->is_active;
+                $product->meta_description = $request->meta_description;
 
                 // image save
                 if ($request->image) {
