@@ -278,7 +278,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Address</label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="text" class="form-control " placeholder="Enter Address" name="shipping_address">
+                                                        <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address">
                                                     </fieldset>
                                                 </div>
                                             </div>
@@ -286,8 +286,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between colorfull-select">
                                         <div class="selectmain">
-                                            <label class="text-dark d-flex mt-2">District*
-                                            </label>
+                                            <label class="text-dark d-flex">District*</label>
                                             <select name="district_id" class="select2 select-down" id="district_id" required>
                                                 <option value="">--- Select ---</option>
                                                 @foreach ($districts as $district)
@@ -295,18 +294,19 @@
                                                 @endforeach
                                             </select>
                                         </div>
-
                                         <div class="d-flex flex-column selectmain">
-                                            <label class="text-dark d-flex">Area*
-
-                                            </label>
+                                            <label class="text-dark d-flex">Area*</label>
                                             <select name="area_id" class="select2 select-down" id="areas" required>
                                                 <!-- <option value="">Please Select an Area</option> -->
                                             </select>
                                         </div>
+                                        <div class="">
+                                            <label class="text-dark d-flex">Courier Name</label>
+                                            <input type="text" name="courier_name" class="form-control" placeholder="Enter Courier Name">
+                                        </div>
                                     </div>
                                     <div class="mt-4">
-                                        <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="remove_shipping_charge" name="remove_shipping_charge" value="1"> Free Shipping</label>
+                                        <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="remove_shipping_charge" name="remove_shipping_charge" value="1">Free Shipping</label>
 
                                     </div>
                                     <div class="mt-2">
@@ -869,10 +869,10 @@
 
         function apply_discount() {
             var amount = $('#discount_amount').val();
-            if (!isNaN(amount)) {
+            var subtotal = $('#subtotal_amount').val();
+            if (amount != '') {
                 var url = "{{ route('pos.apply.discount') }}";
 
-                var subtotal = $('#subtotal_amount').val();
                 $.ajax({
                     url: url,
                     type: "POST",
@@ -888,7 +888,10 @@
                     }
                 });
             } else {
-                // alert('Okay');
+                var shipping_charge = $('#shipping_charge').val();
+                $('#discount_amount_label').html(0);
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(0));
+                $('#discount').val(0);
             }
 
         }

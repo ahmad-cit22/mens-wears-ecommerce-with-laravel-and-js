@@ -99,7 +99,7 @@ class PosController extends Controller {
                 $order->name = $user->name;
                 $order->email = $user->email;
                 $order->phone = $user->phone;
-            }
+            } 
         } else {
             $user = User::find($request->customer_id);
             $order->customer_id = $user->id;
@@ -111,6 +111,8 @@ class PosController extends Controller {
 
         if (auth()->user()->can('order.create')) {
             $carts = Cart::content();
+
+            return Cart::content();
 
             $order->code = $this->generateUniqueCode();
 
@@ -124,6 +126,7 @@ class PosController extends Controller {
 
             $order->district_id = $request->district_id;
             $order->area_id = $request->area_id;
+            $order->courier_name = $request->courier_name;
             if ($request->has('remove_shipping_charge')) {
                 $order->delivery_charge = 0;
             } else {

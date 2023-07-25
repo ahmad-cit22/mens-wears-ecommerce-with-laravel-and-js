@@ -129,11 +129,14 @@
         <div id="mid">
             <div class="info">
                 <p>
+                    Order ID : <b>{{ $order->code }}</b></br>
                     Name : {{ $order->name }}</br>
                     Phone : <b>{{ $order->phone }}</b></br>
                     Email : {{ $order->email }}</br>
                     Address : {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}</br>
-                    Order ID : <b>{{ $order->code }}</b></br>
+                    @if ($order->courier_name)
+                        Courier Name : {{ $order->courier_name }}</br>
+                    @endif
                     Date : {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</br>
 
                 </p>
@@ -215,19 +218,18 @@
             </div>
             <!--End Table-->
 
-            <div id="legalcopy">
-                <p class="legal"><strong>Thank you for your shopping!</strong>  .
-                </p>
-            </div>
-
             @if ($order->note)
-                <div class="info">
+                <div class="info mb-1">
                     <p class="" style="font-style: italic; font-size: 11px">
                         Note : {{ $order->note }}
                     </p>
                 </div>
             @endif
 
+            <div id="legalcopy">
+                <p class="legal"><strong>Thank you for your shopping!</strong>  .
+                </p>
+            </div>
         </div>
         <!--End InvoiceBot-->
     </div>
