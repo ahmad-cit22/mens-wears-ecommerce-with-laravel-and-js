@@ -186,37 +186,34 @@ class PosController extends Controller {
         $product_name = $request->product_name;
         $category_id = $request->category_id;
         $brand_id = $request->brand_id;
+
         if ($product_name != '') {
-            $products = Product::where('title', 'LIKE', '%' . $product_name . '%')->orWhere('description', 'LIKE', '%' . $product_name . '%')->get();
+            $products = Product::where('title', 'LIKE', '%' . $product_name . '%')->orWhere('description', 'LIKE', '%' . $product_name . '%');
         } else {
-            $products = Product::orderBy('id', 'DESC')->get();
+            $products = Product::orderBy('id', 'DESC');
         }
 
         if ($category_id != 'all' && $brand_id != 'all') {
-            $products = $products->filter(function ($item) use ($category_id, $brand_id) {
-                return ($item->category_id == $category_id && $item->brand_id == $brand_id);
-            });
+            $products = $products->where('category_id', $category_id)->where('brand_id', $brand_id)->get();
         }
         if ($category_id != 'all' && $brand_id == 'all') {
-            $products = $products->filter(function ($item) use ($category_id, $brand_id) {
-                return $item->category_id == $category_id;
-            });
+            $products = $products->where('category_id', $category_id)->get();
+        }
+        if ($category_id == 'all' && $brand_id != 'all') {
+            $products = $products->where('brand_id', $brand_id)->get();
         }
 
-        if ($category_id == 'all' && $brand_id != 'all') {
-            $products = $products->filter(function ($item) use ($category_id, $brand_id) {
-                return $item->brand_id == $brand_id;
-            });
-        }
         $products = $products->pluck('id')->toArray();
         $products = ProductStock::whereIn('product_id', $products)->orderBy('id', 'DESC')->get();
+
         $product_filtered = '';
+
         if (count($products) > 0) {
             foreach ($products as $product) {
                 $product_filtered .= view('admin.pos.partials.product', compact('product'));
             }
         } else {
-            $product_filtered .= '<div calss="col-md-12 productCard"><h3 style="text-align: center;">Product Not Found!</h3></div>';
+            $product_filtered .= '<div calss="col-md-12 productCard"><h5 class="ml-4" style="text-align: center;">Product Not Found!</h5></div>';
         }
 
         return ['product_filtered' => $product_filtered];

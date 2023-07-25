@@ -209,7 +209,9 @@
                                         <select class="w-150px bag-primary" id="category_id">
                                             <option value="all">Please Select Category</option>
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                                @if ($category->parent_id == null)
+                                                    <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
