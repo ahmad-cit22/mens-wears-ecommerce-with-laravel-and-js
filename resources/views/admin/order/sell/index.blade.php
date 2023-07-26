@@ -21,11 +21,12 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h4>Totoal Sells (From POS) : {{ count($orders) }}</h4>
+                    <h4>Totoal Sells From POS : {{ count($orders->where('source', 'Offline')) }}</h4>
+                    <h4>Totoal Sells From Website : {{ count($orders->where('source', 'Website')) }}</h4>
                     <h4>Totoal Sold Amount :
                         {{ $orders->filter(function ($order) {
                                 return $order->order_status_id != 5;
-                            })->sum('price') }}
+                            })->sum('price') }} TK
                     </h4>
                     <hr>
                     <form action="{{ route('sell.search') }}" method="get">
@@ -122,6 +123,7 @@
                                 <th>Phone</th>
                                 <th>Status</th>
                                 <th>Note</th>
+                                <th>Source</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -199,6 +201,9 @@
                     },
                     {
                         data: 'note'
+                    },
+                    {
+                        data: 'source'
                     },
                     {
                         data: 'date'
