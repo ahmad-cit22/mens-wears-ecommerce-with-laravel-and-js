@@ -918,6 +918,7 @@
 
         $("#filter-btn").click(function() {
             load_product();
+            $('#product_name').val('');
         });
     </script>
 
