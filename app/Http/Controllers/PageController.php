@@ -21,7 +21,7 @@ use App\Models\Trending;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Alert;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Share;
 use DB;
 use Session;
@@ -376,6 +376,22 @@ class PageController extends Controller {
         $order->code = $this->generateUniqueCode();
         if (Auth::user()) {
             $order->customer_id = Auth::id();
+        } else {
+            if (!User::where('phone', $request->phone)->exists()) {
+                $user = new User;
+                $user->name       = $request->name;
+                $user->email      = $request->email;
+                $user->phone      = $request->phone;
+                $user->city       = $request->district_id;
+                $user->address    = $request->shipping_address;
+                $user->password   = Hash::make(12345678);
+                $user->save();
+
+                $order->customer_id = $user->id;
+            } else {
+                $user = User::where('phone', $request->phone)->first();
+                $order->customer_id = $user->id;
+            }
         }
 
         $discount = 0;
