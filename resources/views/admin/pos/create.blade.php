@@ -258,6 +258,9 @@
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
                                                     </fieldset>
+                                                    {{-- @error('name')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror --}}
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -271,16 +274,22 @@
                                                     <label class="text-body">Phone</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
+                                                        {{-- @error('phone')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror --}}
                                                     </fieldset>
                                                 </div>
                                             </div>
-                                            <div class="form-group row ">
-                                                <div class="col-md-12">
-                                                    <label class="text-body">Address</label>
-                                                    <fieldset class="form-group mb-3">
-                                                        <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address">
-                                                    </fieldset>
-                                                </div>
+                                        </div>
+                                        <div class="form-group row mt-3">
+                                            <div class="col-md-12">
+                                                <label class="text-body">Address</label>
+                                                <fieldset class="form-group mb-3">
+                                                    <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ old('shipping_address') }}" required>
+                                                </fieldset>
+                                                {{-- @error('address')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror --}}
                                             </div>
                                         </div>
                                     </div>
@@ -306,7 +315,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-4">
-                                        <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="remove_shipping_charge" name="remove_shipping_charge" value="1">Free Shipping</label>
+                                        <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input class="mr-1" type="checkbox" id="remove_shipping_charge" name="remove_shipping_charge" value="1">Free Shipping</label>
 
                                     </div>
                                     <div class="mt-2">
@@ -585,6 +594,15 @@
         });
     </script>
 
+    @if (session('errMsg'))
+        <script>
+            Swal.fire(
+                'Oops!',
+                "{{ session('errMsg') }}",
+                'error'
+            );
+        </script>
+    @endif
 
     <script>
         $("#product_name").keyup(function() {
