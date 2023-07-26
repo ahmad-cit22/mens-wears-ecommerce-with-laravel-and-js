@@ -90,7 +90,7 @@ class OrderController extends Controller {
                         $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
                                <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
                           <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Prodct Return"><i class="fas fa-undo"></i></a>';
+                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
 
                         return $btn;
                     })
@@ -105,7 +105,7 @@ class OrderController extends Controller {
 
     public function current_year() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::whereYear('created_at', Carbon::now()->year)->get();
+            $orders = Order::orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
             return view('admin.order.current-year', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -114,7 +114,7 @@ class OrderController extends Controller {
 
     public function current_month() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::whereYear('created_at', Carbon::now()->year)->get();
+            $orders = Order::orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
             return view('admin.order.current-month', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -123,7 +123,7 @@ class OrderController extends Controller {
 
     public function today() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::whereDate('created_at', Carbon::today())->get();
+            $orders = Order::orderBy('id', 'DESC')->whereDate('created_at', Carbon::today())->get();
             return view('admin.order.current-month', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');

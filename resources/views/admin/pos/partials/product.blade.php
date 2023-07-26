@@ -3,11 +3,11 @@
         <div class="productCard">
             <a onclick="add_cart({{ $product->id }})" style="cursor: pointer;">
                 <div class="productThumb">
-                    <img class="img-fluid" src="{{ asset('images/product/pos_images/' . $product->product->image) }}" alt="ix">
+                    <img class="img-fluid" src="{{ asset('images/product/pos_images/' . $product->product->image) }}" alt="{{ $product->product->title }}">
                 </div>
                 <div class="productContent">
 
-                    {{ $product->product->title }}{{ is_null($product->size) ? '' : ' - ' . optional($product->size)->title }}
+                    {{ $product->product->title }}{{ is_null($product->size) ? '' : ' - ' . optional($product->size)->title }} ({{ $product->qty }})
 
                 </div>
             </a>
