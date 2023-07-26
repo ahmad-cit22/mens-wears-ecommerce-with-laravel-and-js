@@ -206,7 +206,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between colorfull-select">
                                     <div class="selectmain">
-                                        <select class="w-150px bag-primary" id="category_id">
+                                        <select class="w-170px bag-primary" id="category_id">
                                             <option value="all">Please Select Category</option>
                                             @foreach ($categories as $category)
                                                 @if ($category->parent_id == null)
@@ -217,14 +217,16 @@
                                     </div>
 
                                     <div class="selectmain">
-                                        <select class="w-150px bag-secondary" id="brand_id">
+                                        <select class="w-160px bag-secondary" id="brand_id">
                                             <option value="all">Please Select Brand</option>
                                             @foreach ($brands as $brand)
                                                 <option value="{{ $brand->id }}">{{ $brand->title }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-
+                                    <div align="right">
+                                        <button class="btn btn-info white" id="filter-btn" type="button" style="padding: 4.5px 10px !important;">Search</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="product-items">
@@ -605,16 +607,16 @@
     @endif
 
     <script>
-        $("#product_name").keyup(function() {
-            load_product();
-        });
+        // $("#product_name").keyup(function() {
+        //     load_product();
+        // });
 
         jQuery(function() {
             jQuery('#category_id').multipleSelect({
                 filter: true,
                 filterAcceptOnEnter: true
             }).change(function() {
-                load_product();
+                // load_product();
             })
         });
 
@@ -623,7 +625,7 @@
                 filter: true,
                 filterAcceptOnEnter: true
             }).change(function() {
-                load_product();
+                // load_product();
             })
         });
 
@@ -913,6 +915,10 @@
             }
 
         }
+
+        $("#filter-btn").click(function() {
+            load_product();
+        });
     </script>
 
 </body>

@@ -200,6 +200,8 @@ class PosController extends Controller {
         $category_id = $request->category_id;
         $brand_id = $request->brand_id;
 
+        $product_filtered = '';
+
         if ($product_name != '') {
             $products = Product::where('title', 'LIKE', '%' . $product_name . '%')->orWhere('description', 'LIKE', '%' . $product_name . '%');
         } else {
@@ -217,9 +219,7 @@ class PosController extends Controller {
         }
 
         $products = $products->pluck('id')->toArray();
-        $products = ProductStock::whereIn('product_id', $products)->orderBy('id', 'DESC')->get();
-
-        $product_filtered = '';
+        $products = ProductStock::whereIn('product_id', $products)->where('qty', '>=', 0)->orderBy('id', 'DESC')->get();
 
         if (count($products) > 0) {
             foreach ($products as $product) {
