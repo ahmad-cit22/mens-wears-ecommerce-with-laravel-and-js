@@ -103,6 +103,15 @@ class OrderController extends Controller {
         }
     }
 
+    public function all_orders() {
+        if (auth()->user()->can('order.index')) {
+            $orders = Order::orderBy('id', 'DESC')->get();
+            return view('admin.order.all-orders', compact('orders'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    
     public function current_year() {
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();

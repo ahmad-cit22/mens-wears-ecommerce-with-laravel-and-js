@@ -21,13 +21,21 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h4>Totoal Sells From POS : {{ count($orders->where('source', 'Offline')) }}</h4>
-                    <h4>Totoal Sells From Website : {{ count($orders->where('source', 'Website')) }}</h4>
-                    <h4>Totoal Sold Amount :
-                        {{ $orders->filter(function ($order) {
-                                return $order->order_status_id != 5;
-                            })->sum('price') }} TK
-                    </h4>
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
+                            <h3 class="text-success">Total Sold Amount :
+                                {{ $orders->filter(function ($order) {
+                                        return $order->order_status_id != 5;
+                                    })->sum('price') }} TK
+                            </h3>
+                        </div>
+                        <div class="col-lg-5">
+                            <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
+                            <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
+                            <h4 class="text-danger">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h4>
+                        </div>
+                    </div>
                     <hr>
                     <form action="{{ route('sell.search') }}" method="get">
                         @csrf

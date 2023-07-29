@@ -21,10 +21,10 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h4>Totoal Orders : {{ count($orders) }}</h4>
-                    <h4>Totoal Orders From POS : {{ count($orders->where('source', 'Offline')) }}</h4>
-                    <h4>Totoal Orders From Website : {{ count($orders->where('source', 'Website')) }}</h4>
-                    <h4>Totoal Sold Amount :
+                    <h4>Total Orders : {{ count($orders) }}</h4>
+                    <h4>Total Orders From POS : {{ count($orders->where('source', 'Offline')) }}</h4>
+                    <h4>Total Orders From Website : {{ count($orders->where('source', 'Website')) }}</h4>
+                    <h4>Total Ordered Amount :
                         {{ $orders->filter(function ($order) {
                                 return $order->order_status_id != 5;
                             })->sum('price') }}

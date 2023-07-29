@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Current Month Orders</h1>
+                    <h1 class="m-0">All Orders</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -21,14 +21,13 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h4>Total Orders : {{ count($orders) }}</h4>
-                    <h4>Total Orders From POS : {{ count($orders->where('source', 'Offline')) }}</h4>
-                    <h4>Total Orders From Website : {{ count($orders->where('source', 'Website')) }}</h4>
+                    <h4>Total Orders Confirmed : {{ count($orders->where('is_final', 1)->where('order_status_id', '!=', 5)) }} (From POS : {{ count($orders->where('source', 'Offline')->where('is_final', 1)->where('order_status_id', '!=', 5)) }}, From Website : {{ count($orders->where('source', 'Website')->where('is_final', 1)->where('order_status_id', '!=', 5)) }})</h4>
                     <h4>Total Ordered Amount :
-                        {{ $orders->filter(function ($order) {
+                        {{ $orders->where('is_final', 1)->filter(function ($order) {
                                 return $order->order_status_id != 5;
                             })->sum('price') }}
                     </h4>
+                    <h5 class="text-danger">Total Orders Cancelled : {{ count($orders->where('is_final', 1)->where('order_status_id', '==', 5)) }}</h5>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">

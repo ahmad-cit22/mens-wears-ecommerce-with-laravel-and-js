@@ -225,6 +225,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/generate-pos-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_pos_invoice'])->name('invoice.pos.generate');
 
 		// Report routes
+		Route::get('/all', [App\Http\Controllers\OrderController::class, 'all_orders'])->name('all');
 		Route::get('/current-year', [App\Http\Controllers\OrderController::class, 'current_year'])->name('current.year');
 		Route::get('/current-month', [App\Http\Controllers\OrderController::class, 'current_month'])->name('current.month');
 		Route::get('/today', [App\Http\Controllers\OrderController::class, 'today'])->name('today');
