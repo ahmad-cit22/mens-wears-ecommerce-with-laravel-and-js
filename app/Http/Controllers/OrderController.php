@@ -111,7 +111,7 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function current_year() {
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
@@ -133,7 +133,7 @@ class OrderController extends Controller {
     public function today() {
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->whereDate('created_at', Carbon::today())->get();
-            return view('admin.order.current-month', compact('orders'));
+            return view('admin.order.today', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -523,7 +523,7 @@ class OrderController extends Controller {
                     ->rawColumns(['code', 'status', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.order.index', compact('orders'));
+            return view('admin.order.all-orders', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
         }

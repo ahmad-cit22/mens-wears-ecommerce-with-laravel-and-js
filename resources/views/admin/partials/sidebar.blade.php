@@ -53,18 +53,20 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('role.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Roles</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('user.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Users</p>
-                                </a>
-                            </li>
+                            @hasrole(1)
+                                <li class="nav-item">
+                                    <a href="{{ route('role.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Roles</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('user.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Users</p>
+                                    </a>
+                                </li>
+                            @endhasrole
                             <li class="nav-item">
                                 <a href="{{ route('customer.index') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
@@ -80,39 +82,41 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-home"></i>
-                            <p>
-                                Bank
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                    @hasrole(1)
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>
+                                    Bank
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
 
-                            <li class="nav-item">
-                                <a href="{{ route('bank.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Bank List</p>
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('bank.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Bank List</p>
+                                    </a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a href="{{ route('banktransaction.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Transactions</p>
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('banktransaction.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Transactions</p>
+                                    </a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a href="{{ route('bankcontra.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Cash Flow</p>
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('bankcontra.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Cash Flow</p>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    @endhasrole
 
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -237,53 +241,6 @@
 
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-minus-circle"></i>
-                            <p>
-                                Expense
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-
-                            <li class="nav-item">
-                                <a href="{{ route('expense.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Expense Type</p>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="{{ route('expenseentry.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Expense List</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-percent"></i>
-                            <p>
-                                Campaign
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-
-                            <li class="nav-item">
-                                <a href="{{ route('coupon.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Coupone</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-warehouse"></i>
                             <p>
                                 Stock Management
@@ -321,133 +278,181 @@
                         </ul>
                     </li>
 
+                    @hasrole(1)
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-minus-circle"></i>
+                                <p>
+                                    Expense
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
 
-                    <li class="nav-item">
-                        <a href="{{ route('admin.subscribers') }}" class="nav-link">
-                            <i class="nav-icon fas fa-bell-slash"></i>
-                            <p>
-                                Subscribers
-                            </p>
-                        </a>
-                    </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('expense.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Expense Type</p>
+                                    </a>
+                                </li>
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-map-marker-alt"></i>
-                            <p>
-                                Location
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('expenseentry.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Expense List</p>
+                                    </a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a href="{{ route('district.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>District List</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('area.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Area List</p>
-                                </a>
-                            </li>
+                            </ul>
+                        </li>
 
-                        </ul>
-                    </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-percent"></i>
+                                <p>
+                                    Campaign
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-chart-bar"></i>
-                            <p>
-                                Reports
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('coupon.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Coupone</p>
+                                    </a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a href="{{ route('report.incomestatement') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Income Statement</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('report.balancesheet') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Balance Sheet</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('report.ownersequity') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Owners Equity</p>
-                                </a>
-                            </li>
+                            </ul>
+                        </li>
 
-                        </ul>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.subscribers') }}" class="nav-link">
+                                <i class="nav-icon fas fa-bell-slash"></i>
+                                <p>
+                                    Subscribers
+                                </p>
+                            </a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('partner.index') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>
-                                Owners
-                            </p>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-map-marker-alt"></i>
+                                <p>
+                                    Location
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-cog"></i>
-                            <p>
-                                Settings
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('district.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>District List</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('area.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Area List</p>
+                                    </a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a href="{{ route('setting.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Business Settings</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('asset.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Assets</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('accessory.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Accessories</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('trending.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Trending</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('slider.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Slider Option</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('page.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Pages</p>
-                                </a>
-                            </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-chart-bar"></i>
+                                <p>
+                                    Reports
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('report.incomestatement') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Income Statement</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('report.balancesheet') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Balance Sheet</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('report.ownersequity') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Owners Equity</p>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('partner.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Owners
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>
+                                    Settings
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('setting.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Business Settings</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('asset.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Assets</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('accessory.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Accessories</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('trending.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Trending</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('slider.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Slider Option</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('page.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Pages</p>
+                                    </a>
+                                </li>
 
 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    @endhasrole
 
                     <li class="nav-item">
                         <a href="{{ route('user.profile') }}" class="nav-link">

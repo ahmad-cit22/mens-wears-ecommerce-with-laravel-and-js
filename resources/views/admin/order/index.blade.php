@@ -21,7 +21,6 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h4>Total Orders : {{ count($orders) }}</h4>
                     <h4>Total Orders From Website : {{ count($orders->where('source', 'Website')) }}</h4>
                     <h4>Total Ordered Amount :
                         {{ $orders->filter(function ($order) {

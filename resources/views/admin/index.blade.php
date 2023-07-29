@@ -158,7 +158,7 @@
                             <div class="inner">
                                 <h3>
                                     {{ count(
-                                        $orders->filter(function ($order) {
+                                        $orders_not_final->filter(function ($order) {
                                             return $order->order_status_id == 3;
                                         }),
                                     ) }}
@@ -179,7 +179,7 @@
                             <div class="inner">
                                 <h3>
                                     {{ count(
-                                        $orders->filter(function ($order) {
+                                        $orders_not_final->filter(function ($order) {
                                             return $order->order_status_id == 1;
                                         }),
                                     ) }}
