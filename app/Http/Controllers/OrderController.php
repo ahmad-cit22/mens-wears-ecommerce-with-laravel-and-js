@@ -286,7 +286,8 @@ class OrderController extends Controller {
                     ->rawColumns(['code', 'status', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.order.sell.index', compact('orders'));
+            $categories = Category::all();
+            return view('admin.order.sell.index', compact('orders', 'categories'));
         } else {
             abort(403, 'Unauthorized action.');
         }
