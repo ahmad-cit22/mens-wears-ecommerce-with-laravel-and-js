@@ -36,6 +36,33 @@
                             <h4 class="text-danger">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h4>
                         </div>
                     </div>
+                    <div class="row mt-5">
+                        @foreach ($categories as $key => $category)
+                            @php
+                                $sells_cat = 0;
+                                $sells_amount_cat = 0;
+                            @endphp
+                            @if ($category->parent_id == 0)
+                                @foreach ($orders as $item)
+                                    @if ($item->order_status_id != 5)
+                                        @foreach ($item->order_product as $order_product)
+                                            @if ($order_product->product->category_id == $category->id)
+                                                @php
+                                                    $sells_cat += $order_product->qty;
+                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
+                                                @endphp
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                                <div class="col-3 gap-3 mb-3 mt-2">
+                                    <h5><b>{{ $category->title }}</b></h5>
+                                    <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
+                                    <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
                     <hr>
                     <form action="{{ route('sell.search') }}" method="get">
                         @csrf

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Session;
 use Alert;
+use App\Models\Category;
 use Carbon\Carbon;
 use DataTables;
 
@@ -96,7 +97,8 @@ class OrderController extends Controller {
                     ->rawColumns(['code', 'status', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.order.sell.index', compact('orders'));
+            $categories = Category::all();
+            return view('admin.order.sell.index', compact('orders', 'categories'));
         } else {
             abort(403, 'Unauthorized action.');
         }
