@@ -121,7 +121,7 @@
                                 <th>Customer Name</th>
                                 <th>Phone</th>
                                 <th>Status</th>
-                                <th>Note</th>
+                                <th width="20%">Note</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>

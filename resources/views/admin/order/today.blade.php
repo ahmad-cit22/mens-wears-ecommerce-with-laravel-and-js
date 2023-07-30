@@ -39,6 +39,8 @@
                                 <th>Customer Name</th>
                                 <th>Phone</th>
                                 <th>Status</th>
+                                <th width="20%">Note</th>
+                                <th>Source</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -51,6 +53,8 @@
                                     <td>{{ $order->name }}</td>
                                     <td>{{ $order->phone }}</td>
                                     <td><span class="badge badge-{{ $order->status->color }}">{{ $order->status->title }}</span></td>
+                                    <td>{{ $order->note }}</td>
+                                    <td>{{ $order->source }}</td>
                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y g:iA') }}</td>
                                     <td>
                                         <a href="{{ route('order.invoice.generate', $order->id) }}" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -90,6 +94,8 @@
                                 <th>Customer Name</th>
                                 <th>Phone</th>
                                 <th>Status</th>
+                                <th width="20%">Note</th>
+                                <th>Source</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>

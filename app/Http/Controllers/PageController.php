@@ -183,21 +183,21 @@ class PageController extends Controller {
         if ($category_id != 'all' && $brand_id != 'all') {
             $category = Category::find($category_id);
             if ($category->parent_id == 0) {
-                $products = Product::where('category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->get();
+                $products = Product::where('category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
             } else {
-                $products = Product::where('sub_category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->get();
+                $products = Product::where('sub_category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
             }
         } else if ($category_id != 'all' && $brand_id == 'all') {
             $category = Category::find($category_id);
             if ($category->parent_id == 0) {
-                $products = Product::where('category_id', $category_id)->where('is_active', 1)->get();
+                $products = Product::where('category_id', $category_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
             } else {
-                $products = Product::where('sub_category_id', $category_id)->where('is_active', 1)->get();
+                $products = Product::where('sub_category_id', $category_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
             }
         } else if ($category_id == 'all' && $brand_id != 'all') {
-            $products = Product::where('brand_id', $brand_id)->where('is_active', 1)->get();
+            $products = Product::where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
         } else {
-            $products = Product::where('is_active', 1)->get();
+            $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->get();
         }
 
         $product_ids = ProductStock::whereBetween('price', [$min_price, $max_price])->pluck('product_id')->toArray();
@@ -247,7 +247,7 @@ class PageController extends Controller {
 
     public function category_products($id, $slug) {
         $category = Category::find($id);
-        $products = Product::where('category_id', $id)->orWhere('sub_category_id', $id)->where('is_active', 1)->paginate(32);
+        $products = Product::where('category_id', $id)->orWhere('sub_category_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(32);
         if (!is_null($category)) {
             return view('pages.category-product', compact('category', 'products'));
         } else {
@@ -258,7 +258,7 @@ class PageController extends Controller {
 
     public function brand_products($id, $slug) {
         $brand = Brand::find($id);
-        $products = Product::where('brand_id', $id)->where('is_active', 1)->paginate(30);
+        $products = Product::where('brand_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(30);
         if (!is_null($brand)) {
             return view('pages.brand-product', compact('brand', 'products'));
         } else {

@@ -7,7 +7,6 @@ use App\Models\ProductStock;
 use Illuminate\Http\Request;
 
 use Auth;
-use PDF;
 use Session;
 use Alert;
 use Carbon\Carbon;
@@ -469,9 +468,21 @@ class OrderController extends Controller {
 
     public function generate_invoice($id) {
         $order = Order::find($id);
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'orientation' => 'P',
+            'default_font' => 'nikosh',
+        ]);
+
         if (!is_null($order)) {
-            $pdf = PDF::loadView('admin.invoice.generate', compact('order'));
-            return $pdf->stream($order->code . '.pdf');
+            $data = [
+                'order' => $order
+            ];
+
+            $mpdf->WriteHTML(view('admin.invoice.generate', $data));
+            $mpdf->Output($order->code . '.pdf', 'I');
         } else {
             Alert::toast('Invoice Not Found!', 'error');
             return back();

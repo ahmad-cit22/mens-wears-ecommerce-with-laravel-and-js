@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://gobyfabrifest.com/'),
 
     'asset_url' => env('ASSET_URL', null),
 
@@ -180,7 +180,6 @@ return [
          */
         Intervention\Image\ImageServiceProvider::class,
         Jorenvh\Share\Providers\ShareServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
 
@@ -244,7 +243,6 @@ return [
          */
         'Image' => Intervention\Image\Facades\Image::class,
         'Share' => Jorenvh\Share\ShareFacade::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
 

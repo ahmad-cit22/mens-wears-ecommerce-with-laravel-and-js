@@ -52,9 +52,20 @@
 
     <div>
         <div>
-            <img src="{{ asset('images/website/' . $business->footer_logo) }}" class="center">
+            <table style="border: 0px;">
+                <tr>
+                    <td style="border: 0px"><img src="{{ asset('images/website/' . $business->footer_logo) }}" class="center"></td>
+                    <td width="35%" style="border: 0px; text-align: right">
+                        <p> Contact No.: {{ $business->phone }}<br>
+                            Address: {{ $business->address }}
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+
         </div>
-        <table>
+        <table style="margin-top: 35px;">
             <tr>
                 <th style="border: 0px solid white;">
                     <div>
@@ -62,7 +73,9 @@
                             Bill To, <br>
                             Name: {{ $order->name }}<br>
                             Phone: {{ $order->phone }}<br>
-                            Email: {{ $order->email }}<br>
+                            @if ($order->email)
+                                Email: {{ $order->email }}<br>
+                            @endif
                             Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
                             @if ($order->courier_name)
                                 Courier Name: {{ $order->courier_name }}<br>
@@ -70,7 +83,7 @@
                         </p>
                     </div>
                 </th>
-                <th style="text-align: right; border: 0px solid white;">
+                <th width="20%" style="text-align: right; border: 0px solid white; vertical-align: top;">
                     <p class="invoiceIDandDate" style="font-family: Arial;">Invoice # {{ $order->code }}<br>Date: {{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y') }}</p>
                 </th>
             </tr>
@@ -79,7 +92,7 @@
     <br />
 
     <div>
-        <table class="table table-bordered">
+        <table class="table table-bordered" style="margin-top: 10px;">
             <thead class="thead-light">
                 <tr style="text-align: right; background-color: #dddddd;">
                     <!-- <th scope="col" style="text-align: center;">S.N</th> -->
@@ -106,7 +119,7 @@
         </table>
     </div>
     </div>
-    <div style="margin-top: 8px; text-align: right;">
+    <div style="margin: 15px 0 30px; text-align: right;">
         <table>
             <tbody style="text-align: right;">
                 <tr style="text-align: right;">
