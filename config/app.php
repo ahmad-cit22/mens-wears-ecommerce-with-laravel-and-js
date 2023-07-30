@@ -182,6 +182,7 @@ return [
         Jorenvh\Share\Providers\ShareServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -245,6 +246,7 @@ return [
         'Share' => Jorenvh\Share\ShareFacade::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 
