@@ -52,6 +52,7 @@
 <!-- <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script> -->
 
 @include('sweetalert::alert')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @yield('scripts')
 <script type="text/javascript">
     $('.select2').select2();
@@ -106,4 +107,3 @@
         window.print();
     });
 </script>
-

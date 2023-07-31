@@ -14,7 +14,9 @@ use Illuminate\Support\Str;
 use Cart;
 use Auth;
 use Alert;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Session;
 
 class CartController extends Controller {
@@ -167,11 +169,18 @@ class CartController extends Controller {
 
     public function checkout() {
         $carts = Cart::content();
-        if (count($carts) > 0) {
-            $districts = District::orderBy('name', 'ASC')->get();
-            return view('pages.checkout', compact('carts', 'districts'));
+        $customer = User::find(Auth::user()->id);
+
+        if ($customer->is_active) {
+            if (count($carts) > 0) {
+                $districts = District::orderBy('name', 'ASC')->get();
+                return view('pages.checkout', compact('carts', 'districts'));
+            } else {
+                return redirect()->route('products');
+            }
         } else {
-            return redirect()->route('products');
+            Alert::toast('Sorry! Customer status is deactivated right now. Kindly contact with us to get activated.', 'error');
+            return redirect()->route('contact');
         }
     }
 }

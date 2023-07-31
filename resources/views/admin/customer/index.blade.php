@@ -34,6 +34,7 @@
                                 <th>Phone</th>
                                 <th>Referrer</th>
                                 <th>Image</th>
+                                <th>Status</th>
                                 <th>Orders</th>
                                 <th>Action</th>
                             </tr>
@@ -51,6 +52,15 @@
                                     @endif
                                     <td>{{ optional($customer->referrer)->name }}</td>
                                     <td><img src="{{ asset('images/customer/' . $customer->image) }}" width="100"></td>
+                                    <td>
+                                        <form action="{{ route('customer.status_update', $customer->id) }}" method="POST">
+                                            @csrf
+                                            <select name="status" onchange="changeStatus(this, {{ $customer->id }})" class="form-select @error('status')is-invalid @enderror" required>
+                                                <option value="0" {{ $customer->is_active == 0 ? 'selected' : '' }}>Inactive</option>
+                                                <option value="1" {{ $customer->is_active == 1 ? 'selected' : '' }}>Active</option>
+                                            </select>
+                                        </form>
+                                    </td>
                                     <td>
                                         @if (count($customer->orders))
                                             <a href="{{ route('order.customer.orders', $customer->id) }}">{{ count($customer->orders) }}</a>
@@ -133,6 +143,7 @@
                                 <th>Phone</th>
                                 <th>Referrer</th>
                                 <th>Image</th>
+                                <th>Status</th>
                                 <th>Orders</th>
                                 <th>Action</th>
                             </tr>
@@ -165,5 +176,25 @@
                 "responsive": true,
             });
         });
+    </script>
+
+    <script>
+        function changeStatus(selectElement, id) {
+            let formElement = selectElement.parentNode;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Change the status only if you are sure about it!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed.'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        }
     </script>
 @endsection

@@ -135,6 +135,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/', [App\Http\Controllers\UserController::class, 'customer_index'])->name('index');
 		Route::post('/change-password-by-admin/{id}', [App\Http\Controllers\UserController::class, 'customer_password_change'])->name('password.change.admin');
 		Route::post('/destroy/{id}', [App\Http\Controllers\UserController::class, 'customer_destroy'])->name('destroy');
+		Route::post('/status/update/{id}', [App\Http\Controllers\UserController::class, 'customer_status_update'])->name('status_update');
 	});
 
 	// Category Routes

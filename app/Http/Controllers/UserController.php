@@ -12,21 +12,17 @@ use Spatie\Permission\Models\Permission;
 use Alert;
 use Auth;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('user.index')) {
             $users = User::where('type', 1)->orderBy('name', 'ASC')->get();
             return view('admin.user.index', compact('users'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -36,14 +32,11 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         if (auth()->user()->can('user.create')) {
             $roles = Role::all();
             return view('admin.user.create', compact('roles'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -54,8 +47,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (auth()->user()->can('user.create')) {
             $validatedData = $request->validate([
                 'name' => 'required|max:255',
@@ -65,7 +57,7 @@ class UserController extends Controller
                 'image' => 'nullable|image',
                 'password' => ['required', 'string', 'min:8'],
             ]);
-            
+
             $user = new User;
             $user->name = $request->name;
             $user->email = $request->email;
@@ -78,15 +70,12 @@ class UserController extends Controller
             $user->syncRoles($role);
             Alert::toast(__('app.messages.user.create'), 'success');
             return redirect()->route('user.index');
-            
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
-    
+
 
     /**
      * Display the specified resource.
@@ -94,8 +83,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -105,22 +93,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         if (auth()->user()->can('user.edit')) {
             $user = User::find($id);
             if (!is_null($user)) {
                 $roles = Role::all();
                 return view('admin.user.edit', compact('user', 'roles'));
-            }
-            else {
+            } else {
                 Alert::toast(__('app.messages.user.not_found'), 'errror');
                 return redirect()->route('user.index');
             }
-            
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -132,16 +115,15 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         if (auth()->user()->can('user.edit')) {
             $user = User::find($id);
             if (!is_null($user)) {
                 $validatedData = $request->validate([
                     'name' => 'required|max:255',
-                    'email' => 'required|max:255|unique:users,email,'.$user->id,
-                    'username' => 'required|max:255|unique:users,username,'.$user->id,
-                    'phone' => 'required|max:255|unique:users,phone,'.$user->id,
+                    'email' => 'required|max:255|unique:users,email,' . $user->id,
+                    'username' => 'required|max:255|unique:users,username,' . $user->id,
+                    'phone' => 'required|max:255|unique:users,phone,' . $user->id,
                     'image' => 'nullable|image',
                 ]);
 
@@ -155,15 +137,11 @@ class UserController extends Controller
                 $user->syncRoles($role);
                 Alert::toast(__('app.messages.user.update'), 'success');
                 return redirect()->route('user.index');
-            }
-            else {
+            } else {
                 Alert::toast(__('app.messages.user.not_found'), 'errror');
                 return redirect()->route('user.index');
             }
-            
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -174,58 +152,48 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         if (auth()->user()->can('user.delete')) {
             $user = User::find($id);
             if (!is_null($user)) {
                 $user->delete();
                 Alert::toast(__('app.messages.user.delete'), 'success');
                 return redirect()->route('user.index');
-            }
-            else {
+            } else {
                 Alert::toast(__('app.messages.user.not_found'), 'errror');
                 return redirect()->route('user.index');
             }
-            
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
-    public function customer_index()
-    {
+    public function customer_index() {
         if (Auth::user()->type == 1) {
             $customers = User::where('type', 2)->orderBy('id', 'DESC')->get();
             return view('admin.customer.index', compact('customers'));
-        }
-        else {
-            session()->flash('error','Access Denied !');
+        } else {
+            session()->flash('error', 'Access Denied !');
             return back();
         }
     }
 
-    public function customer_destroy($id)
-    {
+    public function customer_destroy($id) {
         $customer = User::find($id);
         if (!is_null($customer)) {
-            if (File::exists('images/user/'.$customer->image)){
-                File::delete('images/user/'.$customer->image);
+            if (File::exists('images/user/' . $customer->image)) {
+                File::delete('images/user/' . $customer->image);
             }
             $customer->delete();
             Alert::toast('Customer has been deleted !', 'success');
             return redirect()->route('customer.index');
-        }
-        else {
-            session()->flash('error','Something went wrong !');
+        } else {
+            session()->flash('error', 'Something went wrong !');
             return redirect()->route('customer.index');
         }
     }
 
-    public function customer_password_change(Request $request, $id)
-    {
+    public function customer_password_change(Request $request, $id) {
         $validatedData = $request->validate([
             'password' => 'required|min:8',
         ]);
@@ -235,10 +203,19 @@ class UserController extends Controller
             $customer->save();
             Alert::toast('Password has been changed!', 'success');
             return back();
-        }
-        else{
+        } else {
             Alert::toast('Customer Not Found!', 'error');
             return back();
         }
+    }
+
+    function customer_status_update(Request $request, $id) {
+        $customer = User::find($id);
+
+        $customer->is_active = $request->status;
+        $customer->save();
+
+        Alert::toast('Customer status updated successfully!', 'success');
+        return back();
     }
 }
