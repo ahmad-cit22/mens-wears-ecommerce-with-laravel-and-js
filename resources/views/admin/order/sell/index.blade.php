@@ -23,7 +23,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-lg-7">
-                            <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
+                            <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 0)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
                             <h3 class="text-success">Total Sold Amount :
                                 {{ $orders->filter(function ($order) {
                                         return $order->order_status_id != 5;
@@ -31,8 +31,8 @@
                             </h3>
                         </div>
                         <div class="col-lg-5">
-                            <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
-                            <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
+                            <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)->where('is_return', 0)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
+                            <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)->where('is_return', 0)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
                             <h4 class="text-danger">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h4>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                             @endphp
                             @if ($category->parent_id == 0)
                                 @foreach ($orders as $item)
-                                    @if ($item->order_status_id != 5)
+                                    @if ($item->order_status_id != 5 && $item->is_return == 0)
                                         @foreach ($item->order_product as $order_product)
                                             @if ($order_product->product->category_id == $category->id)
                                                 @php
@@ -55,11 +55,33 @@
                                         @endforeach
                                     @endif
                                 @endforeach
-                                <div class="col-3 gap-3 mb-3 mt-2">
-                                    <h5><b>{{ $category->title }}</b></h5>
-                                    <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
-                                    <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
-                                </div>
+                                @if ($sells_cat > 0)
+                                    <div class="col-3 gap-3 mb-3 mt-2">
+                                        <h4 class="text-orange"><b>{{ $category->title }}</b></h4>
+                                        <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
+                                        <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
+                                    </div>
+                                @endif
+                            @else
+                                @foreach ($orders as $item)
+                                    @if ($item->order_status_id != 5 && $item->is_return == 0)
+                                        @foreach ($item->order_product as $order_product)
+                                            @if ($order_product->product->sub_category_id == $category->id)
+                                                @php
+                                                    $sells_cat += $order_product->qty;
+                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
+                                                @endphp
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                                @if ($sells_cat > 0)
+                                    <div class="col-3 gap-3 mb-3 mt-2">
+                                        <h5><b>{{ $category->parent->title . ' - ' . $category->title }}</b></h5>
+                                        <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
+                                        <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
+                                    </div>
+                                @endif
                             @endif
                         @endforeach
                     </div>
