@@ -179,7 +179,7 @@ class CartController extends Controller {
                 return redirect()->route('products');
             }
         } else {
-            Alert::toast('Sorry! Customer status is deactivated right now. Kindly contact with us to get activated.', 'error');
+            Alert::toast('Sorry! Your customer status is deactivated right now. Kindly contact with us to get activated.', 'error');
             return redirect()->route('contact');
         }
     }
