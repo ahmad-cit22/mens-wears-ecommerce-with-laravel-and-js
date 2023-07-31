@@ -171,13 +171,13 @@
         <p><b>Payment Method:</b>&nbsp;&nbsp; {{ $order->payment_method }}</p>
     @endif
 
-    @if ($order->note != null)
+    {{-- @if ($order->note != null)
         <div class="info" style="margin-top: 25px">
             <p class="" style="font-style: italic; font-size: 11px; margin-left: 5px;">
                 Note : {{ $order->note }}
             </p>
         </div>
-    @endif
+    @endif --}}
 
 </body>
 

@@ -230,6 +230,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/current-month', [App\Http\Controllers\OrderController::class, 'current_month'])->name('current.month');
 		Route::get('/today', [App\Http\Controllers\OrderController::class, 'today'])->name('today');
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'search'])->name('search');
+		Route::get('/customer-orders/{id}', [App\Http\Controllers\OrderController::class, 'customer_orders'])->name('customer.orders');
 	});
 
 	// Sell Routes

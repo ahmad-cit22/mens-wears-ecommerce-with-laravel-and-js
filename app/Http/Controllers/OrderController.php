@@ -10,6 +10,7 @@ use Auth;
 use Session;
 use Alert;
 use App\Models\Category;
+use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
 
@@ -135,6 +136,17 @@ class OrderController extends Controller {
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->whereDate('created_at', Carbon::today())->get();
             return view('admin.order.today', compact('orders'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    
+    public function customer_orders($id) {
+        $customer = User::find($id);
+
+        if (auth()->user()->can('order.index')) {
+            $orders = Order::orderBy('id', 'DESC')->where('customer_id', $id)->get();
+            return view('admin.order.orders_customer', compact('orders', 'customer'));
         } else {
             abort(403, 'Unauthorized action.');
         }

@@ -28,6 +28,7 @@
                             })->sum('price') }}
                     </h4>
                     <h5 class="text-danger">Total Orders Cancelled : {{ count($orders->where('is_final', 1)->where('order_status_id', '==', 5)) }}</h5>
+                    <h5 class="text-warning">Total Orders Returned : {{ count($orders->where('is_return', 1)) }}</h5>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">

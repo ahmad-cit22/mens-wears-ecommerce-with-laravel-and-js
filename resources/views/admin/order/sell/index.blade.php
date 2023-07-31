@@ -33,7 +33,8 @@
                         <div class="col-lg-5">
                             <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)->where('is_return', 0)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
                             <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)->where('is_return', 0)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
-                            <h4 class="text-danger">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h4>
+                            <h5 class="text-danger">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
+                            <h5 class="text-warning">Total Orders Returned : {{ count($orders->where('is_return', 1)) }}</h5>
                         </div>
                     </div>
                     <div class="row mt-5">
