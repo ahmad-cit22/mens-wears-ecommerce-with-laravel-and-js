@@ -36,6 +36,7 @@
                                 <th>Image</th>
                                 <th>Status</th>
                                 <th>Orders</th>
+                                <th>Type</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -67,6 +68,15 @@
                                         @else
                                             0
                                         @endif
+                                    </td>
+                                    <td>
+                                        <form action="{{ route('customer.type_update', $customer->id) }}" method="POST">
+                                            @csrf
+                                            <select name="is_fraud" onchange="changeType(this, {{ $customer->id }})" class="form-select @error('is_fraud')is-invalid @enderror" required>
+                                                <option value="0" {{ $customer->is_fraud == 0 ? 'selected' : '' }}>Regular</option>
+                                                <option value="1" {{ $customer->is_fraud == 1 ? 'selected' : '' }}>Fraud</option>
+                                            </select>
+                                        </form>
                                     </td>
                                     <td>
                                         @if (Auth::id() == 1)
@@ -145,6 +155,7 @@
                                 <th>Image</th>
                                 <th>Status</th>
                                 <th>Orders</th>
+                                <th>Type</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -180,6 +191,24 @@
 
     <script>
         function changeStatus(selectElement, id) {
+            let formElement = selectElement.parentNode;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Change the status only if you are sure about it!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed.'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        }
+
+        function changeType(selectElement, id) {
             let formElement = selectElement.parentNode;
 
             Swal.fire({

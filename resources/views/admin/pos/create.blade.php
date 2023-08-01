@@ -191,7 +191,7 @@
             @if (Session::has('wholesale_price'))
                 <div class="row">
                     <div class="col-md-12">
-                        <h3 class="text-center alert alert-success">Wholesale </h3>
+                        <h3 class="text-center alert alert-success">Wholesale</h3>
                     </div>
                 </div>
             @endif
@@ -697,19 +697,26 @@
 
             var subtotal = $('#subtotal_amount').val();
             var discount = $('#discount').val();
-            $.ajax({
-                url: url + "/get-shipping-charge",
-                type: "POST",
-                data: {
-                    area_id: area_id,
-                    _token: '{{ csrf_token() }}',
-                },
-                success: function(response) {
-                    $('#shipping_charge_label').html(response);
-                    $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
-                    $('#shipping_charge').val(response);
-                }
-            });
+
+            @if (Session::has('wholesale_price'))
+                $('#shipping_charge_label').html(0);
+                $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
+                $('#shipping_charge').val(0);
+            @else
+                $.ajax({
+                    url: url + "/get-shipping-charge",
+                    type: "POST",
+                    data: {
+                        area_id: area_id,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        $('#shipping_charge_label').html(response);
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
+                        $('#shipping_charge').val(response);
+                    }
+                });
+            @endif
 
         });
 

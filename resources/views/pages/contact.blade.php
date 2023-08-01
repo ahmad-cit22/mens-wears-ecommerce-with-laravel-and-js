@@ -106,15 +106,6 @@
                                             <p>{{ $business->address }}</p>
                                         </div>
                                     </div>
-                                    <!-- <div class="sin-contact-info-wrap mb-25">
-                                                        <div class="contact-icon">
-                                                            <i class="dlicon business_building"></i>
-                                                        </div>
-                                                        <div class="contact-address">
-                                                            <span>Toro Headquarter</span>
-                                                            <p>PO Box 16122 Collins Street West Victoria 8007 Australia</p>
-                                                        </div>
-                                                    </div> -->
                                 </div>
                                 <div class="contact-info-bottom">
                                     <ul>

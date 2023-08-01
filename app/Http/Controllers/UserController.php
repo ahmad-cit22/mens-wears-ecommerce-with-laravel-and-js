@@ -218,4 +218,14 @@ class UserController extends Controller {
         Alert::toast('Customer status updated successfully!', 'success');
         return back();
     }
+
+    function customer_type_update(Request $request, $id) {
+        $customer = User::find($id);
+
+        $customer->is_fraud = $request->is_fraud;
+        $customer->save();
+
+        Alert::toast('Customer type updated successfully!', 'success');
+        return back();
+    }
 }

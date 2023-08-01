@@ -63,9 +63,9 @@ class OrderController extends Controller {
 
     public function sell_index(Request $request) {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->get();
+                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -100,6 +100,50 @@ class OrderController extends Controller {
             }
             $categories = Category::all();
             return view('admin.order.sell.index', compact('orders', 'categories'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function wholesale_index(Request $request) {
+        if (auth()->user()->can('order.index')) {
+            $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
+            if ($request->ajax()) {
+                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
+                return Datatables::of($data)
+                    // ->addIndexColumn()
+                    ->addColumn('code', function ($row) {
+
+                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+
+                        return $code;
+                    })
+                    ->addColumn('status', function ($row) {
+
+                        $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+
+                        return $data;
+                    })
+                    ->addColumn('date', function ($row) {
+
+                        $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
+
+                        return $data;
+                    })
+                    ->addColumn('action', function ($row) {
+
+                        $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
+                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
+                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
+
+                        return $btn;
+                    })
+                    ->rawColumns(['code', 'status', 'date', 'action'])
+                    ->make(true);
+            }
+            $categories = Category::all();
+            return view('admin.order.sell.wholesale', compact('orders', 'categories'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -140,7 +184,7 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function customer_orders($id) {
         $customer = User::find($id);
 
@@ -403,14 +447,24 @@ class OrderController extends Controller {
                             'note.required' => 'Please Provide a Cancellation Reason',
                         ]
                     );
+
+                    if ($order->is_final == 1) {
+                        $order_products = $order->order_product;
+                        foreach ($order_products as $product) {
+                            $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
+                            $stock->qty += $product->qty;
+                            $stock->save();
+                        }
+                    }
                 }
+
                 $order->order_status_id = $request->order_status_id;
                 $order->note = $request->note;
                 $order->save();
                 // $msg = 'Dear Sir/Madam, Your order('. $order->code .') status has been updated to '.$order->status->title.'. Thanks for shopping with us.';
                 // $send_sms = $order->send_sms($msg, $order->phone);
 
-                Alert::toast('Status Updated !', 'success');
+                Alert::toast('Status Updated!', 'success');
                 return back();
             } else {
                 Alert::toast('Something went wrong !', 'error');

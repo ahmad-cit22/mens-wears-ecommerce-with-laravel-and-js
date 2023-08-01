@@ -236,6 +236,13 @@
                                 </a>
                             </li>
 
+                            <li class="nav-item">
+                                <a href="{{ route('sell.wholesale.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Wholesale List</p>
+                                </a>
+                            </li>
+
                         </ul>
                     </li>
 

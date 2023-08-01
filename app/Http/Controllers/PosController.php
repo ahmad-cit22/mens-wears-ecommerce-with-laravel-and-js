@@ -152,8 +152,8 @@ class PosController extends Controller {
             } else {
                 $order->source = 'Offline';
             }
+            
             $order->is_final = 1;
-            // $order->payment_method = $request->payment_method;
             $order->note = $request->note;
 
             $order->save();

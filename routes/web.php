@@ -136,6 +136,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/change-password-by-admin/{id}', [App\Http\Controllers\UserController::class, 'customer_password_change'])->name('password.change.admin');
 		Route::post('/destroy/{id}', [App\Http\Controllers\UserController::class, 'customer_destroy'])->name('destroy');
 		Route::post('/status/update/{id}', [App\Http\Controllers\UserController::class, 'customer_status_update'])->name('status_update');
+		Route::post('/type/update/{id}', [App\Http\Controllers\UserController::class, 'customer_type_update'])->name('type_update');
 	});
 
 	// Category Routes
@@ -237,6 +238,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Sell Routes
 	Route::group(['prefix' => 'sell', 'as' => 'sell.'], function () {
 		Route::get('/', [App\Http\Controllers\OrderController::class, 'sell_index'])->name('index');
+		Route::get('/wholesale', [App\Http\Controllers\OrderController::class, 'wholesale_index'])->name('wholesale.index');
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'sell_search'])->name('search');
 	});
 
