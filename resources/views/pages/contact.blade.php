@@ -36,7 +36,7 @@
                     <div class="row">
                         <div class="col-xl-9 col-lg-8 col-md-7">
                             <div class="contact-form-area">
-                                <h2>Get a quote</h2>
+                                <h2>Get a Quote</h2>
                                 @if (Session::has('success'))
                                     <h3 class="alert alert-success">
                                         {{ Session::get('success') }}
@@ -107,14 +107,14 @@
                                         </div>
                                     </div>
                                     <!-- <div class="sin-contact-info-wrap mb-25">
-                                                    <div class="contact-icon">
-                                                        <i class="dlicon business_building"></i>
-                                                    </div>
-                                                    <div class="contact-address">
-                                                        <span>Toro Headquarter</span>
-                                                        <p>PO Box 16122 Collins Street West Victoria 8007 Australia</p>
-                                                    </div>
-                                                </div> -->
+                                                        <div class="contact-icon">
+                                                            <i class="dlicon business_building"></i>
+                                                        </div>
+                                                        <div class="contact-address">
+                                                            <span>Toro Headquarter</span>
+                                                            <p>PO Box 16122 Collins Street West Victoria 8007 Australia</p>
+                                                        </div>
+                                                    </div> -->
                                 </div>
                                 <div class="contact-info-bottom">
                                     <ul>
