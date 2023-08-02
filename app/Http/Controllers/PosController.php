@@ -138,11 +138,13 @@ class PosController extends Controller {
             $order->district_id = $request->district_id;
             $order->area_id = $request->area_id;
             $order->courier_name = $request->courier_name;
+
             if ($request->has('remove_shipping_charge')) {
                 $order->delivery_charge = 0;
             } else {
                 $order->delivery_charge = $request->shipping_charge;
             }
+            
             if ($request->advanced_charge != 0) {
                 $order->advance = $request->advanced_charge;
             }
@@ -152,7 +154,7 @@ class PosController extends Controller {
             } else {
                 $order->source = 'Offline';
             }
-            
+
             $order->is_final = 1;
             $order->note = $request->note;
 

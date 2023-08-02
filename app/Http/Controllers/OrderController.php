@@ -76,7 +76,11 @@ class OrderController extends Controller {
                     })
                     ->addColumn('status', function ($row) {
 
-                        $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        if ($row->is_return) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                        } else {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        }
 
                         return $data;
                     })
@@ -455,6 +459,7 @@ class OrderController extends Controller {
                             $stock->qty += $product->qty;
                             $stock->save();
                         }
+                        $order->is_final = 0;
                     }
                 }
 
