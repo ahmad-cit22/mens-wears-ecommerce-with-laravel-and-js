@@ -122,6 +122,7 @@
                                 <th>Phone</th>
                                 <th>Status</th>
                                 <th width="20%">Note</th>
+                                <th>Source</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -199,6 +200,9 @@
                     },
                     {
                         data: 'note'
+                    },
+                    {
+                        data: 'source'
                     },
                     {
                         data: 'date'
