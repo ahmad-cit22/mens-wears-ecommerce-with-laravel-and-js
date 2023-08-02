@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                      <h5><i class="fas fa-info"></i> Note:</h5>
-                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                    </div> -->
+                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -68,9 +68,25 @@
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
-
+                                    @php
+                                        $return_price = 0;
+                                        $returned_products = App\Models\OrderReturn::where('order_id', $order->id);
+                                        foreach ($returned_products->get() as $key => $return_product) {
+                                            $return_price += $return_product->price * $return_product->qty;
+                                        }
+                                    @endphp
                                     <address>
-                                        Satus: <spane class="badge badge-{{ $order->status->color }}"> {{ $order->status->title }}</spane><br>
+                                        <div>
+                                            Satus: <span class="badge badge-{{ $order->status->color }}"> {{ $order->status->title }}</span>
+                                            @if ($order->is_return)
+                                                @if ($order->price == $return_price)
+                                                    <span class="badge badge-danger">Returned</span><br>
+                                                @else
+                                                    <span class="badge badge-danger">Returned Partially</span><br>
+                                                @endif
+                                            @endif
+                                        </div>
+
                                         Order Track Number: <strong># {{ $order->code }}</strong><br>
                                         Payment Satus: <spane class="badge badge-{{ $order->payment_status == 1 ? 'success' : 'danger' }}"> {{ $order->payment_status == 1 ? 'Paid' : 'Not Paid' }}</spane><br>
                                         Payment Method: <strong># {{ $order->payment_method }}</strong><br>
@@ -169,9 +185,18 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($order->order_product as $product)
+                                                @php
+                                                    $return_products = App\Models\OrderReturn::where('order_id', $product->order_id)
+                                                        ->where('product_id', $product->product_id)
+                                                        ->where('size_id', $product->size_id);
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}</td>
+                                                    <td>{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
+                                                        @if ($return_products->exists() && $return_products->get()->sum('qty'))
+                                                            <span class="text-danger ml-2">({{ $return_products->get()->sum('qty') }} Product(s) Returned)</span>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ env('CURRENCY') }}{{ $product->price }}</td>
                                                     <td>{{ $product->qty }}</td>
                                                     <td>{{ env('CURRENCY') }}{{ $product->price * $product->qty }}</td>
@@ -220,11 +245,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                        <div class="col-12">
-                          
-                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                        </div>
-                      </div> -->
+                                                                                                                                                <div class="col-12">
+                                                                                                                                                  
+                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                </div>
+                                                                                                                                              </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->

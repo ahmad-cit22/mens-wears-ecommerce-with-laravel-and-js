@@ -10,6 +10,7 @@ use Auth;
 use Session;
 use Alert;
 use App\Models\Category;
+use App\Models\OrderReturn;
 use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
@@ -75,9 +76,18 @@ class OrderController extends Controller {
                         return $code;
                     })
                     ->addColumn('status', function ($row) {
+                        $return_price = 0;
+                        $returned_products = OrderReturn::where('order_id', $row->id);
+                        foreach ($returned_products->get() as $key => $return_product) {
+                            $return_price += $return_product->price * $return_product->qty;
+                        }
 
                         if ($row->is_return) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                            if ($row->price == $return_price) {
+                                $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                            } else {
+                                $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned Partially</span>';
+                            }
                         } else {
                             $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
                         }
@@ -326,7 +336,11 @@ class OrderController extends Controller {
                     })
                     ->addColumn('status', function ($row) {
 
-                        $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        if ($row->is_return) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                        } else {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        }
 
                         return $data;
                     })
@@ -339,7 +353,9 @@ class OrderController extends Controller {
                     ->addColumn('action', function ($row) {
 
                         $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
+                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
 
                         return $btn;
                     })
@@ -630,9 +646,21 @@ class OrderController extends Controller {
 
     public function apply_cod(Request $request, $id) {
         $order = Order::find($id);
+
+        $return_products = OrderReturn::where('order_id', $id);
+        $return_price = 0;
+
+        if ($return_products->exists()) {
+            foreach ($return_products->get() as $key => $product) {
+                $return_price += $product->price * $product->qty;
+            };
+        }
+
+        $cod = ($order->price - $return_price) * 0.01;
+
         if (!is_null($order)) {
             if ($request->submit == 'apply') {
-                $order->cod = $order->price * 0.01;
+                $order->cod = $cod;
                 $order->save();
                 Alert::toast('COD applied successfully', 'success');
                 return back();
