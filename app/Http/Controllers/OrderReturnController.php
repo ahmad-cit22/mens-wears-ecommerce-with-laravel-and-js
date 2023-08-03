@@ -11,23 +11,21 @@ use Auth;
 use PDF;
 use Session;
 use Alert;
+use App\Models\OrderProduct;
 use Carbon\Carbon;
 use DataTables;
 
-class OrderReturnController extends Controller
-{
+class OrderReturnController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('order.edit')) {
             $sell_returns = OrderReturn::orderBy('id', 'DESC')->get();
             return view('admin.order.sell.return.index', compact('sell_returns'));
-        }
-        else{
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -37,13 +35,11 @@ class OrderReturnController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
-    public function generateUniqueCode()
-    {
+    public function generateUniqueCode() {
 
         $characters = '0123456789';
         $charactersNumber = strlen($characters);
@@ -54,16 +50,15 @@ class OrderReturnController extends Controller
         while (strlen($code) < 6) {
             $position = rand(0, $charactersNumber - 1);
             $character = $characters[$position];
-            $code = $code.$character;
+            $code = $code . $character;
         }
-        $code = date('y').'-'.$code;
+        $code = date('y') . '-' . $code;
 
         if (OrderReturn::where('code', $code)->exists()) {
             $this->generateUniqueCode();
         }
 
         return $code;
-
     }
 
     /**
@@ -72,12 +67,13 @@ class OrderReturnController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $change = 0;
         $i = 0;
         $code = $this->generateUniqueCode();
-        for ($i=0; $i < count($request->qty); $i++) { 
+        $returned_price = 0;
+
+        for ($i = 0; $i < count($request->qty); $i++) {
             if ($request->qty[$i] != NULL && $request->qty[$i] > 0) {
                 $change += 1;
 
@@ -92,22 +88,35 @@ class OrderReturnController extends Controller
                 $sell_return->price = $request->price[$i];
                 $sell_return->save();
 
-                // adjust the stock value
+                $returned_price += $request->qty[$i] * $request->price[$i];
 
+                // adjust the order products
+                $order_product = OrderProduct::where('order_id', $request->order_id)->where('product_id', $request->product_id[$i])->first();
+                $order_product->qty = $order_product->qty - $request->qty[$i];
+                $order_product->return_qty = $order_product->return_qty != null ? $order_product->return_qty + $request->qty[$i] : $request->qty[$i];
+                $order_product->save();
+
+                // adjust the stock value
                 $stock = ProductStock::where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
                 $stock->qty += $request->qty[$i];
                 $stock->save();
-
             }
         }
+
         if ($change > 0) {
             $order = Order::find($request->order_id);
-            $order->is_return = 1;
+            $order->price = $order->price - $returned_price;
+
+            if ($order->price > 0) {
+                $order->is_return = 2;
+            } else {
+                $order->is_return = 1;
+            }
             $order->save();
+
             Alert::toast('Return invoice created.', 'success');
             return back();
-        }
-        else {
+        } else {
             Alert::toast('Incorrect inputs, order return failed.', 'error');
             return back();
         }
@@ -119,8 +128,7 @@ class OrderReturnController extends Controller
      * @param  \App\Models\OrderReturn  $orderReturn
      * @return \Illuminate\Http\Response
      */
-    public function show(OrderReturn $orderReturn)
-    {
+    public function show(OrderReturn $orderReturn) {
         //
     }
 
@@ -130,8 +138,7 @@ class OrderReturnController extends Controller
      * @param  \App\Models\OrderReturn  $orderReturn
      * @return \Illuminate\Http\Response
      */
-    public function edit(OrderReturn $orderReturn)
-    {
+    public function edit(OrderReturn $orderReturn) {
         //
     }
 
@@ -142,8 +149,7 @@ class OrderReturnController extends Controller
      * @param  \App\Models\OrderReturn  $orderReturn
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, OrderReturn $orderReturn)
-    {
+    public function update(Request $request, OrderReturn $orderReturn) {
         //
     }
 
@@ -153,8 +159,7 @@ class OrderReturnController extends Controller
      * @param  \App\Models\OrderReturn  $orderReturn
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrderReturn $orderReturn)
-    {
+    public function destroy(OrderReturn $orderReturn) {
         //
     }
 }

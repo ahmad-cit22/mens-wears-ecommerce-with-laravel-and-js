@@ -76,18 +76,11 @@ class OrderController extends Controller {
                         return $code;
                     })
                     ->addColumn('status', function ($row) {
-                        $return_price = 0;
-                        $returned_products = OrderReturn::where('order_id', $row->id);
-                        foreach ($returned_products->get() as $key => $return_product) {
-                            $return_price += $return_product->price * $return_product->qty;
-                        }
 
-                        if ($row->is_return) {
-                            if ($row->price == $return_price) {
-                                $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
-                            } else {
-                                $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned Partially</span>';
-                            }
+                        if ($row->is_return == 1) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned</span>';
+                        } elseif ($row->is_return == 2) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned Partially</span>';
                         } else {
                             $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
                         }
@@ -134,7 +127,13 @@ class OrderController extends Controller {
                     })
                     ->addColumn('status', function ($row) {
 
-                        $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        if ($row->is_return == 1) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned</span>';
+                        } elseif ($row->is_return == 2) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned Partially</span>';
+                        } else {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        }
 
                         return $data;
                     })
@@ -183,7 +182,7 @@ class OrderController extends Controller {
 
     public function current_month() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
+            $orders = Order::orderBy('id', 'DESC')->whereMonth('created_at', Carbon::now()->month)->get();
             return view('admin.order.current-month', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -336,8 +335,10 @@ class OrderController extends Controller {
                     })
                     ->addColumn('status', function ($row) {
 
-                        if ($row->is_return) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                        if ($row->is_return == 1) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned</span>';
+                        } elseif ($row->is_return == 2) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned Partially</span>';
                         } else {
                             $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
                         }
@@ -419,8 +420,10 @@ class OrderController extends Controller {
                     })
                     ->addColumn('status', function ($row) {
 
-                        if ($row->is_return) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                        if ($row->is_return == 1) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned</span>';
+                        } elseif ($row->is_return == 2) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned Partially</span>';
                         } else {
                             $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
                         }
