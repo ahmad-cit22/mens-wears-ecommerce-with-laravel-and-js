@@ -323,7 +323,7 @@ class OrderController extends Controller {
                 $orders = $orders->where('district_id', $request->district_id);
             }
 
-            $orders = $orders->where('is_final', 1);
+            $orders = $orders->where('is_final', 1)->where('source', '!=', 'Wholesale');
 
             if ($request->ajax()) {
                 return Datatables::of($orders)
@@ -364,6 +364,89 @@ class OrderController extends Controller {
             }
             $categories = Category::all();
             return view('admin.order.sell.index', compact('orders', 'categories'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function wholesale_search(Request $request) {
+        if (auth()->user()->can('order.index')) {
+            if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+
+                $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+            }
+            if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
+
+                $order_status_id = $request->order_status_id;
+
+                $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+            }
+            if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+            }
+            if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
+                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+            }
+
+            // 2nd step filter
+            $district_id = $request->district_id;
+
+            if (!empty($request->district_id) && !empty($request->area_id)) {
+
+                $orders = $orders->where('district_id', $request->district_id)->where('area_id', $request->area_id);
+            }
+            if (!empty($request->district_id) && empty($request->area_id)) {
+                $orders = $orders->where('district_id', $request->district_id);
+            }
+
+            $orders = $orders->where('is_final', 1);
+
+            if ($request->ajax()) {
+                return Datatables::of($orders)
+                    // ->addIndexColumn()
+                    ->addColumn('code', function ($row) {
+
+                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+
+                        return $code;
+                    })
+                    ->addColumn('status', function ($row) {
+
+                        if ($row->is_return) {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <span class="badge badge-danger">Returned</span>';
+                        } else {
+                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+                        }
+
+                        return $data;
+                    })
+                    ->addColumn('date', function ($row) {
+
+                        $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
+
+                        return $data;
+                    })
+                    ->addColumn('action', function ($row) {
+
+                        $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
+                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
+                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
+
+                        return $btn;
+                    })
+                    ->rawColumns(['code', 'status', 'date', 'action'])
+                    ->make(true);
+            }
+            $categories = Category::all();
+            return view('admin.order.sell.wholesale', compact('orders', 'categories'));
         } else {
             abort(403, 'Unauthorized action.');
         }

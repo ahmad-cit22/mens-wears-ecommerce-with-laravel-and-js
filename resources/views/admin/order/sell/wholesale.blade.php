@@ -82,7 +82,7 @@
                         @endforeach
                     </div>
                     <hr>
-                    {{-- <form action="{{ route('sell.search') }}" method="get">
+                    <form action="{{ route('sell.wholesale.search') }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -163,7 +163,7 @@
                                 </div>
                             </div>
                         </div>
-                    </form> --}}
+                    </form>
                 </div>
 
                 <!-- /.card-header -->

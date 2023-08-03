@@ -240,6 +240,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/', [App\Http\Controllers\OrderController::class, 'sell_index'])->name('index');
 		Route::get('/wholesale', [App\Http\Controllers\OrderController::class, 'wholesale_index'])->name('wholesale.index');
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'sell_search'])->name('search');
+		Route::get('/wholesale-search', [App\Http\Controllers\OrderController::class, 'wholesale_search'])->name('wholesale.search');
 	});
 
 	// Sell Return Routes
