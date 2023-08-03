@@ -21,25 +21,38 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h4>Total Orders : {{ count($orders) }} (From POS : {{ count($orders->where('source', 'Offline')) }}, From Website : {{ count($orders->where('source', 'Website')) }}, Wholesale : {{ count($orders->where('source', 'Wholesale')) }})</h4>
-                    <h4 class="mt-3">Total Orders Confirmed : {{ count($orders->where('is_final', 1)->where('order_status_id', '!=', 5)) }} (From POS : {{ count($orders->where('source', 'Offline')->where('is_final', 1)->where('order_status_id', '!=', 5)) }}, From Website : {{ count($orders->where('source', 'Website')->where('is_final', 1)->where('order_status_id', '!=', 5)) }}, Wholesale : {{ count($orders->where('source', 'Wholesale')->where('is_final', 1)->where('order_status_id', '!=', 5)) }})
-                    </h4>
-                    <h4>Confirmed Orders Amount :
-                        {{ $orders->where('is_final', 1)->filter(function ($order) {
-                                return $order->order_status_id != 5;
-                            })->sum('price') }}
-                    </h4>
-                    <h5 class="text-" style="color: #e97900">Total Orders Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} (Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</h5>
+                    {{-- Total Orders --}}
+                    <h4>Total Orders : {{ count($orders) }} <span style="font-size: 22px">(From POS : {{ count($orders->where('source', 'Offline')) }}, From Website : {{ count($orders->where('source', 'Website')) }}, Wholesale : {{ count($orders->where('source', 'Wholesale')) }})</span></h4>
 
-                    <h4 class="mt-3">Orders Not Confirmed : {{ count($orders->where('is_final', 0)->where('order_status_id', '!=', 5)) }} (From POS : {{ count($orders->where('source', 'Offline')->where('is_final', 0)->where('order_status_id', '!=', 5)) }}, From Website : {{ count($orders->where('source', 'Website')->where('is_final', 0)->where('order_status_id', '!=', 5)) }}, Wholesale :
-                        {{ count($orders->where('source', 'Wholesale')->where('is_final', 0)->where('order_status_id', '!=', 5)) }})
+                    {{-- Total Orders Confirmed --}}
+                    <h4 class="mt-4">Total Orders Confirmed : {{ count($orders->where('is_final', 1)->where('order_status_id', '!=', 5)) }} <span style="font-size: 22px">(From POS : {{ count($orders->where('source', 'Offline')->where('is_final', 1)->where('order_status_id', '!=', 5)) }}, From Website : {{ count($orders->where('source', 'Website')->where('is_final', 1)->where('order_status_id', '!=', 5)) }}, Wholesale :
+                            {{ count($orders->where('source', 'Wholesale')->where('is_final', 1)->where('order_status_id', '!=', 5)) }})</span>
                     </h4>
+
+                    {{-- Confirmed Orders Amount --}}
+                    <h4>Confirmed Orders Amount :
+                        {{ $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }} TK <span style="font-size: 22px">(From POS : {{ $orders->where('source', 'Offline')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }} TK, From Website : {{ $orders->where('source', 'Website')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }} TK, Wholesale :
+                            {{ $orders->where('source', 'Wholesale')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }}
+                            TK)</span>
+                    </h4>
+
+                    {{-- Total Orders Returned --}}
+                    <h5 class="text-" style="color: #e97900">Total Orders Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} <span style="font-size: 18px">(Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</span></h5>
+
+                    {{-- Orders Not Confirmed --}}
+                    <h4 class="mt-4">Orders Not Confirmed : {{ count($orders->where('is_final', 0)->where('order_status_id', '!=', 5)) }} <span style="font-size: 22px">(From POS : {{ count($orders->where('source', 'Offline')->where('is_final', 0)->where('order_status_id', '!=', 5)) }}, From Website : {{ count($orders->where('source', 'Website')->where('is_final', 0)->where('order_status_id', '!=', 5)) }}, Wholesale :
+                            {{ count($orders->where('source', 'Wholesale')->where('is_final', 0)->where('order_status_id', '!=', 5)) }})</span>
+                    </h4>
+
+                    {{-- Not Confirmed Orders Amount --}}
                     <h4>Not Confirmed Orders Amount :
-                        {{ $orders->where('is_final', 0)->filter(function ($order) {
-                                return $order->order_status_id != 5;
-                            })->sum('price') }}
+                        {{ $orders->where('is_final', 0)->where('order_status_id', '!=', 5)->sum('price') }} TK <span style="font-size: 22px">(From POS : {{ $orders->where('source', 'Offline')->where('is_final', 0)->where('order_status_id', '!=', 5)->sum('price') }} TK, From Website : {{ $orders->where('source', 'Website')->where('is_final', 0)->where('order_status_id', '!=', 5)->sum('price') }} TK, Wholesale :
+                            {{ $orders->where('source', 'Wholesale')->where('is_final', 0)->where('order_status_id', '!=', 5)->sum('price') }}
+                            TK)</span>
                     </h4>
-                    <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
+
+                    {{-- Total Orders Cancelled --}}
+                    <h5 class="text-danger mt-4">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">
