@@ -313,7 +313,7 @@
                                         </div>
                                         <div class="">
                                             <label class="text-dark d-flex">Courier Name</label>
-                                            <input type="text" name="courier_name" class="form-control" placeholder="Enter Courier Name">
+                                            <input type="text" name="courier_name" class="form-control" placeholder="Enter Courier Name" required>
                                         </div>
                                     </div>
                                     <div class="mt-4">
