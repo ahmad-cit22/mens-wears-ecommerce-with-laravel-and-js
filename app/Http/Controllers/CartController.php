@@ -169,18 +169,27 @@ class CartController extends Controller {
 
     public function checkout() {
         $carts = Cart::content();
-        $customer = User::find(Auth::user()->id);
+        if (Auth::user() != null) {
+            $customer = User::find(Auth::user()->id);
 
-        if ($customer->is_active) {
+            if ($customer->is_active) {
+                if (count($carts) > 0) {
+                    $districts = District::orderBy('name', 'ASC')->get();
+                    return view('pages.checkout', compact('carts', 'districts'));
+                } else {
+                    return redirect()->route('products');
+                }
+            } else {
+                Alert::toast('Sorry! Your customer status is deactivated right now. Kindly contact with us to get activated.', 'error');
+                return redirect()->route('contact');
+            }
+        } else {
             if (count($carts) > 0) {
                 $districts = District::orderBy('name', 'ASC')->get();
                 return view('pages.checkout', compact('carts', 'districts'));
             } else {
                 return redirect()->route('products');
             }
-        } else {
-            Alert::toast('Sorry! Your customer status is deactivated right now. Kindly contact with us to get activated.', 'error');
-            return redirect()->route('contact');
         }
     }
 }
