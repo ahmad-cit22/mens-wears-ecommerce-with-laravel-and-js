@@ -180,6 +180,7 @@
                                 <th>Status</th>
                                 <th width="20%">Note</th>
                                 <th>Source</th>
+                                <th>COD</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -260,6 +261,9 @@
                     },
                     {
                         data: 'source'
+                    },
+                    {
+                        data: 'cod'
                     },
                     {
                         data: 'date'

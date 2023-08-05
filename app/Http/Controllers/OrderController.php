@@ -87,6 +87,12 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('cod', function ($row) {
+
+                        $data = $row->cod;
+
+                        return env('CURRENCY') . $data;
+                    })
                     ->addColumn('date', function ($row) {
 
                         $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
@@ -136,6 +142,12 @@ class OrderController extends Controller {
                         }
 
                         return $data;
+                    })
+                    ->addColumn('cod', function ($row) {
+
+                        $data = $row->cod;
+
+                        return env('CURRENCY') . $data;
                     })
                     ->addColumn('date', function ($row) {
 
@@ -747,13 +759,15 @@ class OrderController extends Controller {
         if (!is_null($order)) {
             if ($request->submit == 'apply') {
                 $order->cod = $cod;
+                $order->price -= $cod;
                 $order->save();
                 Alert::toast('COD applied successfully', 'success');
                 return back();
             } else {
+                $order->price += $order->cod;
                 $order->cod = 0;
                 $order->save();
-                Alert::toast('COD remove successfully', 'success');
+                Alert::toast('COD removed successfully', 'success');
                 return back();
             }
         } else {
