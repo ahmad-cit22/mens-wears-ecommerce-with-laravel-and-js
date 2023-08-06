@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                </div> -->
 
 
                     <!-- Main content -->
@@ -194,11 +194,11 @@
                                                 <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" align="right">Discount:</td>
+                                                <td colspan="4" align="right">Discount (-):</td>
                                                 <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" align="right">COD:</td>
+                                                <td colspan="4" align="right">COD (-):</td>
                                                 <td>{{ env('CURRENCY') }}{{ $order->cod == null ? 0 : $order->cod }}</td>
                                             </tr>
                                             @if ($order->wallet_amount != null)
@@ -209,17 +209,17 @@
                                             @endif
                                             <tr>
                                                 <td colspan="4" align="right">Total:</td>
-                                                <td>{{ env('CURRENCY') }}{{ $order->price + $order->delivery_charge - $order->wallet_amount }}</td>
+                                                <td>{{ env('CURRENCY') }}{{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}</td>
                                             </tr>
                                             @if ($order->advance)
                                                 <tr>
-                                                    <td colspan="4" align="right">Advanced:</td>
+                                                    <td colspan="4" align="right">Advanced (-):</td>
                                                     <td>{{ env('CURRENCY') }}{{ $order->advance }}</td>
                                                 </tr>
                                             @endif
                                             <tr>
                                                 <td colspan="4" align="right">Total Payable:</td>
-                                                <td>{{ env('CURRENCY') }}{{ $order->price + $order->delivery_charge - $order->wallet_amount - $order->advance }}</td>
+                                                <td>{{ env('CURRENCY') }}{{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -232,11 +232,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                        <div class="col-12">
-                                                                                                                                                                                          
-                                                                                                                                                                                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                        </div>
-                                                                                                                                                                                      </div> -->
+                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                      
+                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                  </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->

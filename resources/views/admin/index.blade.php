@@ -31,9 +31,13 @@
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>
-                                    {{ $orders->filter(function ($order) {
-                                            return $order->order_status_id != 5;
-                                        })->sum('price') }}
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5;
+                                                })->sum('price'),
+                                        ) }}
                                 </h3>
 
                                 <p>Total Accumulated Sales </p>
@@ -50,9 +54,13 @@
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>
-                                    {{ $yearly_orders->filter(function ($order) {
-                                            return $order->order_status_id != 5;
-                                        })->sum('price') }}
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                        $yearly_orders->filter(function ($order) {
+                                                return $order->order_status_id != 5;
+                                            })->sum('price'),
+                                    ) }}
                                 </h3>
 
                                 <p>Current Year Sales</p>
@@ -70,9 +78,13 @@
                         <div class="small-box bg-secondary">
                             <div class="inner">
                                 <h3>
-                                    {{ $monthly_orders->filter(function ($order) {
-                                            return $order->order_status_id != 5;
-                                        })->sum('price') }}
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                        $monthly_orders->filter(function ($order) {
+                                                return $order->order_status_id != 5;
+                                            })->sum('price'),
+                                    ) }}
                                 </h3>
 
                                 <p>Current Month Sales</p>
@@ -89,9 +101,13 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>
-                                    {{ $daily_orders->filter(function ($order) {
-                                            return $order->order_status_id != 5;
-                                        })->sum('price') }}
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                        $daily_orders->filter(function ($order) {
+                                                return $order->order_status_id != 5;
+                                            })->sum('price'),
+                                    ) }}
                                 </h3>
 
                                 <p>Today's Sales</p>

@@ -758,7 +758,7 @@ class OrderController extends Controller {
 
         if (!is_null($order)) {
             if ($request->submit == 'apply') {
-                $order->cod = $cod;
+                $order->cod = $order->cod ? $order->cod + $cod : $cod;
                 $order->price -= $cod;
                 $order->save();
                 Alert::toast('COD applied successfully', 'success');

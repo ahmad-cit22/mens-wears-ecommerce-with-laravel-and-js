@@ -80,7 +80,7 @@
                   <tbody>
                     <tr>
                       <td>Sells</td>
-                      <td>{{ env('CURRENCY') }}{{ round($order_amount, 2) }}</td>
+                      <td>{{ env('CURRENCY') }}{{ round($order_amount) }}</td>
                       <td></td>
                     </tr>
                     <tr>
@@ -91,7 +91,7 @@
                     <tr>
                       <th>Gross Profit</th>
                       <th></th>
-                      <th>{{ env('CURRENCY') }}{{ round($order_amount - $production_cost, 2) }}</th>
+                      <th>{{ env('CURRENCY') }}{{ round($order_amount - $production_cost) }}</th>
                     </tr>
                     <tr>
                       <th>Others Income</th>
@@ -101,7 +101,7 @@
                     <tr>
                       <th>Total Profit</th>
                       <th></th>
-                      <th>{{ env('CURRENCY') }}{{ round($other_income->sum('credit') + $order_amount - $production_cost, 2) }}</th>
+                      <th>{{ env('CURRENCY') }}{{ round($other_income->sum('credit') + $order_amount - $production_cost) }}</th>
                     </tr>
                     <tr>
                       <th colspan="3">EXPENSE</th>
@@ -121,7 +121,7 @@
                     <tr>
                       <th>Net {{ ($other_income->sum('credit') + $order_amount - $production_cost - $expenses->sum('amount')) >= 0? 'Profit': 'Loss' }}</th>
                       <th></th>
-                      <th><span class="text-{{ ($other_income->sum('credit') + $order_amount - $production_cost - $expenses->sum('amount')) >= 0? 'success': 'danger' }}">{{ env('CURRENCY') }}{{ round($other_income->sum('credit') + $order_amount - $production_cost - $expenses->sum('amount'),2) }}</span></th>
+                      <th><span class="text-{{ ($other_income->sum('credit') + $order_amount - $production_cost - $expenses->sum('amount')) >= 0? 'success': 'danger' }}">{{ env('CURRENCY') }}{{ round($other_income->sum('credit') + $order_amount - $production_cost - $expenses->sum('amount')) }}</span></th>
                     </tr>
                   </tbody>
                   <tfoot>
