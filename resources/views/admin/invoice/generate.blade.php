@@ -19,6 +19,10 @@
             font-size: 13px;
         }
 
+        .contactDetails {
+            font-size: 15px;
+        }
+
         .customar_info {
             width: 100%;
         }
@@ -55,8 +59,8 @@
             <table style="border: 0px;">
                 <tr>
                     <td style="border: 0px"><img src="{{ asset('images/website/' . $business->footer_logo) }}" class="center"></td>
-                    <td width="35%" style="border: 0px; text-align: right">
-                        <p> Contact No.: {{ $business->phone }}<br>
+                    <td width="35%" style="border: 0px; text-align: right; font-size: 2px !important;">
+                        <p class="contactDetails"> Contact No.: {{ $business->phone }}<br>
                             Address: {{ $business->address }}
                         </p>
                     </td>
