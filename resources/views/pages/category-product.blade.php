@@ -1,7 +1,7 @@
 @extends('pages.layouts.master')
 
 @section('title')
-    {{ $category->meta_title . ' | ' . $settings->name }}
+    {{ $category->meta_title ? $category->meta_title . ' | ' . $settings->name : $category->title . ' | ' . $settings->name }}
 @endsection
 
 @section('meta_description')
@@ -48,8 +48,8 @@
                         <ul>
                             {{ $products->links('pagination::bootstrap-4') }}
                             <!-- <li><a class="active" href="#">1</a></li>
-                                                                <li><a href="#">2</a></li>
-                                                                <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
+                                                                        <li><a href="#">2</a></li>
+                                                                        <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
                         </ul>
                     </div>
                 </div>
