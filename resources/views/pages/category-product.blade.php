@@ -1,11 +1,15 @@
 @extends('pages.layouts.master')
 
 @section('title')
-    {{ $category->title . ' | ' . $settings->name }}
+    {{ $category->meta_title . ' | ' . $settings->name }}
 @endsection
 
 @section('meta_description')
     <meta name="description" content="{{ $category->meta_description }}">
+@endsection
+
+@section('meta_keywords')
+    <meta name="keywords" content="{{ $category->meta_keywords }}">
 @endsection
 
 @section('content')
@@ -44,8 +48,8 @@
                         <ul>
                             {{ $products->links('pagination::bootstrap-4') }}
                             <!-- <li><a class="active" href="#">1</a></li>
-                                                    <li><a href="#">2</a></li>
-                                                    <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
+                                                                <li><a href="#">2</a></li>
+                                                                <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
                         </ul>
                     </div>
                 </div>

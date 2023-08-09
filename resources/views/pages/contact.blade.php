@@ -12,6 +12,10 @@
     <meta name="description" content="{{ $page->meta_description }}">
 @endsection
 
+@section('meta_keywords')
+    <meta name="keywords" content="{{ $page->meta_keywords }}">
+@endsection
+
 @section('content')
     <div class="breadcrumb-area section-padding-1 breadcrumb-bg-4" style="padding: 100px 0">
         <div class="container-fluid">

@@ -8,6 +8,10 @@
     <meta name="description" content="{{ $page->meta_description }}">
 @endsection
 
+@section('meta_keywords')
+    <meta name="keywords" content="{{ $page->meta_keywords }}">
+@endsection
+
 @section('content')
     <div class="breadcrumb-area section-padding-1 breadcrumb-bg-4" style="padding: 100px 0">
         <div class="container-fluid">
@@ -29,50 +33,50 @@
         <div class="container">
             <div class="row">
                 <!-- <div class="col-lg-6">
-                                                            <div class="skill-img default-overlay">
-                                                                <img src="{{ asset('images/banner/about-01.jpg') }}" alt="banner">
+                                                                <div class="skill-img default-overlay">
+                                                                    <img src="{{ asset('images/banner/about-01.jpg') }}" alt="banner">
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <div class="skill-content">
-                                                                <h2>Fashion Luxury</h2>
-                                                                <p>Donec accumsan auctor iaculis. Sed suscipit arcu ligula, at egestas magna molestie a. Proin ac ex maximus, ultrices justo eget, sodal</p>
-                                                                <div class="skill-bar">
-                                                                    <div class="skill-bar-item">
-                                                                        <span>WEB DEVELOPMENT </span>
-                                                                        <div class="progress">
-                                                                            <div class="progress-bar wow fadeInLeft" data-progress="95%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                <span class="text-top">95%</span>
+                                                            <div class="col-lg-6">
+                                                                <div class="skill-content">
+                                                                    <h2>Fashion Luxury</h2>
+                                                                    <p>Donec accumsan auctor iaculis. Sed suscipit arcu ligula, at egestas magna molestie a. Proin ac ex maximus, ultrices justo eget, sodal</p>
+                                                                    <div class="skill-bar">
+                                                                        <div class="skill-bar-item">
+                                                                            <span>WEB DEVELOPMENT </span>
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar wow fadeInLeft" data-progress="95%" data-wow-duration="1.5s" data-wow-delay="1.2s">
+                                                                                    <span class="text-top">95%</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="skill-bar-item">
-                                                                        <span>DESIGN FOR SEO </span>
-                                                                        <div class="progress">
-                                                                            <div class="progress-bar wow fadeInLeft" data-progress="85%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                <span class="text-top">85%</span>
+                                                                        <div class="skill-bar-item">
+                                                                            <span>DESIGN FOR SEO </span>
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar wow fadeInLeft" data-progress="85%" data-wow-duration="1.5s" data-wow-delay="1.2s">
+                                                                                    <span class="text-top">85%</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="skill-bar-item">
-                                                                        <span>DEDICATED SUPPORT</span>
-                                                                        <div class="progress">
-                                                                            <div class="progress-bar wow fadeInLeft" data-progress="80%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                <span class="text-top">90%</span>
+                                                                        <div class="skill-bar-item">
+                                                                            <span>DEDICATED SUPPORT</span>
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar wow fadeInLeft" data-progress="80%" data-wow-duration="1.5s" data-wow-delay="1.2s">
+                                                                                    <span class="text-top">90%</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="skill-bar-item">
-                                                                        <span>POWERFUL ADMIN INFERFACE</span>
-                                                                        <div class="progress">
-                                                                            <div class="progress-bar wow fadeInLeft" data-progress="99%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                <span class="text-top">90%</span>
+                                                                        <div class="skill-bar-item">
+                                                                            <span>POWERFUL ADMIN INFERFACE</span>
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar wow fadeInLeft" data-progress="99%" data-wow-duration="1.5s" data-wow-delay="1.2s">
+                                                                                    <span class="text-top">90%</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div> -->
+                                                            </div> -->
                 <div class="col-lg-12 px-3">
                     <h3>ABOUT US</h3>
                     <p style="text-align: justify">

@@ -4,8 +4,16 @@
     $business = App\Models\Setting::find(1);
 @endphp
 
+@section('title')
+    {{ $page->name . ' | ' . $settings->name }}
+@endsection
+
 @section('meta_description')
     <meta name="description" content="{{ $page->meta_description }}">
+@endsection
+
+@section('meta_keywords')
+    <meta name="keywords" content="{{ $page->meta_keywords }}">
 @endsection
 
 @section('style')
@@ -25,8 +33,8 @@
         }
 
         /* .featured_category_img {
-                                                height: 26vw;
-                                            } */
+                                                    height: 26vw;
+                                                } */
 
         @media only screen and (max-width: 767px) {
             /*        .header-small-mobile {*/
@@ -34,8 +42,8 @@
             /*}*/
 
             /* .featured_category_img {
-                                                    height: 36vw;
-                                                } */
+                                                        height: 36vw;
+                                                    } */
 
             .slider-area {
                 height: 60vw;

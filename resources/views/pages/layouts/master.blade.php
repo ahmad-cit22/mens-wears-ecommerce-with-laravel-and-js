@@ -33,6 +33,7 @@
     <title>@yield('title', $settings->name)</title>
     <meta name="robots" content="noindex, follow" />
     @yield('meta_description')
+    @yield('meta_keywords')
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/website/' . $business->favicon) }}">

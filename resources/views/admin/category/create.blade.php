@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">create-category</li>
+                        <li class="breadcrumb-item active">Create Category</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -90,9 +90,31 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
+                                    <label>Meta Title</label>
+                                    <input type="text" name="meta_title" class="form-control @error('meta_title') is-invalid @enderror" placeholder="Add Meta Title Here">
+                                    @error('meta_title')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
                                     <label>Meta Description</label>
                                     <textarea name="meta_description" class="form-control @error('meta_description') is-invalid @enderror" placeholder="Add Meta Description Here" rows="5"></textarea>
                                     @error('meta_description')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Meta keywords</label>
+                                    <input type="text" name="meta_keywords" class="form-control @error('meta_keywords') is-invalid @enderror" placeholder="Add Meta Keywords Here">
+                                    @error('meta_keywords')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

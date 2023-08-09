@@ -33,10 +33,10 @@
                 </div>
                 <!-- @if ($page->id == 2 || $page->id == 3 || $page->id == 7 || $page->id == 8)
     <div class="form-group">
-                                        <label><b>Image (1500x360 px)*</b></label>
-                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
-                                        <img src="{{ asset('web-images/' . $page->image) }}" width="100">
-                                       </div>
+                                                <label><b>Image (1500x360 px)*</b></label>
+                                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
+                                                <img src="{{ asset('web-images/' . $page->image) }}" width="100">
+                                               </div>
     @endif -->
                 <div class="form-group">
                     <label><b>Description *</b></label>
@@ -60,39 +60,48 @@
                 </div>
                 @if ($page->id == 1)
                     <!-- <div class="form-group">
-                                        <label><b>Description 1 *</b></label>
-                                        <textarea class="summernote form-control @error('description1') is-invalid @enderror" name="description1">
+                                                <label><b>Description 1 *</b></label>
+                                                <textarea class="summernote form-control @error('description1') is-invalid @enderror" name="description1">
 					{{ $page->description1 }}
 				</textarea>
-                                        @error('description1')
+                                                @error('description1')
         <span class="invalid-feedback" role="alert">
-                                                                                                <strong>{{ $message }}</strong>
-                                                                                            </span>
+                                                                                                                <strong>{{ $message }}</strong>
+                                                                                                            </span>
     @enderror
-                                       </div>
-                                       <div class="form-group">
-                                        <label><b>Description 2 *</b></label>
-                                        <textarea class="summernote form-control @error('description2') is-invalid @enderror" name="description2">
+                                               </div>
+                                               <div class="form-group">
+                                                <label><b>Description 2 *</b></label>
+                                                <textarea class="summernote form-control @error('description2') is-invalid @enderror" name="description2">
 					{{ $page->description2 }}
 				</textarea>
-                                        @error('description2')
+                                                @error('description2')
         <span class="invalid-feedback" role="alert">
-                                                                                                <strong>{{ $message }}</strong>
-                                                                                            </span>
+                                                                                                                <strong>{{ $message }}</strong>
+                                                                                                            </span>
     @enderror
-                                       </div>
-                                       <div class="form-group">
-                                        <label><b>Description 3 *</b></label>
-                                        <textarea class="summernote form-control @error('description3') is-invalid @enderror" name="description3">
+                                               </div>
+                                               <div class="form-group">
+                                                <label><b>Description 3 *</b></label>
+                                                <textarea class="summernote form-control @error('description3') is-invalid @enderror" name="description3">
 					{{ $page->description3 }}
 				</textarea>
-                                        @error('description3')
+                                                @error('description3')
         <span class="invalid-feedback" role="alert">
-                                                                                                <strong>{{ $message }}</strong>
-                                                                                            </span>
+                                                                                                                <strong>{{ $message }}</strong>
+                                                                                                            </span>
     @enderror
-                                       </div> -->
+                                               </div> -->
                 @endif
+                <div class="form-group">
+                    <label><b>Meta keywords</b></label>
+                    <input type="text" name="meta_keywords" class="form-control @error('meta_keywords') is-invalid @enderror" value="{{ $page->meta_keywords }}" placeholder="Add Meta Keywords Here">
+                    @error('meta_keywords')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Update</button>
                 </div>

@@ -56,7 +56,9 @@ class CategoryController extends Controller {
             //dd($request->all());
             $category = new Category;
             $category->title = $request->title;
+            $category->meta_title = $request->meta_title;
             $category->meta_description = $request->meta_description;
+            $category->meta_keywords = $request->meta_keywords;
             if ($request->position != NULL) {
                 $category->position = $request->position;
             }
@@ -148,7 +150,9 @@ class CategoryController extends Controller {
                 $category->title = $request->title;
                 $category->position = $request->position;
                 $category->is_active = $request->status;
+                $category->meta_title = $request->meta_title;
                 $category->meta_description = $request->meta_description;
+                $category->meta_keywords = $request->meta_keywords;
 
                 if ($request->has('parent_id')) {
                     $category->parent_id = $request->parent_id;

@@ -87,7 +87,7 @@ class AdminPageController extends Controller {
             $page->description = $request->description;
             $page->meta_description = $request->meta_description;
             $page->description2 = $request->description2;
-            //$page->description3 = $request->description3;
+            $page->meta_keywords = $request->meta_keywords;
 
             // image save
             if ($request->image) {

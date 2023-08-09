@@ -35,7 +35,6 @@
                                 <th>Parent Category</th>
                                 <th>Position</th>
                                 <th>Image</th>
-                                <th>Meta Description</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -48,7 +47,6 @@
                                     <td>{{ !is_null($category->parent) ? $category->parent->title : '' }}</td>
                                     <td>{{ $category->position }}</td>
                                     <td><img src="{{ asset('images/category/' . $category->image) }}" width="100"></td>
-                                    <td>{{ $category->meta_description }}</td>
                                     <td>{{ $category->is_active ? 'Active' : 'Inactive' }}</td>
                                     <td>
                                         @can('category.edit')

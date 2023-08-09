@@ -8,6 +8,10 @@
     <meta name="description" content="{{ $page->meta_description }}">
 @endsection
 
+@section('meta_keywords')
+    <meta name="keywords" content="{{ $page->meta_keywords }}">
+@endsection
+
 @section('content')
     <div class="shop-area section-padding-3 pt-70 pb-100">
         <div class="container-fluid">
