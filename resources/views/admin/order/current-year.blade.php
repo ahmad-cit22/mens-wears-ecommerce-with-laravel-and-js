@@ -32,8 +32,9 @@
 
                     {{-- Confirmed Orders Amount --}}
                     <h4>Confirmed Orders Amount :
-                        {{ $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }} TK <span style="font-size: 22px">(From POS : {{ $orders->where('source', 'Offline')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }} TK, From Website : {{ $orders->where('source', 'Website')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }} TK, Wholesale :
-                            {{ $orders->where('source', 'Wholesale')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price') }}
+                        {{ round($orders->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price')) }} TK
+                        <span style="font-size: 22px">(From POS : {{ round($orders->where('source', 'Offline')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price')) }} TK, From Website : {{ round($orders->where('source', 'Website')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price')) }} TK, Wholesale :
+                            {{ round($orders->where('source', 'Wholesale')->where('is_final', 1)->where('order_status_id', '!=', 5)->sum('price')) }}
                             TK)</span>
                     </h4>
 

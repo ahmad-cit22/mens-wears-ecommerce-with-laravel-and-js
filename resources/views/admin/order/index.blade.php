@@ -23,9 +23,11 @@
                 <div class="card-header">
                     <h4>Total Orders From Website : {{ count($orders->where('source', 'Website')) }}</h4>
                     <h4>Total Ordered Amount :
-                        {{ $orders->filter(function ($order) {
-                                return $order->order_status_id != 5;
-                            })->sum('price') }}
+                        {{ round(
+                            $orders->filter(function ($order) {
+                                    return $order->order_status_id != 5;
+                                })->sum('price'),
+                        ) }} TK
                     </h4>
                     <hr>
                     <form action="{{ route('order.search') }}" method="get">
