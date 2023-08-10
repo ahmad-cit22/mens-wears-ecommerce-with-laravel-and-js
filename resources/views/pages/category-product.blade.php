@@ -47,9 +47,6 @@
                     <div class="pro-pagination-style text-center">
                         <ul>
                             {{ $products->links('pagination::bootstrap-4') }}
-                            <!-- <li><a class="active" href="#">1</a></li>
-                                                                        <li><a href="#">2</a></li>
-                                                                        <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
                         </ul>
                     </div>
                 </div>
