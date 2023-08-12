@@ -115,7 +115,7 @@ class OrderReturnController extends Controller {
             $order->save();
 
             Alert::toast('Return invoice created.', 'success');
-            return back();
+            return redirect()->route('order.edit', $order->id);
         } else {
             Alert::toast('Incorrect inputs, order return failed.', 'error');
             return back();

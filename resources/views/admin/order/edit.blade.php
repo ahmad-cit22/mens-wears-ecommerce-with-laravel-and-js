@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                    </div> -->
 
 
                     <!-- Main content -->
@@ -146,8 +146,15 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <div class="row justify-content-start">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -232,11 +239,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                      
-                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                        <div class="col-12">
+                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                      </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
@@ -260,6 +267,67 @@
                         @csrf
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button class="btn btn-primary bg-purple" type="submit"><i class="fas fa-check"></i> Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- add loss Modal -->
+    <div class="modal fade" id="add-loss" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add Loss</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('expenseentry.loss.store') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Bank*</label>
+                                    <select class="form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
+                                        <option value="">Please select relevant bank</option>
+                                        @foreach (App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
+                                            <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bank_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Amount*</label>
+                                    <input type="text" name="amount" class="form-control @error('amount') is-invalid @enderror" required>
+                                    @error('amount')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Note</label>
+                                    <input type="text" name="note" class="form-control @error('note') is-invalid @enderror">
+                                    @error('note')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </form>
                 </div>
             </div>

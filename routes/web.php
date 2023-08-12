@@ -348,6 +348,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/', [App\Http\Controllers\ExpenseEntryController::class, 'index'])->name('index');
 		Route::get('/search', [App\Http\Controllers\ExpenseEntryController::class, 'search'])->name('search');
 		Route::post('/stote', [App\Http\Controllers\ExpenseEntryController::class, 'store'])->name('store');
+		Route::post('/loss-store', [App\Http\Controllers\ExpenseEntryController::class, 'loss_store'])->name('loss.store');
 	});
 
 	// Bank Routes
