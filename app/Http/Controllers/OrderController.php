@@ -23,6 +23,9 @@ class OrderController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 0)->get();
             if ($request->ajax()) {
@@ -57,13 +60,16 @@ class OrderController extends Controller {
                     ->rawColumns(['code', 'status', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.order.index', compact('orders'));
+            return view('admin.order.index', compact('orders', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
     public function sell_index(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
             if ($request->ajax()) {
@@ -113,13 +119,16 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.index', compact('orders', 'categories'));
+            return view('admin.order.sell.index', compact('orders', 'categories', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
     public function wholesale_index(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('order.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
             if ($request->ajax()) {
@@ -169,7 +178,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.wholesale', compact('orders', 'categories'));
+            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -223,6 +232,9 @@ class OrderController extends Controller {
     }
 
     public function search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
@@ -231,6 +243,9 @@ class OrderController extends Controller {
 
                 $orders = Order::where('order_status_id', $order_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             }
             if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
 
@@ -243,6 +258,9 @@ class OrderController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
                 $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
                 $orders = Order::orderBy('id', 'DESC')->get();
@@ -292,13 +310,16 @@ class OrderController extends Controller {
                     ->rawColumns(['code', 'status', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.order.index', compact('orders'));
+            return view('admin.order.index', compact('orders', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
     public function sell_search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
@@ -307,6 +328,9 @@ class OrderController extends Controller {
 
                 $orders = Order::where('order_status_id', $order_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             }
             if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
 
@@ -319,6 +343,9 @@ class OrderController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
                 $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
                 $orders = Order::orderBy('id', 'DESC')->get();
@@ -377,13 +404,16 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.index', compact('orders', 'categories'));
+            return view('admin.order.sell.index', compact('orders', 'categories', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
     public function wholesale_search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
@@ -392,6 +422,9 @@ class OrderController extends Controller {
 
                 $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             }
             if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
 
@@ -404,6 +437,9 @@ class OrderController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
                 $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
                 $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
@@ -462,7 +498,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.wholesale', compact('orders', 'categories'));
+            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }

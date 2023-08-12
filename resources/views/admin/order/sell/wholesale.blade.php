@@ -1,4 +1,35 @@
 @extends('admin.layouts.master')
+
+@section('style')
+    <style>
+        .categoryCardBox {
+            gap: 20px
+        }
+
+        .categoryCard1 {
+            padding: 20px 15px 12px;
+            padding-left: 22px;
+            border-radius: 14px;
+            background: rgba(235, 98, 0, 0.888);
+            color: white;
+            display: inline-block;
+            max-width: 22% !important;
+            box-shadow: 0px 4px 12px 1px rgba(124, 48, 0, 0.665);
+        }
+
+        .categoryCard2 {
+            padding: 20px 15px 12px;
+            padding-left: 22px;
+            border-radius: 14px;
+            background: rgba(238, 99, 0, 0.773);
+            color: white;
+            display: inline-block;
+            max-width: 22% !important;
+            box-shadow: 0px 4px 14px 2px rgba(124, 48, 0, 0.665);
+        }
+    </style>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -36,7 +67,7 @@
                             <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
                         </div>
                     </div>
-                    <div class="row mt-5">
+                    <div class="row mt-5 categoryCardBox">
                         @foreach ($categories as $key => $category)
                             @php
                                 $sells_cat = 0;
@@ -56,8 +87,8 @@
                                     @endif
                                 @endforeach
                                 @if ($sells_cat > 0)
-                                    <div class="col-3 gap-3 mb-3 mt-2">
-                                        <h4 class="text-orange"><b>{{ $category->title }}</b></h4>
+                                    <div class="col-3 gap-3 mb-2 categoryCard1">
+                                        <h4 class=""><b>{{ $category->title }}</b></h4>
                                         <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
                                         <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
                                     </div>
@@ -76,7 +107,7 @@
                                     @endif
                                 @endforeach
                                 @if ($sells_cat > 0)
-                                    <div class="col-3 gap-3 mb-3 mt-2">
+                                    <div class="col-3 gap-3 mb-2 categoryCard2">
                                         <h5><b>{{ $category->parent->title . ' - ' . $category->title }}</b></h5>
                                         <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
                                         <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
@@ -92,7 +123,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Date From</label>
-                                    <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror">
+                                    <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
                                     @error('date_from')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -103,7 +134,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Date To</label>
-                                    <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror">
+                                    <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
                                     @error('date_to')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
