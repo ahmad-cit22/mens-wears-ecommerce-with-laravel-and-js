@@ -18,6 +18,9 @@ class ExpenseEntryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('expense.index')) {
             $data = ExpenseEntry::orderBy('id', 'DESC')->get();
             $banks = Bank::all();
@@ -51,19 +54,25 @@ class ExpenseEntryController extends Controller {
                     ->rawColumns(['expense_type', 'bank', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.expense.entry', compact('data', 'banks'));
+            return view('admin.expense.entry', compact('data', 'banks', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
     public function search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
         if (auth()->user()->can('expense.index')) {
             $banks = Bank::all();
             if (!empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $data = ExpenseEntry::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
             } else {
                 $data = ExpenseEntry::orderBy('id', 'DESC')->get();
             }
@@ -106,7 +115,7 @@ class ExpenseEntryController extends Controller {
                     ->rawColumns(['expense_type', 'bank', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.expense.entry', compact('data', 'banks'));
+            return view('admin.expense.entry', compact('data', 'banks', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }

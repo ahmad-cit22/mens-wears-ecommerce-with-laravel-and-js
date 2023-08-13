@@ -31,7 +31,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Date From</label>
-                                    <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror">
+                                    <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
                                     @error('date_from')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -42,7 +42,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Date To</label>
-                                    <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror">
+                                    <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
                                     @error('date_to')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
