@@ -51,6 +51,12 @@ class ExpenseEntryController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('action', function ($row) {
+                        $btn = '<a href="#editModal' . $row->id . '" class="btn btn-primary" data-toggle="modal" title="Edit Entry"><i class="fas fa-edit"></i></a>
+                          <a href="#deleteModal' . $row->id . '" class="btn btn-danger" data-toggle="modal" title="Delete Entry"><i class="fas fa-trash"></i></a>';
+
+                        return $btn;
+                    })
                     ->rawColumns(['expense_type', 'bank', 'date', 'action'])
                     ->make(true);
             }
@@ -154,6 +160,7 @@ class ExpenseEntryController extends Controller {
             if ($request->bank_id != '' && $request->bank_id > 0) {
                 $transaction = new BankTransaction;
                 $transaction->bank_id = $request->bank_id;
+                $transaction->expense_id = $expense->id;
                 $transaction->note = $request->note;
                 $transaction->debit = $request->amount;
                 $transaction->date = $request->date;
@@ -183,6 +190,7 @@ class ExpenseEntryController extends Controller {
             if ($request->bank_id != '' && $request->bank_id > 0) {
                 $transaction = new BankTransaction;
                 $transaction->bank_id = $request->bank_id;
+                $transaction->expense_id = $expense->id;
                 $transaction->note = $request->note;
                 $transaction->debit = $request->amount;
                 $transaction->date = $request->date;
@@ -222,8 +230,40 @@ class ExpenseEntryController extends Controller {
      * @param  \App\Models\ExpenseEntry  $expenseEntry
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ExpenseEntry $expenseEntry) {
-        //
+    public function update(Request $request, $id) {
+        if (auth()->user()->can('expense.create')) {
+            $this->validate($request, [
+                'expense_id' => 'required|integer',
+                'amount' => 'required|numeric',
+            ]);
+
+            $expense = ExpenseEntry::find($id);
+
+            if (!is_null($expense)) {
+                $expense->expense_id = $request->expense_id;
+                $expense->bank_id = $request->bank_id;
+                $expense->amount = $request->amount;
+                $expense->date = $request->date;
+                $expense->note = $request->note;
+                $expense->save();
+
+                if ($request->bank_id != '' && $request->bank_id > 0) {
+                    $transaction = BankTransaction::where('expense_id', $expense->id)->first();
+                    $transaction->bank_id = $request->bank_id;
+                    $transaction->note = $request->note;
+                    $transaction->debit = $request->amount;
+                    $transaction->date = $request->date;
+                    $transaction->save();
+                }
+                Alert::toast('Expense Entry has been updated!', 'success');
+                return redirect()->route('expenseentry.index');
+            } else {
+                Alert::toast('Expense Entry Not Found!', 'warning');
+                return redirect()->route('expenseentry.index');
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -232,7 +272,24 @@ class ExpenseEntryController extends Controller {
      * @param  \App\Models\ExpenseEntry  $expenseEntry
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ExpenseEntry $expenseEntry) {
-        //
+    public function destroy($id) {
+        if (auth()->user()->can('expense.create')) {
+            $expense = ExpenseEntry::find($id);
+
+            if (!is_null($expense)) {
+                if (BankTransaction::where('expense_id', $id)->exists()) {
+                    BankTransaction::where('expense_id', $id)->delete();
+                }
+
+                $expense->delete();
+                Alert::toast('Expense entry has been deleted !', 'success');
+                return redirect()->route('expenseentry.index');
+            } else {
+                Alert::toast('Expense Entry Not Found !', 'warning');
+                return redirect()->route('expenseentry.index');
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

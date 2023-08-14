@@ -89,6 +89,7 @@
                                 <th>Note</th>
                                 <th>Date</th>
                                 <th>Entry Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -148,7 +149,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Amount*</label>
-                                            <input type="text" name="amount" class="form-control @error('amount') is-invalid @enderror" required>
+                                            <input type="number" name="amount" class="form-control @error('amount') is-invalid @enderror" required>
                                             @error('amount')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -187,6 +188,124 @@
                 </div>
             </div>
 
+            @foreach ($data as $entry)
+                <!-- Edit expense Modal -->
+                <div class="modal fade" id="editModal{{ $entry->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Edit Entry
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('expenseentry.update', $entry->id) }}" method="POST">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Expense Type*</label>
+                                                <select class="form-control @error('expense_id') is-invalid @enderror" name="expense_id" required>
+                                                    @foreach (App\Models\Expense::orderBy('type', 'ASC')->get() as $expense)
+                                                        <option value="{{ $expense->id }}" {{ $expense->id == $entry->expense_id ? 'selected' : '' }}>{{ $expense->type }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('expense_id')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Bank*</label>
+                                                <select class="form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
+                                                    <option value="">Please select relevant bank</option>
+                                                    @foreach (App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
+                                                        <option value="{{ $bank->id }}" {{ $bank->id == $entry->bank_id ? 'selected' : '' }}>{{ $bank->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('bank_id')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Amount*</label>
+                                                <input type="number" name="amount" class="form-control @error('amount') is-invalid @enderror" value="{{ $entry->amount }}" required>
+                                                @error('amount')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Date</label>
+                                                <input type="date" name="date" class="form-control @error('date') is-invalid @enderror" value="{{ $entry->date }}">
+                                                @error('date')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Note</label>
+                                                <input type="text" name="note" class="form-control @error('note') is-invalid @enderror" value="{{ $entry->note }}">
+                                                @error('note')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </form>
+                            </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+                <!-- Delete expense Modal -->
+                <div class="modal fade" id="deleteModal{{ $entry->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete this entry?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" align="right">
+                                <form action="{{ route('expenseentry.destroy', $entry->id) }}" method="POST">
+                                    @csrf
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-danger">Permanent Delete</button>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
         </div>
     </section>
 @endsection
@@ -221,6 +340,9 @@
                         data: 'date',
                         orderable: false,
                         searchable: true
+                    },
+                    {
+                        data: 'action',
                     },
                 ]
             });

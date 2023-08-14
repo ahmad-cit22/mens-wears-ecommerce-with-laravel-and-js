@@ -4,18 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBankTransactionsTable extends Migration
-{
+class CreateBankTransactionsTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('bank_transactions', function (Blueprint $table) {
             $table->id();
             $table->integer('bank_id');
+            $table->double('expense_id')->nullable();
             $table->double('credit')->nullable();
             $table->double('debit')->nullable();
             $table->text('note')->nullable();
@@ -30,8 +29,7 @@ class CreateBankTransactionsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('bank_transactions');
     }
 }

@@ -7,21 +7,17 @@ use Illuminate\Http\Request;
 use Auth;
 use Alert;
 
-class ExpenseController extends Controller
-{
+class ExpenseController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('expense.index')) {
             $expenses = Expense::all();
             return view('admin.expense.index', compact('expenses'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -31,8 +27,7 @@ class ExpenseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -42,8 +37,7 @@ class ExpenseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (auth()->user()->can('expense.create')) {
             $validatedData = $request->validate([
                 'type' => 'required|max:255',
@@ -53,9 +47,7 @@ class ExpenseController extends Controller
             $expense->save();
             Alert::toast('New Expense Type Added !', 'success');
             return redirect()->route('expense.index');
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -66,8 +58,7 @@ class ExpenseController extends Controller
      * @param  \App\Models\Expense  $expense
      * @return \Illuminate\Http\Response
      */
-    public function show(Expense $expense)
-    {
+    public function show(Expense $expense) {
         //
     }
 
@@ -77,8 +68,7 @@ class ExpenseController extends Controller
      * @param  \App\Models\Expense  $expense
      * @return \Illuminate\Http\Response
      */
-    public function edit(Expense $expense)
-    {
+    public function edit(Expense $expense) {
         //
     }
 
@@ -89,8 +79,7 @@ class ExpenseController extends Controller
      * @param  \App\Models\Expense  $expense
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         if (auth()->user()->can('expense.edit')) {
             $this->validate($request, [
                 'type' => 'required',
@@ -104,14 +93,11 @@ class ExpenseController extends Controller
                 $expense->save();
                 Alert::toast('Expense Type has been updated !', 'success');
                 return redirect()->route('expense.index');
-            }
-            else{
+            } else {
                 Alert::toast('Expense Type Not Found !', 'warning');
                 return redirect()->route('expense.index');
             }
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -122,8 +108,7 @@ class ExpenseController extends Controller
      * @param  \App\Models\Expense  $expense
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         if (auth()->user()->can('expense.create')) {
             $expense = Expense::find($id);
 
@@ -132,19 +117,15 @@ class ExpenseController extends Controller
                     $expense->delete();
                     Alert::toast('Expense Type has been deleted !', 'success');
                     return redirect()->route('expense.index');
-                }
-                else {
-                    Alert::toast('Expense Type can not be deleted !', 'warning');
+                } else {
+                    Alert::toast('Expense type can not be deleted because there is expense entries added under this type!', 'warning');
                     return redirect()->route('expense.index');
                 }
-            }
-            else{
+            } else {
                 Alert::toast('Expense Not Found !', 'warning');
                 return redirect()->route('expense.index');
             }
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
