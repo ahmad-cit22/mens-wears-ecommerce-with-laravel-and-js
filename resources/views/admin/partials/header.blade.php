@@ -96,9 +96,14 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
 
+                <li class="nav-item mr-2">
+                    <a class="nav-link btn btn-primary bg-blue" href="{{ route('fos.create') }}">
+                        <i class="far fa-file-alt mr-2"></i>Order Sheet
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link btn btn-primary bg-purple" href="{{ route('pos.create') }}">
-                        <i class="fas fa-table"></i> POS
+                        <i class="fas fa-table mr-1"></i> POS
                     </a>
                 </li>
                 <li class="nav-item">

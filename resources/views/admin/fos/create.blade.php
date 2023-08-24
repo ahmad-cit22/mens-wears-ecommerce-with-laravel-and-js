@@ -12,7 +12,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>POS | {{ $business->name }}</title>
+    <title>FOS | {{ $business->name }}</title>
     <meta name="description" content="Updates and statistics" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -47,11 +47,12 @@
     <!-- pos header -->
 
     <header class="pos-header bg-white">
+        <h2 class="mt-1 mb-3 text-center text-primary font-weight-bold">Order Sheet</h2>
         <div class="container-fluid">
             <div class="row align-items-center">
-                <div class="col-xl-4 col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-12">
                     <div class="greeting-text">
-                        <h3 class="card-label mb-0 font-weight-bold text-primary">WELCOME
+                        <h3 class="card-label mb-0 font-weight-bold text-info">WELCOME
                         </h3>
                         <h3 class="card-label mb-0 ">
                             {{ $business->name }}
@@ -59,17 +60,8 @@
                     </div>
 
                 </div>
-                <div class="col-xl-4 col-lg-5 col-md-6  clock-main">
+                <div class="col-lg-4 col-md-12 clock-main">
                     <div class="clock">
-                        <div class="datetime-content">
-                            <ul>
-                                <li id="hours"></li>
-                                <li id="point1">:</li>
-                                <li id="min"></li>
-                                <li id="point">:</li>
-                                <li id="sec"></li>
-                            </ul>
-                        </div>
                         <div class="datetime-content">
                             <div id="Date" class=""></div>
                         </div>
@@ -77,15 +69,15 @@
                     </div>
 
                 </div>
-                <div class="col-xl-4 col-lg-3 col-md-12  order-lg-last order-second">
+                <div class="col-lg-4 col-md-12  order-lg-last order-second">
 
                     <div class="topbar justify-content-end">
                         <div class="dropdown mega-dropdown">
-                            <div id="id2" class="topbar-item " data-toggle="dropdown" data-display="static">
+                            <div id="id2" class="topbar-item" data-toggle="dropdown" data-display="static">
                                 <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3">
 
                                     <span class="symbol symbol-35 symbol-light-success">
-                                        <span class="symbol-label bg-primary  font-size-h5 ">
+                                        <span class="symbol-label bg-info  font-size-h5 ">
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="#fff" class="bi bi-calculator-fill" viewBox="0 0 16 16">
                                                 <path
@@ -136,6 +128,7 @@
                             </div>
 
                         </div>
+                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('home') }}">Dashboard</a>
 
                         {{-- <div class="topbar-item folder-data">
                             <div class="btn btn-icon  w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#folderpop">
@@ -149,9 +142,9 @@
                                 </span>
                             </div>
 
-                        </div>
+                        </div> --}}
 
-                        <div class="dropdown">
+                        {{-- <div class="dropdown">
                             <div class="topbar-item" data-toggle="dropdown" data-display="static">
                                 <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0">
 
@@ -195,7 +188,7 @@
                     </div>
                 </div>
             @endif
-            <form action="{{ route('pos.store') }}" method="POST">
+            <form action="{{ route('fos.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-xl-4 order-xl-first order-last">
@@ -232,7 +225,7 @@
                             <div class="product-items">
                                 <div class="row" id="product_filtered">
                                     @foreach ($products as $product)
-                                        @include('admin.pos.partials.product')
+                                        @include('admin.fos.partials.product')
                                     @endforeach
                                 </div>
                             </div>
@@ -260,92 +253,42 @@
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
                                                     </fieldset>
-                                                    {{-- @error('name')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror --}}
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <label class="text-body">Email</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="email" name="email" class="form-control" placeholder="Enter E-mail" value="{{ old('email') }}">
                                                     </fieldset>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <label class="text-body">Phone</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
-                                                        {{-- @error('phone')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror --}}
                                                     </fieldset>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group row mt-3">
-                                            <div class="col-md-12">
-                                                <label class="text-body">Address</label>
-                                                <fieldset class="form-group mb-3">
-                                                    <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ old('shipping_address') }}" required>
-                                                </fieldset>
-                                                {{-- @error('address')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror --}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between colorfull-select">
-                                        <div class="selectmain">
-                                            <label class="text-dark d-flex">District*</label>
-                                            <select name="district_id" class="select2 select-down" id="district_id" required>
-                                                <option value="">--- Select ---</option>
-                                                @foreach ($districts as $district)
-                                                    <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="d-flex flex-column selectmain">
-                                            <label class="text-dark d-flex">Area*</label>
-                                            <select name="area_id" class="select2 select-down" id="areas" required>
-                                                <!-- <option value="">Please Select an Area</option> -->
-                                            </select>
-                                        </div>
-                                        <div class="">
-                                            <label class="text-dark d-flex">Courier Name</label>
-                                            <input type="text" name="courier_name" class="form-control" placeholder="Enter Courier Name" required>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4">
-                                        <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input class="mr-1" type="checkbox" id="remove_shipping_charge" name="remove_shipping_charge" value="1">Free Shipping</label>
-
-                                    </div>
-                                    <div class="mt-2">
-
-                                        <div class="form-group row justify-content-start">
+                                        <div class="form-group row mt-2">
                                             <div class="col-md-6">
-                                                <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="advance_shipping_charge" name="advance_shipping_charge" value="1"> Shipping Charge Advanced</label>
-                                            </div>
-                                            <div class="col-md-6 text-start" id="showChargeBox" style="display: none">
-                                                <label class="text-body">Enter Charge Amount</label>
+                                                <label class="text-body">Customer Address</label>
                                                 <fieldset class="form-group mb-3">
-                                                    <input type="number" name="advanced_charge" id="advanced_charge" class="form-control" placeholder="Advanced Delivery Charge Amount" value="0">
+                                                    <textarea type="text" class="form-control" placeholder="Enter Customer Address" name="shipping_address" rows="4" required>{{ old('shipping_address') }}</textarea>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="text-dark d-flex">Courier Name</label>
+                                                <fieldset class="form-group mb-3">
+                                                    <input type="text" name="courier_name" class="form-control" placeholder="Enter Courier Name" required>
                                                 </fieldset>
                                             </div>
                                         </div>
-
                                     </div>
-                                    {{-- <div class="mt-2">
-                                        <label class="text-body">Payment Method</label>
-                                        <select class="mb-3 select2 select-down arabic-select2" style="width: 100%;" name="payment_method" id="payment_method">
-                                            <option value="1">Online</option>
-                                            <option value="2">Offline</option>
-                                        </select>
-                                    </div> --}}
                                     <div class="mt-2">
                                         <label class="text-body">Add Note</label>
                                         <fieldset class="form-group">
-                                            <textarea name="note" id="note" class="form-control" placeholder="Add Notes If Needed">{{ old('note') }}</textarea>
+                                            <textarea name="note" id="note" class="form-control" placeholder="Add Notes Here">{{ old('note') }}</textarea>
                                         </fieldset>
                                     </div>
                                 </div>
@@ -380,7 +323,7 @@
                                             </thead>
                                             <tbody id="cart_table">
                                                 @foreach ($carts as $cart)
-                                                    @include('admin.pos.partials.cart-item')
+                                                    @include('admin.fos.partials.cart-item')
                                                 @endforeach
 
 
@@ -399,11 +342,11 @@
                             <div class="card-body">
                                 <div class="shop-profile">
                                     <div class="media">
-                                        <div class="bg-primary w-100px h-100px d-flex justify-content-center align-items-center">
+                                        <div class="bg-info w-100px h-100px d-flex justify-content-center align-items-center">
                                             <h2 class="mb-0 white">G</h2>
                                         </div>
                                         <div class="media-body ml-3">
-                                            <h3 class="title font-weight-bold">{{ $business->name }}</h3>
+                                            <h3 class="title font-weight-bold text-info">{{ $business->name }}</h3>
                                             <p class="phoonenumber">
                                                 {{ $business->phone }}
                                             </p>
@@ -483,11 +426,11 @@
                                             <input type="hidden" name="discount" id="discount" value="{{ $discount }}">
 
                                             <tr class="d-flex align-items-center justify-content-between item-price">
-                                                <th class="border-0 font-size-h5 mb-0 font-size-bold text-primary">
+                                                <th class="border-0 font-size-h5 mb-0 font-size-bold text-info">
 
                                                     TOTAL
                                                 </th>
-                                                <td class="border-0 justify-content-end d-flex text-primary font-size-base">{{ env('CURRENCY') }}<span id="total_amount">{{ Cart::subtotal() - $discount }}</span></td>
+                                                <td class="border-0 justify-content-end d-flex text-info font-size-base">{{ env('CURRENCY') }}<span id="total_amount">{{ Cart::subtotal() - $discount }}</span></td>
 
                                             </tr>
 
@@ -495,7 +438,7 @@
                                     </table>
                                 </div>
                                 <div align="right">
-                                    <button class="btn btn-primary white mb-2" type="submit"><i class="fas fa-money-bill-wave mr-2"></i>Save</button>
+                                    <button class="btn btn-info white mb-2" type="submit"><i class="fas fa-money-bill-wave mr-2"></i>Save</button>
                                 </div>
 
                             </div>
@@ -548,7 +491,7 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-primary float-right" data-dismiss="modal">Ok</button>
+                                <button type="button" class="btn btn-info float-right" data-dismiss="modal">Ok</button>
                             </div> --}}
                         </div>
                     </div>
@@ -644,7 +587,7 @@
             // window.alert(product_name + ' - ' + category_id + ' - ' + brand_id
             // 	);
 
-            url = "{{ route('pos.product.filter') }}";
+            url = "{{ route('fos.product.filter') }}";
             $.ajax({
                 url: url,
                 type: "POST",
@@ -790,7 +733,7 @@
 
 
         function add_cart(stock_id) {
-            url = "{{ route('pos.cart.add') }}";
+            url = "{{ route('fos.cart.add') }}";
             var stock_id = stock_id;
 
             $.ajax({
@@ -816,7 +759,7 @@
 
         function remove_cart(rowId) {
             var rowId = rowId;
-            url = "{{ route('pos.cart.remove') }}";
+            url = "{{ route('fos.cart.remove') }}";
             $.ajax({
                 url: url,
                 type: "POST",
@@ -842,7 +785,7 @@
             if (!isNaN(barcode)) {
                 if (barcode.length == 4) {
                     //alert(barcode);
-                    url = "{{ route('pos.barcode.cart.add') }}";
+                    url = "{{ route('fos.barcode.cart.add') }}";
                     $.ajax({
                         url: url,
                         type: "POST",
@@ -872,7 +815,7 @@
             var price = $('#price_' + rowId).val();
             var rowId = rowId;
             if (parseInt(price) > 0) {
-                url = "{{ route('pos.cart.update') }}";
+                url = "{{ route('fos.cart.update') }}";
                 $.ajax({
                     url: url,
                     type: "POST",
@@ -898,7 +841,7 @@
             var amount = $('#discount_amount').val();
             var subtotal = $('#subtotal_amount').val();
             if (amount != '') {
-                var url = "{{ route('pos.apply.discount') }}";
+                var url = "{{ route('fos.apply.discount') }}";
 
                 $.ajax({
                     url: url,

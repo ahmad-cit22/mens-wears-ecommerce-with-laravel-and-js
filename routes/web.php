@@ -274,6 +274,20 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/remove-from-cart', [App\Http\Controllers\PosController::class, 'remove_cart'])->name('cart.remove');
 		Route::post('/apply-discount', [App\Http\Controllers\PosController::class, 'apply_discount'])->name('apply.discount');
 	});
+	
+	// Order Sheet Routes
+	Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {
+		Route::get('/', [App\Http\Controllers\FacebookOrderController::class, 'index'])->name('index');
+		Route::get('/create', [App\Http\Controllers\FacebookOrderController::class, 'create'])->name('create');
+		Route::get('/wholesale-create', [App\Http\Controllers\FacebookOrderController::class, 'wholesale_create'])->name('wholesale.create');
+		Route::post('/store', [App\Http\Controllers\FacebookOrderController::class, 'store'])->name('store');
+		Route::post('/filter-product', [App\Http\Controllers\FacebookOrderController::class, 'product_filter'])->name('product.filter');
+		Route::post('/add-to-cart', [App\Http\Controllers\FacebookOrderController::class, 'add_cart'])->name('cart.add');
+		Route::post('/barcode-add-to-cart', [App\Http\Controllers\FacebookOrderController::class, 'barcode_add_cart'])->name('barcode.cart.add');
+		Route::post('/update-cart', [App\Http\Controllers\FacebookOrderController::class, 'update_cart'])->name('cart.update');
+		Route::post('/remove-from-cart', [App\Http\Controllers\FacebookOrderController::class, 'remove_cart'])->name('cart.remove');
+		Route::post('/apply-discount', [App\Http\Controllers\FacebookOrderController::class, 'apply_discount'])->name('apply.discount');
+	});
 
 	// Slider Routes
 	Route::group(['prefix' => 'slider', 'as' => 'slider.'], function () {
