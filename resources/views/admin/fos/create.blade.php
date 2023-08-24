@@ -287,7 +287,7 @@
                                     </div>
                                     <div class="mt-2">
                                         <label class="text-body">Add Note</label>
-                                        <fieldset class="form-group">
+                                        <fieldset class="form-group"> 
                                             <textarea name="note" id="note" class="form-control" placeholder="Add Notes Here">{{ old('note') }}</textarea>
                                         </fieldset>
                                     </div>
