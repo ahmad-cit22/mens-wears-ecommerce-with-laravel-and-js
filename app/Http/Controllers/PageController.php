@@ -438,7 +438,7 @@ class PageController extends Controller {
             $order_product->order_id = $order->id;
             $order_product->product_id = $cart->id;
             $order_product->size_id = $cart->options->size_id;
-            $order_product->price = $cart->price;
+            $order_product->price = round($cart->price);
             $order_product->production_cost = $cart->options->production_cost;
             $order_product->qty = $cart->qty;
             $order_product->save();

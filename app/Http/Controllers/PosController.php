@@ -144,7 +144,7 @@ class PosController extends Controller {
             } else {
                 $order->delivery_charge = $request->shipping_charge;
             }
-            
+
             if ($request->advanced_charge != 0) {
                 $order->advance = $request->advanced_charge;
             }
@@ -171,7 +171,7 @@ class PosController extends Controller {
                 $order_product->order_id = $order->id;
                 $order_product->product_id = $cart->id;
                 $order_product->size_id = $cart->options->size_id;
-                $order_product->price = $cart->price - ($cart->price * ($percentage / 100));
+                $order_product->price = round($cart->price - ($cart->price * ($percentage / 100)));
                 $order_product->production_cost = $cart->options->production_cost;
                 $order_product->qty = $cart->qty;
                 $order_product->save();

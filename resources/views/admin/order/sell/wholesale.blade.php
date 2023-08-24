@@ -7,7 +7,7 @@
         }
 
         .categoryCard1 {
-            padding: 20px 15px 12px;
+            padding: 15px 15px 0px;
             padding-left: 22px;
             border-radius: 14px;
             background: rgba(235, 98, 0, 0.888);
@@ -18,7 +18,7 @@
         }
 
         .categoryCard2 {
-            padding: 20px 15px 12px;
+            padding: 15px 15px 0px;
             padding-left: 22px;
             border-radius: 14px;
             background: rgba(238, 99, 0, 0.773);
@@ -209,9 +209,9 @@
                                 <th>S.N</th>
                                 <th>Code</th>
                                 <th>Customer Name</th>
-                                <th>Phone</th>
+                                <th width="9%">Phone</th>
                                 <th>Status</th>
-                                <th width="20%">Note</th>
+                                <th width="13%">Note</th>
                                 <th>Source</th>
                                 <th>COD</th>
                                 <th>Date</th>

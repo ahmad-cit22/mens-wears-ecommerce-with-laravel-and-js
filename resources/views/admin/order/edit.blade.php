@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -42,12 +42,17 @@
                                         <hr>
                                     </div>
                                 @endif
-                                <div class="col-12">
+                                <div class="col-11">
                                     <h4>
                                         <img src="{{ asset('images/website/' . $business->footer_logo) }}" width="200">
                                         <small class="float-right" style="float: right;">Date: {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</small>
                                     </h4><br>
-                                </div><br>
+                                </div>
+                                <div class="col-1">
+                                    <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary float-right">Sell List</a>
+
+                                </div>
+                                <br>
 
                                 <hr style="color: #800020;">
                                 <!-- /.col -->
@@ -240,11 +245,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                                                                <div class="col-12">
+                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                              </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
