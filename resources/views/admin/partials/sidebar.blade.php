@@ -172,6 +172,30 @@
                         </ul>
                     </li>
 
+                     <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                                Order Sheet
+                                <i class="fas fa-angle-right right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('fos.create') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Create New</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Order List</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-plus-square"></i>
@@ -240,13 +264,6 @@
                                 <a href="{{ route('sell.wholesale.index') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
                                     <p>Wholesale List</p>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="{{ route('sell.wholesale.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Manage FB Orders</p>
                                 </a>
                             </li>
 

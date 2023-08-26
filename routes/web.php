@@ -287,6 +287,12 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/update-cart', [App\Http\Controllers\FacebookOrderController::class, 'update_cart'])->name('cart.update');
 		Route::post('/remove-from-cart', [App\Http\Controllers\FacebookOrderController::class, 'remove_cart'])->name('cart.remove');
 		Route::post('/apply-discount', [App\Http\Controllers\FacebookOrderController::class, 'apply_discount'])->name('apply.discount');
+
+		Route::get('/edit/{id}', [App\Http\Controllers\FacebookOrderController::class, 'edit'])->name('edit');
+		Route::post('/update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'update'])->name('update');
+		Route::post('/destroy/{id}', [App\Http\Controllers\FacebookOrderController::class, 'destroy'])->name('destroy');
+
+		Route::post('/take-advance/{id}', [App\Http\Controllers\FacebookOrderController::class, 'take_advance'])->name('advance.payment');
 	});
 
 	// Slider Routes

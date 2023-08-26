@@ -57,6 +57,12 @@
                 display: none !important;
             }
         }
+
+        /* .dataTable tr th,
+        td {
+            word-wrap: break-word;
+            word-break: break-all;
+        } */
     </style>
     @yield('style')
     <script src="https://cdn.tiny.cloud/1/yze2qblheth712tqw6y3f30283f8nch1bogp0jzpsm3rn79f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
