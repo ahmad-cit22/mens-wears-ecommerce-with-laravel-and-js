@@ -18,9 +18,12 @@ use Auth;
 use Alert;
 use Mail;
 use App\Mail\OrderMail;
+use App\Models\BkashNumber;
 use App\Models\CourierName;
 use App\Models\FacebookOrder;
 use App\Models\FacebookOrderProduct;
+use App\Models\FacebookOrderStatus;
+use App\Models\OrderSpecialStatus;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Session;
@@ -135,9 +138,13 @@ class FacebookOrderController extends Controller {
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
             $order = FacebookOrder::find($id);
+            $couriers = CourierName::all();
+            $statuses = FacebookOrderStatus::where('is_active', 1)->get();
+            $special_statuses = OrderSpecialStatus::where('is_active', 1)->get();
+            $bkash_nums = BkashNumber::all();
 
             if (!is_null($order)) {
-                return view('admin.order.order_sheet.edit', compact('order'));
+                return view('admin.order.order_sheet.edit', compact('order', 'couriers', 'statuses', 'special_statuses', 'bkash_nums'));
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -374,7 +381,7 @@ class FacebookOrderController extends Controller {
                 $validatedData = $request->validate([
                     'amount' => 'required|numeric',
                 ]);
-                
+
                 $order->advance = $request->amount;
                 $order->save();
                 Alert::toast('Advance Amount Received', 'success');
