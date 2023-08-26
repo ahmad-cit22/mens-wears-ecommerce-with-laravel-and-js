@@ -142,6 +142,7 @@
                                                 <td colspan="4" align="right">Discount (-):</td>
                                                 <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
                                             </tr>
+                                            
                                             <tr>
                                                 <td colspan="4" align="right">Total:</td>
                                                 <td>{{ env('CURRENCY') }}{{ round($order->price) }}</td>
