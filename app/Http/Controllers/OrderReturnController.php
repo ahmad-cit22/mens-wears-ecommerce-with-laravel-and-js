@@ -91,7 +91,7 @@ class OrderReturnController extends Controller {
                 $returned_price += $request->qty[$i] * $request->price[$i];
 
                 // adjust the order products
-                $order_product = OrderProduct::where('order_id', $request->order_id)->where('product_id', $request->product_id[$i])->first();
+                $order_product = OrderProduct::where('order_id', $request->order_id)->where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
                 $order_product->qty = $order_product->qty - $request->qty[$i];
                 $order_product->return_qty = $order_product->return_qty != null ? $order_product->return_qty + $request->qty[$i] : $request->qty[$i];
                 $order_product->save();

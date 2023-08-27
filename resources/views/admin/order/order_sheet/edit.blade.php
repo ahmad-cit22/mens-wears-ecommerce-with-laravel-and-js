@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
 
 
                     <!-- Main content -->
@@ -64,9 +64,9 @@
                                         <address>
                                             Memo Code:
                                             @if ($order->code)
-                                                <strong># {{ $order->code }}</strong>
+                                                <strong class=" ml-1"># {{ $order->code }}</strong>
                                             @else
-                                                N/A
+                                                <strong class="text-warning ml-1">N/A</strong>
                                             @endif
                                             <br>
                                             <div>
@@ -80,13 +80,19 @@
 
                                         <address>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
+                                                    <label class="text-body">Memo Code</label>
+                                                    <fieldset class="form-group mb-3">
+                                                        <input type="text" name="code" class="form-control" placeholder="Enter Memo Code" value="{{ $order->code }}">
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-4">
                                                     <label class="text-body">Customer Name</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ $order->name }}">
                                                     </fieldset>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label class="text-body">Email</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="email" name="email" class="form-control" placeholder="Enter E-mail" value="{{ $order->email }}">
@@ -166,35 +172,14 @@
                                             <textarea name="remarks" id="remarks" class="form-control" placeholder="Add Notes Here">{{ $order->remarks }}</textarea>
                                         </fieldset>
                                     </div>
+                                    <div class="col-md-12">
+                                        <label>Advance Amount</label>
+                                        <input type="text" class="form-control" name="amount" value="{{ $order->advance }}">
+                                    </div>
                                 </div>
-                                Phone: <strong>{{ $order->phone }}</strong><br>
-                                Email: {{ $order->email }}<br>
-                                Shipping Address: {{ $order->shipping_address }}<br>
-                                @if ($order->courier_id)
-                                    Courier Name: {{ $order->courier->name }}
-                                @endif
                                 </address>
                             </div>
                             <!-- /.col -->
-                            <div class="col-sm-4 invoice-col">
-                                <form action="{{ route('order.advance.payment', $order->id) }}" method="POST">
-                                    @csrf
-                                    <div class="form-froup">
-                                        <label>Advance Amount</label>
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control" name="amount" value="{{ $order->advance }}">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-primary bg-purple" type="submit">Save payment</button>
-                                            </div>
-                                        </div>
-                                        @error('amount')
-                                            <span class="invalid-feedback" role="alert" style="display: block;">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </form>
-                            </div>
                         </div>
                         <!-- /.row -->
 
@@ -264,11 +249,11 @@
 
                         <!-- this row will not appear when printing -->
                         <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div> -->
                 </div>
                 <!-- /.invoice -->
             </div>

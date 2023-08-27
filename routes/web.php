@@ -223,6 +223,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/convert-to-sell/{id}', [App\Http\Controllers\OrderController::class, 'convert_sell'])->name('convert.sell');
 		Route::get('/return/{id}', [App\Http\Controllers\OrderController::class, 'return'])->name('return');
 		Route::post('/apply-cod/{id}', [App\Http\Controllers\OrderController::class, 'apply_cod'])->name('apply.cod');
+		Route::get('/remove-discount/{id}', [App\Http\Controllers\OrderController::class, 'remove_discount'])->name('remove.discount');
 		// Invoice route
 		Route::get('/generate-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_invoice'])->name('invoice.generate');
 		Route::get('/generate-pos-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_pos_invoice'])->name('invoice.pos.generate');
@@ -274,7 +275,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/remove-from-cart', [App\Http\Controllers\PosController::class, 'remove_cart'])->name('cart.remove');
 		Route::post('/apply-discount', [App\Http\Controllers\PosController::class, 'apply_discount'])->name('apply.discount');
 	});
-	
+
 	// Order Sheet Routes
 	Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {
 		Route::get('/', [App\Http\Controllers\FacebookOrderController::class, 'index'])->name('index');

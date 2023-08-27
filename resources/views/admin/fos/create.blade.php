@@ -128,7 +128,7 @@
                             </div>
 
                         </div>
-                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('home') }}">Dashboard</a>
+                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('fos.index') }}">Order List</a>
                     </div>
 
                 </div>
