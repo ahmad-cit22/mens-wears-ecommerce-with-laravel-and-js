@@ -15,7 +15,7 @@ use App\Models\Area;
 
 use Illuminate\Http\Request;
 use Auth;
-use Alert;
+use RealRashid\SweetAlert\Facades\Alert;
 use Mail;
 use App\Mail\OrderMail;
 use App\Models\BkashNumber;
@@ -277,9 +277,108 @@ class FacebookOrderController extends Controller {
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    // public function update(Request $request, Order $order) {
-    //     //
-    // }
+    public function order_info_update(Request $request, $id) {
+
+        $request->validate([
+            'name'  => 'required',
+            'phone' => 'required',
+            'shipping_address'  => 'required',
+            'source'    => 'required|not_in:0',
+            'order_status_id'    => 'required|not_in:0',
+        ]);
+
+        if (auth()->user()->can('order.edit')) {
+            $order = FacebookOrder::find($id);
+            if (!is_null($order)) {
+                $order->code = $request->code;
+                $order->name = $request->name;
+                $order->email = $request->email;
+                $order->phone = $request->phone;
+                $order->whatsapp_num = $request->whatsapp_num;
+                $order->shipping_address = $request->shipping_address;
+                $order->bkash_num = $request->bkash_num;
+                $order->bkash_business_id = $request->bkash_business_id;
+                $order->bkash_amount = $request->bkash_amount;
+                $order->source = $request->source;
+                $order->courier_id = $request->courier_id;
+                $order->order_status_id = $request->order_status_id;
+                $order->special_status_id = $request->special_status_id;
+                $order->note = $request->note;
+                $order->remarks = $request->remarks;
+                $order->advance = $request->advance;
+                $order->discount_amount = $request->discount_amount;
+                $order->save();
+
+                Alert::toast('Order Info Updated!', 'success');
+                return back();
+            } else {
+                Alert::toast('Something went wrong !', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function order_products_update(Request $request, $id) {
+
+        $request->validate([
+            'qty[]' => 'required',
+        ], [
+            'qty[].required' => 'Quantity is required!',
+        ]);
+
+        $i = 0;
+
+        for ($i = 0; $i < count($request->qty); $i++) {
+            if ($request->qty[$i] != NULL && $request->qty[$i] > 0) {
+                $change += 1;
+
+                // save the returned item
+                $sell_return = new OrderReturn;
+                $sell_return->order_id = $request->order_id;
+                $sell_return->order_code = $request->order_code;
+                $sell_return->code = $code;
+                $sell_return->product_id = $request->product_id[$i];
+                $sell_return->size_id = $request->size_id[$i];
+                $sell_return->qty = $request->qty[$i];
+                $sell_return->price = $request->price[$i];
+                $sell_return->save();
+
+                $returned_price += $request->qty[$i] * $request->price[$i];
+
+                // adjust the order products
+                $order_product = OrderProduct::where('order_id', $request->order_id)->where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
+                $order_product->qty = $order_product->qty - $request->qty[$i];
+                $order_product->return_qty = $order_product->return_qty != null ? $order_product->return_qty + $request->qty[$i] : $request->qty[$i];
+                $order_product->save();
+
+                // adjust the stock value
+                $stock = ProductStock::where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
+                $stock->qty += $request->qty[$i];
+                $stock->save();
+            }
+        }
+
+        if ($change > 0) {
+            $order = Order::find($request->order_id);
+            $order->price = $order->price - $returned_price;
+
+            if ($order->price > 0) {
+                $order->is_return = 2;
+            } else {
+                $order->is_return = 1;
+            }
+            $order->save();
+
+            Alert::toast('Return invoice created.', 'success');
+            return redirect()->route('order.edit', $order->id);
+        } else {
+            Alert::toast('Incorrect inputs, order return failed.', 'error');
+            return back();
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -348,7 +447,7 @@ class FacebookOrderController extends Controller {
     //     }
     // }
 
-   
+
 
     public function product_filter(Request $request) {
         $product_name = $request->product_name;

@@ -290,7 +290,8 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/apply-discount', [App\Http\Controllers\FacebookOrderController::class, 'apply_discount'])->name('apply.discount');
 
 		Route::get('/edit/{id}', [App\Http\Controllers\FacebookOrderController::class, 'edit'])->name('edit');
-		Route::post('/update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'update'])->name('update');
+		Route::post('/order-info-update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'order_info_update'])->name('order_info.update');
+		Route::post('/order-products-update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'order_products_update'])->name('order_products.update');
 		Route::post('/destroy/{id}', [App\Http\Controllers\FacebookOrderController::class, 'destroy'])->name('destroy');
 
 		Route::post('/take-advance/{id}', [App\Http\Controllers\FacebookOrderController::class, 'take_advance'])->name('advance.payment');

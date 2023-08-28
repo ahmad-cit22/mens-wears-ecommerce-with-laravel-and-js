@@ -25,24 +25,25 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
 
 
                     <!-- Main content -->
-                    <form action="" method="POST">
-                        <div class="invoice p-3 mb-3">
-                            <!-- title row -->
+                    <div class="invoice p-3 mb-3">
+                        <!-- title row -->
+                        <form action="{{ route('fos.order_info.update', $order->id) }}" method="POST">
+                            @csrf
                             <div class="invoice p-3 mb-3">
                                 <!-- title row -->
                                 <div class="row">
-                                    @if ($order->is_final == 0)
-                                        {{-- <div class="col-12" align="right">
+                                    {{-- @if ($order->is_final == 0)
+                                        <div class="col-12" align="right">
                                         <a href="#confirmSell{{ $order->id }}" data-toggle="modal" class="btn btn-primary bg-purple"><i class="fas fa-check"></i> Mark as Sold</a>
                                         <hr>
-                                    </div> --}}
-                                    @endif
+                                    </div>
+                                    @endif --}}
                                     <div class="col-10">
                                         <h4>
                                             <img src="{{ asset('images/website/' . $business->footer_logo) }}" width="200">
@@ -90,6 +91,11 @@
                                                     <label class="text-body">Customer Name</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ $order->name }}">
+                                                        @error('name')
+                                                            <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </fieldset>
                                                 </div>
                                                 <div class="col-md-4">
@@ -102,6 +108,11 @@
                                                     <label class="text-body">Phone</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ $order->phone }}">
+                                                        @error('phone')
+                                                            <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </fieldset>
                                                 </div>
                                                 <div class="col-md-4">
@@ -114,6 +125,11 @@
                                                     <label class="text-body">Customer Address</label>
                                                     <fieldset class="form-group mb-3">
                                                         <textarea type="text" class="form-control" placeholder="Enter Customer Address" name="shipping_address" required>{{ $order->shipping_address }}</textarea>
+                                                        @error('shipping_address')
+                                                            <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </fieldset>
                                                 </div>
                                                 <div class="col-md-4">
@@ -150,6 +166,11 @@
                                                                 <option value="Wholesale" {{ $order->source == 'Wholesale' ? 'selected' : '' }}>Wholesale</option>
                                                             </select>
                                                         </div>
+                                                        @error('source')
+                                                            <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </div>
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <div class="selectmain">
@@ -165,18 +186,23 @@
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <div class="selectmain">
                                                             <label class="text-dark d-flex">Status</label>
-                                                            <select name="status" class="select2 select-down" id="status" style="width: 100% !important;">
+                                                            <select name="order_status_id" class="select2 select-down" id="order_status_id" style="width: 100% !important;">
                                                                 <option value="0">--- Select an Option ---</option>
                                                                 @foreach ($statuses as $status)
                                                                     <option value="{{ $status->id }}" {{ $order->order_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
+                                                        @error('order_status_id')
+                                                            <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </div>
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <div class="selectmain">
                                                             <label class="text-dark d-flex">Special Status</label>
-                                                            <select name="special_status" class="select2 select-down" id="special_status" style="width: 100% !important;">
+                                                            <select name="special_status_id" class="select2 select-down" id="special_status_id" style="width: 100% !important;">
                                                                 <option value="">--- Select an Option ---</option>
                                                                 @foreach ($special_statuses as $status)
                                                                     <option value="{{ $status->id }}" {{ $order->special_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
@@ -212,16 +238,22 @@
                                 </div>
                                 </address>
                             </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
+                            <div class="row justify-content-end">
+                                <button type="submit" class="mr-2 mb-3 btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
 
-                        <div class="row">
+                    <div class="row">
 
 
-                        </div>
+                    </div>
 
-                        <!-- Table row -->
+                    <!-- Table row -->
+                    <form action="{{ route('fos.order_products.update', $order->id) }}" method="POST">
+                        @csrf
                         <div class="row">
                             <div class="col-12 table-responsive">
                                 <table class="table table-striped">
@@ -243,7 +275,6 @@
                                                     <td>
                                                         <div class="selectmain">
                                                             <select name="product[]" class="select2 select-down" id="" style="width: 60% !important;">
-                                                                <option value="">--- Select an Option ---</option>
                                                                 @foreach ($products as $product)
                                                                     @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
                                                                         <option value="{{ $product->id }}" {{ $product->product->id == $order_product->product->id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
@@ -258,7 +289,12 @@
                                                 <td>{{ env('CURRENCY') }}{{ $order_product->price }}</td>
                                                 <td>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="{{ $order_product->qty }}" style="width: 30% !important;">
+                                                        <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="{{ $order_product->qty }}" style="width: 40% !important;">
+                                                        @error('qty[]')
+                                                            <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </fieldset>
                                                 </td>
                                                 <td>{{ env('CURRENCY') }}{{ $order_product->price * $order_product->qty }}</td>
@@ -288,21 +324,25 @@
                             </div>
                             <!-- /.col -->
                         </div>
-                        <!-- /.row -->
+                        <div class="row justify-content-end">
+                            <button type="submit" class="mr-4 my-3 btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                    <!-- /.row -->
 
 
 
-                        <!-- this row will not appear when printing -->
-                        <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div> -->
+                    <!-- this row will not appear when printing -->
+                    <!-- <div class="row no-print">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div> -->
                 </div>
                 <!-- /.invoice -->
             </div>
-            </form>
+
         </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </section>
