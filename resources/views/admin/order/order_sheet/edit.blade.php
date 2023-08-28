@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -98,16 +98,45 @@
                                                         <input type="email" name="email" class="form-control" placeholder="Enter E-mail" value="{{ $order->email }}">
                                                     </fieldset>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label class="text-body">Phone</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ $order->phone }}">
                                                     </fieldset>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
+                                                    <label class="text-body">Whatsapp Number</label>
+                                                    <fieldset class="form-group mb-3">
+                                                        <input type="text" name="whatsapp_num" class="form-control" placeholder="Enter Customer Whatsapp Number" value="{{ $order->whatsapp_num }}">
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-4">
                                                     <label class="text-body">Customer Address</label>
                                                     <fieldset class="form-group mb-3">
                                                         <textarea type="text" class="form-control" placeholder="Enter Customer Address" name="shipping_address" required>{{ $order->shipping_address }}</textarea>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="text-body">Bkash Number (Customer)</label>
+                                                    <fieldset class="form-group mb-3">
+                                                        <input type="text" name="bkash_num" class="form-control" placeholder="Enter Customer Bkash Number" value="{{ $order->bkash_num }}">
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="selectmain">
+                                                        <label class="text-dark d-flex">Courier Name</label>
+                                                        <select name="bkash_business_id" class="select2 select-down" id="bkash_business_id" style="width: 100% !important;">
+                                                            <option value="">--- Select an Option ---</option>
+                                                            @foreach ($bkash_nums as $num)
+                                                                <option value="{{ $num->id }}" {{ $order->bkash_business_id == $num->id ? 'selected' : '' }}>{{ $num->number }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="text-body">Bkash Amount</label>
+                                                    <fieldset class="form-group mb-3">
+                                                        <input type="number" name="bkash_amount" class="form-control" placeholder="Enter Bkash Amount" value="{{ $order->bkash_amount }}">
                                                     </fieldset>
                                                 </div>
                                                 <div class="col-12 row">
@@ -125,7 +154,7 @@
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <div class="selectmain">
                                                             <label class="text-dark d-flex">Courier Name</label>
-                                                            <select name="courier_id" class="select2 select-down" id="coudrier_id" style="width: 100% !important;">
+                                                            <select name="courier_id" class="select2 select-down" id="courier_id" style="width: 100% !important;">
                                                                 <option value="">--- Select an Option ---</option>
                                                                 @foreach ($couriers as $courier)
                                                                     <option value="{{ $courier->id }}" {{ $order->courier_id == $courier->id ? 'selected' : '' }}>{{ $courier->name }}</option>
@@ -136,7 +165,7 @@
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <div class="selectmain">
                                                             <label class="text-dark d-flex">Status</label>
-                                                            <select name="source" class="select2 select-down" id="source" style="width: 100% !important;">
+                                                            <select name="status" class="select2 select-down" id="status" style="width: 100% !important;">
                                                                 <option value="0">--- Select an Option ---</option>
                                                                 @foreach ($statuses as $status)
                                                                     <option value="{{ $status->id }}" {{ $order->order_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
@@ -147,7 +176,7 @@
                                                     <div class="col-lg-3 col-md-4 col-6">
                                                         <div class="selectmain">
                                                             <label class="text-dark d-flex">Special Status</label>
-                                                            <select name="courier_id" class="select2 select-down" id="courier_id" style="width: 100% !important;">
+                                                            <select name="special_status" class="select2 select-down" id="special_status" style="width: 100% !important;">
                                                                 <option value="">--- Select an Option ---</option>
                                                                 @foreach ($special_statuses as $status)
                                                                     <option value="{{ $status->id }}" {{ $order->special_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
@@ -169,12 +198,16 @@
                                     <div class="col-md-6">
                                         <label class="text-body">Remarks</label>
                                         <fieldset class="form-group">
-                                            <textarea name="remarks" id="remarks" class="form-control" placeholder="Add Notes Here">{{ $order->remarks }}</textarea>
+                                            <textarea name="remarks" id="remarks" class="form-control" placeholder="Add Remarks Here">{{ $order->remarks }}</textarea>
                                         </fieldset>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label>Advance Amount</label>
-                                        <input type="text" class="form-control" name="amount" value="{{ $order->advance }}">
+                                        <input type="number" class="form-control" name="advance" value="{{ $order->advance }}" placeholder="Add Advance Amount Here">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Discount Amount</label>
+                                        <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount }}" placeholder="Add Discount Amount Here">
                                     </div>
                                 </div>
                                 </address>
@@ -195,28 +228,40 @@
                                     <thead>
                                         <tr>
                                             <th>S.N</th>
-                                            <th>Product</th>
+                                            <th>Product Title - Size - Price</th>
                                             <th>Price</th>
                                             <th>Qty</th>
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($order->order_product as $product)
+                                        {{-- a --}}
+                                        @foreach ($order->order_product as $order_product)
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
-                                                @if ($product->product != null)
-                                                    <td>{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
-                                                        @if ($product->return_qty != null)
-                                                            <span class="text-danger ml-2">({{ $product->return_qty }} Product(s) Returned)</span>
-                                                        @endif
+                                                @if ($order_product->product != null)
+                                                    <td>
+                                                        <div class="selectmain">
+                                                            <select name="product[]" class="select2 select-down" id="" style="width: 60% !important;">
+                                                                <option value="">--- Select an Option ---</option>
+                                                                @foreach ($products as $product)
+                                                                    @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
+                                                                        <option value="{{ $product->id }}" {{ $product->product->id == $order_product->product->id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                    @endif
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                     </td>
                                                 @else
-                                                    <td> --</td>
+                                                    <td> -- </td>
                                                 @endif
-                                                <td>{{ env('CURRENCY') }}{{ $product->price }}</td>
-                                                <td>{{ $product->qty }}</td>
-                                                <td>{{ env('CURRENCY') }}{{ $product->price * $product->qty }}</td>
+                                                <td>{{ env('CURRENCY') }}{{ $order_product->price }}</td>
+                                                <td>
+                                                    <fieldset class="form-group mb-3">
+                                                        <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="{{ $order_product->qty }}" style="width: 30% !important;">
+                                                    </fieldset>
+                                                </td>
+                                                <td>{{ env('CURRENCY') }}{{ $order_product->price * $order_product->qty }}</td>
                                             </tr>
                                         @endforeach
                                         <tr>
@@ -249,11 +294,11 @@
 
                         <!-- this row will not appear when printing -->
                         <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div> -->
                 </div>
                 <!-- /.invoice -->
             </div>

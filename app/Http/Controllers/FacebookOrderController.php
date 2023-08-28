@@ -45,6 +45,120 @@ class FacebookOrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
+
+    public function create(Request $request) {
+        if (Session::has('wholesale_price')) {
+            Session::forget('wholesale_price');
+        }
+
+        $products = ProductStock::orderBy('id', 'DESC')->get();
+        $categories = Category::orderBy('title', 'ASC')->get();
+        $brands = Brand::orderBy('title', 'ASC')->get();
+        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
+        $districts = District::orderBy('name', 'ASC')->get();
+        $carts = Cart::content();
+        $couriers = CourierName::all();
+        // return DNS1D::getBarcodeSVG('1005', 'C39');
+        return view('admin.fos.create', compact('products', 'categories', 'brands', 'couriers', 'customers', 'districts', 'carts'));
+    }
+
+    public function wholesale_create(Request $request) {
+        session(['wholesale_price' => 1]);
+        $products = ProductStock::orderBy('id', 'DESC')->get();
+        $categories = Category::orderBy('title', 'ASC')->get();
+        $brands = Brand::orderBy('title', 'ASC')->get();
+        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
+        $districts = District::orderBy('name', 'ASC')->get();
+        $couriers = CourierName::all();
+        $carts = Cart::content();
+        return view('admin.fos.create', compact('products', 'categories', 'brands', 'customers', 'couriers', 'districts', 'carts'));
+    }
+
+    public function store(Request $request) {
+        if (Cart::content()->count() <= 0) {
+            return back()->with('errMsg', 'Please select products correctly!');
+        }
+
+        $order = new FacebookOrder;
+
+        if ($request->customer_id == 0) {
+            if (!User::where('phone', $request->phone)->exists()) {
+                $user = new User;
+                $user->name       = $request->name;
+                $user->email      = $request->email;
+                $user->phone      = $request->phone;
+                $user->city       = $request->district_id;
+                $user->address    = $request->shipping_address;
+                $user->password   = Hash::make(12345678);
+                $user->save();
+
+                $order->customer_id = $user->id;
+                $order->name = $user->name;
+                $order->email = $user->email;
+                $order->phone = $user->phone;
+            } else {
+                $user = User::where('phone', $request->phone)->first();
+                $order->customer_id = $user->id;
+                $order->name = $user->name;
+                $order->email = $user->email;
+                $order->phone = $user->phone;
+            }
+        } else {
+            $user = User::find($request->customer_id);
+            $order->customer_id = $user->id;
+            $order->name = $user->name;
+            $order->email = $user->email;
+            $order->phone = $user->phone;
+        }
+
+        if (auth()->user()->can('order.create')) {
+            $carts = Cart::content();
+
+            // return Cart::content();
+
+            $discount = 0;
+            if (Session::has('coupon_discount')) {
+                $discount = Session::get('coupon_discount');
+                $order->discount_amount = $discount;
+            }
+
+            $order->price = Cart::subtotal() - $discount;
+
+            $order->shipping_address = $request->shipping_address;
+            $order->courier_id = $request->courier_id;
+            $order->source = $request->source;
+            $order->note = $request->note;
+
+            $order->save();
+
+            // Calculate discoutn percentage
+
+            $percentage = ($discount / Cart::subtotal()) * 100;
+
+            foreach ($carts as $cart) {
+
+                $order_product = new FacebookOrderProduct;
+
+                $order_product->order_id = $order->id;
+                $order_product->product_id = $cart->id;
+                $order_product->size_id = $cart->options->size_id;
+                $order_product->price = $cart->price;
+                $order_product->production_cost = $cart->options->production_cost;
+                $order_product->qty = $cart->qty;
+                $order_product->save();
+
+                Cart::remove($cart->rowId);
+            }
+
+            Session::forget('coupon_discount');
+            Session::forget('wholesale_price');
+            Alert::toast('Order added successfully!', 'success');
+            return redirect()->route('fos.create');
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     // public function search(Request $request) {
     //     $date_from = '';
     //     $date_to = '';
@@ -137,14 +251,16 @@ class FacebookOrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
+            $products = ProductStock::orderBy('id', 'DESC')->get();
             $order = FacebookOrder::find($id);
             $couriers = CourierName::all();
             $statuses = FacebookOrderStatus::where('is_active', 1)->get();
             $special_statuses = OrderSpecialStatus::where('is_active', 1)->get();
             $bkash_nums = BkashNumber::all();
+            $sizes = Size::all();
 
             if (!is_null($order)) {
-                return view('admin.order.order_sheet.edit', compact('order', 'couriers', 'statuses', 'special_statuses', 'bkash_nums'));
+                return view('admin.order.order_sheet.edit', compact('order', 'products', 'sizes', 'couriers', 'statuses', 'special_statuses', 'bkash_nums'));
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -232,168 +348,7 @@ class FacebookOrderController extends Controller {
     //     }
     // }
 
-    public function create(Request $request) {
-        if (Session::has('wholesale_price')) {
-            Session::forget('wholesale_price');
-        }
-
-        $products = ProductStock::orderBy('id', 'DESC')->get();
-        $categories = Category::orderBy('title', 'ASC')->get();
-        $brands = Brand::orderBy('title', 'ASC')->get();
-        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
-        $districts = District::orderBy('name', 'ASC')->get();
-        $carts = Cart::content();
-        $couriers = CourierName::all();
-        // return DNS1D::getBarcodeSVG('1005', 'C39');
-        return view('admin.fos.create', compact('products', 'categories', 'brands', 'couriers', 'customers', 'districts', 'carts'));
-    }
-
-    public function wholesale_create(Request $request) {
-        session(['wholesale_price' => 1]);
-        $products = ProductStock::orderBy('id', 'DESC')->get();
-        $categories = Category::orderBy('title', 'ASC')->get();
-        $brands = Brand::orderBy('title', 'ASC')->get();
-        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
-        $districts = District::orderBy('name', 'ASC')->get();
-        $couriers = CourierName::all();
-        $carts = Cart::content();
-        return view('admin.fos.create', compact('products', 'categories', 'brands', 'customers', 'couriers', 'districts', 'carts'));
-    }
-
-    // public function generateUniqueCode() {
-
-    //     // $characters = '0123456789';
-    //     // $charactersNumber = strlen($characters);
-    //     // $codeLength = 6;
-
-    //     // $code = '';
-
-    //     // while (strlen($code) < 6) {
-    //     //     $position = rand(0, $charactersNumber - 1);
-    //     //     $character = $characters[$position];
-    //     //     $code = $code.$character;
-    //     // }
-    //     // $code = date('y').'-'.$code;
-
-    //     // if (Order::where('code', $code)->exists()) {
-    //     //     $this->generateUniqueCode();
-    //     // }
-
-    //     $order = Order::orderBy('id', 'DESC')->first();
-    //     if (!is_null($order)) {
-    //         $code = $order->code + 1;
-    //     } else {
-    //         $code = 17000;
-    //     }
-
-    //     return $code;
-    // }
-
-    public function store(Request $request) {
-        if (Cart::content()->count() <= 0) {
-            return back()->with('errMsg', 'Please select products correctly!');
-        }
-
-        $order = new FacebookOrder;
-
-        if ($request->customer_id == 0) {
-            if (!User::where('phone', $request->phone)->exists()) {
-                $user = new User;
-                $user->name       = $request->name;
-                $user->email      = $request->email;
-                $user->phone      = $request->phone;
-                $user->city       = $request->district_id;
-                $user->address    = $request->shipping_address;
-                $user->password   = Hash::make(12345678);
-                $user->save();
-
-                $order->customer_id = $user->id;
-                $order->name = $user->name;
-                $order->email = $user->email;
-                $order->phone = $user->phone;
-            } else {
-                $user = User::where('phone', $request->phone)->first();
-                $order->customer_id = $user->id;
-                $order->name = $user->name;
-                $order->email = $user->email;
-                $order->phone = $user->phone;
-            }
-        } else {
-            $user = User::find($request->customer_id);
-            $order->customer_id = $user->id;
-            $order->name = $user->name;
-            $order->email = $user->email;
-            $order->phone = $user->phone;
-        }
-
-        if (auth()->user()->can('order.create')) {
-            $carts = Cart::content();
-
-            // return Cart::content();
-
-            $discount = 0;
-            if (Session::has('coupon_discount')) {
-                $discount = Session::get('coupon_discount');
-                $order->discount_amount = $discount;
-            }
-
-            $order->price = Cart::subtotal() - $discount;
-
-            $order->shipping_address = $request->shipping_address;
-            $order->courier_id = $request->courier_id;
-            $order->source = $request->source;
-            $order->note = $request->note;
-
-            $order->save();
-
-            // Calculate discoutn percentage
-
-            $percentage = ($discount / Cart::subtotal()) * 100;
-
-            foreach ($carts as $cart) {
-
-                $order_product = new FacebookOrderProduct;
-
-                $order_product->order_id = $order->id;
-                $order_product->product_id = $cart->id;
-                $order_product->size_id = $cart->options->size_id;
-                $order_product->price = round($cart->price - ($cart->price * ($percentage / 100)));
-                $order_product->production_cost = $cart->options->production_cost;
-                $order_product->qty = $cart->qty;
-                $order_product->save();
-
-                Cart::remove($cart->rowId);
-            }
-
-            Session::forget('coupon_discount');
-            Session::forget('wholesale_price');
-            Alert::toast('Order added successfully!', 'success');
-            return redirect()->route('fos.create');
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
-    }
-
-    public function take_advance(Request $request, $id) {
-        if (auth()->user()->can('order.edit')) {
-            $order = FacebookOrder::find($id);
-            if (!is_null($order)) {
-                $validatedData = $request->validate([
-                    'amount' => 'required|numeric',
-                ]);
-
-                $order->advance = $request->amount;
-                $order->save();
-                Alert::toast('Advance Amount Received', 'success');
-                return back();
-            } else {
-                Alert::toast('Something went wrong !', 'error');
-                return back();
-            }
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
-    }
+   
 
     public function product_filter(Request $request) {
         $product_name = $request->product_name;
