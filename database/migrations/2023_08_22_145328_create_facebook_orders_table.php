@@ -25,7 +25,7 @@ class CreateFacebookOrdersTable extends Migration {
             $table->foreign('courier_id')->references('id')->on('courier_names')->onDelete('restrict');
             $table->double('delivery_charge')->nullable();
             $table->enum('order_status_id', [1, 2, 3, 4, 5, 6])->default(1)->comment('1 = Follow Up, 2 = WILL CALL, 3 = WILL BKASH, 4 = CREATE MEMO, 5 = MEMO DONE, 6 = Cancel');
-            $table->enum('special_status_id', [1, 2, 3, 4, 5, 6])->default(1)->comment('1 = DISCOUNT, 2 = EXCESS ADVANCED AMOUNT, 3 = CODE CHANGE, 4 = SIZE CHANGE, 5 = EXCHANGE, 6 = DATE INDICATION');
+            $table->enum('special_status_id', [1, 2, 3, 4, 5, 6, 7])->default(1)->comment('1 = DISCOUNT, 2 = EXCESS ADVANCED AMOUNT, 3 = CODE CHANGE, 4 = SIZE CHANGE, 5 = EXCHANGE, 6 = DATE INDICATION');
             $table->string('note')->nullable();
             $table->string('remarks')->nullable();
             $table->double('discount_amount')->nullable();

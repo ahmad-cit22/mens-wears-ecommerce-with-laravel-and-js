@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -83,6 +83,9 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <label class="text-body">Memo Code</label>
+                                                    @if ($order->special_status_id == 4)
+                                                        <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                    @endif
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="code" class="form-control" placeholder="Enter Memo Code" value="{{ $order->code }}">
                                                     </fieldset>
@@ -216,23 +219,37 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-6">
-                                        <label class="text-body">Note</label>
+                                        <label class="text-body">Note
+                                            @if ($order->special_status_id == 6)
+                                                <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                            @endif
+                                        </label>
                                         <fieldset class="form-group">
                                             <textarea name="note" id="note" class="form-control" placeholder="Add Notes Here">{{ $order->note }}</textarea>
                                         </fieldset>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="text-body">Remarks</label>
+                                        <label class="text-body">Remarks
+                                            @if ($order->special_status_id == 2 || $order->special_status_id == 3 || $order->special_status_id == 6 || $order->special_status_id == 7)
+                                                <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                            @endif
+                                        </label>
                                         <fieldset class="form-group">
                                             <textarea name="remarks" id="remarks" class="form-control" placeholder="Add Remarks Here">{{ $order->remarks }}</textarea>
                                         </fieldset>
                                     </div>
                                     <div class="col-md-6">
                                         <label>Advance Amount</label>
+                                        @if ($order->special_status_id == 3)
+                                            <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                        @endif
                                         <input type="number" class="form-control" name="advance" value="{{ $order->advance }}" placeholder="Add Advance Amount Here">
                                     </div>
                                     <div class="col-md-6">
                                         <label>Discount Amount</label>
+                                        @if ($order->special_status_id == 2)
+                                            <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                        @endif
                                         <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount }}" placeholder="Add Discount Amount Here">
                                     </div>
                                 </div>
@@ -260,7 +277,11 @@
                                     <thead>
                                         <tr>
                                             <th>S.N</th>
-                                            <th>Product Title - Size - Price</th>
+                                            <th>Product Title - Size - Price
+                                                @if ($order->special_status_id == 5)
+                                                    <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                @endif
+                                            </th>
                                             <th>Price</th>
                                             <th>Qty</th>
                                             <th>Subtotal</th>
@@ -268,7 +289,13 @@
                                     </thead>
                                     <tbody>
                                         {{-- a --}}
-                                        @foreach ($order->order_product as $order_product)
+                                        @php
+                                            $k = 0;
+                                        @endphp
+                                        @foreach ($order->order_product as $key => $order_product)
+                                            @php
+                                                $k += $key;
+                                            @endphp
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
                                                 @if ($order_product->product != null)
@@ -288,18 +315,47 @@
                                                 @endif
                                                 <td>{{ env('CURRENCY') }}{{ $order_product->price }}</td>
                                                 <td>
+                                                    {{-- @php
+                                                        print_r(session()->all());
+                                                    @endphp --}}
                                                     <fieldset class="form-group mb-3">
                                                         <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="{{ $order_product->qty }}" style="width: 40% !important;">
-                                                        @error('qty[]')
+                                                        @if (session('qtyError' . $key))
                                                             <span class="invalid-feedback" role="alert" style="display: block;">
-                                                                <strong>{{ $message }}</strong>
+                                                                <strong>{{ session('qtyError' . $key) }}</strong>
                                                             </span>
-                                                        @enderror
+                                                        @endif
                                                     </fieldset>
                                                 </td>
                                                 <td>{{ env('CURRENCY') }}{{ $order_product->price * $order_product->qty }}</td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td>{{ $k + 2 }}</td>
+                                            @if ($order_product->product != null)
+                                                <td>
+                                                    <div class="selectmain">
+                                                        <select name="product[]" class="select2 select-down" id="" style="width: 60% !important;">
+                                                            <option value="0"> -- Add another product -- </option>
+                                                            @foreach ($products as $product)
+                                                                @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
+                                                                    <option value="{{ $product->id }}">{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            @else
+                                                <td> -- </td>
+                                            @endif
+                                            <td></td>
+                                            <td>
+                                                <fieldset class="form-group mb-3">
+                                                    <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="" style="width: 40% !important;">
+                                                </fieldset>
+                                            </td>
+                                            <td></td>
+                                        </tr>
                                         <tr>
                                             <td colspan="4" align="right">Discount (-):</td>
                                             <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
@@ -316,8 +372,12 @@
                                             </tr>
                                         @endif
                                         <tr>
-                                            <td colspan="4" align="right">Total Payable:</td>
-                                            <td>{{ env('CURRENCY') }}{{ round($order->price - $order->advance) }}</td>
+                                            <td colspan="4" align="right">Total Payable:
+                                                @if ($order->special_status_id == 2 || $order->special_status_id == 3)
+                                                    <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ env('CURRENCY') }}{{ round($order->price - $order->advance - $order->discount_amount) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -334,11 +394,11 @@
 
                     <!-- this row will not appear when printing -->
                     <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div> -->
                 </div>
                 <!-- /.invoice -->
             </div>

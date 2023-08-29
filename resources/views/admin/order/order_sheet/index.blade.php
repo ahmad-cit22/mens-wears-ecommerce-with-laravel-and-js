@@ -126,6 +126,7 @@
                                 <th>Status</th>
                                 <th>Special Status</th>
                                 <th>Total Bill</th>
+                                <th>Products</th>
                                 <th>Courier Name</th>
                                 <th width="15%">Note</th>
                                 <th width="15%">Remarks</th>
@@ -143,23 +144,45 @@
                             @foreach ($orders as $order)
                                 <tr class="bg-{{ $order->status->color }}">
                                     <td>{{ $loop->index + 1 }}</td>
-                                    <td><a class="text-light" href="{{ route('order.edit', $order->id) }}">{{ $order->code ?? 'N/A' }}</a></td>
-                                    <td width="20%">{{ $order->name }}</td>
+
+                                    <td class="{{ $order->special_status_id == 4 ? 'bg-' . $order->special_status->color : '' }}"><a class="" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a></td>
+
+                                    <td width="20%" style="font-weight: bold">{{ $order->name }}</td>
+
                                     <td>{{ $order->phone }}</td>
+
                                     <td>{{ $order->shipping_address }}</td>
+
                                     <td><span class="badge badge-{{ $order->status->color }}">{{ $order->status->title }}</span></td>
-                                    <td><span class="badge badge-{{ $order->special_status->color }}">{{ $order->status->title }}</span></td>
-                                    <td>{{ env('CURRENCY') . $order->price }}</td>
+
+                                    <td><span class="badge badge-{{ $order->special_status->color }}">{{ $order->special_status->title }}</span></td>
+
+                                    <td class="{{ $order->special_status_id == 2 || $order->special_status_id == 3 ? 'bg-' . $order->special_status->color : '' }}">{{ env('CURRENCY') . $order->price }}</td>
+
+                                    <td class="text-center {{ $order->special_status_id == 4 || $order->special_status_id == 5 ? 'bg-' . $order->special_status->color : '' }}">
+                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn bg-light text-dark" style="color: #000 !important; font-weight: bold" title="Edit">View</a>
+                                    </td>
+
                                     <td>{{ $order->courier->name }}</td>
-                                    <td>{{ $order->note }}</td>
-                                    <td>{{ $order->remarks ?? '--' }}</td>
+
+                                    <td class="{{ $order->special_status_id == 6 ? 'bg-' . $order->special_status->color : '' }}">{{ $order->note }}</td>
+
+                                    <td class="{{ $order->special_status_id == 2 || $order->special_status_id == 3 || $order->special_status_id == 6 || $order->special_status_id == 7 ? 'bg-' . $order->special_status->color : '' }}">{{ $order->remarks ?? '--' }}</td>
+
                                     <td>{{ $order->source }}</td>
+
                                     <td>{{ $order->bkash_business_id ? $order->bkash_business->number : '--' }}</td>
+
                                     <td>{{ $order->bkash_num ?? '--' }}</td>
+
                                     <td>{{ $order->bkash_amount ? env('CURRENCY') . $order->bkash_amount : '--' }}</td>
+
                                     <td>{{ $order->email ?? '--' }}</td>
+
                                     <td>{{ $order->whatsapp_num ?? '--' }}</td>
+
                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y g:iA') }}</td>
+
                                     <td>
                                         <a href="{{ route('fos.edit', $order->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
                                         <a href="#deleteModal{{ $order->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>

@@ -322,61 +322,46 @@ class FacebookOrderController extends Controller {
 
     public function order_products_update(Request $request, $id) {
 
-        $request->validate([
-            'qty[]' => 'required',
-        ], [
-            'qty[].required' => 'Quantity is required!',
-        ]);
+        for ($i = 0; $i < count($request->qty) - 1; $i++) {
+
+            if ($request->qty[$i] == null) {
+                return back()->with('qtyError' . $i, 'Quantity is required!');
+            }
+        }
+
+        // delete the old order products
+        $old_order_products = FacebookOrderProduct::where('order_id', $id);
+        $old_order_products->delete();
+        $new_total = 0;
 
         $i = 0;
 
         for ($i = 0; $i < count($request->qty); $i++) {
-            if ($request->qty[$i] != NULL && $request->qty[$i] > 0) {
-                $change += 1;
+            $product_stock = ProductStock::find($request->product[$i]);
 
-                // save the returned item
-                $sell_return = new OrderReturn;
-                $sell_return->order_id = $request->order_id;
-                $sell_return->order_code = $request->order_code;
-                $sell_return->code = $code;
-                $sell_return->product_id = $request->product_id[$i];
-                $sell_return->size_id = $request->size_id[$i];
-                $sell_return->qty = $request->qty[$i];
-                $sell_return->price = $request->price[$i];
-                $sell_return->save();
+            if ($request->qty[$i] > 0) {
+                // $change += 1;
 
-                $returned_price += $request->qty[$i] * $request->price[$i];
-
-                // adjust the order products
-                $order_product = OrderProduct::where('order_id', $request->order_id)->where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
-                $order_product->qty = $order_product->qty - $request->qty[$i];
-                $order_product->return_qty = $order_product->return_qty != null ? $order_product->return_qty + $request->qty[$i] : $request->qty[$i];
+                // save the updated order products
+                $order_product = new FacebookOrderProduct;
+                $order_product->order_id = $id;
+                $order_product->product_id = $product_stock->product->id;
+                $order_product->size_id = $product_stock->size_id;
+                $order_product->price = $product_stock->price;
+                $order_product->production_cost = $product_stock->production_cost;
+                $order_product->qty = $request->qty[$i];
                 $order_product->save();
 
-                // adjust the stock value
-                $stock = ProductStock::where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
-                $stock->qty += $request->qty[$i];
-                $stock->save();
+                $new_total += $order_product->qty * $order_product->price;
             }
         }
 
-        if ($change > 0) {
-            $order = Order::find($request->order_id);
-            $order->price = $order->price - $returned_price;
+        $order = FacebookOrder::find($id);
+        $order->price = $new_total;
+        $order->save();
 
-            if ($order->price > 0) {
-                $order->is_return = 2;
-            } else {
-                $order->is_return = 1;
-            }
-            $order->save();
-
-            Alert::toast('Return invoice created.', 'success');
-            return redirect()->route('order.edit', $order->id);
-        } else {
-            Alert::toast('Incorrect inputs, order return failed.', 'error');
-            return back();
-        }
+        Alert::toast('Order Products Updated.', 'success');
+        return redirect()->route('fos.edit', $id);
     }
 
 

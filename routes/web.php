@@ -297,6 +297,22 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/take-advance/{id}', [App\Http\Controllers\FacebookOrderController::class, 'take_advance'])->name('advance.payment');
 	});
 
+	// fos Status Routes
+	Route::group(['prefix' => 'fos/status', 'as' => 'fos.status.'], function () {
+		Route::get('/', [App\Http\Controllers\FacebookOrderStatusController::class, 'index'])->name('index');
+		Route::post('/store', [App\Http\Controllers\FacebookOrderStatusController::class, 'store'])->name('store');
+		Route::post('/update/{id}', [App\Http\Controllers\FacebookOrderStatusController::class, 'update'])->name('update');
+		Route::post('/destroy/{id}', [App\Http\Controllers\FacebookOrderStatusController::class, 'destroy'])->name('destroy');
+	});
+	
+	// fos Special Status Routes
+	Route::group(['prefix' => 'fos/special-status', 'as' => 'fos.special_status.'], function () {
+		Route::get('/', [App\Http\Controllers\OrderSpecialStatusController::class, 'index'])->name('index');
+		Route::post('/store', [App\Http\Controllers\OrderSpecialStatusController::class, 'store'])->name('store');
+		Route::post('/update/{id}', [App\Http\Controllers\OrderSpecialStatusController::class, 'update'])->name('update');
+		Route::post('/destroy/{id}', [App\Http\Controllers\OrderSpecialStatusController::class, 'destroy'])->name('destroy');
+	});
+
 	// Slider Routes
 	Route::group(['prefix' => 'slider', 'as' => 'slider.'], function () {
 		Route::get('/', [App\Http\Controllers\SliderController::class, 'index'])->name('index');
