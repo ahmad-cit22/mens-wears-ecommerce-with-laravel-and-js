@@ -205,6 +205,18 @@
                                     <p>Special Statuses</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.special_status.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Courier Services</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.special_status.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Bkash Numbers</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
