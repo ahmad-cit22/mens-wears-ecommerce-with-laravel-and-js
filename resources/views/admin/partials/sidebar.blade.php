@@ -206,13 +206,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('fos.special_status.index') }}" class="nav-link">
+                                <a href="{{ route('fos.courier_name.index') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
-                                    <p>Courier Services</p>
+                                    <p>Courier Infos</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('fos.special_status.index') }}" class="nav-link">
+                                <a href="{{ route('fos.bkash_number.index') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
                                     <p>Bkash Numbers</p>
                                 </a>

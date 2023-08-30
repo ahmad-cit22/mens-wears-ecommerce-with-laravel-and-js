@@ -5,12 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">FOS Order Status List</h1>
+                    <h1 class="m-0">FOS Bkash Number List</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Order Status</li>
+                        <li class="breadcrumb-item active">Bkash Number</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <a href="#addModal" class="btn btn-primary" data-toggle="modal"><i class="fas fa-plus"></i> Create Status</a>
+                    <a href="#addModal" class="btn btn-primary" data-toggle="modal"><i class="fas fa-plus"></i> Create Bkash Number</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">
@@ -29,65 +29,53 @@
                         <thead>
                             <tr>
                                 <th>S.N</th>
-                                <th>Title</th>
-                                <th>Color</th>
+                                <th>Name</th>
+                                <th>Number</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($statuses as $status)
+                            @foreach ($numbers as $number)
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
-                                    <td>{{ $status->title }}</td>
-                                    <td><span class="badge badge-{{ $status->color }}">{{ $status->color }}</span></td>
+                                    <td>{{ $number->name }}</td>
+                                    <td>{{ $number->number }}</td>
                                     <td>
-                                        <a href="#editModal{{ $status->id }}" class="btn btn-primary" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
-                                        <a href="#deleteModal{{ $status->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                        <a href="#editModal{{ $number->id }}" class="btn btn-primary" data-toggle="modal" number="Edit"><i class="fas fa-edit"></i></a>
+                                        <a href="#deleteModal{{ $number->id }}" class="btn btn-danger" data-toggle="modal" number="Delete"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
 
                                 <!-- Edit size Modal -->
-                                <div class="modal fade" id="editModal{{ $status->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="editModal{{ $number->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">
-                                                    Edit - {{ $status->title }}
+                                                <h5 class="modal-number" id="exampleModalLabel">
+                                                    Edit - {{ $number->number }}
                                                 </h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <div class="modal-body">
-                                                <form action="{{ route('fos.status.update', $status->id) }}" method="POST">
+                                            <form action="{{ route('fos.bkash_number.update', $number->id) }}" method="POST">
+                                                <div class="modal-body">
                                                     @csrf
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
-                                                                <label>Status Name *</label>
-                                                                <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" placeholder="Status Name" value="{{ $status->title }}" required>
-                                                                @error('title')
+                                                                <label>Number Name </label>
+                                                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter Number Name" value="{{ $number->name }}" required>
+                                                                @error('name')
                                                                     <span class="invalid-feedback" role="alert">
                                                                         <strong>{{ $message }}</strong>
                                                                     </span>
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group">
-                                                                <label>Status Color *</label>
-                                                                <div class="selectmain">
-                                                                    <select name="color" class="select2 select-down" id="">
-                                                                        <option value="0"> -- Choose an Option -- </option>
-                                                                        <option value="primary" {{ $status->color == 'primary' ? 'selected' : '' }}>Primary</option>
-                                                                        <option value="secondary" {{ $status->color == 'secondary' ? 'selected' : '' }}>Secondary</option>
-                                                                        <option value="success" {{ $status->color == 'success' ? 'selected' : '' }}>Success</option>
-                                                                        <option value="danger" {{ $status->color == 'danger' ? 'selected' : '' }}>Danger</option>
-                                                                        <option value="warning" {{ $status->color == 'warning' ? 'selected' : '' }}>Warning</option>
-                                                                        <option value="info" {{ $status->color == 'info' ? 'selected' : '' }}>Info</option>
-                                                                        <option value="light" {{ $status->color == 'light' ? 'selected' : '' }}>Light</option>
-                                                                        <option value="dark" {{ $status->color == 'dark' ? 'selected' : '' }}>Dark</option>
-                                                                    </select>
-                                                                </div>
-                                                                @error('color')
+                                                                <label>Number * </label>
+                                                                <input type="number" name="number" class="form-control @error('number') is-invalid @enderror" placeholder="Enter Bkash Number " value="{{ $number->number }}" required>
+                                                                @error('number')
                                                                     <span class="invalid-feedback" role="alert">
                                                                         <strong>{{ $message }}</strong>
                                                                     </span>
@@ -99,27 +87,25 @@
                                                             <button class="btn btn-primary">Save Changes</button>
                                                         </div>
                                                     </div>
-                                            </div>
+                                                </div>
                                             </form>
 
-                                        </div>
-                                        <div class="modal-footer">
                                         </div>
                                     </div>
                                 </div>
                 </div>
                 <!-- Delete size Modal -->
-                <div class="modal fade" id="deleteModal{{ $status->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal{{ $number->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete ?</h5>
+                                <h5 class="modal-number" id="exampleModalLabel">Are you sure you want to delete ?</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body" align="right">
-                                <form action="{{ route('fos.status.destroy', $status->id) }}" method="POST">
+                                <form action="{{ route('fos.bkash_number.destroy', $number->id) }}" method="POST">
                                     @csrf
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn btn-danger">Permanent Delete</button>
@@ -136,8 +122,8 @@
                 <tfoot>
                     <tr>
                         <th>S.N</th>
-                        <th>Title</th>
-                        <th>Color</th>
+                        <th>Name</th>
+                        <th>Number</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -150,10 +136,10 @@
         <!-- Add Modal -->
         <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <form action="{{ route('fos.status.store') }}" method="POST">
+                <form action="{{ route('fos.bkash_number.store') }}" method="POST">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Create Status</h5>
+                            <h5 class="modal-number" id="exampleModalLabel">Create Bkash Number</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -164,30 +150,18 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Status Name *</label>
-                                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Status Name" required>
-                                        @error('title')
+                                        <label>Number Name </label>
+                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter Number Name" value="{{ old('name') }}" required>
+                                        @error('name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>Status Color *</label>
-                                        <div class="selectmain">
-                                            <select name="color" class="select2 select-down" id="">
-                                                <option value="0"> -- Choose an Option -- </option>
-                                                <option value="primary">Primary</option>
-                                                <option value="secondary">Secondary</option>
-                                                <option value="success">Success</option>
-                                                <option value="danger">Danger</option>
-                                                <option value="warning">Warning</option>
-                                                <option value="info">Info</option>
-                                                <option value="light">Light</option>
-                                                <option value="dark">Dark</option>
-                                            </select>
-                                        </div>
-                                        @error('color')
+                                        <label>Number * </label>
+                                        <input type="number" name="number" class="form-control @error('number') is-invalid @enderror" placeholder="Enter Bkash Number " value="{{ old('number') }}" required>
+                                        @error('number')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

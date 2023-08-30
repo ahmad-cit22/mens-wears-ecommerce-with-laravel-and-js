@@ -175,7 +175,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Status Name *</label>
-                                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" placeholder="Status Name" required>
+                                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Status Name" required>
                                         @error('title')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -205,7 +205,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Related Field</label>
-                                        <input type="text" name="related_field" class="form-control @error('related_field') is-invalid @enderror" placeholder="Status Name">
+                                        <input type="text" name="related_field" class="form-control @error('related_field') is-invalid @enderror" placeholder="Status Name" value="{{ old('related_field') }}">
                                         @error('related_field')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
