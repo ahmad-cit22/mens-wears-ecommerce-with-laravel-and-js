@@ -276,7 +276,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/apply-discount', [App\Http\Controllers\PosController::class, 'apply_discount'])->name('apply.discount');
 	});
 
-	// Order Sheet Routes
+	// Order Sheet (FOS) Routes
 	Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {
 		Route::get('/', [App\Http\Controllers\FacebookOrderController::class, 'index'])->name('index');
 		Route::get('/create', [App\Http\Controllers\FacebookOrderController::class, 'create'])->name('create');
@@ -295,6 +295,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/destroy/{id}', [App\Http\Controllers\FacebookOrderController::class, 'destroy'])->name('destroy');
 
 		Route::post('/take-advance/{id}', [App\Http\Controllers\FacebookOrderController::class, 'take_advance'])->name('advance.payment');
+		Route::get('/search', [App\Http\Controllers\FacebookOrderController::class, 'search'])->name('search');
 	});
 
 	// fos Status Routes

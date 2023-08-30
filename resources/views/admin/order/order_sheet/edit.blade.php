@@ -2,18 +2,28 @@
 @php
     $business = App\Models\Setting::find(1);
 @endphp
+
+@section('style')
+    <style>
+        .badge-special_status {
+            background: rgb(255, 132, 0) !important;
+        }
+    </style>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Order</h1>
+                    <h1 class="m-0">Edit Order</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Order</li>
+                        <li class="breadcrumb-item">Order Sheet</li>
+                        <li class="breadcrumb-item active">Edit Order</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -25,9 +35,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -83,9 +93,6 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <label class="text-body">Memo Code</label>
-                                                    @if ($order->special_status_id == 4)
-                                                        <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
-                                                    @endif
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="code" class="form-control" placeholder="Enter Memo Code" value="{{ $order->code }}">
                                                     </fieldset>
@@ -221,7 +228,7 @@
                                     <div class="col-md-6">
                                         <label class="text-body">Note
                                             @if ($order->special_status_id == 6)
-                                                <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                <span class="p-1 pt-2 ml-1 px-2 badge badge-special_status">*</span>
                                             @endif
                                         </label>
                                         <fieldset class="form-group">
@@ -231,7 +238,7 @@
                                     <div class="col-md-6">
                                         <label class="text-body">Remarks
                                             @if ($order->special_status_id == 2 || $order->special_status_id == 3 || $order->special_status_id == 6 || $order->special_status_id == 7)
-                                                <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                <span class="p-1 pt-2 ml-1 px-2 badge badge-special_status">*</span>
                                             @endif
                                         </label>
                                         <fieldset class="form-group">
@@ -241,14 +248,14 @@
                                     <div class="col-md-6">
                                         <label>Advance Amount</label>
                                         @if ($order->special_status_id == 3)
-                                            <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                            <span class="p-1 pt-2 ml-1 px-2 badge badge-special_status">*</span>
                                         @endif
                                         <input type="number" class="form-control" name="advance" value="{{ $order->advance }}" placeholder="Add Advance Amount Here">
                                     </div>
                                     <div class="col-md-6">
                                         <label>Discount Amount</label>
                                         @if ($order->special_status_id == 2)
-                                            <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                            <span class="p-1 pt-2 ml-1 px-2 badge badge-special_status">*</span>
                                         @endif
                                         <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount }}" placeholder="Add Discount Amount Here">
                                     </div>
@@ -278,8 +285,8 @@
                                         <tr>
                                             <th>S.N</th>
                                             <th>Product Title - Size - Price
-                                                @if ($order->special_status_id == 5)
-                                                    <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                @if ($order->special_status_id == 4 || $order->special_status_id == 5)
+                                                    <span class="p-1 pt-2 ml-1 px-2 badge badge-special_status">*</span>
                                                 @endif
                                             </th>
                                             <th>Price</th>
@@ -374,7 +381,7 @@
                                         <tr>
                                             <td colspan="4" align="right">Total Payable:
                                                 @if ($order->special_status_id == 2 || $order->special_status_id == 3)
-                                                    <span class="p-1 pt-2 ml-1 px-2 badge badge-{{ $order->special_status->color }}">*</span>
+                                                    <span class="p-1 pt-2 ml-1 px-2 badge badge-special_status">*</span>
                                                 @endif
                                             </td>
                                             <td>{{ env('CURRENCY') }}{{ round($order->price - $order->advance - $order->discount_amount) }}</td>
@@ -394,11 +401,11 @@
 
                     <!-- this row will not appear when printing -->
                     <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div> -->
                 </div>
                 <!-- /.invoice -->
             </div>

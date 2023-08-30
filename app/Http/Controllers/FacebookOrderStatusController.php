@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use Alert;
+use App\Models\FacebookOrder;
 use App\Models\FacebookOrderStatus;
 use Image;
 use File;
@@ -89,6 +90,11 @@ class FacebookOrderStatusController extends Controller {
     public function destroy($id) {
         if (auth()->user()->can('size.create')) {
             $status = FacebookOrderStatus::find($id);
+
+            if (FacebookOrder::where('order_status_id', $id)->exists()) {
+                Alert::toast("Status can't be deleted because there is orders under this status !", 'warning');
+                return redirect()->route('fos.status.index');
+            };
 
             if (!is_null($status)) {
                 $status->delete();

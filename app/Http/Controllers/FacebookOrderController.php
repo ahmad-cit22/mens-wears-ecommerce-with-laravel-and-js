@@ -36,11 +36,13 @@ class FacebookOrderController extends Controller {
     public function index(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $special_status_id = '';
 
         if (auth()->user()->can('order.index')) {
             $orders = FacebookOrder::orderBy('id', 'DESC')->get();
 
-            return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to'));
+            return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -77,6 +79,10 @@ class FacebookOrderController extends Controller {
     public function store(Request $request) {
         if (Cart::content()->count() <= 0) {
             return back()->with('errMsg', 'Please select products correctly!');
+        } else if ($request->source == 0) {
+            return back()->with('errMsg', 'Please select order source!');
+        } else if ($request->courier_id == null) {
+            return back()->with('errMsg', 'Please select courier name!');
         }
 
         $order = new FacebookOrder;
@@ -159,88 +165,76 @@ class FacebookOrderController extends Controller {
         }
     }
 
-    // public function search(Request $request) {
-    //     $date_from = '';
-    //     $date_to = '';
+    public function search(Request $request) {
+        $date_from = '';
+        $date_to = '';
 
-    //     if (auth()->user()->can('order.index')) {
-    //         if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
-    //             $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
-    //             $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-    //             $order_status_id = $request->order_status_id;
+        if (auth()->user()->can('order.index')) {
+            if (!empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
 
-    //             $orders = Order::where('order_status_id', $order_status_id)
-    //                 ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
-    //             $date_from = $request->date_from;
-    //             $date_to = $request->date_to;
-    //         }
-    //         if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
 
-    //             $order_status_id = $request->order_status_id;
+            if (!empty($request->order_status_id) && !empty($request->special_status_id) && (empty($request->date_from) || empty($request->date_to))) {
+                $start_date = '';
+                $end_date = '';
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
 
-    //             $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
-    //         }
-    //         if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
-    //             $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
-    //             $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-    //             $order_status_id = $request->order_status_id;
-    //             $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->get();
 
-    //             $date_from = $request->date_from;
-    //             $date_to = $request->date_to;
-    //         }
-    //         if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-    //             $orders = Order::orderBy('id', 'DESC')->get();
-    //         }
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
 
-    //         // 2nd step filter
-    //         $district_id = $request->district_id;
+            if ((!empty($request->order_status_id) && empty($request->special_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->special_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->special_status_id) && empty($request->date_from) && !empty($request->date_to))) {
 
-    //         if (!empty($request->district_id) && !empty($request->area_id)) {
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
 
-    //             $orders = $orders->where('district_id', $request->district_id)->where('area_id', $request->area_id);
-    //         }
-    //         if (!empty($request->district_id) && empty($request->area_id)) {
-    //             $orders = $orders->where('district_id', $request->district_id);
-    //         }
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+            }
 
-    //         if ($request->ajax()) {
-    //             return Datatables::of($orders)
-    //                 // ->addIndexColumn()
-    //                 ->addColumn('code', function ($row) {
+            if ((empty($request->order_status_id) && !empty($request->special_status_id) && empty($request->date_from) && empty($request->date_to)) || (empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && empty($request->date_to)) || (empty($request->order_status_id) && !empty($request->special_status_id) && empty($request->date_from) && !empty($request->date_to))) {
 
-    //                     $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
 
-    //                     return $code;
-    //                 })
-    //                 ->addColumn('status', function ($row) {
+                $orders = FacebookOrder::where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->get();
+            }
 
-    //                     $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
+            if (empty($request->order_status_id) && empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+                $orders = FacebookOrder::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
-    //                     return $data;
-    //                 })
-    //                 ->addColumn('date', function ($row) {
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+            if (empty($request->order_status_id) && empty($request->special_status_id) && (empty($request->date_from) || empty($request->date_to))) {
+                $date_from = '';
+                $date_to = '';
+                $order_status_id = '';
+                $special_status_id = '';
 
-    //                     $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
+                $orders = FacebookOrder::orderBy('id', 'DESC')->get();
+            }
 
-    //                     return $data;
-    //                 })
-    //                 ->addColumn('action', function ($row) {
-
-    //                     $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-    //                       <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
-
-    //                     return $btn;
-    //                 })
-    //                 ->rawColumns(['code', 'status', 'date', 'action'])
-    //                 ->make(true);
-    //         }
-    //         return view('admin.order.index', compact('orders', 'date_from', 'date_to'));
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
+            return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
     // /**
 
     /**
@@ -389,50 +383,6 @@ class FacebookOrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-
-    // public function change_status(Request $request, $id) {
-    //     if (auth()->user()->can('order.edit')) {
-    //         $order = Order::find($id);
-    //         if (!is_null($order)) {
-    //             if ($request->order_status_id == 5) {
-    //                 $validatedData = $request->validate(
-    //                     [
-    //                         'note' => 'required',
-    //                     ],
-    //                     [
-    //                         'note.required' => 'Please Provide a Cancellation Reason',
-    //                     ]
-    //                 );
-
-    //                 if ($order->is_final == 1) {
-    //                     $order_products = $order->order_product;
-    //                     foreach ($order_products as $product) {
-    //                         $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
-    //                         $stock->qty += $product->qty;
-    //                         $stock->save();
-    //                     }
-    //                     $order->is_final = 0;
-    //                 }
-    //             }
-
-    //             $order->order_status_id = $request->order_status_id;
-    //             $order->note = $request->note;
-    //             $order->save();
-    //             // $msg = 'Dear Sir/Madam, Your order('. $order->code .') status has been updated to '.$order->status->title.'. Thanks for shopping with us.';
-    //             // $send_sms = $order->send_sms($msg, $order->phone);
-
-    //             Alert::toast('Status Updated!', 'success');
-    //             return back();
-    //         } else {
-    //             Alert::toast('Something went wrong !', 'error');
-    //             return back();
-    //         }
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
-
-
 
     public function product_filter(Request $request) {
         $product_name = $request->product_name;
