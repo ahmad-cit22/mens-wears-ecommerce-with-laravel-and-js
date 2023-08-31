@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                </div> -->
 
 
                     <!-- Main content -->
@@ -69,6 +69,7 @@
                                         @if ($order->courier_name)
                                             Courier Name: {{ $order->courier_name }}
                                         @endif
+                                        Order Source: {{ $order->source }}
                                     </address>
                                 </div>
                                 <!-- /.col -->
@@ -152,14 +153,17 @@
                                             @enderror
                                         </div>
                                         <div class="row justify-content-start">
-                                            <div class="col-6">
+                                            <div class="col-4">
                                                 <div class="form-group">
                                                     <button type="submit" class="btn btn-primary">Save Changes</button>
                                                 </div>
                                             </div>
-                                            <div class="col-6 text-right">
+                                            <div class="col-8 text-right">
                                                 <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
                                                 <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                @if ($order->discount_amount != null)
+                                                    <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
+                                                @endif
                                             </div>
                                         </div>
                                     </form>
@@ -245,11 +249,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                <div class="col-12">
-                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                              </div> -->
+                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                  </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
@@ -335,6 +339,24 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- remove_discount Modal -->
+    <div class="modal fade" id="remove-discount" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Remove Discount</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a href="{{ route('order.remove.discount', $order->id) }}" class="btn btn-primary bg-danger">Confirm</a>
                 </div>
             </div>
         </div>

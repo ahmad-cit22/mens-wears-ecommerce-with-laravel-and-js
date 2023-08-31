@@ -136,6 +136,7 @@
                             </div>
 
                         </div>
+                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.index') }}">Sell List</a>
 
                         {{-- <div class="topbar-item folder-data">
                             <div class="btn btn-icon  w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#folderpop">

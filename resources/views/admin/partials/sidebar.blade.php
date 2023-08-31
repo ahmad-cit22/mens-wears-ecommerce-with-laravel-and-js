@@ -172,7 +172,7 @@
                         </ul>
                     </li>
 
-                     <li class="nav-item">
+                    <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-th"></i>
                             <p>
@@ -184,13 +184,37 @@
                             <li class="nav-item">
                                 <a href="{{ route('fos.create') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
-                                    <p>Create New</p>
+                                    <p>New Order</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('fos.index') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
                                     <p>Order List</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.status.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Statuses</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.special_status.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Special Statuses</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.courier_name.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Courier Infos</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('fos.bkash_number.index') }}" class="nav-link">
+                                    <i class="fas fa-angle-right"></i>
+                                    <p>Bkash Numbers</p>
                                 </a>
                             </li>
                         </ul>

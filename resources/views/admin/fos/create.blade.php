@@ -47,14 +47,12 @@
     <!-- pos header -->
 
     <header class="pos-header bg-white">
-        <h2 class="mt-1 mb-3 text-center text-primary font-weight-bold">Order Sheet</h2>
-        <div class="container-fluid">
+        <h1 class="mt-2 mb-4 text-center text-success font-weight-bold">Order Sheet</h1>
+        <div class="container-fluid py-3 text-white" style="background: rgba(0, 128, 0, 0.387)">
             <div class="row align-items-center">
                 <div class="col-lg-4 col-md-12">
                     <div class="greeting-text">
-                        <h3 class="card-label mb-0 font-weight-bold text-info">WELCOME
-                        </h3>
-                        <h3 class="card-label mb-0 ">
+                        <h3 class="card-label mb-0 text-white">
                             {{ $business->name }}
                         </h3>
                     </div>
@@ -63,7 +61,7 @@
                 <div class="col-lg-4 col-md-12 clock-main">
                     <div class="clock">
                         <div class="datetime-content">
-                            <div id="Date" class=""></div>
+                            <div id="Date" class="text-white"></div>
                         </div>
 
                     </div>
@@ -71,7 +69,7 @@
                 </div>
                 <div class="col-lg-4 col-md-12  order-lg-last order-second">
 
-                    <div class="topbar justify-content-end">
+                    <div class="topbar justify-content-end" style="background: rgba(0, 128, 0, 0.024)">
                         <div class="dropdown mega-dropdown">
                             <div id="id2" class="topbar-item" data-toggle="dropdown" data-display="static">
                                 <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3">
@@ -128,7 +126,7 @@
                             </div>
 
                         </div>
-                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('home') }}">Dashboard</a>
+                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('fos.index') }}">Order List</a>
                     </div>
 
                 </div>
@@ -148,8 +146,8 @@
                 @csrf
                 <div class="row">
                     <div class="col-xl-4 order-xl-first order-last">
-                        <div class="card card-custom gutter-b bg-white border-0" style="height: auto;">
-                            <div class="card-body">
+                        <div class="card card-custom gutter-b bg-white border-0" style="height: auto; background: rgba(255, 140, 0, 0.156)">
+                            <div class="card-body" style="background: rgba(255, 140, 0, 0.156)">
                                 <div class="d-flex justify-content-between mb-4">
                                     <input type="text" class="form-control border-dark" id="product_name" placeholder="Product Name">
                                 </div>
@@ -179,7 +177,7 @@
                                 </div>
                             </div>
                             <div class="product-items">
-                                <div class="row" id="product_filtered">
+                                <div class="row" id="product_filtered" style="background: rgba(255, 140, 0, 0.156)">
                                     @foreach ($products as $product)
                                         @include('admin.fos.partials.product')
                                     @endforeach
@@ -192,6 +190,7 @@
                     <div class="col-xl-5 col-lg-8 col-md-8">
                         <div class="">
                             <div class="card card-custom gutter-b bg-white border-0 table-contentpos">
+                                <h3 class="my-3 text-center text-success font-weight-bold">New Order Entry</h3>
                                 <div class="card-body">
                                     <div class="mb-2">
                                         <h6 class="text-dark fw-bold">Choose a Customer - </h6>
@@ -236,7 +235,7 @@
                                             <div class="col-md-6">
                                                 <div class="selectmain">
                                                     <label class="text-dark d-flex">Order Source*</label>
-                                                    <select name="source" class="select2 select-down" id="source" required>
+                                                    <select name="source" class="select2 select-down" id="source" required="true">
                                                         <option value="0">--- Select ---</option>
                                                         <option value="Offline">Offline</option>
                                                         <option value="Online">Online</option>
@@ -250,7 +249,7 @@
                                             <div class="col-md-6">
                                                 <div class="selectmain">
                                                     <label class="text-dark d-flex">Courier Name</label>
-                                                    <select name="courier_id" class="select2 select-down" id="courier_id">
+                                                    <select name="courier_id" class="select2 select-down" id="courier_id" required>
                                                         <option value="">--- Select ---</option>
                                                         @foreach ($couriers as $courier)
                                                             <option value="{{ $courier->id }}">{{ $courier->name }}</option>
@@ -314,18 +313,18 @@
                     </div>
                     <div class="col-xl-3 col-lg-4 col-md-4">
                         <div class="card card-custom gutter-b bg-white border-0">
-                            <div class="card-body">
+                            <div class="card-body" style="background: rgba(255, 140, 0, 0.156)">
                                 <div class="shop-profile">
                                     <div class="media">
-                                        <div class="bg-info w-100px h-100px d-flex justify-content-center align-items-center">
+                                        <div class="w-100px h-100px d-flex justify-content-center align-items-center" style="background: rgba(255, 140, 0, 0.806)">
                                             <h2 class="mb-0 white">G</h2>
                                         </div>
                                         <div class="media-body ml-3">
                                             <h3 class="title font-weight-bold text-info">{{ $business->name }}</h3>
-                                            <p class="phoonenumber">
+                                            <p class="phoonenumber text-dark">
                                                 {{ $business->phone }}
                                             </p>
-                                            <p class="adddress">
+                                            <p class="adddress text-dark">
                                                 {{ $business->address }}
                                             </p>
                                             <!-- <p class="countryname">USA</p> -->
@@ -365,30 +364,6 @@
                                             </tr>
 
                                             <tr class="d-flex align-items-center justify-content-between">
-                                                <th class="border-0">
-                                                    <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark">
-                                                        Shipping Charge
-
-                                                    </div>
-                                                </th>
-                                                <td class="border-0 justify-content-end d-flex text-dark font-size-base">
-                                                    {{ env('CURRENCY') }}<span id="shipping_charge_label">0</span>
-                                                    <input type="hidden" name="shipping_charge" id="shipping_charge" value="0" />
-                                                </td>
-
-                                            </tr>
-                                            <tr class="d-flex align-items-center justify-content-between">
-                                                <th class="border-0">
-                                                    <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark">
-                                                        Charge Advanced
-                                                    </div>
-                                                </th>
-                                                <td class="border-0 justify-content-end d-flex text-dark font-size-base">
-                                                    {{ env('CURRENCY') }}<span id="charge_advanced_label">0</span>
-                                                </td>
-
-                                            </tr>
-                                            <tr class="d-flex align-items-center justify-content-between">
                                                 <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark">
                                                     Discount
                                                 </th>
@@ -413,7 +388,7 @@
                                     </table>
                                 </div>
                                 <div align="right">
-                                    <button class="btn btn-info white mb-2" type="submit"><i class="fas fa-money-bill-wave mr-2"></i>Save</button>
+                                    <button class="btn white mb-2" style="background: rgba(255, 140, 0, 0.806)" type="submit"><i class="fas fa-money-bill-wave mr-2"></i>Save</button>
                                 </div>
 
                             </div>
@@ -589,124 +564,6 @@
             }
         });
 
-        $('#district_id').change(function() {
-            var district_id = $(this).val();
-            if (district_id == '') {
-                district_id = -1;
-            }
-            var option = "<option value=''>Please Select an Area</option>";
-            var url = "{{ url('/') }}";
-            $.get(url + "/get-area/" + district_id, function(data) {
-                data = JSON.parse(data);
-                data.forEach(function(element) {
-                    option += "<option value='" + element.id + "'>" + element.name + "</option>";
-                });
-                //console.log(option);
-                $('#areas').html(option);
-            });
-        });
-
-        $('#areas').change(function() {
-            var area_id = $(this).val();
-            if (area_id == '') {
-                area_id = -1;
-            }
-            var url = "{{ url('/') }}";
-
-            var subtotal = $('#subtotal_amount').val();
-            var discount = $('#discount').val();
-
-            @if (Session::has('wholesale_price'))
-                $('#shipping_charge_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
-                $('#shipping_charge').val(0);
-            @else
-                $.ajax({
-                    url: url + "/get-shipping-charge",
-                    type: "POST",
-                    data: {
-                        area_id: area_id,
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(response) {
-                        $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
-                        $('#shipping_charge').val(response);
-                    }
-                });
-            @endif
-
-        });
-
-        $("#remove_shipping_charge").click(function() {
-            var subtotal = $('#subtotal_amount').val();
-            var discount = $('#discount').val();
-            if ($("#remove_shipping_charge").is(':checked')) {
-                $('#shipping_charge_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
-                $('#shipping_charge').val(0);
-            } else {
-                var area_id = $('#areas').val();
-                if (area_id == '') {
-                    area_id = -1;
-                }
-                var url = "{{ url('/') }}";
-
-                var subtotal = $('#subtotal_amount').val();
-                var discount = $('#discount').val();
-                $.ajax({
-                    url: url + "/get-shipping-charge",
-                    type: "POST",
-                    data: {
-                        area_id: area_id,
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(response) {
-                        $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
-                        $('#shipping_charge').val(response);
-                    }
-                });
-            }
-        })
-
-        $("#advance_shipping_charge").click(function() {
-            var subtotal = $('#subtotal_amount').val();
-            var discount = $('#discount').val();
-            var shipping_charge = $('#shipping_charge').val();
-            if ($("#advance_shipping_charge").is(':checked')) {
-                $('#showChargeBox').show();
-                // $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
-                $("#advanced_charge").on("input", function() {
-                    let charge_advanced = $(this).val();
-                    if (charge_advanced > 0) {
-                        $('#charge_advanced_label').html(charge_advanced);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount));
-                    }
-                });
-
-            } else {
-                $('#advanced_charge').val(0);
-                $('#charge_advanced_label').html(0);
-                $('#showChargeBox').hide();
-
-                var shipping_charge = $('#shipping_charge').val();
-                var subtotal = $('#subtotal_amount').val();
-                var discount = $('#discount').val();
-
-                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(discount));
-            }
-        })
-
-
-        // $('#remove_shipping_charge_label').click(function() {
-        //     // if () {
-        //         alert(document.getElementById('remove_shipping_charge').checked);
-        //     // }
-        // })
-
-
-
         function add_cart(stock_id) {
             url = "{{ route('fos.cart.add') }}";
             var stock_id = stock_id;
@@ -719,14 +576,12 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
-                    var shipping_charge = $('#shipping_charge').val();
-                    var advanced_charge = $('#advanced_charge').val();
                     var discount = $('#discount').val();
 
                     $('#total_count').html(response.total_count);
                     $('#subtotal').html(response.total_amount);
                     $('#subtotal_amount').val(response.total_amount);
-                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount));
+                    $('#total_amount').html(parseInt(response.total_amount) - parseInt(discount));
                     $('#cart_table').html(response.cart_table);
                 }
             });
@@ -746,13 +601,11 @@
                     $('#total_count').html(response.total_count);
                     $('#subtotal').html(response.total_amount);
                     $('#subtotal_amount').val(response.total_amount);
-                    var shipping_charge = $('#shipping_charge').val();
                     var discount = $('#discount').val();
-                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+                    $('#total_amount').html(parseInt(response.total_amount) - parseInt(discount));
                     $('#cart_table').html(response.cart_table);
                 }
             });
-
         }
 
         $("#barcode").keyup(function() {
@@ -772,9 +625,8 @@
                             $('#total_count').html(response.total_count);
                             $('#subtotal').html(response.total_amount);
                             $('#subtotal_amount').val(response.total_amount);
-                            var shipping_charge = $('#shipping_charge').val();
                             var discount = $('#discount').val();
-                            $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+                            $('#total_amount').html(parseInt(response.total_amount) - parseInt(discount));
                             $('#cart_table').html(response.cart_table);
                             $("#barcode").val('');
                         }
@@ -803,9 +655,8 @@
                         $('#total_count').html(response.total_count);
                         $('#subtotal').html(response.total_amount);
                         $('#subtotal_amount').val(response.total_amount);
-                        var shipping_charge = $('#shipping_charge').val();
                         var discount = $('#discount').val();
-                        $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+                        $('#total_amount').html(parseInt(response.total_amount) - parseInt(discount));
                         $('#cart_table').html(response.cart_table);
                     }
                 });
@@ -826,16 +677,14 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        var shipping_charge = $('#shipping_charge').val();
                         $('#discount_amount_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
+                        $('#total_amount').html(parseInt(subtotal) - parseInt(response));
                         $('#discount').val(response);
                     }
                 });
             } else {
-                var shipping_charge = $('#shipping_charge').val();
                 $('#discount_amount_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(0));
+                $('#total_amount').html(parseInt(subtotal) - parseInt(0));
                 $('#discount').val(0);
             }
 

@@ -812,4 +812,31 @@ class OrderController extends Controller {
             return back();
         }
     }
+
+    public function remove_discount($id) {
+        if (auth()->user()->can('order.edit')) {
+            $order = Order::find($id);
+
+            if (!is_null($order)) {
+                $order_products = $order->order_product;
+                foreach ($order_products as $product) {
+                    $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
+
+                    $product->price = $stock->price;
+                    $product->save();
+                }
+
+                $order->discount_amount = null;
+                $order->save();
+                Alert::toast('Discount Removed!', 'success');
+
+                return back();
+            } else {
+                Alert::toast('Something went wrong!', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 }

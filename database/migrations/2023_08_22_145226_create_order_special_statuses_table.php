@@ -15,6 +15,7 @@ class CreateOrderSpecialStatusesTable extends Migration {
             $table->id();
             $table->string('title');
             $table->string('color')->nullable();
+            $table->string('related_field')->nullable();
             $table->integer('is_active')->default(1);
             $table->timestamps();
         });

@@ -15,12 +15,15 @@ use App\Models\Area;
 
 use Illuminate\Http\Request;
 use Auth;
-use Alert;
+use RealRashid\SweetAlert\Facades\Alert;
 use Mail;
 use App\Mail\OrderMail;
+use App\Models\BkashNumber;
 use App\Models\CourierName;
 use App\Models\FacebookOrder;
 use App\Models\FacebookOrderProduct;
+use App\Models\FacebookOrderStatus;
+use App\Models\OrderSpecialStatus;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Session;
@@ -33,197 +36,17 @@ class FacebookOrderController extends Controller {
     public function index(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $special_status_id = '';
 
         if (auth()->user()->can('order.index')) {
             $orders = FacebookOrder::orderBy('id', 'DESC')->get();
 
-            return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to'));
+            return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
-    // public function search(Request $request) {
-    //     $date_from = '';
-    //     $date_to = '';
-
-    //     if (auth()->user()->can('order.index')) {
-    //         if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
-    //             $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
-    //             $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-    //             $order_status_id = $request->order_status_id;
-
-    //             $orders = Order::where('order_status_id', $order_status_id)
-    //                 ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
-
-    //             $date_from = $request->date_from;
-    //             $date_to = $request->date_to;
-    //         }
-    //         if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
-
-    //             $order_status_id = $request->order_status_id;
-
-    //             $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
-    //         }
-    //         if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
-    //             $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
-    //             $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-    //             $order_status_id = $request->order_status_id;
-    //             $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
-
-    //             $date_from = $request->date_from;
-    //             $date_to = $request->date_to;
-    //         }
-    //         if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-    //             $orders = Order::orderBy('id', 'DESC')->get();
-    //         }
-
-    //         // 2nd step filter
-    //         $district_id = $request->district_id;
-
-    //         if (!empty($request->district_id) && !empty($request->area_id)) {
-
-    //             $orders = $orders->where('district_id', $request->district_id)->where('area_id', $request->area_id);
-    //         }
-    //         if (!empty($request->district_id) && empty($request->area_id)) {
-    //             $orders = $orders->where('district_id', $request->district_id);
-    //         }
-
-    //         if ($request->ajax()) {
-    //             return Datatables::of($orders)
-    //                 // ->addIndexColumn()
-    //                 ->addColumn('code', function ($row) {
-
-    //                     $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
-
-    //                     return $code;
-    //                 })
-    //                 ->addColumn('status', function ($row) {
-
-    //                     $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
-
-    //                     return $data;
-    //                 })
-    //                 ->addColumn('date', function ($row) {
-
-    //                     $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
-
-    //                     return $data;
-    //                 })
-    //                 ->addColumn('action', function ($row) {
-
-    //                     $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-    //                       <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
-
-    //                     return $btn;
-    //                 })
-    //                 ->rawColumns(['code', 'status', 'date', 'action'])
-    //                 ->make(true);
-    //         }
-    //         return view('admin.order.index', compact('orders', 'date_from', 'date_to'));
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
-    // /**
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) {
-        if (auth()->user()->can('order.edit')) {
-            $order = FacebookOrder::find($id);
-
-            if (!is_null($order)) {
-                return view('admin.order.order_sheet.edit', compact('order'));
-            } else {
-                Alert::toast('Order Not Found', 'error');
-                return back();
-            }
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    // public function update(Request $request, Order $order) {
-    //     //
-    // }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id) {
-        if (auth()->user()->can('order.delete')) {
-            $order = FacebookOrder::find($id);
-            if (!is_null($order)) {
-                foreach ($order->order_product as $product) {
-                    $product->delete();
-                }
-                $order->delete();
-                Alert::toast('Order deleted successfully!', 'success');
-                return redirect()->route('fos.index');
-            } else {
-                Alert::toast('Something went wrong !', 'error');
-                return back();
-            }
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
-    }
-
-    // public function change_status(Request $request, $id) {
-    //     if (auth()->user()->can('order.edit')) {
-    //         $order = Order::find($id);
-    //         if (!is_null($order)) {
-    //             if ($request->order_status_id == 5) {
-    //                 $validatedData = $request->validate(
-    //                     [
-    //                         'note' => 'required',
-    //                     ],
-    //                     [
-    //                         'note.required' => 'Please Provide a Cancellation Reason',
-    //                     ]
-    //                 );
-
-    //                 if ($order->is_final == 1) {
-    //                     $order_products = $order->order_product;
-    //                     foreach ($order_products as $product) {
-    //                         $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
-    //                         $stock->qty += $product->qty;
-    //                         $stock->save();
-    //                     }
-    //                     $order->is_final = 0;
-    //                 }
-    //             }
-
-    //             $order->order_status_id = $request->order_status_id;
-    //             $order->note = $request->note;
-    //             $order->save();
-    //             // $msg = 'Dear Sir/Madam, Your order('. $order->code .') status has been updated to '.$order->status->title.'. Thanks for shopping with us.';
-    //             // $send_sms = $order->send_sms($msg, $order->phone);
-
-    //             Alert::toast('Status Updated!', 'success');
-    //             return back();
-    //         } else {
-    //             Alert::toast('Something went wrong !', 'error');
-    //             return back();
-    //         }
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
 
     public function create(Request $request) {
         if (Session::has('wholesale_price')) {
@@ -253,38 +76,13 @@ class FacebookOrderController extends Controller {
         return view('admin.fos.create', compact('products', 'categories', 'brands', 'customers', 'couriers', 'districts', 'carts'));
     }
 
-    // public function generateUniqueCode() {
-
-    //     // $characters = '0123456789';
-    //     // $charactersNumber = strlen($characters);
-    //     // $codeLength = 6;
-
-    //     // $code = '';
-
-    //     // while (strlen($code) < 6) {
-    //     //     $position = rand(0, $charactersNumber - 1);
-    //     //     $character = $characters[$position];
-    //     //     $code = $code.$character;
-    //     // }
-    //     // $code = date('y').'-'.$code;
-
-    //     // if (Order::where('code', $code)->exists()) {
-    //     //     $this->generateUniqueCode();
-    //     // }
-
-    //     $order = Order::orderBy('id', 'DESC')->first();
-    //     if (!is_null($order)) {
-    //         $code = $order->code + 1;
-    //     } else {
-    //         $code = 17000;
-    //     }
-
-    //     return $code;
-    // }
-
     public function store(Request $request) {
         if (Cart::content()->count() <= 0) {
             return back()->with('errMsg', 'Please select products correctly!');
+        } else if ($request->source == 0) {
+            return back()->with('errMsg', 'Please select order source!');
+        } else if ($request->courier_id == null) {
+            return back()->with('errMsg', 'Please select courier name!');
         }
 
         $order = new FacebookOrder;
@@ -350,7 +148,7 @@ class FacebookOrderController extends Controller {
                 $order_product->order_id = $order->id;
                 $order_product->product_id = $cart->id;
                 $order_product->size_id = $cart->options->size_id;
-                $order_product->price = round($cart->price - ($cart->price * ($percentage / 100)));
+                $order_product->price = $cart->price;
                 $order_product->production_cost = $cart->options->production_cost;
                 $order_product->qty = $cart->qty;
                 $order_product->save();
@@ -367,18 +165,216 @@ class FacebookOrderController extends Controller {
         }
     }
 
-    public function take_advance(Request $request, $id) {
+    public function search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+
+        if (auth()->user()->can('order.index')) {
+            if (!empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+
+            if (!empty($request->order_status_id) && !empty($request->special_status_id) && (empty($request->date_from) || empty($request->date_to))) {
+                $start_date = '';
+                $end_date = '';
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+
+            if ((!empty($request->order_status_id) && empty($request->special_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->special_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->special_status_id) && empty($request->date_from) && !empty($request->date_to))) {
+
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+            }
+
+            if ((empty($request->order_status_id) && !empty($request->special_status_id) && empty($request->date_from) && empty($request->date_to)) || (empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && empty($request->date_to)) || (empty($request->order_status_id) && !empty($request->special_status_id) && empty($request->date_from) && !empty($request->date_to))) {
+
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+
+                $orders = FacebookOrder::where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->get();
+            }
+
+            if (empty($request->order_status_id) && empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+                $orders = FacebookOrder::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+            if (empty($request->order_status_id) && empty($request->special_status_id) && (empty($request->date_from) || empty($request->date_to))) {
+                $date_from = '';
+                $date_to = '';
+                $order_status_id = '';
+                $special_status_id = '';
+
+                $orders = FacebookOrder::orderBy('id', 'DESC')->get();
+            }
+
+            return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    // /**
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id) {
+        if (auth()->user()->can('order.edit')) {
+            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $order = FacebookOrder::find($id);
+            $couriers = CourierName::all();
+            $statuses = FacebookOrderStatus::where('is_active', 1)->get();
+            $special_statuses = OrderSpecialStatus::where('is_active', 1)->get();
+            $bkash_nums = BkashNumber::all();
+            $sizes = Size::all();
+
+            if (!is_null($order)) {
+                return view('admin.order.order_sheet.edit', compact('order', 'products', 'sizes', 'couriers', 'statuses', 'special_statuses', 'bkash_nums'));
+            } else {
+                Alert::toast('Order Not Found', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function order_info_update(Request $request, $id) {
+
+        $request->validate([
+            'name'  => 'required',
+            'phone' => 'required',
+            'shipping_address'  => 'required',
+            'source'    => 'required|not_in:0',
+            'order_status_id'    => 'required|not_in:0',
+        ]);
+
         if (auth()->user()->can('order.edit')) {
             $order = FacebookOrder::find($id);
             if (!is_null($order)) {
-                $validatedData = $request->validate([
-                    'amount' => 'required|numeric',
-                ]);
-                
-                $order->advance = $request->amount;
+                $order->code = $request->code;
+                $order->name = $request->name;
+                $order->email = $request->email;
+                $order->phone = $request->phone;
+                $order->whatsapp_num = $request->whatsapp_num;
+                $order->shipping_address = $request->shipping_address;
+                $order->bkash_num = $request->bkash_num;
+                $order->bkash_business_id = $request->bkash_business_id;
+                $order->bkash_amount = $request->bkash_amount;
+                $order->source = $request->source;
+                $order->courier_id = $request->courier_id;
+                $order->order_status_id = $request->order_status_id;
+                $order->special_status_id = $request->special_status_id;
+                $order->note = $request->note;
+                $order->remarks = $request->remarks;
+                $order->advance = $request->advance;
+                $order->discount_amount = $request->discount_amount;
                 $order->save();
-                Alert::toast('Advance Amount Received', 'success');
+
+                Alert::toast('Order Info Updated!', 'success');
                 return back();
+            } else {
+                Alert::toast('Something went wrong !', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function order_products_update(Request $request, $id) {
+
+        for ($i = 0; $i < count($request->qty) - 1; $i++) {
+
+            if ($request->qty[$i] == null) {
+                return back()->with('qtyError' . $i, 'Quantity is required!');
+            }
+        }
+
+        // delete the old order products
+        $old_order_products = FacebookOrderProduct::where('order_id', $id);
+        $old_order_products->delete();
+        $new_total = 0;
+
+        $i = 0;
+
+        for ($i = 0; $i < count($request->qty); $i++) {
+            $product_stock = ProductStock::find($request->product[$i]);
+
+            if ($request->qty[$i] > 0) {
+                // $change += 1;
+
+                // save the updated order products
+                $order_product = new FacebookOrderProduct;
+                $order_product->order_id = $id;
+                $order_product->product_id = $product_stock->product->id;
+                $order_product->size_id = $product_stock->size_id;
+                $order_product->price = $product_stock->price;
+                $order_product->production_cost = $product_stock->production_cost;
+                $order_product->qty = $request->qty[$i];
+                $order_product->save();
+
+                $new_total += $order_product->qty * $order_product->price;
+            }
+        }
+
+        $order = FacebookOrder::find($id);
+        $order->price = $new_total;
+        $order->save();
+
+        Alert::toast('Order Products Updated.', 'success');
+        return redirect()->route('fos.edit', $id);
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id) {
+        if (auth()->user()->can('order.delete')) {
+            $order = FacebookOrder::find($id);
+            if (!is_null($order)) {
+                foreach ($order->order_product as $product) {
+                    $product->delete();
+                }
+                $order->delete();
+                Alert::toast('Order deleted successfully!', 'success');
+                return redirect()->route('fos.index');
             } else {
                 Alert::toast('Something went wrong !', 'error');
                 return back();
