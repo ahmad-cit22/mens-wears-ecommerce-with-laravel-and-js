@@ -7,7 +7,8 @@
         }
 
         .bigFont {
-            font-size: 16px !important;
+            font-size: 15px !important;
+            border: 1px solid #fff;
         }
     </style>
 @endsection
@@ -120,10 +121,10 @@
                         <thead>
                             <tr>
                                 <th>S.N</th>
-                                <th>Memo Code</th>
+                                <th style="min-width: 60px">Memo</th>
                                 <th style="min-width: 130px">Customer Name</th>
                                 <th>Phone</th>
-                                <th style="min-width: 150px">Address</th>
+                                <th style="min-width: 180px">Address</th>
                                 <th>Status</th>
                                 <th>Special Status</th>
                                 <th>Total Bill</th>
@@ -137,19 +138,18 @@
                                 <th>Bkash Amount</th>
                                 <th>Email</th>
                                 <th>Whatsapp Number</th>
-                                <th>Date</th>
-                                <th>Action</th>
+                                <th style="min-width: 130px">Date</th>
+                                <th style="min-width: 60px">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $order)
                                 <tr class="bg-{{ $order->status->color }}">
-                                    <div class="bg"></div>
                                     <td>{{ $loop->index + 1 }}</td>
 
                                     <td class="text-center">
-                                        <a class="mb-1 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a>
-                                        <a class="" href="{{ route('pos.create', $order->id) }}"><span class="badge badge-dark">Enter in POS</span></a>
+                                        <a class="mb-2 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a> <br>
+                                        <a class="" href="{{ route('pos.create', $order->id) }}"><span class="btn btn-sm bg-purple" style="font-weight: bold">POS<i class="ml-2 fas fa-angle-double-right"></i></span></a>
                                     </td>
 
                                     <td width="20%" style="font-weight: bold">{{ $order->name }}</td>
@@ -165,7 +165,7 @@
                                     <td class="{{ $order->special_status_id == 2 || $order->special_status_id == 3 ? 'bg-' . 'special_status' : '' }}" style="font-weight: bold">{{ env('CURRENCY') . $order->price }}</td>
 
                                     <td class="text-center {{ $order->special_status_id == 4 || $order->special_status_id == 5 ? 'bg-' . 'special_status' : '' }}">
-                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn bg-light text-dark" style="color: #000 !important; font-weight: bold" title="Edit">View</a>
+                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn bg-light btn-sm text-dark" style="color: #000 !important; font-weight: bold" title="Edit">View</a>
                                     </td>
 
                                     <td>{{ $order->courier->name }}</td>
@@ -189,8 +189,8 @@
                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y g:iA') }}</td>
 
                                     <td>
-                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                                        <a href="#deleteModal{{ $order->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn btn-sm btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <a href="#deleteModal{{ $order->id }}" class="btn btn-sm btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <!-- Delete order Modal -->
