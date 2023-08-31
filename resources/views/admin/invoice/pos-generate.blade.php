@@ -135,7 +135,7 @@
                     Email : {{ $order->email }}</br>
                     Address : {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}</br>
                     @if ($order->courier_name)
-                        Courier Name : {{ $order->courier_name }}</br>
+                        Courier Name: {{ $order->courier_name }}<br>
                     @endif
                     Date : {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</br>
 

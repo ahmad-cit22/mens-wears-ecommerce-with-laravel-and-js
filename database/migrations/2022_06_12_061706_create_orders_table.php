@@ -4,15 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrdersTable extends Migration
-{
+class CreateOrdersTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('code')->nullable();
@@ -27,6 +25,7 @@ class CreateOrdersTable extends Migration
             $table->text('shipping_address')->nullable();
             $table->integer('delivery_boy_id')->nullable();
             $table->double('delivery_charge')->nullable();
+            $table->string('courier_name')->nullable();
             $table->double('vat')->nullable();
             $table->double('cod')->default(0);
             $table->integer('order_status_id')->default(1);
@@ -51,8 +50,7 @@ class CreateOrdersTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('orders');
     }
 }

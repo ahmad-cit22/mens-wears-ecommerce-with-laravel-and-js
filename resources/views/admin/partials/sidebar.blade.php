@@ -257,7 +257,7 @@
                         <ul class="nav nav-treeview">
 
                             <li class="nav-item">
-                                <a href="{{ route('pos.create') }}" class="nav-link">
+                                <a href="{{ route('pos.create', 'none') }}" class="nav-link">
                                     <i class="fas fa-angle-right"></i>
                                     <p>POS</p>
                                 </a>

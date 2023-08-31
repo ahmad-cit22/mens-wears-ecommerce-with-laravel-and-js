@@ -5,6 +5,10 @@
         .bg-special_status {
             background: rgb(255, 132, 0) !important;
         }
+
+        .bigFont {
+            font-size: 16px !important;
+        }
     </style>
 @endsection
 
@@ -116,17 +120,17 @@
                         <thead>
                             <tr>
                                 <th>S.N</th>
-                                <th>Code</th>
-                                <th width="20%" style="min-width: 140px">Customer Name</th>
-                                <th width="10%">Phone</th>
-                                <th width="15%">Address</th>
+                                <th>Memo Code</th>
+                                <th style="min-width: 130px">Customer Name</th>
+                                <th>Phone</th>
+                                <th style="min-width: 150px">Address</th>
                                 <th>Status</th>
                                 <th>Special Status</th>
                                 <th>Total Bill</th>
                                 <th>Products</th>
                                 <th>Courier Name</th>
-                                <th width="15%">Note</th>
-                                <th width="15%">Remarks</th>
+                                <th style="min-width: 130px">Note</th>
+                                <th style="min-width: 130px">Remarks</th>
                                 <th>Source</th>
                                 <th>Bkash Business</th>
                                 <th>Bkash Customer</th>
@@ -140,9 +144,13 @@
                         <tbody>
                             @foreach ($orders as $order)
                                 <tr class="bg-{{ $order->status->color }}">
+                                    <div class="bg"></div>
                                     <td>{{ $loop->index + 1 }}</td>
 
-                                    <td class=""><a class="" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a></td>
+                                    <td class="text-center">
+                                        <a class="mb-1 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a>
+                                        <a class="" href="{{ route('pos.create', $order->id) }}"><span class="badge badge-dark">Enter in POS</span></a>
+                                    </td>
 
                                     <td width="20%" style="font-weight: bold">{{ $order->name }}</td>
 
@@ -150,9 +158,9 @@
 
                                     <td>{{ $order->shipping_address }}</td>
 
-                                    <td><span class="badge badge-{{ $order->status->color }}">{{ $order->status->title }}</span></td>
+                                    <td><span class="badge bigFont badge-{{ $order->status->color }}">{{ $order->status->title }}</span></td>
 
-                                    <td><span class="badge badge-{{ $order->special_status->color }}">{{ $order->special_status->title }}</span></td>
+                                    <td><span class="badge bigFont badge-{{ $order->special_status->color }}">{{ $order->special_status->title }}</span></td>
 
                                     <td class="{{ $order->special_status_id == 2 || $order->special_status_id == 3 ? 'bg-' . 'special_status' : '' }}" style="font-weight: bold">{{ env('CURRENCY') . $order->price }}</td>
 

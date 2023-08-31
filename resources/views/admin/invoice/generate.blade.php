@@ -82,7 +82,7 @@
                             @endif
                             Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
                             @if ($order->courier_name)
-                                Courier Name: {{ $order->courier_name }}<br>
+                                Courier Name: {{ $order->courier_name }}
                             @endif
                         </p>
                     </div>
