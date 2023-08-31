@@ -136,7 +136,7 @@
                                 <th>Bkash Business</th>
                                 <th>Bkash Customer</th>
                                 <th>Bkash Amount</th>
-                                <th>Email</th>
+                                <th style="max-width: 80px">Email</th>
                                 <th>Whatsapp Number</th>
                                 <th style="min-width: 130px">Date</th>
                                 <th style="min-width: 60px">Action</th>
@@ -148,7 +148,7 @@
                                     <td>{{ $loop->index + 1 }}</td>
 
                                     <td class="text-center">
-                                        <a class="mb-2 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a> <br>
+                                        <a class="mb-2 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="bigFont badge badge-light">{{ $order->code ?? 'N/A' }}</span></a> <br>
                                         <a class="" href="{{ route('pos.create', $order->id) }}"><span class="btn btn-sm bg-purple" style="font-weight: bold">POS<i class="ml-2 fas fa-angle-double-right"></i></span></a>
                                     </td>
 
@@ -221,24 +221,25 @@
                         <tfoot>
                             <tr>
                                 <th>S.N</th>
-                                <th>Code</th>
-                                <th width="20%">Customer Name</th>
-                                <th width="10%">Phone</th>
-                                <th width="15%">Address</th>
+                                <th style="min-width: 60px">Memo</th>
+                                <th style="min-width: 130px">Customer Name</th>
+                                <th>Phone</th>
+                                <th style="min-width: 180px">Address</th>
                                 <th>Status</th>
                                 <th>Special Status</th>
                                 <th>Total Bill</th>
+                                <th>Products</th>
                                 <th>Courier Name</th>
-                                <th width="15%">Note</th>
-                                <th width="15%">Remarks</th>
+                                <th style="min-width: 130px">Note</th>
+                                <th style="min-width: 130px">Remarks</th>
                                 <th>Source</th>
                                 <th>Bkash Business</th>
                                 <th>Bkash Customer</th>
                                 <th>Bkash Amount</th>
                                 <th>Email</th>
                                 <th>Whatsapp Number</th>
-                                <th>Date</th>
-                                <th>Action</th>
+                                <th style="min-width: 130px">Date</th>
+                                <th style="min-width: 60px">Action</th>
                             </tr>
                         </tfoot>
                     </table>
