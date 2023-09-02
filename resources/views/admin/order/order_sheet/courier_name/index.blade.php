@@ -163,7 +163,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Courier Name * </label>
-                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter Courier Name" value="{{ $courier->name }}" required>
+                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter Courier Name" value="{{ old('name') }}" required>
                                         @error('name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>

@@ -5,6 +5,7 @@
                 <div class="productThumb">
                     <img class="img-fluid" src="{{ asset('images/product/pos_images/' . $product->product->image) }}" alt="{{ $product->product->title }}">
                 </div>
+                
                 <div class="productContent">
 
                     {{ $product->product->title }}{{ is_null($product->size) ? '' : ' - ' . optional($product->size)->title }} ({{ $product->qty }})

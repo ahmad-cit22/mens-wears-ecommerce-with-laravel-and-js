@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Alert;
 use App\Models\CourierName;
+use App\Models\FacebookOrder;
 use Image;
 use File;
 
@@ -89,6 +90,11 @@ class CourierNameController extends Controller {
     public function destroy($id) {
         if (auth()->user()->can('size.create')) {
             $courier = CourierName::find($id);
+
+            if (FacebookOrder::where('courier_id', $id)->exists()) {
+                Alert::toast("Courier can't be deleted because there is orders under this courier !", 'warning');
+                return redirect()->route('fos.courier_name.index');
+            };
 
             if (!is_null($courier)) {
                 $courier->delete();

@@ -5,6 +5,11 @@
         .bg-special_status {
             background: rgb(255, 132, 0) !important;
         }
+
+        .bigFont {
+            font-size: 15px !important;
+            border: 1px solid #fff;
+        }
     </style>
 @endsection
 
@@ -116,25 +121,25 @@
                         <thead>
                             <tr>
                                 <th>S.N</th>
-                                <th>Code</th>
-                                <th width="20%" style="min-width: 140px">Customer Name</th>
-                                <th width="10%">Phone</th>
-                                <th width="15%">Address</th>
+                                <th style="min-width: 60px">Memo</th>
+                                <th style="min-width: 130px">Customer Name</th>
+                                <th>Phone</th>
+                                <th style="min-width: 180px">Address</th>
                                 <th>Status</th>
                                 <th>Special Status</th>
                                 <th>Total Bill</th>
                                 <th>Products</th>
                                 <th>Courier Name</th>
-                                <th width="15%">Note</th>
-                                <th width="15%">Remarks</th>
+                                <th style="min-width: 130px">Note</th>
+                                <th style="min-width: 130px">Remarks</th>
                                 <th>Source</th>
                                 <th>Bkash Business</th>
                                 <th>Bkash Customer</th>
                                 <th>Bkash Amount</th>
-                                <th>Email</th>
+                                <th style="max-width: 80px">Email</th>
                                 <th>Whatsapp Number</th>
-                                <th>Date</th>
-                                <th>Action</th>
+                                <th style="min-width: 130px">Date</th>
+                                <th style="min-width: 60px">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,7 +147,10 @@
                                 <tr class="bg-{{ $order->status->color }}">
                                     <td>{{ $loop->index + 1 }}</td>
 
-                                    <td class=""><a class="" href="{{ route('fos.edit', $order->id) }}"><span class="badge badge-light">{{ $order->code ?? 'N/A' }}</span></a></td>
+                                    <td class="text-center">
+                                        <a class="mb-2 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="bigFont badge badge-light">{{ $order->code ?? 'N/A' }}</span></a> <br>
+                                        <a class="" href="{{ route('pos.create', $order->id) }}"><span class="btn btn-sm bg-purple" style="font-weight: bold">POS<i class="ml-2 fas fa-angle-double-right"></i></span></a>
+                                    </td>
 
                                     <td width="20%" style="font-weight: bold">{{ $order->name }}</td>
 
@@ -150,14 +158,14 @@
 
                                     <td>{{ $order->shipping_address }}</td>
 
-                                    <td><span class="badge badge-{{ $order->status->color }}">{{ $order->status->title }}</span></td>
+                                    <td><span class="badge bigFont badge-{{ $order->status->color }}">{{ $order->status->title }}</span></td>
 
-                                    <td><span class="badge badge-{{ $order->special_status->color }}">{{ $order->special_status->title }}</span></td>
+                                    <td><span class="badge bigFont badge-{{ $order->special_status->color }}">{{ $order->special_status->title }}</span></td>
 
                                     <td class="{{ $order->special_status_id == 2 || $order->special_status_id == 3 ? 'bg-' . 'special_status' : '' }}" style="font-weight: bold">{{ env('CURRENCY') . $order->price }}</td>
 
                                     <td class="text-center {{ $order->special_status_id == 4 || $order->special_status_id == 5 ? 'bg-' . 'special_status' : '' }}">
-                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn bg-light text-dark" style="color: #000 !important; font-weight: bold" title="Edit">View</a>
+                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn bg-light btn-sm text-dark" style="color: #000 !important; font-weight: bold" title="Edit">View</a>
                                     </td>
 
                                     <td>{{ $order->courier->name }}</td>
@@ -181,8 +189,8 @@
                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y g:iA') }}</td>
 
                                     <td>
-                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                                        <a href="#deleteModal{{ $order->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                        <a href="{{ route('fos.edit', $order->id) }}" class="btn btn-sm btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <a href="#deleteModal{{ $order->id }}" class="btn btn-sm btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <!-- Delete order Modal -->
@@ -213,24 +221,25 @@
                         <tfoot>
                             <tr>
                                 <th>S.N</th>
-                                <th>Code</th>
-                                <th width="20%">Customer Name</th>
-                                <th width="10%">Phone</th>
-                                <th width="15%">Address</th>
+                                <th style="min-width: 60px">Memo</th>
+                                <th style="min-width: 130px">Customer Name</th>
+                                <th>Phone</th>
+                                <th style="min-width: 180px">Address</th>
                                 <th>Status</th>
                                 <th>Special Status</th>
                                 <th>Total Bill</th>
+                                <th>Products</th>
                                 <th>Courier Name</th>
-                                <th width="15%">Note</th>
-                                <th width="15%">Remarks</th>
+                                <th style="min-width: 130px">Note</th>
+                                <th style="min-width: 130px">Remarks</th>
                                 <th>Source</th>
                                 <th>Bkash Business</th>
                                 <th>Bkash Customer</th>
                                 <th>Bkash Amount</th>
                                 <th>Email</th>
                                 <th>Whatsapp Number</th>
-                                <th>Date</th>
-                                <th>Action</th>
+                                <th style="min-width: 130px">Date</th>
+                                <th style="min-width: 60px">Action</th>
                             </tr>
                         </tfoot>
                     </table>

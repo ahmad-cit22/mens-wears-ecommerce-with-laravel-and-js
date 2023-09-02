@@ -250,7 +250,7 @@
                                         <select class="mb-3 select2 select-down arabic-select2" style="width: 100%;" name="customer_id" id="customer_id">
                                             <option value="0">Walk in Customer</option>
                                             @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
+                                                <option value="{{ $customer->id }}" {{ $fos_order != null ? ($fos_order->customer_id == $customer->id ? 'selected' : '') : '' }}>{{ $customer->name }} - {{ $customer->phone }}</option>
                                             @endforeach
                                         </select>
                                         <div id="new-customer-form">
@@ -288,7 +288,7 @@
                                             <div class="col-md-12">
                                                 <label class="text-body">Address</label>
                                                 <fieldset class="form-group mb-3">
-                                                    <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ old('shipping_address') }}" required>
+                                                    <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ $fos_order != null ? $fos_order->shipping_address : old('shipping_address') }}" required>
                                                 </fieldset>
                                                 {{-- @error('address')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -313,8 +313,15 @@
                                             </select>
                                         </div>
                                         <div class="">
-                                            <label class="text-dark d-flex">Courier Name</label>
-                                            <input type="text" name="courier_name" class="form-control" placeholder="Enter Courier Name" required>
+                                            <div class="selectmain">
+                                                <label class="text-dark d-flex">Courier Name</label>
+                                                <select name="courier_id" class="select2 select-down" id="courier_id">
+                                                    <option value="">--- Select an Option ---</option>
+                                                    @foreach ($couriers as $courier)
+                                                        <option value="{{ $courier->id }}" {{ $fos_order != null ? ($fos_order->courier_id == $courier->id ? 'selected' : '') : '' }}>{{ $courier->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mt-4">
@@ -325,12 +332,12 @@
 
                                         <div class="form-group row justify-content-start">
                                             <div class="col-md-6">
-                                                <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="advance_shipping_charge" name="advance_shipping_charge" value="1"> Shipping Charge Advanced</label>
+                                                <label id="advance_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="advance_shipping_charge" name="advance_shipping_charge" value="1" {{ $fos_order != null ? 'checked' : '' }}> Shipping Charge Advanced</label>
                                             </div>
-                                            <div class="col-md-6 text-start" id="showChargeBox" style="display: none">
+                                            <div class="col-md-6 text-start" id="showChargeBox" style="{{ $fos_order != null ? '' : 'display: none' }}">
                                                 <label class="text-body">Enter Charge Amount</label>
                                                 <fieldset class="form-group mb-3">
-                                                    <input type="number" name="advanced_charge" id="advanced_charge" class="form-control" placeholder="Advanced Delivery Charge Amount" value="0">
+                                                    <input type="number" name="advanced_charge" id="advanced_charge" class="form-control" placeholder="Advanced Delivery Charge Amount" value="{{ $fos_order != null ? $fos_order->advance : 0 }}">
                                                 </fieldset>
                                             </div>
                                         </div>
@@ -346,7 +353,7 @@
                                     <div class="mt-2">
                                         <label class="text-body">Add Note</label>
                                         <fieldset class="form-group">
-                                            <textarea name="note" id="note" class="form-control" placeholder="Add Notes If Needed">{{ old('note') }}</textarea>
+                                            <textarea name="note" id="note" class="form-control" placeholder="Add Notes If Needed">{{ $fos_order != null ? $fos_order->note : old('note') }}</textarea>
                                         </fieldset>
                                     </div>
                                 </div>
@@ -423,7 +430,7 @@
          </div>
          </div> -->
                                     <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Discount Amount" id="discount_amount" onblur="apply_discount()">
+                                        <input type="number" class="form-control" placeholder="Discount Amount" id="discount_amount" value="{{ $fos_order != null ? $fos_order->discount_amount : old('discount_amount') }}" onblur="apply_discount()">
                                     </div>
 
                                     <table class="table right-table">
@@ -607,6 +614,62 @@
         </script>
     @endif
 
+    @if ($fos_order != null)
+        <script>
+            $('#new-customer-form').hide();
+        </script>
+
+        <script>
+            var subtotal = $('#subtotal_amount').val();
+            var discount = $('#discount').val();
+            var shipping_charge = $('#shipping_charge').val();
+            var charge_advanced = $('#advanced_charge').val();
+            if (charge_advanced > 0) {
+                $('#charge_advanced_label').html(charge_advanced);
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount));
+            }
+        </script>
+
+        @if ($fos_order->discount_amount != null)
+            <script>
+                var amount = $('#discount_amount').val();
+                var subtotal = $('#subtotal_amount').val();
+                if (amount != '') {
+                    var url = "{{ route('pos.apply.discount') }}";
+
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            amount: amount,
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            var shipping_charge = $('#shipping_charge').val();
+                            $('#discount_amount_label').html(response);
+                            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
+                            $('#discount').val(response);
+                        }
+                    });
+                } else {
+                    var shipping_charge = $('#shipping_charge').val();
+                    $('#discount_amount_label').html(0);
+                    $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(0));
+                    $('#discount').val(0);
+                }
+            </script>
+        @endif
+    @else
+        <script>
+            $('#discount').val(0);
+            var subtotal = $('#subtotal_amount').val();
+            var shipping_charge = $('#shipping_charge').val();
+            var discount = $('#discount').val();
+            $('#discount_amount_label').html(discount);
+            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+        </script>
+    @endif
+
     <script>
         // $("#product_name").keyup(function() {
         //     load_product();
@@ -698,10 +761,11 @@
 
             var subtotal = $('#subtotal_amount').val();
             var discount = $('#discount').val();
+            var charge_advanced = $('#advanced_charge').val();
 
             @if (Session::has('wholesale_price'))
                 $('#shipping_charge_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
+                $('#total_amount').html(parseInt(subtotal) - parseInt(discount) - parseInt(charge_advanced));
                 $('#shipping_charge').val(0);
             @else
                 $.ajax({
@@ -713,7 +777,7 @@
                     },
                     success: function(response) {
                         $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount));
                         $('#shipping_charge').val(response);
                     }
                 });
@@ -724,9 +788,11 @@
         $("#remove_shipping_charge").click(function() {
             var subtotal = $('#subtotal_amount').val();
             var discount = $('#discount').val();
+            var charge_advanced = $('#advanced_charge').val();
+
             if ($("#remove_shipping_charge").is(':checked')) {
                 $('#shipping_charge_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
+                $('#total_amount').html(parseInt(subtotal) - parseInt(charge_advanced) - parseInt(discount));
                 $('#shipping_charge').val(0);
             } else {
                 var area_id = $('#areas').val();
@@ -746,7 +812,7 @@
                     },
                     success: function(response) {
                         $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(discount));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount));
                         $('#shipping_charge').val(response);
                     }
                 });

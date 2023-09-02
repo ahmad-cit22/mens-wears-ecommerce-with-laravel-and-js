@@ -108,7 +108,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-primary bg-purple" href="{{ route('pos.create') }}">
+                    <a class="nav-link btn btn-primary bg-purple" href="{{ route('pos.create', 'none') }}">
                         <i class="fas fa-table mr-1"></i> POS
                     </a>
                 </li>

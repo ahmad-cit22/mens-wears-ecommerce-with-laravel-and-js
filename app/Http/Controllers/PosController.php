@@ -18,6 +18,8 @@ use Auth;
 use Alert;
 use Mail;
 use App\Mail\OrderMail;
+use App\Models\CourierName;
+use App\Models\FacebookOrder;
 use Cart;
 use Session;
 use DNS1D;
@@ -28,10 +30,17 @@ class PosController extends Controller {
     public function index() {
     }
 
-    public function create(Request $request) {
+    public function create(Request $request, $id) {
         if (Session::has('wholesale_price')) {
             Session::forget('wholesale_price');
         }
+        $fos_order = null;
+
+        if (FacebookOrder::where('id', $id)->exists()) {
+            $fos_order = FacebookOrder::find($id);
+        }
+
+        $couriers = CourierName::all();
         $products = ProductStock::orderBy('id', 'DESC')->get();
         $categories = Category::orderBy('title', 'ASC')->get();
         $brands = Brand::orderBy('title', 'ASC')->get();
@@ -39,7 +48,7 @@ class PosController extends Controller {
         $districts = District::orderBy('name', 'ASC')->get();
         $carts = Cart::content();
         // return DNS1D::getBarcodeSVG('1005', 'C39');
-        return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts'));
+        return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
     }
 
     public function wholesale_create(Request $request) {
@@ -137,7 +146,7 @@ class PosController extends Controller {
             $order->shipping_address = $request->shipping_address;
             $order->district_id = $request->district_id;
             $order->area_id = $request->area_id;
-            $order->courier_name = $request->courier_name;
+            $order->courier_name = CourierName::find($request->courier_id)->name;
 
             if ($request->has('remove_shipping_charge')) {
                 $order->delivery_charge = 0;
@@ -191,7 +200,7 @@ class PosController extends Controller {
             Session::forget('coupon_discount');
             Session::forget('wholesale_price');
             Alert::toast('One Sell added', 'success');
-            return redirect()->route('pos.create');
+            return redirect()->route('fos.index');
         } else {
             abort(403, 'Unauthorized action.');
         }

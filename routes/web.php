@@ -265,7 +265,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// POS Routes
 	Route::group(['prefix' => 'pos', 'as' => 'pos.'], function () {
 		Route::get('/', [App\Http\Controllers\PosController::class, 'index'])->name('index');
-		Route::get('/create', [App\Http\Controllers\PosController::class, 'create'])->name('create');
+		Route::get('/create/{id}', [App\Http\Controllers\PosController::class, 'create'])->name('create');
 		Route::get('/wholesale-create', [App\Http\Controllers\PosController::class, 'wholesale_create'])->name('wholesale.create');
 		Route::post('/store', [App\Http\Controllers\PosController::class, 'store'])->name('store');
 		Route::post('/filter-product', [App\Http\Controllers\PosController::class, 'product_filter'])->name('product.filter');
