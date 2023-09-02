@@ -122,7 +122,7 @@
                             <tr>
                                 <th>S.N</th>
                                 <th style="min-width: 60px">Memo</th>
-                                <th style="min-width: 130px">Customer Name</th>
+                                <th style="min-width: 131px">Customer Name</th>
                                 <th>Phone</th>
                                 <th style="min-width: 180px">Address</th>
                                 <th>Status</th>
