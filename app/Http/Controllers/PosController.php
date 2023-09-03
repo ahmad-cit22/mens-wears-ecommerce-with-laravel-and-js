@@ -52,14 +52,18 @@ class PosController extends Controller {
     }
 
     public function wholesale_create(Request $request) {
+
+        $fos_order = null;
+
         session(['wholesale_price' => 1]);
+        $couriers = CourierName::all();
         $products = ProductStock::orderBy('id', 'DESC')->get();
         $categories = Category::orderBy('title', 'ASC')->get();
         $brands = Brand::orderBy('title', 'ASC')->get();
         $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
         $districts = District::orderBy('name', 'ASC')->get();
         $carts = Cart::content();
-        return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts'));
+        return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
     }
 
     public function generateUniqueCode() {
