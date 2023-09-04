@@ -69,7 +69,7 @@ class ReportController extends Controller {
             $order_amount = $orders->sum('price');
             foreach ($orders as $order) {
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
+                    return $t->production_cost * $t->qty; 
                 });
             }
             $expense_types = Expense::all();
