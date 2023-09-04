@@ -204,7 +204,7 @@ class PosController extends Controller {
             Session::forget('coupon_discount');
             Session::forget('wholesale_price');
             Alert::toast('One Sell added', 'success');
-            return redirect()->route('fos.index');
+            return redirect()->route('pos.create', 'none');
         } else {
             abort(403, 'Unauthorized action.');
         }
