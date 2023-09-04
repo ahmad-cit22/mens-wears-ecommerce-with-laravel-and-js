@@ -333,7 +333,7 @@
                         </ul>
                     </li>
 
-                    @hasrole(1)
+                    @hasrole([1, 2])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-minus-circle"></i>
@@ -360,7 +360,9 @@
 
                             </ul>
                         </li>
+                    @endhasrole
 
+                    @hasrole(1)
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-percent"></i>
