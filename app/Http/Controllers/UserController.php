@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Permission;
 
 use Alert;
 use Auth;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller {
     /**
