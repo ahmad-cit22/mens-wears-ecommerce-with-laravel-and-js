@@ -15,7 +15,7 @@ use DataTables;
 
 class ProductDamageController extends Controller {
     public function index(Request $request) {
-        if (auth()->user()->can('product.edit')) {
+        if (auth()->user()->can('damage.view')) {
             if ($request->ajax()) {
                 $stocks = ProductDamage::orderBy('created_at', 'desc')->get();
                 return Datatables::of($stocks)
@@ -51,7 +51,7 @@ class ProductDamageController extends Controller {
     }
 
     public function store(Request $request) {
-        if (auth()->user()->can('product.edit')) {
+        if (auth()->user()->can('damage.store')) {
             $validatedData = $request->validate([
                 'product_id' => 'required|numeric',
                 'qty' => 'required|numeric',

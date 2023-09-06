@@ -26,7 +26,7 @@ class ReportController extends Controller {
         $date_from = '';
         $date_to = '';
 
-        if (auth()->user()->can('setting.index')) {
+        if (auth()->user()->can('report.income')) {
             $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
             $production_cost = 0;
             $other_income = BankTransaction::where('other_income', 1)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
@@ -81,7 +81,7 @@ class ReportController extends Controller {
     }
 
     public function balance_sheet() {
-        if (auth()->user()->can('setting.index')) {
+        if (auth()->user()->can('report.balance_sheet')) {
             $banks = Bank::orderBy('name', 'DESC')->get();
             $accessories = Accessory::orderBY('id', 'DESC')->get();
             $assets = Asset::orderBy('id', 'DESC')->get();
@@ -106,7 +106,7 @@ class ReportController extends Controller {
     }
 
     public function owners_equity() {
-        if (auth()->user()->can('setting.index')) {
+        if (auth()->user()->can('report.owners')) {
             $banks = Bank::orderBy('name', 'DESC')->get();
             $accessories = Accessory::orderBY('id', 'DESC')->get();
             $assets = Asset::orderBy('id', 'DESC')->get();

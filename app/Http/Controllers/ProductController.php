@@ -52,7 +52,7 @@ class ProductController extends Controller {
     }
 
     public function print_label() {
-        if (auth()->user()->can('product.index')) {
+        if (auth()->user()->can('product.print_label')) {
             $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->get();
             // return DNS1D::getBarcodeSVG('1005', 'C39');
             // return '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG('1004', 'C39') . '" alt="barcode"   />';

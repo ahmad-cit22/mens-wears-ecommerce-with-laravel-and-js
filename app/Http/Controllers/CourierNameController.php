@@ -17,7 +17,7 @@ class CourierNameController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        if (auth()->user()->can('size.index')) {
+        if (auth()->user()->can('courier_name.index')) {
             $couriers = CourierName::all();
             return view('admin.order.order_sheet.courier_name.index', compact('couriers'));
         } else {
@@ -31,7 +31,7 @@ class CourierNameController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        if (auth()->user()->can('size.create')) {
+        if (auth()->user()->can('courier_name.index')) {
             $validatedData = $request->validate([
                 'name' => 'required',
             ]);
@@ -56,7 +56,7 @@ class CourierNameController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        if (auth()->user()->can('size.edit')) {
+        if (auth()->user()->can('courier_name.index')) {
             $validatedData = $request->validate([
                 'name' => 'required',
             ]);
@@ -88,7 +88,7 @@ class CourierNameController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        if (auth()->user()->can('size.create')) {
+        if (auth()->user()->can('courier_name.index')) {
             $courier = CourierName::find($id);
 
             if (FacebookOrder::where('courier_id', $id)->exists()) {

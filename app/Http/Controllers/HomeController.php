@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use Alert;
 use Carbon\Carbon;
 use Auth;
+use Illuminate\Support\Facades\Artisan;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller {
     /**
@@ -38,5 +39,12 @@ class HomeController extends Controller {
             session()->flash('error', 'Access Denied !');
             return back();
         }
+    }
+
+    public function cache_clear() {
+        Artisan::call("cache:clear");
+
+        Alert::toast('Cache cleared!', 'success');
+        return back();
     }
 }

@@ -20,7 +20,7 @@ class AssetController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('setting.index')) {
+        if (auth()->user()->can('setting.asset')) {
             $banks = Bank::orderBy('name', 'ASC')->get();
             $assets = Asset::orderBy('id', 'DESC')->get();
             return view('admin.asset.index', compact('banks', 'assets'));
@@ -38,7 +38,7 @@ class AssetController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->can('setting.create')) {
+        if (auth()->user()->can('setting.asset')) {
             $banks = Bank::orderBy('name', 'ASC')->get();
             return view('admin.asset.create', compact('banks'));
         }
@@ -56,7 +56,7 @@ class AssetController extends Controller
      */
     public function store(Request $request)
     {
-        if (auth()->user()->can('setting.create')) {
+        if (auth()->user()->can('setting.asset')) {
             $validatedData = $request->validate([
                 'name' => 'required|string',
                 'bank_id' => 'required|integer',
@@ -108,7 +108,7 @@ class AssetController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('setting.edit')) {
+        if (auth()->user()->can('setting.asset')) {
             $asset = Asset::find($id);
             if (!is_null($asset)) {
                 $banks = Bank::orderBy('name', 'ASC')->get();
@@ -134,7 +134,7 @@ class AssetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->can('setting.edit')) {
+        if (auth()->user()->can('setting.asset')) {
             $asset = Asset::find($id);
             if (!is_null($asset)) {
                 $validatedData = $request->validate([

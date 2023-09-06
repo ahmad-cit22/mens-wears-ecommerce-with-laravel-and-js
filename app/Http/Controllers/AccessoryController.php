@@ -17,7 +17,7 @@ class AccessoryController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('setting.index')) {
+        if (auth()->user()->can('setting.accessory')) {
             $accessories = Accessory::all();
             return view('admin.accessory.index', compact('accessories'));
         }
@@ -45,7 +45,7 @@ class AccessoryController extends Controller
      */
     public function store(Request $request)
     {
-        if (auth()->user()->can('setting.create')) {
+        if (auth()->user()->can('setting.accessory')) {
             $validatedData = $request->validate([
                 'name' => 'required|max:255',
                 'opening_amount' => 'required|numeric',
@@ -100,7 +100,7 @@ class AccessoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->can('setting.edit')) {
+        if (auth()->user()->can('setting.accessory')) {
             $accessory = Accessory::find($id);
             if (!is_null($accessory)) {
                 $validatedData = $request->validate([

@@ -19,7 +19,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('setting.index')) {
+        if (auth()->user()->can('setting.business_settings')) {
             $setting = Setting::orderBy('id', 'DESC')->first();
             return view('admin.setting.index', compact('setting'));
         }

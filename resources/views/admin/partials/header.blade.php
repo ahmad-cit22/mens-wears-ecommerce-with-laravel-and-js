@@ -82,6 +82,11 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ route('index') }}" class="nav-link" target="_blank"><i class="fas fa-home"></i> Visit Website</a>
                 </li>
+                <li class="nav-item ml-2">
+                    <a class="nav-link btn btn-sm btn-danger" href="{{ route('cache.clear') }}">
+                        <i class="far fa-trash-alt mr-2"></i>Clear Cache
+                    </a>
+                </li>
                 <!-- <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
       </li> -->
@@ -102,16 +107,20 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
 
-                <li class="nav-item mr-2">
-                    <a class="nav-link btn btn-primary bg-blue" href="{{ route('fos.create') }}">
-                        <i class="far fa-file-alt mr-2"></i>Order Sheet
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-primary bg-purple" href="{{ route('pos.create', 'none') }}">
-                        <i class="fas fa-table mr-1"></i> POS
-                    </a>
-                </li>
+                @if (auth()->user()->can('order_sheet.create'))
+                    <li class="nav-item mr-2">
+                        <a class="nav-link btn btn-primary bg-blue" href="{{ route('fos.create') }}">
+                            <i class="far fa-file-alt mr-2"></i>Order Sheet
+                        </a>
+                    </li>
+                @endif
+                @if (auth()->user()->can('pos.create'))
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary bg-purple" href="{{ route('pos.create', 'none') }}">
+                            <i class="fas fa-table mr-1"></i> POS
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>

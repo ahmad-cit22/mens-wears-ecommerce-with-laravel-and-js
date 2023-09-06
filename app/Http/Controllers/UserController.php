@@ -170,7 +170,7 @@ class UserController extends Controller {
     }
 
     public function customer_index() {
-        if (Auth::user()->type == 1) {
+        if (auth()->user()->can('customer.list')) {
             $customers = User::where('type', 2)->orderBy('id', 'DESC')->get();
             return view('admin.customer.index', compact('customers'));
         } else {

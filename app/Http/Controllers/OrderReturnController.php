@@ -22,7 +22,7 @@ class OrderReturnController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        if (auth()->user()->can('order.edit')) {
+        if (auth()->user()->can('order.return')) {
             $sell_returns = OrderReturn::orderBy('id', 'DESC')->get();
             return view('admin.order.sell.return.index', compact('sell_returns'));
         } else {

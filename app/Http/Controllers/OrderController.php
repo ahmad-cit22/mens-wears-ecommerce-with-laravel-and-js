@@ -70,7 +70,7 @@ class OrderController extends Controller {
         $date_from = '';
         $date_to = '';
 
-        if (auth()->user()->can('order.index')) {
+        if (auth()->user()->can('sell.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
             if ($request->ajax()) {
                 $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
@@ -129,7 +129,7 @@ class OrderController extends Controller {
         $date_from = '';
         $date_to = '';
 
-        if (auth()->user()->can('order.index')) {
+        if (auth()->user()->can('wholesale.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
             if ($request->ajax()) {
                 $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
@@ -649,7 +649,7 @@ class OrderController extends Controller {
     }
 
     public function convert_sell($id) {
-        if (auth()->user()->can('order.edit')) {
+        if (auth()->user()->can('convert.sell')) {
             $order = Order::find($id);
             if (!is_null($order)) {
                 $order_products = $order->order_product;
@@ -766,7 +766,7 @@ class OrderController extends Controller {
     }
 
     public function return($id) {
-        if (auth()->user()->can('order.edit')) {
+        if (auth()->user()->can('order.return')) {
             $order = Order::where('id', $id)->where('is_final', 1)->first();
             if (!is_null($order)) {
                 return view('admin.order.sell.return.create', compact('order'));
@@ -782,34 +782,38 @@ class OrderController extends Controller {
     public function apply_cod(Request $request, $id) {
         $order = Order::find($id);
 
-        $return_products = OrderReturn::where('order_id', $id);
-        $return_price = 0;
+        if (auth()->user()->can('apply.cod')) {
+            $return_products = OrderReturn::where('order_id', $id);
+            $return_price = 0;
 
-        if ($return_products->exists()) {
-            foreach ($return_products->get() as $key => $product) {
-                $return_price += $product->price * $product->qty;
-            };
-        }
+            if ($return_products->exists()) {
+                foreach ($return_products->get() as $key => $product) {
+                    $return_price += $product->price * $product->qty;
+                };
+            }
 
-        $cod = ($order->price - $return_price) * 0.01;
+            $cod = ($order->price - $return_price) * 0.01;
 
-        if (!is_null($order)) {
-            if ($request->submit == 'apply') {
-                $order->cod = $order->cod ? $order->cod + $cod : $cod;
-                $order->price -= $cod;
-                $order->save();
-                Alert::toast('COD applied successfully', 'success');
-                return back();
+            if (!is_null($order)) {
+                if ($request->submit == 'apply') {
+                    $order->cod = $order->cod ? $order->cod + $cod : $cod;
+                    $order->price -= $cod;
+                    $order->save();
+                    Alert::toast('COD applied successfully', 'success');
+                    return back();
+                } else {
+                    $order->price += $order->cod;
+                    $order->cod = 0;
+                    $order->save();
+                    Alert::toast('COD removed successfully', 'success');
+                    return back();
+                }
             } else {
-                $order->price += $order->cod;
-                $order->cod = 0;
-                $order->save();
-                Alert::toast('COD removed successfully', 'success');
+                Alert::toast('Order Not Found!', 'error');
                 return back();
             }
         } else {
-            Alert::toast('Order Not Found!', 'error');
-            return back();
+            abort(403, 'Unauthorized action.');
         }
     }
 

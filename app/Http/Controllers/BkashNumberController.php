@@ -16,7 +16,7 @@ class BkashNumberController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        if (auth()->user()->can('size.index')) {
+        if (auth()->user()->can('business_bkash_number.index')) {
             $numbers = BkashNumber::all();
             return view('admin.order.order_sheet.bkash_number.index', compact('numbers'));
         } else {
@@ -30,7 +30,7 @@ class BkashNumberController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        if (auth()->user()->can('size.create')) {
+        if (auth()->user()->can('business_bkash_number.index')) {
             $validatedData = $request->validate([
                 'number' => 'required',
             ]);
@@ -54,7 +54,7 @@ class BkashNumberController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        if (auth()->user()->can('size.edit')) {
+        if (auth()->user()->can('business_bkash_number.index')) {
             $validatedData = $request->validate([
                 'number' => 'required',
             ]);
@@ -85,7 +85,7 @@ class BkashNumberController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        if (auth()->user()->can('size.create')) {
+        if (auth()->user()->can('business_bkash_number.index')) {
             $number = BkashNumber::find($id);
 
             if (!is_null($number)) {

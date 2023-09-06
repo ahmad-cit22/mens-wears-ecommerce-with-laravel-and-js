@@ -110,6 +110,7 @@ Auth::routes();
 Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 
 	Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+	Route::get('/cache-clear', [App\Http\Controllers\HomeController::class, 'cache_clear'])->name('cache.clear');
 
 	// Role Routes
 	Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
@@ -305,7 +306,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/update/{id}', [App\Http\Controllers\FacebookOrderStatusController::class, 'update'])->name('update');
 		Route::post('/destroy/{id}', [App\Http\Controllers\FacebookOrderStatusController::class, 'destroy'])->name('destroy');
 	});
-	
+
 	// fos Special Status Routes
 	Route::group(['prefix' => 'fos/special-status', 'as' => 'fos.special_status.'], function () {
 		Route::get('/', [App\Http\Controllers\OrderSpecialStatusController::class, 'index'])->name('index');
@@ -313,7 +314,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/update/{id}', [App\Http\Controllers\OrderSpecialStatusController::class, 'update'])->name('update');
 		Route::post('/destroy/{id}', [App\Http\Controllers\OrderSpecialStatusController::class, 'destroy'])->name('destroy');
 	});
-	
+
 	// courier name Routes
 	Route::group(['prefix' => 'fos/courier-name', 'as' => 'fos.courier_name.'], function () {
 		Route::get('/', [App\Http\Controllers\CourierNameController::class, 'index'])->name('index');
@@ -321,7 +322,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/update/{id}', [App\Http\Controllers\CourierNameController::class, 'update'])->name('update');
 		Route::post('/destroy/{id}', [App\Http\Controllers\CourierNameController::class, 'destroy'])->name('destroy');
 	});
-	
+
 	// business bkash number Routes
 	Route::group(['prefix' => 'fos/bkash-number', 'as' => 'fos.bkash_number.'], function () {
 		Route::get('/', [App\Http\Controllers\BkashNumberController::class, 'index'])->name('index');

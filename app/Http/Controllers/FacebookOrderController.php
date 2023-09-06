@@ -39,7 +39,7 @@ class FacebookOrderController extends Controller {
         $order_status_id = '';
         $special_status_id = '';
 
-        if (auth()->user()->can('order.index')) {
+        if (auth()->user()->can('order_sheet.index')) {
             $orders = FacebookOrder::orderBy('id', 'DESC')->get();
 
             return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
@@ -49,19 +49,23 @@ class FacebookOrderController extends Controller {
     }
 
     public function create(Request $request) {
-        if (Session::has('wholesale_price')) {
-            Session::forget('wholesale_price');
-        }
+        if (auth()->user()->can('order_sheet.create')) {
+            if (Session::has('wholesale_price')) {
+                Session::forget('wholesale_price');
+            }
 
-        $products = ProductStock::orderBy('id', 'DESC')->get();
-        $categories = Category::orderBy('title', 'ASC')->get();
-        $brands = Brand::orderBy('title', 'ASC')->get();
-        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
-        $districts = District::orderBy('name', 'ASC')->get();
-        $carts = Cart::content();
-        $couriers = CourierName::all();
-        // return DNS1D::getBarcodeSVG('1005', 'C39');
-        return view('admin.fos.create', compact('products', 'categories', 'brands', 'couriers', 'customers', 'districts', 'carts'));
+            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $categories = Category::orderBy('title', 'ASC')->get();
+            $brands = Brand::orderBy('title', 'ASC')->get();
+            $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
+            $districts = District::orderBy('name', 'ASC')->get();
+            $carts = Cart::content();
+            $couriers = CourierName::all();
+            // return DNS1D::getBarcodeSVG('1005', 'C39');
+            return view('admin.fos.create', compact('products', 'categories', 'brands', 'couriers', 'customers', 'districts', 'carts'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     public function wholesale_create(Request $request) {
