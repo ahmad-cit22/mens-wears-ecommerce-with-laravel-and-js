@@ -21,7 +21,7 @@ class ExpenseEntryController extends Controller {
         $date_from = '';
         $date_to = '';
 
-        if (auth()->user()->can('expense.index')) {
+        if (auth()->user()->can('expense.view')) {
             $data = ExpenseEntry::orderBy('id', 'DESC')->get();
             $banks = Bank::all();
             if ($request->ajax()) {
@@ -174,7 +174,7 @@ class ExpenseEntryController extends Controller {
     }
 
     public function loss_store(Request $request) {
-        if (auth()->user()->can('expense.create')) {
+        if (auth()->user()->can('expense.create') || auth()->user()->can('add.loss')) {
             $validatedData = $request->validate([
                 'amount' => 'required|numeric',
             ]);

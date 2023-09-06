@@ -31,35 +31,46 @@ class PosController extends Controller {
     }
 
     public function create(Request $request, $id) {
-        if (Session::has('wholesale_price')) {
-            Session::forget('wholesale_price');
-        }
-        $fos_order = null;
+        if (auth()->user()->can('pos.create')) {
+            if (Session::has('wholesale_price')) {
+                Session::forget('wholesale_price');
+            }
+            $fos_order = null;
 
-        if (FacebookOrder::where('id', $id)->exists()) {
-            $fos_order = FacebookOrder::find($id);
-        }
+            if (FacebookOrder::where('id', $id)->exists()) {
+                $fos_order = FacebookOrder::find($id);
+            }
 
-        $couriers = CourierName::all();
-        $products = ProductStock::orderBy('id', 'DESC')->get();
-        $categories = Category::orderBy('title', 'ASC')->get();
-        $brands = Brand::orderBy('title', 'ASC')->get();
-        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
-        $districts = District::orderBy('name', 'ASC')->get();
-        $carts = Cart::content();
-        // return DNS1D::getBarcodeSVG('1005', 'C39');
-        return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
+            $couriers = CourierName::all();
+            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $categories = Category::orderBy('title', 'ASC')->get();
+            $brands = Brand::orderBy('title', 'ASC')->get();
+            $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
+            $districts = District::orderBy('name', 'ASC')->get();
+            $carts = Cart::content();
+            // return DNS1D::getBarcodeSVG('1005', 'C39');
+            return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     public function wholesale_create(Request $request) {
-        session(['wholesale_price' => 1]);
-        $products = ProductStock::orderBy('id', 'DESC')->get();
-        $categories = Category::orderBy('title', 'ASC')->get();
-        $brands = Brand::orderBy('title', 'ASC')->get();
-        $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
-        $districts = District::orderBy('name', 'ASC')->get();
-        $carts = Cart::content();
-        return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts'));
+
+        $fos_order = null;
+        if (auth()->user()->can('wholesale.create')) {
+            session(['wholesale_price' => 1]);
+            $couriers = CourierName::all();
+            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $categories = Category::orderBy('title', 'ASC')->get();
+            $brands = Brand::orderBy('title', 'ASC')->get();
+            $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
+            $districts = District::orderBy('name', 'ASC')->get();
+            $carts = Cart::content();
+            return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     public function generateUniqueCode() {
@@ -94,12 +105,18 @@ class PosController extends Controller {
     public function store(Request $request) {
         if (Cart::content()->count() <= 0) {
             return back()->with('errMsg', 'Please select products correctly!');
+        } elseif ($request->courier_id == 0) {
+            return back()->with('errMsg', 'Please select a valid courier name!');
         }
 
         $order = new Order;
 
         if ($request->customer_id == 0) {
             if (!User::where('phone', $request->phone)->exists()) {
+                if ($request->name == null || $request->phone == null) {
+                    return back()->with('errMsg', 'You must add customer name & phone number!');
+                }
+
                 $user = new User;
                 $user->name       = $request->name;
                 $user->email      = $request->email;
@@ -200,7 +217,7 @@ class PosController extends Controller {
             Session::forget('coupon_discount');
             Session::forget('wholesale_price');
             Alert::toast('One Sell added', 'success');
-            return redirect()->route('fos.index');
+            return redirect()->route('pos.create', 'none');
         } else {
             abort(403, 'Unauthorized action.');
         }

@@ -257,7 +257,7 @@
                                             <div class="form-group row mt-3">
 
                                                 <div class="col-md-12">
-                                                    <label class="text-body">Customer Name</label>
+                                                    <label class="text-body">Customer Name <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
                                                     </fieldset>
@@ -274,7 +274,7 @@
                                                     </fieldset>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="text-body">Phone</label>
+                                                    <label class="text-body">Phone <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
                                                         {{-- @error('phone')
@@ -286,7 +286,7 @@
                                         </div>
                                         <div class="form-group row mt-3">
                                             <div class="col-md-12">
-                                                <label class="text-body">Address</label>
+                                                <label class="text-body">Address <span class="text-danger">*</span></label>
                                                 <fieldset class="form-group mb-3">
                                                     <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ $fos_order != null ? $fos_order->shipping_address : old('shipping_address') }}" required>
                                                 </fieldset>
@@ -298,7 +298,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between colorfull-select">
                                         <div class="selectmain">
-                                            <label class="text-dark d-flex">District*</label>
+                                            <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
                                             <select name="district_id" class="select2 select-down" id="district_id" required>
                                                 <option value="">--- Select ---</option>
                                                 @foreach ($districts as $district)
@@ -307,16 +307,16 @@
                                             </select>
                                         </div>
                                         <div class="d-flex flex-column selectmain">
-                                            <label class="text-dark d-flex">Area*</label>
+                                            <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
                                             <select name="area_id" class="select2 select-down" id="areas" required>
                                                 <!-- <option value="">Please Select an Area</option> -->
                                             </select>
                                         </div>
                                         <div class="">
                                             <div class="selectmain">
-                                                <label class="text-dark d-flex">Courier Name</label>
+                                                <label class="text-dark d-flex">Courier Name <span class="text-danger">*</span></label>
                                                 <select name="courier_id" class="select2 select-down" id="courier_id">
-                                                    <option value="">--- Select an Option ---</option>
+                                                    <option value="0">--- Select an Option ---</option>
                                                     @foreach ($couriers as $courier)
                                                         <option value="{{ $courier->id }}" {{ $fos_order != null ? ($fos_order->courier_id == $courier->id ? 'selected' : '') : '' }}>{{ $courier->name }}</option>
                                                     @endforeach

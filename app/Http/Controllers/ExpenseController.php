@@ -14,7 +14,7 @@ class ExpenseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        if (auth()->user()->can('expense.index')) {
+        if (auth()->user()->can('expense_type.index')) {
             $expenses = Expense::all();
             return view('admin.expense.index', compact('expenses'));
         } else {

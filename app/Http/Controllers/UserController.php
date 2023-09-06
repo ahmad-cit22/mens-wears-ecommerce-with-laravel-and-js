@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Permission;
 
 use Alert;
 use Auth;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller {
     /**
@@ -169,7 +170,7 @@ class UserController extends Controller {
     }
 
     public function customer_index() {
-        if (Auth::user()->type == 1) {
+        if (auth()->user()->can('customer.list')) {
             $customers = User::where('type', 2)->orderBy('id', 'DESC')->get();
             return view('admin.customer.index', compact('customers'));
         } else {

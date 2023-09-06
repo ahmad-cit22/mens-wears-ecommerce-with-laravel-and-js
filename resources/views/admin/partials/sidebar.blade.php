@@ -44,45 +44,52 @@
                     </a>
                 </li>
                 @if (Auth::user()->type == 1)
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-user"></i>
-                            <p>
-                                User Management
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            @hasrole(1)
-                                <li class="nav-item">
-                                    <a href="{{ route('role.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Roles</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('user.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Users</p>
-                                    </a>
-                                </li>
-                            @endhasrole
-                            <li class="nav-item">
-                                <a href="{{ route('customer.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Customers</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('supplier.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Suppliers</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    @if (auth()->user()->can('supplier.index') ||
+                            auth()->user()->can('customer.list'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>
+                                    User Management
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @hasrole(1)
+                                    <li class="nav-item">
+                                        <a href="{{ route('role.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Roles</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('user.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Users</p>
+                                        </a>
+                                    </li>
+                                @endhasrole
+                                @if (auth()->user()->can('customer.list'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('customer.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Customers</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('supplier.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('supplier.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Suppliers</p>
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
-                    @hasrole(1)
+                    @if (auth()->user()->can('bank.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-home"></i>
@@ -116,224 +123,301 @@
 
                             </ul>
                         </li>
-                    @endhasrole
+                    @endif
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Product
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('product.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Products List</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('product.create') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Add Product</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('category.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Category</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('brand.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Brand</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('size.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Size</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('production.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Production Sheet</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('product.printlabel') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Print Labels</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    @if (auth()->user()->can('product.index') ||
+                            auth()->user()->can('product.create') ||
+                            auth()->user()->can('category.index') ||
+                            auth()->user()->can('brand.index') ||
+                            auth()->user()->can('size.index') ||
+                            auth()->user()->can('production.index') ||
+                            auth()->user()->can('product.print_label'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p>
+                                    Product
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @if (auth()->user()->can('product.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('product.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Products List</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('product.create'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('product.create') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Add Product</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('category.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('category.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Category</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('brand.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('brand.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Brand</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('size.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('size.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Size</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Order Sheet
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('fos.create') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>New Order</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('fos.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Order List</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('fos.status.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Statuses</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('fos.special_status.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Special Statuses</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('fos.courier_name.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Courier Infos</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('fos.bkash_number.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Bkash Numbers</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                @if (auth()->user()->can('production.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('production.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Production Sheet</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-plus-square"></i>
-                            <p>
-                                Orders
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('order.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>All Orders</p>
-                                </a>
-                            </li>
-                            @foreach (App\Models\OrderStatus::all() as $status)
-                                <li class="nav-item">
-                                    <a href="{{ route('order.status.filter', $status->id) }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>{{ $status->title }}</p>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </li>
+                                @if (auth()->user()->can('product.print_label'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('product.printlabel') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Print Labels</p>
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-arrow-circle-up"></i>
-                            <p>
-                                Sell
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                    @if (auth()->user()->can('order_sheet.create') ||
+                            auth()->user()->can('order_sheet.index') ||
+                            auth()->user()->can('order_sheet_status.index') ||
+                            auth()->user()->can('courier_name.index') ||
+                            auth()->user()->can('business_bkash_number.index'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p>
+                                    Order Sheet
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @if (auth()->user()->can('order_sheet.create'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.create') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>New Order</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('order_sheet.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Order List</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('order_sheet_status.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.status.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Statuses</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.special_status.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Special Statuses</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('courier_name.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.courier_name.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Courier Infos</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('business_bkash_number.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.bkash_number.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Bkash Numbers</p>
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('pos.create', 'none') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>POS</p>
-                                </a>
-                            </li>
+                    @if (auth()->user()->can('order.index') ||
+                            auth()->user()->can('order.view'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-plus-square"></i>
+                                <p>
+                                    Orders
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @if (auth()->user()->can('order.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('order.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>All Orders</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('order.view'))
+                                    @foreach (App\Models\OrderStatus::all() as $status)
+                                        <li class="nav-item">
+                                            <a href="{{ route('order.status.filter', $status->id) }}" class="nav-link">
+                                                <i class="fas fa-angle-right"></i>
+                                                <p>{{ $status->title }}</p>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('pos.wholesale.create') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Wholesale(POS)</p>
-                                </a>
-                            </li>
+                    @if (auth()->user()->can('pos.create') ||
+                            auth()->user()->can('wholesale.create') ||
+                            auth()->user()->can('sell.index') ||
+                            auth()->user()->can('order.return') ||
+                            auth()->user()->can('wholesale.index'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-arrow-circle-up"></i>
+                                <p>
+                                    Sell
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
 
-                            <li class="nav-item">
-                                <a href="{{ route('sell.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Sell List</p>
-                                </a>
-                            </li>
+                                @if (auth()->user()->can('pos.create'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('pos.create', 'none') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>POS</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('sellreturn.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Sell Return</p>
-                                </a>
-                            </li>
+                                @if (auth()->user()->can('wholesale.create'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('pos.wholesale.create') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Wholesale(POS)</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('sell.wholesale.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Wholesale List</p>
-                                </a>
-                            </li>
+                                @if (auth()->user()->can('sell.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('sell.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Sell List</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                        </ul>
-                    </li>
+                                @if (auth()->user()->can('order.return'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('sellreturn.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Sell Return</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-warehouse"></i>
-                            <p>
-                                Stock Management
-                                <i class="fas fa-angle-right right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                                @if (auth()->user()->can('wholesale.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('sell.wholesale.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Wholesale List</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('stock.add') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Add Stock</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('stock.current') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Current Stock</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('stock.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Stock History</p>
-                                </a>
-                            </li>
+                            </ul>
+                        </li>
+                    @endif
 
-                            <li class="nav-item">
-                                <a href="{{ route('damage.index') }}" class="nav-link">
-                                    <i class="fas fa-angle-right"></i>
-                                    <p>Damage List</p>
-                                </a>
-                            </li>
+                    @if (auth()->user()->can('add.stock') ||
+                            auth()->user()->can('current.stock.view') ||
+                            auth()->user()->can('stock.history') ||
+                            auth()->user()->can('damage.view'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-warehouse"></i>
+                                <p>
+                                    Stock Management
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
 
-                        </ul>
-                    </li>
+                                @if (auth()->user()->can('add.stock'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('stock.add') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Add Stock</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('current.stock.view'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('stock.current') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Current Stock</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('stock.history'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('stock.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Stock History</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                    @hasrole(1)
+                                @if (auth()->user()->can('damage.view'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('damage.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Damage List</p>
+                                        </a>
+                                    </li>
+                                @endif
+
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->can('expense.index') ||
+                            auth()->user()->can('expense.view'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-minus-circle"></i>
@@ -344,23 +428,29 @@
                             </a>
                             <ul class="nav nav-treeview">
 
-                                <li class="nav-item">
-                                    <a href="{{ route('expense.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Expense Type</p>
-                                    </a>
-                                </li>
+                                @if (auth()->user()->can('expense.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('expense_type.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Expense Type</p>
+                                        </a>
+                                    </li>
+                                @endif
 
-                                <li class="nav-item">
-                                    <a href="{{ route('expenseentry.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Expense List</p>
-                                    </a>
-                                </li>
+                                @if (auth()->user()->can('expense.view'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('expenseentry.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Expense List</p>
+                                        </a>
+                                    </li>
+                                @endif
 
                             </ul>
                         </li>
+                    @endif
 
+                    @if (auth()->user()->can('coupon.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-percent"></i>
@@ -371,16 +461,20 @@
                             </a>
                             <ul class="nav nav-treeview">
 
-                                <li class="nav-item">
-                                    <a href="{{ route('coupon.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Coupone</p>
-                                    </a>
-                                </li>
+                                @if (auth()->user()->can('coupon.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('coupon.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Coupon</p>
+                                        </a>
+                                    </li>
+                                @endif
 
                             </ul>
                         </li>
+                    @endif
 
+                    @if (auth()->user()->can('subscriber.index'))
                         <li class="nav-item">
                             <a href="{{ route('admin.subscribers') }}" class="nav-link">
                                 <i class="nav-icon fas fa-bell-slash"></i>
@@ -389,7 +483,9 @@
                                 </p>
                             </a>
                         </li>
+                    @endif
 
+                    @if (auth()->user()->can('district.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-map-marker-alt"></i>
@@ -399,7 +495,6 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-
                                 <li class="nav-item">
                                     <a href="{{ route('district.index') }}" class="nav-link">
                                         <i class="fas fa-angle-right"></i>
@@ -415,7 +510,11 @@
 
                             </ul>
                         </li>
+                    @endif
 
+                    @if (auth()->user()->can('report.income') ||
+                            auth()->user()->can('report.balance_sheet') ||
+                            auth()->user()->can('report.owners'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-bar"></i>
@@ -426,28 +525,36 @@
                             </a>
                             <ul class="nav nav-treeview">
 
-                                <li class="nav-item">
-                                    <a href="{{ route('report.incomestatement') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Income Statement</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('report.balancesheet') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Balance Sheet</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('report.ownersequity') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Owners Equity</p>
-                                    </a>
-                                </li>
+                                @if (auth()->user()->can('report.income'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('report.incomestatement') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Income Statement</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('report.balance_sheet'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('report.balancesheet') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Balance Sheet</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('report.owners'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('report.ownersequity') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Owners Equity</p>
+                                        </a>
+                                    </li>
+                                @endif
 
                             </ul>
                         </li>
+                    @endif
 
+                    @if (auth()->user()->can('report.owners'))
                         <li class="nav-item">
                             <a href="{{ route('partner.index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-users"></i>
@@ -456,7 +563,12 @@
                                 </p>
                             </a>
                         </li>
+                    @endif
 
+                    @if (auth()->user()->can('setting.business_settings') ||
+                            auth()->user()->can('setting.asset') ||
+                            auth()->user()->can('setting.accessory') ||
+                            auth()->user()->can('page.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -467,47 +579,57 @@
                             </a>
                             <ul class="nav nav-treeview">
 
-                                <li class="nav-item">
-                                    <a href="{{ route('setting.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Business Settings</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('asset.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Assets</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('accessory.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Accessories</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('trending.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Trending</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('slider.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Slider Option</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('page.index') }}" class="nav-link">
-                                        <i class="fas fa-angle-right"></i>
-                                        <p>Pages</p>
-                                    </a>
-                                </li>
+                                @if (auth()->user()->can('setting.business_settings'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('setting.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Business Settings</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('setting.asset'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('asset.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Assets</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->can('setting.accessory'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('accessory.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Accessories</p>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (auth()->user()->can('page.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('trending.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Trending</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ route('slider.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Slider Option</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('page.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Pages</p>
+                                        </a>
+                                    </li>
+                                @endif
 
 
                             </ul>
                         </li>
-                    @endhasrole
+                    @endif
 
                     <li class="nav-item">
                         <a href="{{ route('user.profile') }}" class="nav-link">

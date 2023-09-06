@@ -25,7 +25,7 @@ class ProductionController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('product.index')) {
+        if (auth()->user()->can('production.index')) {
             $productions = Production::orderBy('id', 'DESC')->get();
             return view('admin.production-sheet.index', compact('productions'));
         }

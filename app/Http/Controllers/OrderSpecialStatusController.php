@@ -17,7 +17,7 @@ class OrderSpecialStatusController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        if (auth()->user()->can('size.index')) {
+        if (auth()->user()->can('order_sheet_status.index')) {
             $statuses = OrderSpecialStatus::all();
             return view('admin.order.order_sheet.special_status.index', compact('statuses'));
         } else {
@@ -31,7 +31,7 @@ class OrderSpecialStatusController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        if (auth()->user()->can('size.create')) {
+        if (auth()->user()->can('order_sheet_status.index')) {
             $validatedData = $request->validate([
                 'title' => 'required|max:255',
                 'color' => 'required|not_in:0',
@@ -57,7 +57,7 @@ class OrderSpecialStatusController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        if (auth()->user()->can('size.edit')) {
+        if (auth()->user()->can('order_sheet_status.index')) {
             $validatedData = $request->validate([
                 'title' => 'required|max:255',
                 'color' => 'required|not_in:0',
@@ -90,7 +90,7 @@ class OrderSpecialStatusController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        if (auth()->user()->can('size.create')) {
+        if (auth()->user()->can('order_sheet_status.index')) {
             $status = OrderSpecialStatus::find($id);
 
             if (FacebookOrder::where('special_status_id', $id)->exists()) {

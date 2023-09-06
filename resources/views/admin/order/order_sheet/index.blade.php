@@ -149,7 +149,7 @@
 
                                     <td class="text-center">
                                         <a class="mb-2 d-inline-block" href="{{ route('fos.edit', $order->id) }}"><span class="bigFont badge badge-light">{{ $order->code ?? 'N/A' }}</span></a> <br>
-                                        <a class="" href="{{ route('pos.create', $order->id) }}"><span class="btn btn-sm bg-purple" style="font-weight: bold">POS<i class="ml-2 fas fa-angle-double-right"></i></span></a>
+                                        <a class="" href="{{ route('pos.create', $order->id) }}" target="_blank"><span class="btn btn-sm bg-purple" style="font-weight: bold">POS<i class="ml-2 fas fa-angle-double-right"></i></span></a>
                                     </td>
 
                                     <td width="20%" style="font-weight: bold">{{ $order->name }}</td>

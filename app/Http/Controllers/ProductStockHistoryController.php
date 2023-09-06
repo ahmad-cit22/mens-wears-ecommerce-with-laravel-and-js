@@ -19,7 +19,7 @@ class ProductStockHistoryController extends Controller {
 
     public function add_stock() {
 
-        if (auth()->user()->can('product.edit')) {
+        if (auth()->user()->can('add.stock')) {
             $products = Product::orderBy('id', 'DESC')->get();
 
             return view('admin.product.stock.add_stock', [
@@ -31,7 +31,7 @@ class ProductStockHistoryController extends Controller {
     }
 
     public function current(Request $request) {
-        if (auth()->user()->can('product.edit')) {
+        if (auth()->user()->can('current.stock.view')) {
             if ($request->ajax()) {
                 $stocks = ProductStock::orderBy('id', 'DESC')->get();
                 return Datatables::of($stocks)
@@ -107,7 +107,7 @@ class ProductStockHistoryController extends Controller {
     }
 
     public function index(Request $request) {
-        if (auth()->user()->can('product.edit')) {
+        if (auth()->user()->can('stock.history')) {
             if ($request->ajax()) {
                 $stocks = ProductStockHistory::orderBy('created_at', 'desc')->get();
                 return Datatables::of($stocks)

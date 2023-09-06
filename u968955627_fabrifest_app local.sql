@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 30, 2023 at 07:22 AM
--- Server version: 10.5.19-MariaDB-cll-lve
--- PHP Version: 7.2.34
+-- Host: localhost:3306
+-- Generation Time: Sep 06, 2023 at 06:11 AM
+-- Server version: 8.0.30
+-- PHP Version: 8.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,8 +28,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `accessories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -41,12 +41,12 @@ CREATE TABLE `accessories` (
 --
 
 CREATE TABLE `accessory_amounts` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `accessory_id` int(11) NOT NULL,
-  `bank_id` int(11) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `accessory_id` int NOT NULL,
+  `bank_id` int DEFAULT NULL,
   `credit` double DEFAULT NULL,
   `debit` double DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -58,11 +58,11 @@ CREATE TABLE `accessory_amounts` (
 --
 
 CREATE TABLE `areas` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `district_id` int(11) NOT NULL,
-  `location` int(11) NOT NULL DEFAULT 3,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `district_id` int NOT NULL,
+  `location` int NOT NULL DEFAULT '3',
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -647,14 +647,14 @@ INSERT INTO `areas` (`id`, `name`, `district_id`, `location`, `is_active`, `crea
 --
 
 CREATE TABLE `assets` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `bank_id` int(11) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `bank_id` int DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` double DEFAULT NULL,
   `reduction_amount` double DEFAULT NULL,
   `reduction_period` double DEFAULT NULL,
   `depreciation_value` double DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
   `purchase_date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -667,8 +667,8 @@ CREATE TABLE `assets` (
 --
 
 CREATE TABLE `asset_deductions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `asset_id` int(11) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `asset_id` int DEFAULT NULL,
   `amount` double DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -681,13 +681,20 @@ CREATE TABLE `asset_deductions` (
 --
 
 CREATE TABLE `banks` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `account_number` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `account_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `banks`
+--
+
+INSERT INTO `banks` (`id`, `name`, `account_number`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'Cash at hand', '01719422741', NULL, '2023-08-10 10:25:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -696,11 +703,11 @@ CREATE TABLE `banks` (
 --
 
 CREATE TABLE `bank_contras` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `from_id` int(11) NOT NULL,
-  `to_id` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `from_id` int NOT NULL,
+  `to_id` int NOT NULL,
   `amount` double DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
   `date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -713,16 +720,51 @@ CREATE TABLE `bank_contras` (
 --
 
 CREATE TABLE `bank_transactions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `bank_id` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `bank_id` int NOT NULL,
+  `expense_id` int DEFAULT NULL,
   `credit` double DEFAULT NULL,
   `debit` double DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
   `date` date DEFAULT NULL,
-  `other_income` int(11) DEFAULT NULL,
+  `other_income` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `bank_transactions`
+--
+
+INSERT INTO `bank_transactions` (`id`, `bank_id`, `expense_id`, `credit`, `debit`, `note`, `date`, `other_income`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, NULL, 50, 'asdasds', '2023-08-10', NULL, '2023-08-10 10:28:07', '2023-08-13 10:46:56'),
+(2, 1, NULL, NULL, 20000, NULL, '2023-08-07', NULL, '2023-08-13 05:46:09', '2023-08-13 05:46:09'),
+(3, 1, NULL, NULL, 10000, NULL, '2023-08-13', NULL, '2023-08-13 05:46:28', '2023-08-13 05:46:28'),
+(4, 1, NULL, NULL, 50, NULL, '2023-08-13', NULL, '2023-08-13 05:55:11', '2023-08-13 05:55:11'),
+(5, 1, NULL, NULL, 200, NULL, '2023-08-13', NULL, '2023-08-13 05:57:45', '2023-08-13 05:57:45'),
+(7, 1, 7, NULL, 100, 'Elit ullamco conseq', '2013-04-25', NULL, '2023-08-13 10:56:52', '2023-08-13 10:56:52');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bkash_numbers`
+--
+
+CREATE TABLE `bkash_numbers` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `bkash_numbers`
+--
+
+INSERT INTO `bkash_numbers` (`id`, `name`, `number`, `created_at`, `updated_at`) VALUES
+(1, 'Primary', '01989898989', NULL, '2023-08-30 06:20:15'),
+(2, 'Secondary', '01323232323', '2023-08-30 06:20:07', '2023-08-30 06:20:07');
 
 -- --------------------------------------------------------
 
@@ -731,14 +773,14 @@ CREATE TABLE `bank_transactions` (
 --
 
 CREATE TABLE `brands` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `meta_title` varchar(255) DEFAULT NULL,
-  `meta_image` varchar(255) DEFAULT NULL,
-  `meta_description` longtext DEFAULT NULL,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description` longtext COLLATE utf8mb4_unicode_ci,
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -760,18 +802,19 @@ INSERT INTO `brands` (`id`, `title`, `image`, `description`, `meta_title`, `meta
 --
 
 CREATE TABLE `categories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `parent_id` int(11) NOT NULL DEFAULT 0,
-  `position` int(11) NOT NULL DEFAULT 1,
-  `image` varchar(255) DEFAULT NULL,
-  `banner` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `meta_title` varchar(255) DEFAULT NULL,
-  `meta_image` varchar(255) DEFAULT NULL,
-  `meta_description` longtext DEFAULT NULL,
-  `is_featured` int(11) NOT NULL DEFAULT 0,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` int NOT NULL DEFAULT '0',
+  `position` int NOT NULL DEFAULT '1',
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `banner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description` longtext COLLATE utf8mb4_unicode_ci,
+  `meta_keywords` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_featured` int NOT NULL DEFAULT '0',
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -780,22 +823,22 @@ CREATE TABLE `categories` (
 -- Dumping data for table `categories`
 --
 
-INSERT INTO `categories` (`id`, `title`, `parent_id`, `position`, `image`, `banner`, `description`, `meta_title`, `meta_image`, `meta_description`, `is_featured`, `is_active`, `created_at`, `updated_at`) VALUES
-(5, 'Katua Shirt', 0, 1, '1690112974.jpg', 'banner_1690112974.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:01:17', '2023-07-23 17:49:34'),
-(6, 'Half Sleeve', 5, 1, '1690105533.jpg', 'banner_1690105533.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:02:02', '2023-07-23 15:45:33'),
-(7, 'Full Sleeve', 5, 1, '1690104108.jpg', 'banner_1690104108.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:02:25', '2023-07-23 15:21:48'),
-(8, 'T-Shirt', 0, 2, '1676798938.jpg', 'banner_1690109167.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:03:41', '2023-07-23 16:46:07'),
-(9, 'Polo Shirt', 0, 3, '1690111800.jpg', 'banner_1690111800.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:10:49', '2023-07-23 17:30:00'),
-(10, 'Shirt', 0, 4, '1676798913.jpg', 'banner_1690110084.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:11:19', '2023-07-23 17:01:24'),
-(11, 'Half Sleeve', 10, 1, '1690099520.jpg', 'banner_1690099842.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:11:44', '2023-07-23 14:11:10'),
-(12, 'Full Sleeve', 10, 1, '1690101426.jpg', 'banner_1690101426.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:12:10', '2023-07-23 14:37:06'),
-(13, 'Pant', 0, 5, '1690117288.jpg', 'banner_1690117288.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:14:34', '2023-07-23 19:19:43'),
-(15, 'joggers', 13, 1, '1690117321.jpg', 'banner_1690117321.jpg', NULL, NULL, NULL, NULL, 0, 1, '2022-08-18 11:16:37', '2023-07-23 19:02:01'),
-(16, 'Polo T-Shirt', 9, 6, '1665654566.jpg', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-10-13 14:49:26', '2022-10-13 14:49:26'),
-(17, 'Winter Collection', 0, 1, '1690117862.jpg', 'banner_1690118284.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-10-30 15:59:10', '2023-07-24 16:59:48'),
-(18, 'Hoodie', 17, 1, '1690118166.jpg', 'banner_1690118166.jpg', NULL, NULL, NULL, NULL, 1, 1, '2022-10-30 15:59:31', '2023-07-23 19:16:07'),
-(19, 'Jacket', 17, 1, '1690119134.jpg', 'banner_1690118989.jpg', NULL, NULL, NULL, NULL, 0, 1, '2022-10-30 15:59:56', '2023-07-23 19:32:14'),
-(20, 'PANJABI', 0, 6, '1690119654.jpg', 'banner_1690119654.jpg', NULL, NULL, NULL, NULL, 1, 1, '2023-05-09 17:01:22', '2023-07-23 19:40:55');
+INSERT INTO `categories` (`id`, `title`, `parent_id`, `position`, `image`, `banner`, `description`, `meta_title`, `meta_image`, `meta_description`, `meta_keywords`, `is_featured`, `is_active`, `created_at`, `updated_at`) VALUES
+(5, 'Katua Shirt', 0, 1, '1690112974.jpg', 'banner_1690112974.jpg', NULL, 'Katua', NULL, 'Katua Katua Katua Katua Katua Katua Katua', 'Katua, Katua, Katua', 1, 1, '2022-08-18 11:01:17', '2023-08-09 11:30:56'),
+(6, 'Half Sleeve', 5, 1, '1690105533.jpg', 'banner_1690105533.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:02:02', '2023-07-23 15:45:33'),
+(7, 'Full Sleeve', 5, 1, '1690104108.jpg', 'banner_1690104108.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:02:25', '2023-07-23 15:21:48'),
+(8, 'T-Shirt', 0, 2, '1676798938.jpg', 'banner_1690109167.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:03:41', '2023-07-23 16:46:07'),
+(9, 'Polo Shirt', 0, 3, '1690111800.jpg', 'banner_1690111800.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:10:49', '2023-07-23 17:30:00'),
+(10, 'Shirt', 0, 4, '1676798913.jpg', 'banner_1690110084.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:11:19', '2023-07-23 17:01:24'),
+(11, 'Half Sleeve', 10, 1, '1690099520.jpg', 'banner_1690099842.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:11:44', '2023-07-23 14:11:10'),
+(12, 'Full Sleeve', 10, 1, '1690101426.jpg', 'banner_1690101426.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:12:10', '2023-07-23 14:37:06'),
+(13, 'Pant', 0, 5, '1690117288.jpg', 'banner_1690117288.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-08-18 11:14:34', '2023-07-23 19:19:43'),
+(15, 'joggers', 13, 1, '1690117321.jpg', 'banner_1690117321.jpg', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-08-18 11:16:37', '2023-07-23 19:02:01'),
+(16, 'Polo T-Shirt', 9, 6, '1665654566.jpg', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-10-13 14:49:26', '2022-10-13 14:49:26'),
+(17, 'Winter Collection', 0, 1, '1690117862.jpg', 'banner_1690118284.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-10-30 15:59:10', '2023-07-24 16:59:48'),
+(18, 'Hoodie', 17, 1, '1690118166.jpg', 'banner_1690118166.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2022-10-30 15:59:31', '2023-07-23 19:16:07'),
+(19, 'Jacket', 17, 1, '1690119134.jpg', 'banner_1690118989.jpg', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-10-30 15:59:56', '2023-07-23 19:32:14'),
+(20, 'PANJABI', 0, 6, '1690119654.jpg', 'banner_1690119654.jpg', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-05-09 17:01:22', '2023-07-23 19:40:55');
 
 -- --------------------------------------------------------
 
@@ -804,18 +847,41 @@ INSERT INTO `categories` (`id`, `title`, `parent_id`, `position`, `image`, `bann
 --
 
 CREATE TABLE `coupons` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `code` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `discount` double DEFAULT NULL,
   `amount` double DEFAULT NULL,
   `purchase_amount` double DEFAULT NULL,
   `valid_from` date NOT NULL,
   `valid_to` date NOT NULL,
-  `single_use` int(11) NOT NULL DEFAULT 0,
+  `single_use` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `courier_names`
+--
+
+CREATE TABLE `courier_names` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `charge_one` int DEFAULT NULL,
+  `charge_two` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `courier_names`
+--
+
+INSERT INTO `courier_names` (`id`, `name`, `charge_one`, `charge_two`, `created_at`, `updated_at`) VALUES
+(1, 'Demo 1', 60, NULL, '2023-08-31 07:06:51', '2023-08-31 07:06:51'),
+(2, 'Demo 2', 70, NULL, '2023-08-31 07:06:58', '2023-08-31 07:06:58');
 
 -- --------------------------------------------------------
 
@@ -824,9 +890,9 @@ CREATE TABLE `coupons` (
 --
 
 CREATE TABLE `districts` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -909,8 +975,8 @@ INSERT INTO `districts` (`id`, `name`, `is_active`, `created_at`, `updated_at`) 
 --
 
 CREATE TABLE `expenses` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -932,15 +998,120 @@ INSERT INTO `expenses` (`id`, `type`, `created_at`, `updated_at`) VALUES
 --
 
 CREATE TABLE `expense_entries` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `expense_id` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `expense_id` int NOT NULL,
   `amount` double NOT NULL,
-  `bank_id` int(11) DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `bank_id` int DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
   `date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `expense_entries`
+--
+
+INSERT INTO `expense_entries` (`id`, `expense_id`, `amount`, `bank_id`, `note`, `date`, `created_at`, `updated_at`) VALUES
+(7, 1, 100, 1, 'Elit ullamco conseq', '2013-04-25', '2023-08-13 10:56:52', '2023-08-13 10:56:52');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facebook_orders`
+--
+
+CREATE TABLE `facebook_orders` (
+  `id` bigint UNSIGNED NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
+  `price` double NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `whatsapp_num` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `shipping_address` text COLLATE utf8mb4_unicode_ci,
+  `courier_id` bigint UNSIGNED DEFAULT NULL,
+  `delivery_charge` double DEFAULT NULL,
+  `order_status_id` bigint UNSIGNED NOT NULL DEFAULT '1',
+  `special_status_id` bigint UNSIGNED NOT NULL DEFAULT '1',
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remarks` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `discount_amount` double DEFAULT NULL,
+  `bkash_business_id` bigint UNSIGNED DEFAULT NULL,
+  `bkash_num` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bkash_amount` double DEFAULT NULL,
+  `advance` double NOT NULL DEFAULT '0',
+  `source` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Offline',
+  `is_return` int NOT NULL DEFAULT '0',
+  `is_final` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `facebook_orders`
+--
+
+INSERT INTO `facebook_orders` (`id`, `code`, `customer_id`, `price`, `name`, `email`, `phone`, `whatsapp_num`, `shipping_address`, `courier_id`, `delivery_charge`, `order_status_id`, `special_status_id`, `note`, `remarks`, `discount_amount`, `bkash_business_id`, `bkash_num`, `bkash_amount`, `advance`, `source`, `is_return`, `is_final`, `created_at`, `updated_at`) VALUES
+(4, NULL, 156, 1380, 'AB Parvez', NULL, '01715102799', NULL, 'asdasd', 2, NULL, 2, 4, 'asdasdas', NULL, 150, NULL, NULL, NULL, 200, 'Offline', 0, 0, '2023-07-30 10:37:53', '2023-08-31 10:22:55'),
+(5, '12312', 156, 690, 'AB Parvez', 'rasebep748@mahmul.com', '01715102799', NULL, 'asdasd', 2, NULL, 1, 1, 'asdasd', NULL, 100, NULL, NULL, NULL, 500, 'Online', 0, 0, '2023-08-30 11:34:02', '2023-08-31 11:38:55');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facebook_order_products`
+--
+
+CREATE TABLE `facebook_order_products` (
+  `id` bigint UNSIGNED NOT NULL,
+  `order_id` bigint UNSIGNED NOT NULL,
+  `product_id` int UNSIGNED NOT NULL,
+  `size_id` int UNSIGNED DEFAULT NULL,
+  `production_cost` double DEFAULT NULL,
+  `price` double NOT NULL,
+  `qty` double NOT NULL,
+  `return_qty` double DEFAULT NULL,
+  `discount_amount` double DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `facebook_order_products`
+--
+
+INSERT INTO `facebook_order_products` (`id`, `order_id`, `product_id`, `size_id`, `production_cost`, `price`, `qty`, `return_qty`, `discount_amount`, `note`, `created_at`, `updated_at`) VALUES
+(3, 2, 486, 3, 350, 690, 1, NULL, NULL, NULL, '2023-08-30 07:22:30', '2023-08-30 07:22:30'),
+(4, 2, 486, 1, 350, 690, 3, NULL, NULL, NULL, '2023-08-30 07:22:30', '2023-08-30 07:22:30'),
+(5, 3, 486, 3, 350, 690, 1, NULL, NULL, NULL, '2023-08-30 07:29:05', '2023-08-30 07:29:05'),
+(6, 3, 486, 4, 350, 690, 1, NULL, NULL, NULL, '2023-08-30 07:29:05', '2023-08-30 07:29:05'),
+(7, 4, 486, 3, 350, 690, 2, NULL, NULL, NULL, '2023-08-30 10:37:53', '2023-08-30 10:37:53'),
+(8, 5, 486, 3, 350, 690, 1, NULL, NULL, NULL, '2023-08-30 11:34:02', '2023-08-30 11:34:02');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facebook_order_statuses`
+--
+
+CREATE TABLE `facebook_order_statuses` (
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `facebook_order_statuses`
+--
+
+INSERT INTO `facebook_order_statuses` (`id`, `title`, `color`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'Demo', 'warning', 1, '2023-08-30 07:20:32', '2023-08-30 10:54:23'),
+(2, 'Ipsam aut aut qui ac', 'dark', 1, '2023-08-31 10:22:48', '2023-08-31 10:22:48');
 
 -- --------------------------------------------------------
 
@@ -949,13 +1120,13 @@ CREATE TABLE `expense_entries` (
 --
 
 CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` bigint UNSIGNED NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -965,9 +1136,9 @@ CREATE TABLE `failed_jobs` (
 --
 
 CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1020,7 +1191,21 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (43, '2022_10_15_153412_create_asset_deductions_table', 6),
 (44, '2022_10_22_150629_create_partners_table', 7),
 (45, '2022_10_22_151003_create_partner_transactions_table', 7),
-(46, '2022_10_30_191454_create_ratings_table', 8);
+(46, '2022_10_30_191454_create_ratings_table', 8),
+(72, '2023_08_22_145205_create_courier_names_table', 9),
+(73, '2023_08_22_145327_create_bkash_numbers_table', 9),
+(74, '2023_08_22_145328_create_facebook_orders_table', 9),
+(75, '2023_08_22_154837_create_facebook_order_products_table', 9),
+(76, '2023_08_26_122049_create_facebook_order_statuses_table', 10),
+(77, '2023_08_26_122349_create_order_special_statuses_table', 10),
+(80, '2023_08_22_145220_create_facebook_order_statuses_table', 11),
+(81, '2023_08_22_145225_create_order_special_statuses_table', 11),
+(82, '2023_08_22_145329_create_facebook_orders_table', 11),
+(83, '2023_08_22_154839_create_facebook_order_products_table', 11),
+(85, '2023_08_22_145226_create_order_special_statuses_table', 12),
+(86, '2022_06_12_061702_create_courier_names_table', 13),
+(87, '2022_06_12_061705_create_orders_table', 13),
+(88, '2022_06_12_061706_create_orders_table', 14);
 
 -- --------------------------------------------------------
 
@@ -1029,9 +1214,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `model_has_permissions` (
-  `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) NOT NULL,
-  `model_id` bigint(20) UNSIGNED NOT NULL
+  `permission_id` bigint UNSIGNED NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1041,9 +1226,9 @@ CREATE TABLE `model_has_permissions` (
 --
 
 CREATE TABLE `model_has_roles` (
-  `role_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) NOT NULL,
-  `model_id` bigint(20) UNSIGNED NOT NULL
+  `role_id` bigint UNSIGNED NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1052,11 +1237,11 @@ CREATE TABLE `model_has_roles` (
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 (1, 'App\\Models\\User', 1),
-(1, 'App\\Models\\User', 98),
-(1, 'App\\Models\\User', 99),
-(1, 'App\\Models\\User', 103),
 (2, 'App\\Models\\User', 62),
 (3, 'App\\Models\\User', 69),
+(1, 'App\\Models\\User', 98),
+(2, 'App\\Models\\User', 99),
+(1, 'App\\Models\\User', 103),
 (4, 'App\\Models\\User', 104);
 
 -- --------------------------------------------------------
@@ -1066,35 +1251,35 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 --
 
 CREATE TABLE `orders` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `code` varchar(255) DEFAULT NULL,
-  `customer_id` int(11) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
   `price` double NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `district_id` int(11) DEFAULT NULL,
-  `area_id` int(11) DEFAULT NULL,
-  `shipping_address` text DEFAULT NULL,
-  `delivery_boy_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `district_id` int DEFAULT NULL,
+  `area_id` int DEFAULT NULL,
+  `shipping_address` text COLLATE utf8mb4_unicode_ci,
+  `delivery_boy_id` int DEFAULT NULL,
   `delivery_charge` double DEFAULT NULL,
-  `courier_name` varchar(200) DEFAULT NULL,
+  `courier_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `vat` double DEFAULT NULL,
-  `cod` double NOT NULL DEFAULT 0,
-  `order_status_id` int(11) NOT NULL DEFAULT 1,
-  `payment_status` varchar(255) NOT NULL DEFAULT '0',
-  `payment_method` varchar(255) DEFAULT NULL,
-  `transaction_id` varchar(255) DEFAULT NULL,
-  `sender_phone` varchar(255) DEFAULT NULL,
-  `sender_amount` varchar(255) DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `cod` double NOT NULL DEFAULT '0',
+  `order_status_id` int NOT NULL DEFAULT '1',
+  `payment_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `payment_method` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `transaction_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sender_phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sender_amount` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `discount_amount` double DEFAULT NULL,
   `wallet_amount` double DEFAULT NULL,
-  `advance` double NOT NULL DEFAULT 0,
-  `source` varchar(255) DEFAULT NULL,
-  `is_return` int(11) NOT NULL DEFAULT 0,
-  `is_final` int(11) NOT NULL DEFAULT 0,
+  `advance` double NOT NULL DEFAULT '0',
+  `source` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_return` int NOT NULL DEFAULT '0',
+  `is_final` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1104,158 +1289,9 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `code`, `customer_id`, `price`, `name`, `email`, `phone`, `city`, `district_id`, `area_id`, `shipping_address`, `delivery_boy_id`, `delivery_charge`, `courier_name`, `vat`, `cod`, `order_status_id`, `payment_status`, `payment_method`, `transaction_id`, `sender_phone`, `sender_amount`, `note`, `discount_amount`, `wallet_amount`, `advance`, `source`, `is_return`, `is_final`, `created_at`, `updated_at`) VALUES
-(8, '17007', 95, 1000, 'Mehedi Hasan', 'fisequaltoma@gmail.com', '01798041189', NULL, 14, 168, '155/4/C-6A, Mukti Housing (Opposite of Matri Chaya Building), West  Agargaon', NULL, 60, NULL, NULL, 0, 4, '1', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 1, '2023-07-22 18:04:31', '2023-07-24 11:18:30'),
-(10, '17008', 97, 1590, 'Md Bablu', NULL, '01824693216', NULL, 10, 81, NULL, NULL, 130, NULL, NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're order', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-24 12:41:28', '2023-07-25 11:01:59'),
-(11, '17009', 100, 780, 'Rasel Rasel', NULL, '01846943236', NULL, 13, 112, NULL, NULL, 130, NULL, NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 'for sample', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-24 16:24:09', '2023-07-24 17:48:10'),
-(12, '17010', 101, 0, 'Asim Das', NULL, '01712-448672', NULL, 4, 24, NULL, NULL, 130, NULL, NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 'stock update', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-24 16:38:05', '2023-07-24 16:42:35'),
-(14, '17012', 108, 665, 'Akash', 'harryakash47@gmail.com', '01601753853', NULL, 57, 490, '30mil, satkhira', NULL, 130, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, 'not paid delivery charge', NULL, NULL, 0, 'Website', 0, 1, '2023-07-24 21:53:24', '2023-07-25 14:34:15'),
-(15, '17013', 107, 1470, 'Farhad Ahmed', 'farhad0ahmed@gmail.Com', '01776-484472', NULL, 24, 250, '204 Jail Road Jashore', NULL, 130, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, 'confirm by bkash', NULL, NULL, 130, 'Website', 0, 1, '2023-07-25 09:16:00', '2023-07-25 13:33:23'),
-(19, '17015', 106, 1380, 'Swopnil Ahmed', NULL, '01316926616', NULL, 40, 361, 'Mymensingh sadar thanaghat tample er sathe', NULL, 130, 'Stedfast', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'not advance', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 14:30:56', '2023-07-29 14:13:03'),
-(40, '17016', 117, 750, 'Imam Hossain', NULL, '01716160702', NULL, 10, 88, 'Lokman market,, madam bibir hat,,, vatiary,,, sitakunda,,, chittagong', NULL, 130, 'SF', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-25 17:11:20', '2023-07-29 14:16:35'),
-(41, '17017', 114, 750, 'Jubayer Ahmed Juber', NULL, '01724381181', NULL, 61, 515, 'chatok pouroshova ward 9, house 1, sunamgonj', NULL, 130, 'SF', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-25 17:21:39', '2023-07-29 14:19:01'),
-(42, '17018', 118, 690, 'md rony', NULL, '01747678677', NULL, 14, 176, 'uttara 10,  4number road  siraj market', NULL, 60, 'stdefast', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 17:27:25', '2023-07-29 14:20:57'),
-(44, '17020', 119, 1440, 'GM Ramjan', NULL, '01756443287', NULL, 58, 498, 'laukhola jajira sharitpur', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 17:29:41', '2023-07-29 14:22:31'),
-(46, '17021', 105, 390, 'Al AmAl Aminin', NULL, '01639475361', NULL, 14, 124, 'shaymoli,uttar adabor,4tola mosjid samne', NULL, 60, 'prv', NULL, 0, 2, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 17:46:23', '2023-07-29 17:22:01'),
-(47, '17022', 120, 690, 'md salman', NULL, '01700910585', NULL, 19, 214, 'sat tola garments,maleker bari,gazipur', NULL, 100, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 17:50:50', '2023-07-29 14:54:28'),
-(48, '17023', 121, 780, 'Romjan Ali', NULL, '01724028498', NULL, 35, 327, 'Magura sadar Thana,magura', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 17:55:16', '2023-07-29 14:55:48'),
-(49, '17024', 122, 390, 'sheikh mahin mahbub', NULL, '01300490816', NULL, 14, 154, 'Arambag motijheel', NULL, 60, 'PRV', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-25 18:27:55', '2023-07-25 18:28:22'),
-(50, '17025', NULL, 665, 'Md remon Remon', 'mhremon89@gmail.com', '01783501361', NULL, 13, 119, 'Comilla', NULL, 130, NULL, NULL, 0, 3, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 0, '2023-07-25 19:20:02', '2023-07-26 19:09:08'),
-(51, '17026', 123, 390, 'Md Mizan', NULL, '01722693439', NULL, 61, 523, 'Sunamganj sadar nilpur bazar.', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-25 19:35:25', '2023-07-25 19:35:48'),
-(52, '17027', NULL, 500, 'Mahamudul Kabir', 'mahamudulku@gmail.com', '01303-727299', NULL, 56, 481, 'House No.:13 (2nd Floor), Road No.03, Jummapara, Rangpur', NULL, 130, NULL, NULL, 0, 5, '0', 'Cash on Delivery', NULL, NULL, NULL, 'product stock out', NULL, NULL, 0, 'Website', 0, 0, '2023-07-25 21:08:02', '2023-07-26 11:43:03'),
-(53, '17028', NULL, 665, 'Mahedi Hassan', 'mahedihassan788@gmail.com', '01711943099', NULL, 51, 442, 'Brac office, chowrasta, nasnapara.', NULL, 130, NULL, NULL, 0, 4, '1', 'Cash on Delivery', NULL, NULL, NULL, 'XL', NULL, NULL, 130, 'Website', 0, 1, '2023-07-25 21:43:49', '2023-07-29 15:38:34'),
-(54, '17029', NULL, 2030, 'Sharif Ahmed Ahmed', 'sharifahmed2183@gmail.com', '01710956455', NULL, 14, 144, '383, Paris furniture road, North Kazipara Mirpur', NULL, 60, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, 'Plz must check chest size 48 before delivery.', NULL, NULL, 0, 'Website', 0, 1, '2023-07-25 22:22:03', '2023-07-26 12:46:39'),
-(55, '17030', NULL, 1250, 'Md Shohel Hossain', 'jishan949@gmail.com', '+880 1916-383585', NULL, 14, 142, 'Sonali Bank Ltd, Jatrabari Br, (opposite Tony Tower)', NULL, 60, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, 'sell', NULL, NULL, 0, 'Website', 0, 1, '2023-07-25 22:50:14', '2023-07-26 12:56:38'),
-(56, '17031', NULL, 1925, 'Abu Zafor Siddiqi', 'zaforzesm@gmail.com', '01517190241', NULL, 57, 490, 'Rasulpur, Satkhira Sadar, Satkhira, Bangladesh', NULL, 130, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, 'Product defective kina dekhe diben inshallah.R size sob koita L', NULL, NULL, 130, 'Website', 0, 1, '2023-07-25 23:59:30', '2023-07-26 13:02:11'),
-(57, '17032', NULL, 1000, 'Nazmul Hossain Asad', 'asadlx.222@gmail.com', '01710505060', NULL, 15, 191, 'Parbatipur Railway Station, Rest House', NULL, 130, NULL, NULL, 0, 3, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 0, '2023-07-26 00:05:07', '2023-07-26 19:09:31'),
-(58, '17033', NULL, 1890, 'Nure Alom Masud', 'masud2s2020@gmail.com', '01731484601', NULL, 61, 515, 'Code Rasta , Chhatak Bazar', NULL, 130, NULL, NULL, 0, 3, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 0, '2023-07-26 04:06:49', '2023-07-26 19:09:44'),
-(62, '17034', 126, 390, 'Jafor Ridoy', NULL, '01915391131', NULL, 14, 166, 'Surjosen Hall ; Dhaka University', NULL, 60, 'prv', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 12:33:03', '2023-07-30 12:36:11'),
-(63, '17035', 127, 390, 'Md Moshiur', NULL, '01917006090', NULL, 14, 153, 'Muhammod pur, Haosing socity # rod #7', NULL, 60, 'prv', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 12:38:55', '2023-07-30 12:46:25'),
-(64, '17036', 128, 780, 'Md Hossain Shahid Sarwar', NULL, '01521735153', NULL, 14, 172, 'NTMC bir uttam genarel ajijur t=rahman sark bijoy shorony tejgaon , prime minister er tran karjoloy', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 12:43:30', '2023-07-26 12:44:45'),
-(65, '17037', 129, 1900, 'Jõ Hîr', NULL, '01324925662 01966560578', NULL, 19, 218, 'lichu bagan gorgoria mastar bari sreepur gazipur', NULL, 100, 'sf', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're order hobe', NULL, NULL, 100, 'Offline', 1, 1, '2023-07-26 13:29:00', '2023-07-26 15:21:53'),
-(66, '17038', 130, 1590, 'Aryan Khan Shojib', NULL, '01714475518', NULL, 40, 357, 'Court bobhon, gafargaon, mymensingh', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-26 13:44:17', '2023-07-30 12:53:44'),
-(67, '17039', 131, 750, 'Md Anamul', NULL, '01972745827', NULL, 19, 214, 'gazipur chwrasta joydebpur road 3', NULL, 100, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 13:48:21', '2023-07-30 12:55:05'),
-(69, '17040', 133, 750, 'Sajjad Hossain', NULL, '01718334748', NULL, 19, 214, 'gazipur konabri', NULL, 100, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 13:52:37', '2023-07-30 12:57:27'),
-(70, '17041', 134, 390, 'Pradyut Mazumder', NULL, '01866699930', NULL, 10, 93, 'laxmi mohajan bari , mojumdar stor sgoorika , pahartoli ctg', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-26 14:18:01', '2023-07-30 12:59:24'),
-(71, '17042', 135, 1770, 'Ayush Sarkar Sammo', NULL, '01774598070', NULL, 64, 554, 'Thakurgaon, college para', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-26 14:23:24', '2023-07-30 13:00:19'),
-(72, '17043', 136, 1170, 'Mohammad Jahed', NULL, '1814702879', NULL, 10, 90, 'chattogram chandgaon thana kalur ghat kapti rastar matha', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-26 14:31:21', '2023-07-30 13:01:03'),
-(74, '17044', 129, 2590, 'Jõ Hîr', NULL, '01324925662 01966560578', NULL, 19, 218, 'lichu bagan gorgoria ,mastar bari sreepur gazipur', NULL, 100, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 100, 'Offline', 0, 1, '2023-07-26 15:32:14', '2023-07-30 13:02:15'),
-(75, '17045', 138, 2130, 'poragh', NULL, '01724465641', NULL, 40, 361, '35/09 purbo gohailkandhi jamtola masjid pora bari myamnshing', NULL, 130, 'sf', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'mobile ordr', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 16:16:21', '2023-07-30 13:03:31'),
-(76, '17046', 139, 2070, 'Esa Ahmed', NULL, '01713958911', NULL, 3, 19, 'Barguna sador', NULL, 130, 'SB', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-26 16:24:44', '2023-07-26 16:25:39'),
-(77, '17047', 140, 1300, 'sohel rahman', NULL, '01711586440', NULL, 14, 133, 'gabtoli dahka', NULL, 0, 'office', NULL, 0, 4, '0', NULL, NULL, NULL, NULL, 'office sell', 80, NULL, 0, 'Offline', 0, 1, '2023-07-26 18:04:07', '2023-07-27 13:17:56'),
-(78, '17048', 141, 1440, 'Tarek Babu', NULL, '01721522189', NULL, 14, 142, 'Bibir Bagicha 2no. gate Nasrin Vila', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-26 18:36:29', '2023-07-26 18:36:47'),
-(79, '17049', 149, 500, 'Asif Uz Zaman', 'asifbd.2009@gmail.com', '01761801223', NULL, 14, 154, 'Asif uz zaman, (9th Floor), Acc. Dept., Biwta Bhavan, 141-143, Motijheel, Dhaka-1000', NULL, 60, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 1, '2023-07-26 21:47:47', '2023-07-27 11:42:57'),
-(80, '17050', 150, 595, 'Shawon', 'kshawon306@gmail.com', '01736305960', NULL, 7, 54, 'Police laion', NULL, 130, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Website', 0, 1, '2023-07-26 23:21:01', '2023-07-27 15:56:11'),
-(81, '17051', 151, 690, 'Amir Bin Farsi Hasan', NULL, '01629255220', NULL, 14, 136, 'dhanmondi 7/A baitusalam jame mosjid er sathe', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:10:42', '2023-07-27 12:14:18'),
-(82, '17052', 152, 750, 'Mohammed Saiful', NULL, '01779199985', NULL, 14, 128, '70/1 Hazi osman Gani road Dhaka Bangshal police station', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:17:50', '2023-07-27 13:16:24'),
-(83, '17053', 153, 1140, 'mr tanvir', NULL, '01711906567', NULL, 14, 152, 'office', NULL, 0, 'office', NULL, 0, 4, '0', NULL, NULL, NULL, NULL, 'office sell', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:19:30', '2023-07-27 13:17:25'),
-(84, '17054', 154, 2070, 'Himu Rahman', NULL, '01707077916', NULL, 14, 128, '154.R.Rahman market 2nd floor Nawabpur road Dhaka gulistan', NULL, 60, 'prv', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're oder', NULL, NULL, 0, 'Offline', 1, 1, '2023-07-27 12:26:31', '2023-07-27 12:42:48'),
-(85, '17055', 155, 690, 'MD SAMSUR RAHMAN', NULL, '01913660160', NULL, 14, 154, 'Hotel As Shams International Fakirapool Box culvart Road Motijheel Dhaka', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:27:58', '2023-07-27 13:19:19'),
-(86, '17056', 156, 750, 'AB Parvez', NULL, '01715102799', NULL, 14, 159, 'Imperial Capital Ltd. Saiham Sky View Tower (3rd Floor), 45 Bijoynagar (Opposite side of Hotel 71), Dhaka-1000', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:30:21', '2023-07-27 13:19:35'),
-(87, '17057', 157, 1440, 'Kýãw Hìñ', NULL, '01878383324', NULL, 55, 477, 'Rangamati sadar', NULL, 130, 'sundorbon', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 12:37:39', '2023-07-27 13:19:45'),
-(88, '17058', 154, 3570, 'Himu Rahman', NULL, '01707077916', NULL, 14, 128, '154.R.Rahman market 2nd floor Nawabpur road Dhaka gulistan', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:45:47', '2023-07-27 13:19:55'),
-(89, '17059', 158, 3630, 'mr. shaid', NULL, '01964401933', NULL, 14, 127, 'H-49, R-27, B-A, banani', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 12:48:07', '2023-07-27 13:20:10'),
-(90, '17060', 159, 750, 'Rabiul Hasan Biplob', NULL, '01717142347', NULL, 41, 372, 'bnghabaria collage para ,  naogaon sador', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 12:55:22', '2023-07-27 13:20:37'),
-(91, '17061', 160, 750, 'GM Abdul Wahab', NULL, '01712624481', NULL, 57, 491, 'shaymnagor ,sthkhira , dhumghat nasir ali bridge songlongo bazar', NULL, 130, NULL, NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're oder', NULL, NULL, 130, 'Offline', 1, 1, '2023-07-27 13:00:05', '2023-07-27 13:10:27'),
-(92, '17062', 161, 390, 'Sohag Ctg', NULL, '01788691564', NULL, 10, 82, 'joraganj ,mirsharai CTG.', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 13:01:52', '2023-07-27 13:20:47'),
-(93, '17063', 162, 1640, 'Iqbal Hossain Shagor', NULL, '01783200433', NULL, 13, 112, 'Comilla chouddogram batisha', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 13:09:11', '2023-07-27 13:20:57'),
-(94, '17064', 160, 750, 'GM Abdul Wahab', NULL, '01712624481', NULL, 57, 491, 'shaymnagor ,sthkhira , dhumghat nasir ali bridge songlongo bazar', NULL, 130, 'stedfast', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 13:11:34', '2023-07-27 13:21:05'),
-(95, '17065', 163, 665, 'Sukanta Das', NULL, '01641555905', NULL, 10, 77, 'chnadanaish CTG.', NULL, 130, NULL, NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', 285, NULL, 130, 'Offline', 0, 1, '2023-07-27 13:41:15', '2023-07-27 14:58:27'),
-(96, '17066', 164, 1440, 'MD Sahin Mridha', NULL, '01316116342', NULL, 36, 333, 'manikganj , horirampur , dhulshura', NULL, 130, 'stedfast', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 13:46:54', '2023-07-27 14:58:50'),
-(97, '17067', 165, 2190, 'Asad Chandan', NULL, '01715 105 405', NULL, 10, 94, 'fenail square [abasik] 14 tola, flat -A14 ,gate no-02 sholo-shor CTG', NULL, 130, 'stedfasat', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 14:06:06', '2023-07-27 14:58:40'),
-(98, '17068', 166, 750, 'gopinath mondal', NULL, '01787070651', NULL, 14, 147, 'Paschim Brahmonkitta Jame Masjid kalindi Keraniganj', NULL, 100, NULL, NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 14:09:39', '2023-07-27 14:58:59'),
-(99, '17069', 167, 690, 'Chapal Ponting', NULL, '01710288702', NULL, 63, 545, 'Halim Adhunik hospital  Mirzapur, tangail..', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 14:11:35', '2023-07-27 14:59:10'),
-(100, '17070', 168, 1440, 'Ahmed Rumel', NULL, '01711189479', NULL, 62, 536, 'Kadamtoli  Sylhet', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 16:00:24', '2023-07-27 16:33:29'),
-(101, '17071', 169, 690, 'Salahuddin Khan', NULL, '1777322008', NULL, 14, 152, 'mirpur 1, budhijibi shaid minar main gate doyal restera', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 16:31:35', '2023-07-27 16:34:54'),
-(102, '17072', 170, 750, 'Mohimmoy Bhowmick', NULL, '01869322386', NULL, 14, 126, 'Basudndhara C block road no 2 house no 61 dhaka', NULL, 60, NULL, NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 16:33:07', '2023-07-27 16:34:30'),
-(103, '17073', 171, 2070, 'sanjib rema', NULL, '01728638143', NULL, 14, 161, 'Moreau House, House no.28, Rd. no. 3, Block-B, Banasree, Rampura, Dhaka-1219.', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, 'ok', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 17:46:44', '2023-07-27 17:48:05'),
-(104, '17074', 172, 390, 'Redwan Hamidi', NULL, '01876447510', NULL, 17, 205, 'Address: Southeast Bank Limited,,, Sonagazi Branch.  Thana:- Sonagazi. District: Feni.', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 17:56:14', '2023-07-27 17:56:59'),
-(105, '17075', 173, 1440, 'Imran Khan', NULL, '01836015980', NULL, 43, 386, 'Sonarga,narayngonj, noyapur , Sadipor ,union', NULL, 100, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 18:03:18', '2023-07-27 18:04:00'),
-(106, '17076', 174, 750, 'Shibbir Ahmed', NULL, '01672199242', NULL, 62, 537, 'Shylet zakigonj Zakigonj bajar', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 18:22:14', '2023-07-27 18:22:39'),
-(107, '17077', 175, 1440, 'Liton Das', NULL, '01716469330', NULL, 65, 560, 'Old hospital road Moulvibazar', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-27 18:43:18', '2023-07-27 20:11:59'),
-(108, '17078', 176, 390, 'Md Habibur Rahman', NULL, '01716077323', NULL, 54, 564, 'supra , chandrima , rajshai', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 18:48:24', '2023-07-27 20:11:34'),
-(109, '17079', 177, 750, 'Shimul D', NULL, '01758419991', NULL, 62, 536, 'Kajalshah,Sylhet Sador', NULL, 130, 'sunorbon', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 18:51:35', '2023-07-27 20:11:25'),
-(110, '17080', 178, 2880, 'Johny Sheikh', NULL, '01712854548', NULL, 30, 302, 'kurigram sador , jolil biri mor.', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-27 18:55:30', '2023-07-27 20:11:17'),
-(111, '17081', 179, 1400, 'tajul islam', NULL, '01999977405', NULL, 14, 152, 'office', NULL, 0, 'office', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'office sell', 40, NULL, 0, 'Offline', 0, 1, '2023-07-27 20:10:26', '2023-07-28 12:15:55'),
-(112, '17082', 180, 1640, 'Alin Nabi', NULL, '01816871206', NULL, 14, 168, '89/141, R. k. Mission Road, Gopibag(8th lane), Dhaka-1203.', NULL, 60, 'prv', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're order', NULL, NULL, 0, 'Offline', 1, 1, '2023-07-28 12:18:31', '2023-07-28 13:08:58'),
-(113, '17083', 181, 750, 'Syed Mominul Haque Sajib', NULL, '01711373702', NULL, 14, 126, 'Merul baddah dit project road-14 plot -66.', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 12:20:23', '2023-07-28 12:20:40'),
-(114, '17084', 182, 1440, 'Farhan Akhter Arif Shawon', NULL, '01916034927', NULL, 14, 153, '390/2/A  Jafrabad Pulpar Moshjid Mohammadpur 3rd floor.', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 12:22:47', '2023-07-28 12:22:59'),
-(115, '17085', 183, 630, 'Khan Mamun', NULL, '01713953065', NULL, 25, 254, 'সদর রোড কৈখালী বাজার,গ্রামীণফোন টাওয়ারের নিচে', NULL, 130, NULL, NULL, 0, 5, '0', 'Cash on Delivery', NULL, NULL, NULL, 'wrong order', NULL, NULL, 0, 'Website', 0, 0, '2023-07-28 12:23:37', '2023-07-28 14:09:59'),
-(116, '17086', 184, 1170, 'Sd Metun', NULL, '01822925415', NULL, 13, 120, 'sen nagor bazar , megna cumilla', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 12:43:28', '2023-07-28 12:45:30'),
-(117, '17087', 185, 690, 'Probir Biswas', NULL, '01920111156', NULL, 28, 279, 'Jella khulna. Tana terokhada', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 12:45:16', '2023-07-28 12:45:43'),
-(118, '17088', 186, 1440, 'Palas Kundu', NULL, '01999685655', NULL, 31, 307, 'beramara kustia', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 12:48:02', '2023-07-28 12:48:27'),
-(119, '17089', 180, 1355, 'Alin Nabi', NULL, '01816871206', NULL, 14, 178, '89/141, R. k. Mission Road, Gopibag(8th lane), Dhaka-1203., Sher e Bangla Nagar, Dhaka', NULL, 60, NULL, NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, 285, NULL, 0, 'Offline', 0, 1, '2023-07-28 13:07:42', '2023-07-28 15:34:51'),
-(120, '17090', 187, 2915, 'IMRUL HASAN', NULL, '+8801715162737', NULL, 10, 88, 'Sitakunda,', NULL, 130, NULL, NULL, 0, 3, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 0, '2023-07-28 15:34:06', '2023-07-29 13:46:18'),
-(121, '17091', 188, 750, 'Md Ashikur Rahman Talukder', NULL, '01717005740', NULL, 56, 481, 'bukultola goneshpur , rangpur sador', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 15:34:28', '2023-07-28 15:35:00'),
-(122, '17092', 189, 950, 'Hridoy Shikder', NULL, '01690083640', NULL, 13, 108, 'Barura,comilla sonaimuri bazaer', NULL, 130, 'sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 15:36:32', '2023-07-28 15:36:43'),
-(123, '17093', 190, 750, 'Chandan Saha', NULL, '01717021725', NULL, 60, 510, 'bonoful confectionary  monirampur bazar , sahajadpur , sirajganj', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 15:41:51', '2023-07-28 15:42:04'),
-(124, '17094', 191, 690, 'Md Jowel Rana', NULL, '01716127689', NULL, 40, 365, 'batajur bazar bhaluka,Mymensingh', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 15:57:27', '2023-07-28 15:57:41'),
-(125, '17095', 192, 2000, 'md. alaamin', NULL, '0196894792', NULL, 14, 152, 'office .', NULL, 0, 'office', NULL, 0, 4, '1', NULL, NULL, NULL, NULL, 'office sell', 130, NULL, 0, 'Offline', 0, 1, '2023-07-28 16:56:55', '2023-07-28 17:06:46'),
-(126, '17096', 193, 2190, 'Tahmid Tahi', NULL, '01730721651', NULL, 65, 559, 'Pharmacy, Rabirbazar P.O- Prithimpassa Thana-Kulaura Dis-Moulvibazar', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 17:03:44', '2023-07-28 17:04:20'),
-(127, '17097', 194, 900, 'Tazrian Niloy', NULL, '01953385388', NULL, 26, 258, 'Jhenaidah sodor,  adarsha para', NULL, 130, 'Sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 17:05:39', '2023-07-28 17:13:44'),
-(128, '17098', 195, 690, 'M.a. Mabud Ali', NULL, '01723685911', NULL, 22, 236, 'upozelia prani shampod office khetlal , joypurhat', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 17:09:47', '2023-07-28 17:13:55'),
-(129, '17099', 196, 900, 'Asif Raihan', NULL, '01816-611511', NULL, 14, 137, 'Dhaka, Dohar.  Meghula Bazar. First Security islami Bank', NULL, 130, 'SF', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're order', NULL, NULL, 130, 'Offline', 1, 1, '2023-07-28 17:13:11', '2023-07-28 17:21:14'),
-(130, '17100', 196, 615, 'Asif Raihan', NULL, '01816-611511', NULL, 14, 137, 'Dhaka, Dohar. Meghula Bazar. First Security islami Bank, Dohar, Dhaka', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, 285, NULL, 130, 'Offline', 0, 1, '2023-07-28 17:20:40', '2023-07-28 17:21:30'),
-(131, '17101', 197, 1560, 'A R Mohan Mahmud', NULL, '01327096407', NULL, 13, 113, 'daudkandi bazar daudkandi cumlila', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 17:33:15', '2023-07-28 17:33:41'),
-(132, '17102', 198, 1480, 'Enayetur Rahman', NULL, '01819476400', NULL, 51, 444, 'bari no-77,  boro masjid road , patukhali', NULL, 130, 'SB', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, 20, NULL, 0, 'Offline', 0, 1, '2023-07-28 17:38:07', '2023-07-28 17:38:20'),
-(133, '17103', 199, 750, 'uttam kumar', NULL, '01715661782', NULL, 63, 542, 'ghatail tangail', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 17:43:01', '2023-07-28 17:43:15'),
-(134, '17104', 200, 1440, 'Saidur Rhaman Babu', NULL, '01683708444 01793540473', NULL, 43, 383, 'gohgnagor  purbo mosina bandar naraynganj', NULL, 100, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 100, 'Offline', 0, 1, '2023-07-28 17:49:43', '2023-07-28 17:49:57'),
-(135, '17105', 201, 1930, 'Khan Md Shahnawaz', NULL, '01716224086', NULL, 47, 415, 'Saidpur Near mohila college  , Nilphamari', NULL, 130, 'SSSSSSF', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're order', NULL, NULL, 0, 'Offline', 1, 1, '2023-07-28 17:59:58', '2023-07-28 18:03:15'),
-(136, '17106', 201, 1540, 'Khan Md Shahnawaz', NULL, '01716224086', NULL, 47, 415, 'Saidpur Near mohila college  , Nilphamari', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 18:04:21', '2023-07-28 18:04:36'),
-(137, '17107', 202, 750, 'Sp Shaon', NULL, '01741502494', NULL, 24, 250, 'Banapol bazar', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 18:07:39', '2023-07-28 18:08:04'),
-(138, '17108', 203, 780, 'Md. Harun Ur Rashid', NULL, '01672305147', NULL, 14, 139, 'House 2, Road 119, Gulshan 2, Dhaka 1212', NULL, 60, 'prv', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're oder', NULL, NULL, 0, 'Offline', 1, 1, '2023-07-28 18:49:17', '2023-07-28 18:50:17'),
-(139, '17109', 203, 1130, 'Md. Harun Ur Rashid', NULL, '01672305147', NULL, 14, 139, 'House 2, Road 119, Gulshan 2, Dhaka 1212', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 18:51:30', '2023-07-28 18:55:19'),
-(140, '17110', 204, 390, 'Md Hasanuzzaman', NULL, '01611577164', NULL, 14, 178, 'K-3/h-2, munsi bari jame mosjid, bosundhara,vatara, dhaka-1229', NULL, 60, 'prv', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 'return', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 18:53:45', '2023-07-29 19:29:20'),
-(141, '17111', 205, 1380, 'Md Jubaer Khan', NULL, '01603123031', NULL, 29, 288, 'komlapur , bhirab , kishorganj', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-28 19:24:41', '2023-07-29 11:59:33'),
-(142, '17112', 206, 1440, 'Adnan Bin Ashraf', NULL, '01819402308', NULL, 14, 145, '187, Green Road, Kalabagan  Opposite of Dhaka Tower  Near Surjer Hashi Clinic', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, '10 tarikh delivery hobe', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-28 19:31:09', '2023-07-29 11:59:43'),
-(143, '17113', 207, 1440, 'M R Raj', NULL, '01984668247', NULL, 14, 139, 'United hospital, Gulshan 2', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 11:58:10', '2023-07-29 11:59:52'),
-(144, '17114', 208, 1380, 'Sohan Tanvir', NULL, '01744137888', NULL, 14, 565, '1/27,C,East Basaboo,Madina Masjid goli,Kadamtala Bridge,Basaboo,Dhaka', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 12:04:46', '2023-07-29 13:41:23'),
-(145, '17115', 209, 750, 'Irshad Hawladar', NULL, '01833342777', NULL, 14, 178, '9 no gopi kishan lane, rangs anamika tower, flat #B-11, (near Amira showroom), wari, dhaka 1203. name: irshad hawladar', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 12:06:20', '2023-07-29 13:41:31'),
-(146, '17116', 210, 750, 'Md. Sajjad Hossain', NULL, '01687-151389', NULL, 14, 143, '66/2/2 Wasa road, Maniknagar, Dhaka', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 12:08:36', '2023-07-29 13:42:10'),
-(147, '17117', 211, 750, 'Sreedip Saha', NULL, '01730228205', NULL, 4, 29, 'kat potty road barishal', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 13:30:14', '2023-07-29 13:42:17'),
-(148, '17118', 212, 780, 'Md Suhel Ahmed', NULL, '01604047479', NULL, 62, 532, 'gwainghat , shalutikor bazar sylhet', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 13:32:46', '2023-07-29 13:42:25'),
-(149, '17119', 213, 1440, 'Maidul Islam', NULL, '01778708839', NULL, 33, 318, 'laxmipur ,  hospital road', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 13:49:46', '2023-07-29 13:50:06'),
-(150, '17120', 214, 2190, 'Abu Sayeed', NULL, '01914424348', NULL, 44, 390, 'owapodha gate, palash, Narshindhi', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 13:56:25', '2023-07-29 13:56:36'),
-(151, '17121', 215, 760, 'Muhammad Hasan', NULL, '01326028108', NULL, 56, 481, 'Tatipara puraton moszid er pasthe, rangpur, 5402', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 14:19:39', '2023-07-29 14:19:54'),
-(152, '17122', 216, 750, 'Walk Out', NULL, '01935382767', NULL, 37, 338, 'Dis:maherpur Thana :gangni, gangni upozila health complex', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 14:21:35', '2023-07-29 14:55:53'),
-(153, '17123', 217, 780, 'Md Saiful Islam', NULL, '01814870543', NULL, 14, 164, 'Vill+po: Nagar konda Bazar para, ps: savar, dhaka', NULL, 100, 'Sf', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 100, 'Offline', 0, 1, '2023-07-29 14:23:34', '2023-07-29 14:56:03'),
-(154, '17124', 218, 3570, 'Jitu Oni', NULL, '01771122211 01931340607', NULL, 14, 146, 'kamrangirchar, al hera comminute center', NULL, 60, 'SF', NULL, 0, 5, '0', NULL, NULL, NULL, NULL, 're order', NULL, NULL, 0, 'Offline', 1, 1, '2023-07-29 14:29:47', '2023-07-29 14:56:49'),
-(155, '17125', 218, 3400, 'Jitu Oni', NULL, '01771122211 01931340607', NULL, 14, 146, 'kamrangirchar, al hera comminute center, Kamrangir Char, Dhaka', NULL, 60, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, 170, NULL, 0, 'Offline', 0, 1, '2023-07-29 14:59:20', '2023-07-29 14:59:58'),
-(156, '17126', 219, 690, 'Musrat Hasan Khan', NULL, '01755532751', NULL, 31, 311, 'British American Tobacco Bangladesh Kushtia Leaf Factory Choursah', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 15:04:12', '2023-07-29 15:04:24'),
-(157, '17127', 220, 1830, 'Jahidur Rahman Jewel', NULL, '01712-164726', NULL, 24, 250, 'jessor sador,  tv clinic  more ,', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 15:12:05', '2023-07-29 15:12:18'),
-(158, '17128', 221, 1500, 'Mrh Saikat', NULL, '01780101284', NULL, 39, 352, 'Thana  : Sreenagar Jila munshigonj Products sreenagar bazar theke nibo', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 15:16:38', '2023-07-29 15:16:55'),
-(159, '17129', 222, 1500, 'imarn najir', NULL, '01304-639109', NULL, 15, 189, 'dinajpur , sikdar hat', NULL, 130, '130', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 15:18:42', '2023-07-29 15:46:49'),
-(160, '17130', 223, 780, 'Rubel Islam', NULL, '01729630624', NULL, 14, 172, '26 no government hokars market tibbat koloni bazar Tejgaon Dhaka 1208', NULL, 60, 'PRV', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 15:21:26', '2023-07-29 15:46:40'),
-(162, '17131', 198, 0, 'Enayetur Rahman', NULL, '01819476400', NULL, 51, 444, 'house 77, masjid road patuakhali', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, '[17102 exchnge memo]  bill -130tk .exhange bill less 1440tk 2pcs p. exchnage hobe.', 1440, NULL, 0, 'Offline', 0, 1, '2023-07-29 15:38:48', '2023-07-29 15:39:13'),
-(163, '17132', 224, 2190, 'Abdur Rahim', NULL, '01853-992124', NULL, 10, 94, 'chattagram ,panchlaish , hamjarbag abasik elaka', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 15:54:07', '2023-07-29 16:19:50'),
-(164, '17133', 225, 690, 'Pavel Barek', NULL, '01722-859077', NULL, 54, 566, 'Rajshai cort collage ,', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 15:59:51', '2023-07-29 16:20:02'),
-(165, '17134', 226, 1380, 'Tazul Islam', NULL, '01682720062', NULL, 43, 567, 'bicic 1 no gate , fatullah narayangonj', NULL, 100, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 100, 'Offline', 0, 1, '2023-07-29 16:18:54', '2023-07-29 16:20:18'),
-(166, '17135', 227, 2760, 'raihan', NULL, '01688278832', NULL, 48, 422, 'sonaimuri , noakhali', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 16:24:49', '2023-07-29 16:25:38'),
-(167, '17136', 228, 690, 'Rafiqul Islam Belal', NULL, '01790101353', NULL, 22, 235, 'kalai pouroshova office , jaypurhat', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 16:44:49', '2023-07-29 16:45:21'),
-(168, '17137', 229, 690, 'Ashish Ghosh', NULL, '01700501290', NULL, 57, 490, 'vomra shatkhira , khulna', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 16:49:56', '2023-07-29 16:50:30'),
-(169, '17138', 230, 1440, 'Saidur Rhaman Babu', NULL, '01683708444', NULL, 43, 384, 'gopnogor purbo moshinabond, narayanganj', NULL, 100, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 16:56:16', '2023-07-29 16:57:01'),
-(170, '17139', 231, 1440, 'Krishno Das', NULL, '01305661626', NULL, 4, 29, 'barishal... Port road Bazar.. Barishal', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 17:00:43', '2023-07-29 17:01:28'),
-(171, '17140', 232, 1440, 'Shikder Jony', NULL, '01873179236', NULL, 29, 293, 'akhra bazar shilpogolar samne , kishorganj sodor', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 17:05:29', '2023-07-29 17:05:54'),
-(172, '17141', 233, 780, 'Mizanur Rahman', NULL, '01711536018', NULL, 14, 172, '78/1 Arjot Para Tejgaon Dhaka 1215', NULL, 60, 'PRV', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 17:09:36', '2023-07-29 17:10:00'),
-(173, '17142', 234, 750, 'MD Shohanur Rahman Shuvo', NULL, '01722925700', NULL, 56, 478, 'baluya vata kali mondir , bodorganj', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 17:13:36', '2023-07-29 17:14:03'),
-(174, '17143', 235, 750, 'Hira Hasan', NULL, '01918853049', NULL, 15, 189, 'dinajpur', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 17:19:40', '2023-07-29 17:19:55'),
-(175, '17144', 236, 690, 'md. munna', NULL, '01754753753', NULL, 14, 152, 'office', NULL, 0, NULL, NULL, 0, 4, '0', NULL, NULL, NULL, NULL, 'OFFICE SELL', NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 17:35:04', '2023-07-30 11:27:06'),
-(176, '17145', 237, 750, 'SH Topu', NULL, '01912078644', NULL, 14, 128, '15/ kha, bosu bazar, Doyagonj, Dhaka 1100', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-29 18:16:25', '2023-07-29 18:21:41'),
-(177, '17146', 238, 750, 'Rayhan Morshed', NULL, '01710005953', NULL, 29, 287, 'Bajitpur brance kishorganj', NULL, 130, 'Sb', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 18:20:43', '2023-07-29 18:21:49'),
-(178, '17147', 239, 1440, 'Hipu Johan', NULL, '01714115059', NULL, 10, 91, '91, Al- Islam Chamber, Agrabad, Chittagong', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 19:33:40', '2023-07-30 11:37:57'),
-(179, '17148', 240, 3450, 'Sadhan Das', NULL, '01575169793', NULL, 2, 11, 'bhandarban sador , stadium aleka', NULL, 130, 'SF', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 130, 'Offline', 0, 1, '2023-07-29 19:38:12', '2023-07-30 11:38:10'),
-(180, '17149', 102, 1285, 'MD. LALIN HOSSAIN', 'lalinhossain36@gmail.com', '01738616868', NULL, 14, 175, 'Atipara kendriyo jame mosjid, uttarkhan, uttara', NULL, 60, NULL, NULL, 0, 1, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 0, '2023-07-29 20:15:58', '2023-07-29 20:15:58'),
-(181, '17150', 241, 245, 'Ibrahim Hossain', 'swaponhossain302@gmail.com', '01720242224', NULL, 34, 324, 'Bagerpar', NULL, 130, NULL, NULL, 0, 5, '0', 'Cash on Delivery', NULL, NULL, NULL, 'delivery charge advance korbe na bisas pay na', NULL, NULL, 0, 'Website', 0, 0, '2023-07-29 20:37:15', '2023-07-30 10:58:59'),
-(182, '17151', 242, 1820, 'Rasel Ahmed', NULL, '01753-052000', NULL, 14, 161, '128/1', NULL, 60, NULL, NULL, 0, 2, '0', 'Cash on Delivery', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Website', 0, 1, '2023-07-29 21:24:07', '2023-07-30 12:51:45'),
-(183, '17152', 243, 750, 'abu bakor', NULL, '01728889609', NULL, 14, 169, 'Jurain medical road dhaka1204', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 11:40:11', '2023-07-30 11:40:22'),
-(184, '17153', 154, 1380, 'Himu Rahman', NULL, '01707077916', NULL, 14, 131, '154.R.Rahman market 2nd floor  Nawabpur road Dhaka', NULL, 60, NULL, NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 11:43:42', '2023-07-30 11:55:22'),
-(185, '17154', 181, 750, 'Syed Mominul Haque Sajib', NULL, '01711373702', NULL, 14, 126, 'Merul baddah dit project road-14 plot -66.', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 11:55:05', '2023-07-30 11:55:30'),
-(186, '17155', 244, 750, 'Faysal fuhad', NULL, '01972392136', NULL, 14, 172, 'Chandrashila suvastu tower  69/1,Panthapath, Dhaka 1205', NULL, 60, NULL, NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 11:57:38', '2023-07-30 11:57:49'),
-(187, '17156', 245, 750, 'Azizur Rahman', NULL, '01683248666', NULL, 14, 126, 'malibag CID office elaka', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 11:59:50', '2023-07-30 11:59:59'),
-(188, '17157', 246, 690, 'Ķháĺífâ Ebñý Ŕáđíf', NULL, '01568019599', NULL, 14, 148, 'Dhaka khilgaon sipahibag nobinbag', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 12:05:29', '2023-07-30 12:05:39'),
-(189, '17158', 247, 750, 'Mohoshin Ghani Shovon', NULL, '01720-219127', NULL, 14, 136, 'Dhanmondi new 9a  . Shonkor plaza goli. House numb 126', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 12:07:14', '2023-07-30 12:07:26'),
-(190, '17159', 248, 390, 'Ruhul Amin', NULL, '01711194475', NULL, 14, 126, 'moddoh badda link road gulshan -1', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 12:09:03', '2023-07-30 12:09:12'),
-(191, '17160', 249, 1380, 'Mamun Sikder', NULL, '01755171054', NULL, 14, 126, 'toh -132 badda link road', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 12:32:51', '2023-07-30 12:33:02'),
-(192, '17161', 250, 1910, 'Jantle Park J Rasel Ahmedantle', NULL, '01980151567', NULL, 14, 131, 'islampur,road,babubazar', NULL, 60, 'prv', NULL, 0, 2, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Offline', 0, 1, '2023-07-30 13:00:42', '2023-07-30 13:00:53');
+(1, '17000', 156, 1280, 'AB Parvez', NULL, '01715102799', NULL, 3, 19, 'asdasd', NULL, 130, 'Demo 2', NULL, 0, 1, '0', NULL, NULL, NULL, NULL, 'asdasd', 100, NULL, 500, 'Offline', 0, 1, '2023-08-31 09:57:56', '2023-08-31 09:57:56'),
+(2, '17001', 243, 1330, 'abu bakor', NULL, '01728889609', NULL, 2, 11, 'adsfsdf', NULL, 130, 'Demo 1', NULL, 0, 1, '0', NULL, NULL, NULL, NULL, 'sdfsdfdsf', 50, NULL, 0, 'Offline', 0, 1, '2023-08-31 09:58:50', '2023-08-31 09:58:50'),
+(3, '17002', 224, 1440, 'Abdur Rahim', NULL, '01853-992124', NULL, 1, 2, 'asdasd', NULL, 130, 'Demo 2', NULL, 0, 1, '0', NULL, NULL, NULL, NULL, 'asdasd', NULL, NULL, 0, 'Offline', 0, 1, '2023-09-05 07:16:15', '2023-09-05 07:53:13');
 
 -- --------------------------------------------------------
 
@@ -1264,16 +1300,16 @@ INSERT INTO `orders` (`id`, `code`, `customer_id`, `price`, `name`, `email`, `ph
 --
 
 CREATE TABLE `order_products` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `order_id` int(10) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `size_id` int(10) UNSIGNED DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `order_id` int UNSIGNED NOT NULL,
+  `product_id` int UNSIGNED NOT NULL,
+  `size_id` int UNSIGNED DEFAULT NULL,
   `production_cost` double DEFAULT NULL,
   `price` double NOT NULL,
   `qty` double NOT NULL,
   `return_qty` double DEFAULT NULL,
   `discount_amount` double DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1554,7 +1590,7 @@ INSERT INTO `order_products` (`id`, `order_id`, `product_id`, `size_id`, `produc
 (323, 186, 483, 1, 360, 750, 1, NULL, NULL, NULL, '2023-07-30 11:57:38', '2023-07-30 11:57:38'),
 (324, 187, 483, 2, 360, 750, 1, NULL, NULL, NULL, '2023-07-30 11:59:50', '2023-07-30 11:59:50'),
 (325, 188, 469, 1, 350, 690, 1, NULL, NULL, NULL, '2023-07-30 12:05:29', '2023-07-30 12:05:29'),
-(326, 189, 483, 3, 360, 750, 1, NULL, NULL, NULL, '2023-07-30 12:07:14', '2023-07-30 12:07:14'),
+(326, 189, 483, 3, 360, 750, 0, 1, NULL, NULL, '2023-07-30 12:07:14', '2023-08-10 07:08:27'),
 (327, 190, 443, 2, 200, 390, 1, NULL, NULL, NULL, '2023-07-30 12:09:03', '2023-07-30 12:09:03'),
 (328, 191, 466, 2, 350, 690, 1, NULL, NULL, NULL, '2023-07-30 12:32:51', '2023-07-30 12:32:51'),
 (329, 191, 458, 2, 350, 690, 1, NULL, NULL, NULL, '2023-07-30 12:32:51', '2023-07-30 12:32:51'),
@@ -1562,7 +1598,41 @@ INSERT INTO `order_products` (`id`, `order_id`, `product_id`, `size_id`, `produc
 (331, 192, 443, 1, 200, 390, 1, NULL, NULL, NULL, '2023-07-30 13:00:42', '2023-07-30 13:00:42'),
 (332, 192, 444, 1, 200, 390, 1, NULL, NULL, NULL, '2023-07-30 13:00:42', '2023-07-30 13:00:42'),
 (333, 192, 442, 2, 200, 390, 1, NULL, NULL, NULL, '2023-07-30 13:00:42', '2023-07-30 13:00:42'),
-(334, 192, 440, 2, 200, 390, 1, NULL, NULL, NULL, '2023-07-30 13:00:42', '2023-07-30 13:00:42');
+(334, 192, 440, 2, 200, 390, 1, NULL, NULL, NULL, '2023-07-30 13:00:42', '2023-07-30 13:00:42'),
+(335, 193, 483, 3, 360, 750, 1, NULL, NULL, NULL, '2023-07-31 09:49:14', '2023-07-31 09:49:14'),
+(336, 194, 244, 3, 180, 245, 1, NULL, NULL, NULL, '2023-07-31 10:14:08', '2023-07-31 10:14:08'),
+(337, 195, 484, 4, 360, 450, 1, NULL, NULL, NULL, '2023-08-01 09:43:01', '2023-08-01 09:43:01'),
+(338, 195, 484, 1, 360, 450, 1, NULL, NULL, NULL, '2023-08-01 09:43:01', '2023-08-01 09:43:01'),
+(339, 196, 485, 5, 360, 750, 1, 1, NULL, NULL, '2023-08-03 05:10:10', '2023-08-03 07:11:29'),
+(340, 196, 486, 1, 350, 690, 0, 1, NULL, NULL, '2023-08-03 05:10:10', '2023-08-03 07:11:29'),
+(341, 197, 485, 1, 360, 750, 1, 2, NULL, NULL, '2023-08-03 05:14:24', '2023-08-10 07:07:27'),
+(342, 198, 486, 3, 350, 450, 1, NULL, NULL, NULL, '2023-08-03 05:34:45', '2023-08-03 05:34:45'),
+(343, 199, 486, 4, 350, 689.5, 1, NULL, NULL, NULL, '2023-08-19 05:15:30', '2023-08-19 05:15:30'),
+(344, 199, 486, 3, 350, 689.5, 1, NULL, NULL, NULL, '2023-08-19 05:15:30', '2023-08-19 05:15:30'),
+(345, 200, 486, 1, 350, 690, 2, NULL, NULL, NULL, '2023-08-19 05:17:31', '2023-08-19 05:17:31'),
+(346, 201, 486, 1, 350, 12, 2, NULL, NULL, NULL, '2023-08-19 05:18:37', '2023-08-19 05:18:37'),
+(347, 202, 485, 5, 360, 750, 1, NULL, NULL, NULL, '2023-08-27 05:31:31', '2023-08-27 06:27:27'),
+(348, 202, 486, 3, 350, 690, 1, NULL, NULL, NULL, '2023-08-27 05:31:31', '2023-08-27 06:27:27'),
+(349, 202, 486, 4, 350, 690, 1, NULL, NULL, NULL, '2023-08-27 05:31:31', '2023-08-27 06:27:27'),
+(350, 203, 485, 4, 360, 750, 1, NULL, NULL, NULL, '2023-08-27 05:48:53', '2023-08-27 06:28:18'),
+(351, 203, 486, 1, 350, 690, 1, NULL, NULL, NULL, '2023-08-27 05:48:53', '2023-08-27 06:28:18'),
+(352, 203, 486, 2, 350, 690, 1, NULL, NULL, NULL, '2023-08-27 05:48:53', '2023-08-27 06:28:18'),
+(353, 204, 486, 4, 350, 690, -1, 2, NULL, NULL, '2023-08-27 07:05:52', '2023-08-27 07:06:18'),
+(354, 204, 486, 3, 350, 690, 1, NULL, NULL, NULL, '2023-08-27 07:05:52', '2023-08-27 07:05:52'),
+(355, 205, 486, 3, 350, 690, 0, 1, NULL, NULL, '2023-08-27 07:06:48', '2023-08-27 07:07:43'),
+(356, 205, 486, 4, 350, 690, 0, 1, NULL, NULL, '2023-08-27 07:06:48', '2023-08-27 07:07:43'),
+(357, 1, 486, 3, 350, 653, 3, NULL, NULL, NULL, '2023-08-31 08:16:51', '2023-08-31 08:16:51'),
+(358, 1, 485, 4, 360, 710, 1, NULL, NULL, NULL, '2023-08-31 08:16:51', '2023-08-31 08:16:51'),
+(359, 2, 486, 3, 350, 640, 1, NULL, NULL, NULL, '2023-08-31 08:18:38', '2023-08-31 08:18:38'),
+(360, 2, 486, 4, 350, 640, 1, NULL, NULL, NULL, '2023-08-31 08:18:38', '2023-08-31 08:18:38'),
+(361, 3, 486, 3, 350, 615, 1, NULL, NULL, NULL, '2023-08-31 09:48:09', '2023-08-31 09:48:09'),
+(362, 3, 486, 5, 350, 615, 1, NULL, NULL, NULL, '2023-08-31 09:48:09', '2023-08-31 09:48:09'),
+(363, 1, 486, 3, 350, 640, 1, NULL, NULL, NULL, '2023-08-31 09:57:56', '2023-08-31 09:57:56'),
+(364, 1, 486, 4, 350, 640, 1, NULL, NULL, NULL, '2023-08-31 09:57:56', '2023-08-31 09:57:56'),
+(365, 2, 486, 3, 350, 665, 1, NULL, NULL, NULL, '2023-08-31 09:58:50', '2023-08-31 09:58:50'),
+(366, 2, 486, 4, 350, 665, 1, NULL, NULL, NULL, '2023-08-31 09:58:50', '2023-08-31 09:58:50'),
+(367, 3, 485, 4, 360, 750, 1, NULL, NULL, NULL, '2023-09-05 07:16:15', '2023-09-05 07:16:15'),
+(368, 3, 486, 1, 350, 690, 1, NULL, NULL, NULL, '2023-09-05 07:16:15', '2023-09-05 07:16:15');
 
 -- --------------------------------------------------------
 
@@ -1571,12 +1641,12 @@ INSERT INTO `order_products` (`id`, `order_id`, `product_id`, `size_id`, `produc
 --
 
 CREATE TABLE `order_returns` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `order_id` int(10) UNSIGNED NOT NULL,
-  `order_code` varchar(255) DEFAULT NULL,
-  `code` varchar(255) DEFAULT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `size_id` int(10) UNSIGNED DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `order_id` int UNSIGNED NOT NULL,
+  `order_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `product_id` int UNSIGNED NOT NULL,
+  `size_id` int UNSIGNED DEFAULT NULL,
   `production_price` double DEFAULT NULL,
   `price` double NOT NULL,
   `qty` double NOT NULL,
@@ -1607,7 +1677,45 @@ INSERT INTO `order_returns` (`id`, `order_id`, `order_code`, `code`, `product_id
 (16, 154, '17124', '23-788464', 482, 2, NULL, 690, 1, '2023-07-29 14:56:49', '2023-07-29 14:56:49'),
 (17, 154, '17124', '23-788464', 483, 2, NULL, 750, 1, '2023-07-29 14:56:49', '2023-07-29 14:56:49'),
 (18, 154, '17124', '23-788464', 471, 2, NULL, 690, 1, '2023-07-29 14:56:49', '2023-07-29 14:56:49'),
-(19, 154, '17124', '23-788464', 450, 2, NULL, 690, 1, '2023-07-29 14:56:49', '2023-07-29 14:56:49');
+(19, 154, '17124', '23-788464', 450, 2, NULL, 690, 1, '2023-07-29 14:56:49', '2023-07-29 14:56:49'),
+(20, 192, '17161', '23-965330', 285, 1, NULL, 350, 1, '2023-08-02 11:26:36', '2023-08-02 11:26:36'),
+(21, 192, '17161', '23-434583', 444, 1, NULL, 390, 1, '2023-08-02 11:45:26', '2023-08-02 11:45:26'),
+(22, 192, '17161', '23-434583', 440, 2, NULL, 390, 1, '2023-08-02 11:45:26', '2023-08-02 11:45:26'),
+(23, 196, '17165', '23-516929', 485, 5, NULL, 750, 1, '2023-08-03 07:11:29', '2023-08-03 07:11:29'),
+(24, 196, '17165', '23-516929', 486, 1, NULL, 690, 1, '2023-08-03 07:11:29', '2023-08-03 07:11:29'),
+(25, 197, '17166', '23-121827', 485, 1, NULL, 750, 1, '2023-08-10 06:07:11', '2023-08-10 06:07:11'),
+(26, 197, '17166', '23-596257', 485, 1, NULL, 750, 1, '2023-08-10 07:07:27', '2023-08-10 07:07:27'),
+(27, 189, '17158', '23-259416', 483, 3, NULL, 750, 1, '2023-08-10 07:08:27', '2023-08-10 07:08:27'),
+(28, 204, '17173', '23-132295', 486, 4, NULL, 690, 1, '2023-08-27 07:06:18', '2023-08-27 07:06:18'),
+(29, 204, '17173', '23-132295', 486, 3, NULL, 690, 1, '2023-08-27 07:06:18', '2023-08-27 07:06:18'),
+(30, 205, '17174', '23-640435', 486, 3, NULL, 690, 1, '2023-08-27 07:07:43', '2023-08-27 07:07:43'),
+(31, 205, '17174', '23-640435', 486, 4, NULL, 690, 1, '2023-08-27 07:07:43', '2023-08-27 07:07:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_special_statuses`
+--
+
+CREATE TABLE `order_special_statuses` (
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `related_field` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_special_statuses`
+--
+
+INSERT INTO `order_special_statuses` (`id`, `title`, `color`, `related_field`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'none', 'secondary', '--', 1, '2023-08-30 09:32:52', '2023-08-30 09:32:52'),
+(2, 'Discount', 'primary', 'total bill and remarks', 1, '2023-08-30 09:33:11', '2023-08-30 09:33:11'),
+(3, 'Excess advanced', 'warning', 'total bill and remarks', 1, '2023-08-30 10:42:19', '2023-08-30 10:42:19'),
+(4, 'Code change', 'info', 'product details code', 1, '2023-08-30 10:42:39', '2023-08-30 10:42:39');
 
 -- --------------------------------------------------------
 
@@ -1616,10 +1724,10 @@ INSERT INTO `order_returns` (`id`, `order_id`, `order_code`, `code`, `product_id
 --
 
 CREATE TABLE `order_statuses` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `color` varchar(255) DEFAULT NULL,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1642,16 +1750,17 @@ INSERT INTO `order_statuses` (`id`, `title`, `color`, `is_active`, `created_at`,
 --
 
 CREATE TABLE `pages` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` longtext DEFAULT NULL,
-  `meta_description` longtext DEFAULT NULL,
-  `description2` text DEFAULT NULL,
-  `description3` text DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `new_arrival` varchar(255) DEFAULT NULL,
-  `product_banner` varchar(255) DEFAULT NULL,
-  `advertisement` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `meta_description` longtext COLLATE utf8mb4_unicode_ci,
+  `description2` text COLLATE utf8mb4_unicode_ci,
+  `description3` text COLLATE utf8mb4_unicode_ci,
+  `meta_keywords` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `new_arrival` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `product_banner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `advertisement` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1660,17 +1769,17 @@ CREATE TABLE `pages` (
 -- Dumping data for table `pages`
 --
 
-INSERT INTO `pages` (`id`, `name`, `description`, `meta_description`, `description2`, `description3`, `image`, `new_arrival`, `product_banner`, `advertisement`, `created_at`, `updated_at`) VALUES
-(1, 'Home', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-24 15:45:09'),
-(2, 'Products', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-23 11:30:55'),
-(3, 'Categories', '<p>adasdasdasd</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-23 11:34:20'),
-(4, 'About Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-24 14:55:23'),
-(5, 'Privacy Policy', '<p style=\"line-height: 1.5;\">At Fabrifest, accessible from https://gobyfabrifest.com/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Fabrifest and how we use it.</p>\r\n<p style=\"line-height: 1.5;\">If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>\r\n<p style=\"line-height: 1.5;\">This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Fabrifest. This policy is not applicable to any information collected offline or via channels other than this website.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Consent</h3>\r\n<p style=\"line-height: 1.5;\">By using our website, you hereby consent to our Privacy Policy and agree to its terms.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Information we collect</h3>\r\n<p style=\"line-height: 1.5;\">The personal information that you are asked to provide, and the reasons why you are asked to provide it, will be made clear to you at the point we ask you to provide your personal information.</p>\r\n<p style=\"line-height: 1.5;\">If you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.</p>\r\n<p style=\"line-height: 1.5;\">When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">How we use your information</h3>\r\n<p style=\"line-height: 1.5;\">We use the information we collect in various ways, including to:</p>\r\n<ul>\r\n<li>Provide, operate, and maintain our website</li>\r\n<li>Improve, personalize, and expand our website</li>\r\n<li>Understand and analyze how you use our website</li>\r\n<li>Develop new products, services, features, and functionality</li>\r\n<li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes</li>\r\n<li>Send you emails</li>\r\n<li>Find and prevent fraud</li>\r\n</ul>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Log Files</h3>\r\n<p style=\"line-height: 1.5;\">Fabrifest follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services\' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users\' movement on the website, and gathering demographic information.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Advertising Partners Privacy Policies</h3>\r\n<p style=\"line-height: 1.5;\">You may consult this list to find the Privacy Policy for each of the advertising partners of Fabrifest.</p>\r\n<p style=\"line-height: 1.5;\">Third-party ad servers or ad networks uses technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on Fabrifest, which are sent directly to users\' browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on websites that you visit.</p>\r\n<p style=\"line-height: 1.5;\">Note that Fabrifest has no access to or control over these cookies that are used by third-party advertisers.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Third Party Privacy Policies</h3>\r\n<p style=\"line-height: 1.5;\">Fabrifest\'s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.</p>\r\n<p style=\"line-height: 1.5;\">You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers\' respective websites.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">CCPA Privacy Rights (Do Not Sell My Personal Information)</h3>\r\n<p style=\"line-height: 1.5;\">Under the CCPA, among other rights, California consumers have the right to:</p>\r\n<p style=\"line-height: 1.5;\">Request that a business that collects a consumer\'s personal data disclose the categories and specific pieces of personal data that a business has collected about consumers.</p>\r\n<p style=\"line-height: 1.5;\">Request that a business delete any personal data about the consumer that a business has collected.</p>\r\n<p style=\"line-height: 1.5;\">Request that a business that sells a consumer\'s personal data, not sell the consumer\'s personal data.</p>\r\n<p style=\"line-height: 1.5;\">If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">GDPR Data Protection Rights</h3>\r\n<p style=\"line-height: 1.5;\">We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>\r\n<p style=\"line-height: 1.5;\">The right to access &ndash; You have the right to request copies of your personal data. We may charge you a small fee for this service.</p>\r\n<p style=\"line-height: 1.5;\">The right to rectification &ndash; You have the right to request that we correct any information you believe is inaccurate. You also have the right to request that we complete the information you believe is incomplete.</p>\r\n<p style=\"line-height: 1.5;\">The right to erasure &ndash; You have the right to request that we erase your personal data, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">The right to restrict processing &ndash; You have the right to request that we restrict the processing of your personal data, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">The right to object to processing &ndash; You have the right to object to our processing of your personal data, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">The right to data portability &ndash; You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Children\'s Information</h3>\r\n<p style=\"line-height: 1.5;\">Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.</p>\r\n<p style=\"line-height: 1.5;\">Fabrifest does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Changes to This Privacy Policy</h3>\r\n<p style=\"line-height: 1.5;\">We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately, after they are posted on this page.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Contact Us</h3>\r\n<p style=\"line-height: 1.5;\">If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us.</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-03-20 12:41:42'),
-(6, 'Term and Conditions', '<p>Welcome to Fabrifest!</p>\r\n<p>These terms and conditions outline the rules and regulations for the use of Go By Fabrifest\'s Website, located at https://gobyfabrifest.com/.</p>\r\n<p>By accessing this website we assume you accept these terms and conditions. Do not continue to use Fabrifest if you do not agree to take all of the terms and conditions stated on this page.</p>\r\n<p>The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements: \"Client\", \"You\" and \"Your\" refers to you, the person log on this website and compliant to the Company&rsquo;s terms and conditions. \"The Company\", \"Ourselves\", \"We\", \"Our\" and \"Us\", refers to our Company. \"Party\", \"Parties\", or \"Us\", refers to both the Client and ourselves. All terms refer to the offer, acceptance and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client&rsquo;s needs in respect of provision of the Company&rsquo;s stated services, in accordance with and subject to, prevailing law of Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization and/or he/she or they, are taken as interchangeable and therefore as referring to same.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Cookies</strong></h3>\r\n<p>We employ the use of cookies. By accessing Fabrifest, you agreed to use cookies in agreement with the Go By Fabrifest\'s Privacy Policy.</p>\r\n<p>Most interactive websites use cookies to let us retrieve the user&rsquo;s details for each visit. Cookies are used by our website to enable the functionality of certain areas to make it easier for people visiting our website. Some of our affiliate/advertising partners may also use cookies.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>License</strong></h3>\r\n<p>Unless otherwise stated, Go By Fabrifest and/or its licensors own the intellectual property rights for all material on Fabrifest. All intellectual property rights are reserved. You may access this from Fabrifest for your own personal use subjected to restrictions set in these terms and conditions.</p>\r\n<p>You must not:</p>\r\n<ul>\r\n<li>Republish material from Fabrifest</li>\r\n<li>Sell, rent or sub-license material from Fabrifest</li>\r\n<li>Reproduce, duplicate or copy material from Fabrifest</li>\r\n<li>Redistribute content from Fabrifest</li>\r\n</ul>\r\n<p>This Agreement shall begin on the date hereof.</p>\r\n<p>Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. Go By Fabrifest does not filter, edit, publish or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of Go By Fabrifest,its agents and/or affiliates. Comments reflect the views and opinions of the person who post their views and opinions. To the extent permitted by applicable laws, Go By Fabrifest shall not be liable for the Comments or for any liability, damages or expenses caused and/or suffered as a result of any use of and/or posting of and/or appearance of the Comments on this website.</p>\r\n<p>Go By Fabrifest reserves the right to monitor all Comments and to remove any Comments which can be considered inappropriate, offensive or causes breach of these Terms and Conditions.</p>\r\n<p>You warrant and represent that:</p>\r\n<ul>\r\n<li>You are entitled to post the Comments on our website and have all necessary licenses and consents to do so;</li>\r\n<li>The Comments do not invade any intellectual property right, including without limitation copyright, patent or trademark of any third party;</li>\r\n<li>The Comments do not contain any defamatory, libelous, offensive, indecent or otherwise unlawful material which is an invasion of privacy</li>\r\n<li>The Comments will not be used to solicit or promote business or custom or present commercial activities or unlawful activity.</li>\r\n</ul>\r\n<p>You hereby grant Go By Fabrifest a non-exclusive license to use, reproduce, edit and authorize others to use, reproduce and edit any of your Comments in any and all forms, formats or media.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Hyperlinking to our Content</strong></h3>\r\n<p>The following organizations may link to our Website without prior written approval:</p>\r\n<ul>\r\n<li>Government agencies;</li>\r\n<li>Search engines;</li>\r\n<li>News organizations;</li>\r\n<li>Online directory distributors may link to our Website in the same manner as they hyperlink to the Websites of other listed businesses; and</li>\r\n<li>System wide Accredited Businesses except soliciting non-profit organizations, charity shopping malls, and charity fundraising groups which may not hyperlink to our Web site.</li>\r\n</ul>\r\n<p>These organizations may link to our home page, to publications or to other Website information so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the linking party and its products and/or services; and (c) fits within the context of the linking party&rsquo;s site.</p>\r\n<p>We may consider and approve other link requests from the following types of organizations:</p>\r\n<ul>\r\n<li>commonly-known consumer and/or business information sources;</li>\r\n<li>dot.com community sites;</li>\r\n<li>associations or other groups representing charities;</li>\r\n<li>online directory distributors;</li>\r\n<li>internet portals;</li>\r\n<li>accounting, law and consulting firms; and</li>\r\n<li>educational institutions and trade associations.</li>\r\n</ul>\r\n<p>We will approve link requests from these organizations if we decide that: (a) the link would not make us look unfavorably to ourselves or to our accredited businesses; (b) the organization does not have any negative records with us; (c) the benefit to us from the visibility of the hyperlink compensates the absence of Go By Fabrifest; and (d) the link is in the context of general resource information.</p>\r\n<p>These organizations may link to our home page so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the linking party and its products or services; and (c) fits within the context of the linking party&rsquo;s site.</p>\r\n<p>If you are one of the organizations listed in paragraph 2 above and are interested in linking to our website, you must inform us by sending an e-mail to Go By Fabrifest. Please include your name, your organization name, contact information as well as the URL of your site, a list of any URLs from which you intend to link to our Website, and a list of the URLs on our site to which you would like to link. Wait 2-3 weeks for a response.</p>\r\n<p>Approved organizations may hyperlink to our Website as follows:</p>\r\n<ul>\r\n<li>By use of our corporate name; or</li>\r\n<li>By use of the uniform resource locator being linked to; or</li>\r\n<li>By use of any other description of our Website being linked to that makes sense within the context and format of content on the linking party&rsquo;s site.</li>\r\n</ul>\r\n<p>No use of Go By Fabrifest\'s logo or other artwork will be allowed for linking absent a trademark license agreement.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>iFrames</strong></h3>\r\n<p>Without prior approval and written permission, you may not create frames around our Webpages that alter in any way the visual presentation or appearance of our Website.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Content Liability</strong></h3>\r\n<p>We shall not be hold responsible for any content that appears on your Website. You agree to protect and defend us against all claims that is rising on your Website. No link(s) should appear on any Website that may be interpreted as libelous, obscene or criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of, any third party rights.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Your Privacy</strong></h3>\r\n<p>Please read Privacy Policy</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Reservation of Rights</strong></h3>\r\n<p>We reserve the right to request that you remove all links or any particular link to our Website. You approve to immediately remove all links to our Website upon request. We also reserve the right to amen these terms and conditions and it&rsquo;s linking policy at any time. By continuously linking to our Website, you agree to be bound to and follow these linking terms and conditions.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Removal of links from our website</strong></h3>\r\n<p>If you find any link on our Website that is offensive for any reason, you are free to contact and inform us any moment. We will consider requests to remove links but we are not obligated to or so or to respond to you directly.</p>\r\n<p>We do not ensure that the information on this website is correct, we do not warrant its completeness or accuracy; nor do we promise to ensure that the website remains available or that the material on the website is kept up to date.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Disclaimer</strong></h3>\r\n<p>To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions relating to our website and the use of this website. Nothing in this disclaimer will:</p>\r\n<ul>\r\n<li>limit or exclude our or your liability for death or personal injury;</li>\r\n<li>limit or exclude our or your liability for fraud or fraudulent misrepresentation;</li>\r\n<li>limit any of our or your liabilities in any way that is not permitted under applicable law; or</li>\r\n<li>exclude any of our or your liabilities that may not be excluded under applicable law.</li>\r\n</ul>\r\n<p>The limitations and prohibitions of liability set in this Section and elsewhere in this disclaimer: (a) are subject to the preceding paragraph; and (b) govern all liabilities arising under the disclaimer, including liabilities arising in contract, in tort and for breach of statutory duty.</p>\r\n<p>As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-03-20 12:42:01'),
-(7, 'Cancellation & Refund Policy', '<p>Generally, GO BY FABRIFEST is committed to delivering the products correctly that you ordered. Even then, due to various environmental conditions, wrong products or defective products may go. The probability of which is very few. If any such issue occurs, we resolve it quickly.</p>\r\n<p>&nbsp;</p>\r\n<h3>Reason for return:</h3>\r\n<ul>\r\n<li>If we have sent the wrong product.</li>\r\n<li>Any damaged products.</li>\r\n<li>If the size is wrong from your side (Note: You cannot return if the size matches the memo. But you can change it by contacting customer care.)</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<h3>Reasons for Exchange:</h3>\r\n<ul>\r\n<li>When you get the product in hand, you can try it on and see if it\'s getting smaller or bigger, then you can make changes.</li>\r\n<li>Received the product but you didn\'t like it. Then you can change with another product. (Note: No money will be returned.)</li>\r\n<li>After receiving the product, if you see a problem, you can change it.</li>\r\n</ul>\r\n<h3>&nbsp;</h3>\r\n<h3>Requirements for Exchange and Return:</h3>\r\n<ul>\r\n<li>The tag of the product cannot be torn.</li>\r\n<li>No exchange or return after use or washing in any way</li>\r\n<li>The product must be intact.</li>\r\n<li>If there is an order id or memo number then it is better.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<h3>How to return:</h3>\r\n<ul>\r\n<li>Contact our customer care (e-mail), (mobile/WhatsApp number), (website link). The problem will be solved very quickly.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<h3>Refund Policy:</h3>\r\n<ul>\r\n<li>You paid us but returned within 7 days of ordering. You will not receive a refund until your product has been received by us.</li>\r\n<li>Of course, after deducting delivery charges, return charges (if any), and COD charges (if any) the remaining amount will be refunded.</li>\r\n<li>If you pay twice due to a technical error, you will get a refund of the extra payment.</li>\r\n<li>If you do not get the money back within 7 days after making a claim, please contact our customer care. We will find out the reason very soon and settle the matter.</li>\r\n</ul>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 08:31:34', '2023-03-20 12:42:18'),
-(8, 'Trending Products', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-07-23 10:56:29', NULL),
-(9, 'Discounted Products', NULL, 'sdfsdfsdf', NULL, NULL, NULL, NULL, NULL, NULL, '2023-07-23 11:00:15', '2023-07-24 07:44:09'),
-(10, 'Contact Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-07-23 11:13:25', '2023-07-24 16:10:12');
+INSERT INTO `pages` (`id`, `name`, `description`, `meta_description`, `description2`, `description3`, `meta_keywords`, `image`, `new_arrival`, `product_banner`, `advertisement`, `created_at`, `updated_at`) VALUES
+(1, 'Home', NULL, NULL, NULL, NULL, 'Katua, Katua, Katua', NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-08-09 11:55:08'),
+(2, 'Products', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-23 11:30:55'),
+(3, 'Categories', '<p>adasdasdasd</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-23 11:34:20'),
+(4, 'About Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-07-24 14:55:23'),
+(5, 'Privacy Policy', '<p style=\"line-height: 1.5;\">At Fabrifest, accessible from https://gobyfabrifest.com/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Fabrifest and how we use it.</p>\r\n<p style=\"line-height: 1.5;\">If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>\r\n<p style=\"line-height: 1.5;\">This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Fabrifest. This policy is not applicable to any information collected offline or via channels other than this website.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Consent</h3>\r\n<p style=\"line-height: 1.5;\">By using our website, you hereby consent to our Privacy Policy and agree to its terms.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Information we collect</h3>\r\n<p style=\"line-height: 1.5;\">The personal information that you are asked to provide, and the reasons why you are asked to provide it, will be made clear to you at the point we ask you to provide your personal information.</p>\r\n<p style=\"line-height: 1.5;\">If you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.</p>\r\n<p style=\"line-height: 1.5;\">When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">How we use your information</h3>\r\n<p style=\"line-height: 1.5;\">We use the information we collect in various ways, including to:</p>\r\n<ul>\r\n<li>Provide, operate, and maintain our website</li>\r\n<li>Improve, personalize, and expand our website</li>\r\n<li>Understand and analyze how you use our website</li>\r\n<li>Develop new products, services, features, and functionality</li>\r\n<li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes</li>\r\n<li>Send you emails</li>\r\n<li>Find and prevent fraud</li>\r\n</ul>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Log Files</h3>\r\n<p style=\"line-height: 1.5;\">Fabrifest follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services\' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users\' movement on the website, and gathering demographic information.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Advertising Partners Privacy Policies</h3>\r\n<p style=\"line-height: 1.5;\">You may consult this list to find the Privacy Policy for each of the advertising partners of Fabrifest.</p>\r\n<p style=\"line-height: 1.5;\">Third-party ad servers or ad networks uses technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on Fabrifest, which are sent directly to users\' browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on websites that you visit.</p>\r\n<p style=\"line-height: 1.5;\">Note that Fabrifest has no access to or control over these cookies that are used by third-party advertisers.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Third Party Privacy Policies</h3>\r\n<p style=\"line-height: 1.5;\">Fabrifest\'s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.</p>\r\n<p style=\"line-height: 1.5;\">You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers\' respective websites.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">CCPA Privacy Rights (Do Not Sell My Personal Information)</h3>\r\n<p style=\"line-height: 1.5;\">Under the CCPA, among other rights, California consumers have the right to:</p>\r\n<p style=\"line-height: 1.5;\">Request that a business that collects a consumer\'s personal data disclose the categories and specific pieces of personal data that a business has collected about consumers.</p>\r\n<p style=\"line-height: 1.5;\">Request that a business delete any personal data about the consumer that a business has collected.</p>\r\n<p style=\"line-height: 1.5;\">Request that a business that sells a consumer\'s personal data, not sell the consumer\'s personal data.</p>\r\n<p style=\"line-height: 1.5;\">If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">GDPR Data Protection Rights</h3>\r\n<p style=\"line-height: 1.5;\">We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>\r\n<p style=\"line-height: 1.5;\">The right to access &ndash; You have the right to request copies of your personal data. We may charge you a small fee for this service.</p>\r\n<p style=\"line-height: 1.5;\">The right to rectification &ndash; You have the right to request that we correct any information you believe is inaccurate. You also have the right to request that we complete the information you believe is incomplete.</p>\r\n<p style=\"line-height: 1.5;\">The right to erasure &ndash; You have the right to request that we erase your personal data, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">The right to restrict processing &ndash; You have the right to request that we restrict the processing of your personal data, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">The right to object to processing &ndash; You have the right to object to our processing of your personal data, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">The right to data portability &ndash; You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</p>\r\n<p style=\"line-height: 1.5;\">If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Children\'s Information</h3>\r\n<p style=\"line-height: 1.5;\">Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.</p>\r\n<p style=\"line-height: 1.5;\">Fabrifest does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Changes to This Privacy Policy</h3>\r\n<p style=\"line-height: 1.5;\">We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately, after they are posted on this page.</p>\r\n<p style=\"line-height: 1.5;\">&nbsp;</p>\r\n<h3 style=\"line-height: 1.5;\">Contact Us</h3>\r\n<p style=\"line-height: 1.5;\">If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us.</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-03-20 12:41:42'),
+(6, 'Term and Conditions', '<p>Welcome to Fabrifest!</p>\r\n<p>These terms and conditions outline the rules and regulations for the use of Go By Fabrifest\'s Website, located at https://gobyfabrifest.com/.</p>\r\n<p>By accessing this website we assume you accept these terms and conditions. Do not continue to use Fabrifest if you do not agree to take all of the terms and conditions stated on this page.</p>\r\n<p>The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements: \"Client\", \"You\" and \"Your\" refers to you, the person log on this website and compliant to the Company&rsquo;s terms and conditions. \"The Company\", \"Ourselves\", \"We\", \"Our\" and \"Us\", refers to our Company. \"Party\", \"Parties\", or \"Us\", refers to both the Client and ourselves. All terms refer to the offer, acceptance and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client&rsquo;s needs in respect of provision of the Company&rsquo;s stated services, in accordance with and subject to, prevailing law of Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization and/or he/she or they, are taken as interchangeable and therefore as referring to same.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Cookies</strong></h3>\r\n<p>We employ the use of cookies. By accessing Fabrifest, you agreed to use cookies in agreement with the Go By Fabrifest\'s Privacy Policy.</p>\r\n<p>Most interactive websites use cookies to let us retrieve the user&rsquo;s details for each visit. Cookies are used by our website to enable the functionality of certain areas to make it easier for people visiting our website. Some of our affiliate/advertising partners may also use cookies.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>License</strong></h3>\r\n<p>Unless otherwise stated, Go By Fabrifest and/or its licensors own the intellectual property rights for all material on Fabrifest. All intellectual property rights are reserved. You may access this from Fabrifest for your own personal use subjected to restrictions set in these terms and conditions.</p>\r\n<p>You must not:</p>\r\n<ul>\r\n<li>Republish material from Fabrifest</li>\r\n<li>Sell, rent or sub-license material from Fabrifest</li>\r\n<li>Reproduce, duplicate or copy material from Fabrifest</li>\r\n<li>Redistribute content from Fabrifest</li>\r\n</ul>\r\n<p>This Agreement shall begin on the date hereof.</p>\r\n<p>Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. Go By Fabrifest does not filter, edit, publish or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of Go By Fabrifest,its agents and/or affiliates. Comments reflect the views and opinions of the person who post their views and opinions. To the extent permitted by applicable laws, Go By Fabrifest shall not be liable for the Comments or for any liability, damages or expenses caused and/or suffered as a result of any use of and/or posting of and/or appearance of the Comments on this website.</p>\r\n<p>Go By Fabrifest reserves the right to monitor all Comments and to remove any Comments which can be considered inappropriate, offensive or causes breach of these Terms and Conditions.</p>\r\n<p>You warrant and represent that:</p>\r\n<ul>\r\n<li>You are entitled to post the Comments on our website and have all necessary licenses and consents to do so;</li>\r\n<li>The Comments do not invade any intellectual property right, including without limitation copyright, patent or trademark of any third party;</li>\r\n<li>The Comments do not contain any defamatory, libelous, offensive, indecent or otherwise unlawful material which is an invasion of privacy</li>\r\n<li>The Comments will not be used to solicit or promote business or custom or present commercial activities or unlawful activity.</li>\r\n</ul>\r\n<p>You hereby grant Go By Fabrifest a non-exclusive license to use, reproduce, edit and authorize others to use, reproduce and edit any of your Comments in any and all forms, formats or media.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Hyperlinking to our Content</strong></h3>\r\n<p>The following organizations may link to our Website without prior written approval:</p>\r\n<ul>\r\n<li>Government agencies;</li>\r\n<li>Search engines;</li>\r\n<li>News organizations;</li>\r\n<li>Online directory distributors may link to our Website in the same manner as they hyperlink to the Websites of other listed businesses; and</li>\r\n<li>System wide Accredited Businesses except soliciting non-profit organizations, charity shopping malls, and charity fundraising groups which may not hyperlink to our Web site.</li>\r\n</ul>\r\n<p>These organizations may link to our home page, to publications or to other Website information so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the linking party and its products and/or services; and (c) fits within the context of the linking party&rsquo;s site.</p>\r\n<p>We may consider and approve other link requests from the following types of organizations:</p>\r\n<ul>\r\n<li>commonly-known consumer and/or business information sources;</li>\r\n<li>dot.com community sites;</li>\r\n<li>associations or other groups representing charities;</li>\r\n<li>online directory distributors;</li>\r\n<li>internet portals;</li>\r\n<li>accounting, law and consulting firms; and</li>\r\n<li>educational institutions and trade associations.</li>\r\n</ul>\r\n<p>We will approve link requests from these organizations if we decide that: (a) the link would not make us look unfavorably to ourselves or to our accredited businesses; (b) the organization does not have any negative records with us; (c) the benefit to us from the visibility of the hyperlink compensates the absence of Go By Fabrifest; and (d) the link is in the context of general resource information.</p>\r\n<p>These organizations may link to our home page so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the linking party and its products or services; and (c) fits within the context of the linking party&rsquo;s site.</p>\r\n<p>If you are one of the organizations listed in paragraph 2 above and are interested in linking to our website, you must inform us by sending an e-mail to Go By Fabrifest. Please include your name, your organization name, contact information as well as the URL of your site, a list of any URLs from which you intend to link to our Website, and a list of the URLs on our site to which you would like to link. Wait 2-3 weeks for a response.</p>\r\n<p>Approved organizations may hyperlink to our Website as follows:</p>\r\n<ul>\r\n<li>By use of our corporate name; or</li>\r\n<li>By use of the uniform resource locator being linked to; or</li>\r\n<li>By use of any other description of our Website being linked to that makes sense within the context and format of content on the linking party&rsquo;s site.</li>\r\n</ul>\r\n<p>No use of Go By Fabrifest\'s logo or other artwork will be allowed for linking absent a trademark license agreement.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>iFrames</strong></h3>\r\n<p>Without prior approval and written permission, you may not create frames around our Webpages that alter in any way the visual presentation or appearance of our Website.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Content Liability</strong></h3>\r\n<p>We shall not be hold responsible for any content that appears on your Website. You agree to protect and defend us against all claims that is rising on your Website. No link(s) should appear on any Website that may be interpreted as libelous, obscene or criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of, any third party rights.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Your Privacy</strong></h3>\r\n<p>Please read Privacy Policy</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Reservation of Rights</strong></h3>\r\n<p>We reserve the right to request that you remove all links or any particular link to our Website. You approve to immediately remove all links to our Website upon request. We also reserve the right to amen these terms and conditions and it&rsquo;s linking policy at any time. By continuously linking to our Website, you agree to be bound to and follow these linking terms and conditions.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Removal of links from our website</strong></h3>\r\n<p>If you find any link on our Website that is offensive for any reason, you are free to contact and inform us any moment. We will consider requests to remove links but we are not obligated to or so or to respond to you directly.</p>\r\n<p>We do not ensure that the information on this website is correct, we do not warrant its completeness or accuracy; nor do we promise to ensure that the website remains available or that the material on the website is kept up to date.</p>\r\n<p>&nbsp;</p>\r\n<h3><strong>Disclaimer</strong></h3>\r\n<p>To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions relating to our website and the use of this website. Nothing in this disclaimer will:</p>\r\n<ul>\r\n<li>limit or exclude our or your liability for death or personal injury;</li>\r\n<li>limit or exclude our or your liability for fraud or fraudulent misrepresentation;</li>\r\n<li>limit any of our or your liabilities in any way that is not permitted under applicable law; or</li>\r\n<li>exclude any of our or your liabilities that may not be excluded under applicable law.</li>\r\n</ul>\r\n<p>The limitations and prohibitions of liability set in this Section and elsewhere in this disclaimer: (a) are subject to the preceding paragraph; and (b) govern all liabilities arising under the disclaimer, including liabilities arising in contract, in tort and for breach of statutory duty.</p>\r\n<p>As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 12:34:44', '2023-03-20 12:42:01'),
+(7, 'Cancellation & Refund Policy', '<p>Generally, GO BY FABRIFEST is committed to delivering the products correctly that you ordered. Even then, due to various environmental conditions, wrong products or defective products may go. The probability of which is very few. If any such issue occurs, we resolve it quickly.</p>\r\n<p>&nbsp;</p>\r\n<h3>Reason for return:</h3>\r\n<ul>\r\n<li>If we have sent the wrong product.</li>\r\n<li>Any damaged products.</li>\r\n<li>If the size is wrong from your side (Note: You cannot return if the size matches the memo. But you can change it by contacting customer care.)</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<h3>Reasons for Exchange:</h3>\r\n<ul>\r\n<li>When you get the product in hand, you can try it on and see if it\'s getting smaller or bigger, then you can make changes.</li>\r\n<li>Received the product but you didn\'t like it. Then you can change with another product. (Note: No money will be returned.)</li>\r\n<li>After receiving the product, if you see a problem, you can change it.</li>\r\n</ul>\r\n<h3>&nbsp;</h3>\r\n<h3>Requirements for Exchange and Return:</h3>\r\n<ul>\r\n<li>The tag of the product cannot be torn.</li>\r\n<li>No exchange or return after use or washing in any way</li>\r\n<li>The product must be intact.</li>\r\n<li>If there is an order id or memo number then it is better.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<h3>How to return:</h3>\r\n<ul>\r\n<li>Contact our customer care (e-mail), (mobile/WhatsApp number), (website link). The problem will be solved very quickly.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<h3>Refund Policy:</h3>\r\n<ul>\r\n<li>You paid us but returned within 7 days of ordering. You will not receive a refund until your product has been received by us.</li>\r\n<li>Of course, after deducting delivery charges, return charges (if any), and COD charges (if any) the remaining amount will be refunded.</li>\r\n<li>If you pay twice due to a technical error, you will get a refund of the extra payment.</li>\r\n<li>If you do not get the money back within 7 days after making a claim, please contact our customer care. We will find out the reason very soon and settle the matter.</li>\r\n</ul>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-01 08:31:34', '2023-03-20 12:42:18'),
+(8, 'Trending Products', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-07-23 10:56:29', NULL),
+(9, 'Discounted Products', NULL, 'sdfsdfsdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-07-23 11:00:15', '2023-07-24 07:44:09'),
+(10, 'Contact Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-07-23 11:13:25', '2023-07-24 16:10:12');
 
 -- --------------------------------------------------------
 
@@ -1679,11 +1788,11 @@ INSERT INTO `pages` (`id`, `name`, `description`, `meta_description`, `descripti
 --
 
 CREATE TABLE `partners` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `share_portion` double NOT NULL DEFAULT 0,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `share_portion` double NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1695,13 +1804,13 @@ CREATE TABLE `partners` (
 --
 
 CREATE TABLE `partner_transactions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `partner_id` int(11) NOT NULL,
-  `bank_id` int(11) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `partner_id` int NOT NULL,
+  `bank_id` int DEFAULT NULL,
   `credit` double DEFAULT NULL,
   `debit` double DEFAULT NULL,
   `date` date DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1713,10 +1822,19 @@ CREATE TABLE `partner_transactions` (
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`email`, `token`, `created_at`) VALUES
+('petavo9001@trazeco.com', '$2y$10$VQ7474egPlUWy31dJ/7Btuif.0P.ojCmrSg/38t9KZqaamTl8qkQy', '2023-09-04 07:02:44'),
+('gacehe4307@xgh6.com', '$2y$10$WufDa4e/H14biHSu43Vz8OLyuDKIhxxPY60uy3EDS.Y/Y0NsqeTcG', '2023-09-04 07:44:14'),
+('nafis@imbdagency.com', '$2y$10$XkegG8oOYHiqbgc4o874TOuoPMgAOu2qkCbU0Zx3h9GnUrIdjmTbi', '2023-09-05 05:25:39');
 
 -- --------------------------------------------------------
 
@@ -1725,10 +1843,10 @@ CREATE TABLE `password_resets` (
 --
 
 CREATE TABLE `permissions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `group_name` varchar(255) NOT NULL,
-  `guard_name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `group_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1810,7 +1928,7 @@ INSERT INTO `permissions` (`id`, `name`, `group_name`, `guard_name`, `created_at
 (70, 'bank.create', 'Bank', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (71, 'bank.edit', 'Bank', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (72, 'bank.delete', 'Bank', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
-(73, 'expense.index', 'Expense', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
+(73, 'expense_type.index', 'Expense', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (74, 'expense.view', 'Expense', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (75, 'expense.create', 'Expense', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (76, 'expense.edit', 'Expense', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
@@ -1820,7 +1938,34 @@ INSERT INTO `permissions` (`id`, `name`, `group_name`, `guard_name`, `created_at
 (80, 'supplier.create', 'Supplier', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (81, 'supplier.edit', 'Supplier', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
 (82, 'supplier.delete', 'Supplier', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
-(83, 'supplier.payment', 'Supplier', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43');
+(83, 'supplier.payment', 'Supplier', 'web', '2022-10-01 12:34:43', '2022-10-01 12:34:43'),
+(84, 'order.return', 'Order', 'web', '2023-09-05 07:33:21', NULL),
+(85, 'apply.cod', 'Order', 'web', '2023-09-05 07:51:22', NULL),
+(86, 'convert.sell', 'Order', 'web', '2023-09-05 07:51:22', NULL),
+(87, 'add.loss', 'Order', 'web', '2023-09-05 07:51:22', NULL),
+(88, 'add.stock', 'Stock', 'web', '2023-09-05 07:51:22', NULL),
+(89, 'current.stock.view', 'Stock', 'web', '2023-09-05 07:51:22', NULL),
+(90, 'stock.history', 'Stock', 'web', '2023-09-05 07:51:22', NULL),
+(91, 'damage.store', 'Stock', 'web', '2023-09-05 07:51:22', NULL),
+(92, 'damage.view', 'Stock', 'web', '2023-09-05 07:51:22', NULL),
+(93, 'report.income', 'Report', 'web', '2023-09-05 07:55:22', NULL),
+(94, 'report.balance_sheet', 'Report', 'web', '2023-09-05 07:55:22', NULL),
+(95, 'report.owners', 'Report', 'web', '2023-09-05 07:55:22', NULL),
+(96, 'setting.asset', 'Setting', 'web', '2023-09-05 07:55:22', NULL),
+(97, 'setting.business_settings', 'Setting', 'web', '2023-09-05 07:55:22', NULL),
+(98, 'setting.accessory', 'Setting', 'web', '2023-09-05 07:55:22', NULL),
+(99, 'customer.list', 'User', 'web', '2023-09-05 07:55:22', NULL),
+(100, 'order_sheet.index', 'OrderSheet', 'web', '2023-09-05 07:55:22', NULL),
+(101, 'order_sheet.create', 'OrderSheet', 'web', '2023-09-05 07:55:22', NULL),
+(102, 'pos.create', 'POS', 'web', '2023-09-05 07:55:22', NULL),
+(103, 'order_sheet_status.index', 'OrderSheet', 'web', '2023-09-05 07:55:22', NULL),
+(104, 'courier_name.index', 'OrderSheet', 'web', '2023-09-05 07:55:22', NULL),
+(105, 'business_bkash_number.index', 'OrderSheet', 'web', '2023-09-05 07:55:22', NULL),
+(106, 'wholesale.index', 'Order', 'web', '2023-09-05 07:55:22', NULL),
+(107, 'sell.index', 'Order', 'web', '2023-09-05 07:55:22', NULL),
+(108, 'production.index', 'Product', 'web', '2023-09-06 05:19:28', NULL),
+(109, 'product.print_label', 'Product', 'web', '2023-09-06 05:19:28', NULL),
+(110, 'wholesale.create', 'POS', 'web', '2023-09-06 05:19:28', NULL);
 
 -- --------------------------------------------------------
 
@@ -1829,12 +1974,12 @@ INSERT INTO `permissions` (`id`, `name`, `group_name`, `guard_name`, `created_at
 --
 
 CREATE TABLE `personal_access_tokens` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) NOT NULL,
-  `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `token` varchar(64) NOT NULL,
-  `abilities` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text COLLATE utf8mb4_unicode_ci,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1847,9 +1992,9 @@ CREATE TABLE `personal_access_tokens` (
 --
 
 CREATE TABLE `productions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_code` varchar(255) DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `product_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
   `date` date DEFAULT NULL,
   `output_units` double DEFAULT NULL,
   `unit_cost` double DEFAULT NULL,
@@ -1864,9 +2009,9 @@ CREATE TABLE `productions` (
 --
 
 CREATE TABLE `production_accessories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `production_id` int(11) NOT NULL,
-  `accessory_id` int(11) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `production_id` int NOT NULL,
+  `accessory_id` int DEFAULT NULL,
   `amount` double DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1879,9 +2024,9 @@ CREATE TABLE `production_accessories` (
 --
 
 CREATE TABLE `production_costs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `production_id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `production_id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` double DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1894,13 +2039,13 @@ CREATE TABLE `production_costs` (
 --
 
 CREATE TABLE `production_suppliers` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `production_id` int(11) DEFAULT NULL,
-  `supplier_id` int(11) NOT NULL,
-  `qty` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `production_id` int DEFAULT NULL,
+  `supplier_id` int NOT NULL,
+  `qty` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` double DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1912,27 +2057,27 @@ CREATE TABLE `production_suppliers` (
 --
 
 CREATE TABLE `products` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `slug` varchar(255) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `brand_id` int(11) DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `sub_category_id` int(11) DEFAULT NULL,
-  `is_sale` double NOT NULL DEFAULT 0,
-  `code` varchar(255) DEFAULT NULL,
-  `barcode` varchar(255) DEFAULT NULL,
-  `unit` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `size_chart` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `short_description` text DEFAULT NULL,
-  `is_featured` int(11) NOT NULL DEFAULT 0,
-  `is_trending` int(11) NOT NULL DEFAULT 0,
-  `is_offer` int(11) NOT NULL DEFAULT 0,
-  `is_active` int(11) NOT NULL DEFAULT 1,
-  `slod` int(11) NOT NULL DEFAULT 0,
-  `meta_description` longtext DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `brand_id` int DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
+  `sub_category_id` int DEFAULT NULL,
+  `is_sale` double NOT NULL DEFAULT '0',
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `barcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `unit` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `size_chart` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `short_description` text COLLATE utf8mb4_unicode_ci,
+  `is_featured` int NOT NULL DEFAULT '0',
+  `is_trending` int NOT NULL DEFAULT '0',
+  `is_offer` int NOT NULL DEFAULT '0',
+  `is_active` int NOT NULL DEFAULT '1',
+  `slod` int NOT NULL DEFAULT '0',
+  `meta_description` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1947,7 +2092,7 @@ INSERT INTO `products` (`id`, `title`, `slug`, `type`, `brand_id`, `category_id`
 (3, 'HALF SLEEVE KATUA GO-031', NULL, 'variation', 1, 5, NULL, 0, NULL, NULL, NULL, '1662442199.jpg', 'size_chart_1662442199.jpg', '<table style=\"border-collapse: collapse; width: 101.66%; height: 365px; float: right;\" border=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 100.001%;\">\r\n<p style=\"text-align: justify;\">&nbsp; &nbsp;&nbsp;</p>\r\n<p style=\"text-align: justify;\"><strong>Our half sleeve men\'s Katuas are made with high-quality Remi cotton fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</strong></p>\r\n<ul style=\"text-align: justify;\">\r\n<li><strong>Fabrics that are soft and cozy, are a perfect place to spend the day.</strong></li>\r\n<li><strong>Colors that will never fade away, because we\'re professional and we care about your decor too.</strong></li>\r\n<li><strong>You\'ll love our products so much you won\'t be able to say no to another one.</strong></li>\r\n<li><strong>This Fabric is Black &amp; Mustard color printed.</strong></li>\r\n<li><strong>Garments washed for ensuring the color lasting and less possibilities of shrinkage</strong></li>\r\n</ul>\r\n<p style=\"text-align: justify;\">&nbsp;</p>\r\n<p style=\"text-align: justify;\"><strong>Precaution:</strong></p>\r\n<p style=\"text-align: justify;\"><strong>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</strong></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\"><strong>GO-031</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">Comfortable Premium Half Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">Cotton printed fabrics</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">Half</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">Black &amp; Mustard</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2058%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7805%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2058%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7805%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 0, 0, 1, 1, 0, NULL, '2022-09-06 10:29:59', '2023-07-17 13:11:04'),
 (4, 'HALF SLEEVE KATUA GO-029', NULL, 'variation', 1, 5, NULL, 0, NULL, NULL, NULL, '1662443578.jpg', 'size_chart_1662443494.jpg', '<table style=\"border-collapse: collapse; width: 96.3636%; height: 382px; border-color: #000000;\" border=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 100%; padding-left: 40px;\">\r\n<p><strong>Our half sleeve men\'s Katuas are made with high-quality cotton Printed fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</strong></p>\r\n<ul>\r\n<li><strong>Fabrics that are soft and cozy, are a perfect place to spend the day.</strong></li>\r\n<li><strong>Colors that will never fade away, because we\'re professional and we care about your&nbsp; decor too.</strong></li>\r\n<li><strong>You\'ll love our products so much you won\'t be able to say no to another one.</strong></li>\r\n<li><strong>Garments washed for ensuring the color lasting and less possibilities of shrinkage</strong></li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p><strong>Precaution:</strong></p>\r\n<p><strong>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</strong></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>GO-029</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Half Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Cotton printed fabrics</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Half</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Black &amp; White</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 0, 0, 1, 1, 0, NULL, '2022-09-06 10:51:34', '2023-07-17 13:11:49'),
 (5, 'FULL SLEEVE KATUA FT-531', NULL, 'variation', 1, 5, 7, 0, NULL, NULL, NULL, '1662444636.jpg', 'size_chart_1662444636.jpg', '<table style=\"border-collapse: collapse; width: 102.213%; height: 356px;\" border=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 100%;\">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;\r\n<p>Our Full sleeve men\'s Katua are made with high-quality fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</p>\r\n<ul>\r\n<li>Fabrics that are soft and cozy, are a perfect place to spend the day.</li>\r\n<li>Colors that will never fade away, because we\'re professional and we care about your home decor too.</li>\r\n<li>You\'ll love our products so much you won\'t be able to say no to another one.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Precaution:</p>\r\n<p>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>FT-531</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Full Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">100% Cotton Fabric (Remi Cotton)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Full</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Royal Blue</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 1, 0, 0, 1, 0, NULL, '2022-09-06 11:10:36', '2023-03-18 18:47:10'),
-(6, 'FULL SLEEVE SHIRT FT-579', NULL, 'variation', 1, 10, NULL, 0, NULL, NULL, NULL, '1664869847.jpg', 'size_chart_1662445255.jpg', '<p>Our Full sleeve men\'s Shirt are made with high-quality chacked fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</p>\r\n<ul>\r\n<li>Fabrics that are soft and cozy, are a perfect place to spend the day.</li>\r\n<li>Colors that will never fade away, because we\'re professional and we care about your home decor too.</li>\r\n<li>You\'ll love our products so much you won\'t be able to say no to another one.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Precaution:</p>\r\n<p>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</p>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>FT-579</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Full Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">100% Cotton Fabric (Remi Cotton)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Full</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Blue &amp; White Checked</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 1, 0, 1, 1, 0, NULL, '2022-09-06 11:20:55', '2023-07-17 13:13:39'),
+(6, 'FULL SLEEVE SHIRT FT-579', NULL, 'variation', 1, 10, 12, 0, NULL, NULL, NULL, '1664869847.jpg', 'size_chart_1662445255.jpg', '<p>Our Full sleeve men\'s Shirt are made with high-quality chacked fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</p>\r\n<ul>\r\n<li>Fabrics that are soft and cozy, are a perfect place to spend the day.</li>\r\n<li>Colors that will never fade away, because we\'re professional and we care about your home decor too.</li>\r\n<li>You\'ll love our products so much you won\'t be able to say no to another one.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Precaution:</p>\r\n<p>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</p>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>FT-579</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Full Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">100% Cotton Fabric (Remi Cotton)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Full</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Blue &amp; White Checked</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 1, 0, 1, 1, 0, NULL, '2022-09-06 11:20:55', '2023-07-17 13:13:39'),
 (7, 'FULL SLEEVE SHIRT FT-580', NULL, 'variation', 1, 10, 12, 0, NULL, NULL, NULL, '1662456606.jpg', 'size_chart_1662456606.jpg', '<table style=\"border-collapse: collapse; width: 90.4348%; height: 349px;\" border=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 100%;\">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;\r\n<p>Our Full sleeve men\'s Shirt are made with high-quality chacked fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</p>\r\n<ul>\r\n<li>Fabrics that are soft and cozy, are a perfect place to spend the day.</li>\r\n<li>Colors that will never fade away, because we\'re professional and we care about your home decor too.</li>\r\n<li>You\'ll love our products so much you won\'t be able to say no to another one.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Precaution:</p>\r\n<p>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>FT-580</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Full Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">100% Cotton Fabric (Checked)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Full</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Bottle green, Navy Blue &amp; White combination (Checked)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 1, 0, 1, 1, 0, NULL, '2022-09-06 14:30:07', '2023-07-17 13:14:53'),
 (8, 'HALF SLEEVE KATUA GO-032', NULL, 'variation', 1, 5, 6, 0, NULL, NULL, NULL, '1662457503.jpg', 'size_chart_1662457503.jpg', '<table style=\"border-collapse: collapse; width: 96.3636%; height: 382px; border-color: #000000;\" border=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 100%; padding-left: 40px;\">\r\n<p><strong>Our half sleeve men\'s Katuas are made with high-quality Printed cotton fabrics that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</strong></p>\r\n<ul>\r\n<li><strong>Fabrics that are soft and cozy, are a perfect place to spend the day.</strong></li>\r\n<li><strong>Colors that will never fade away, because we\'re professional and we care about your&nbsp; decor too.</strong></li>\r\n<li><strong>You\'ll love our products so much you won\'t be able to say no to another one.</strong></li>\r\n<li><strong>Garments washed for ensuring the color lasting and less possibilities of shrinkage</strong></li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p><strong>Precaution:</strong></p>\r\n<p><strong>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</strong></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>GO-032</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Half Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Cotton Fabric (Printed)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Half</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Black &amp; White</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 1, 0, 1, 1, 0, NULL, '2022-09-06 14:45:03', '2023-07-17 13:17:11'),
 (9, 'FULL SLEEVE SHIRT FT-534', NULL, 'variation', 1, 10, 12, 0, NULL, NULL, NULL, '1662467043.jpg', 'size_chart_1662466953.jpg', '<table style=\"border-collapse: collapse; width: 90.4348%; height: 349px;\" border=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 100%;\">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;\r\n<p>Our Full sleeve men\'s Shirt are made with high-quality&nbsp; fabrics and stripe multi color design&nbsp; that make them super comfortable. They are perfect for any activity and can help you feel confident and stylish.</p>\r\n<ul>\r\n<li>Fabrics that are soft and cozy, are a perfect place to spend the day.</li>\r\n<li>Colors that will never fade away, because we\'re professional and we care about your home decor too.</li>\r\n<li>You\'ll love our products so much you won\'t be able to say no to another one.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Precaution:</p>\r\n<p>Colors may vary from device to device due to pixel and camera effects. For further information call us at +8801775-810098 or inbox us for any kind of queries.</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>', '<table style=\"width: 83.4921%; height: 310.188px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Product Code :&nbsp; </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\"><strong>FT-534</strong></td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Description :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Comfortable Premium Full Sleeve Katua</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Occasion :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Casual</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fabric Name :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Cotton Fabric (Stripe)</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Sleeve :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Full</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Color :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Off White &amp; Multi color stripe</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Fitting :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">Regular Fit</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Height : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">5.10&rdquo;</td>\r\n</tr>\r\n<tr style=\"height: 31px;\">\r\n<td style=\"width: 34.2559%; height: 31px;\"><strong>Model Weight : </strong></td>\r\n<td style=\"width: 65.7454%; height: 31px;\">68 KG</td>\r\n</tr>\r\n<tr style=\"height: 31.1875px;\">\r\n<td style=\"width: 34.2559%; height: 31.1875px;\"><strong>Model\'s Katua size :</strong></td>\r\n<td style=\"width: 65.7454%; height: 31.1875px;\">L</td>\r\n</tr>\r\n</tbody>\r\n</table>', 1, 0, 1, 1, 0, NULL, '2022-09-06 17:22:33', '2023-07-17 13:19:05'),
@@ -2460,13 +2605,13 @@ INSERT INTO `products` (`id`, `title`, `slug`, `type`, `brand_id`, `category_id`
 --
 
 CREATE TABLE `product_damages` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `size_id` int(11) DEFAULT NULL,
-  `code` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `product_id` int NOT NULL,
+  `size_id` int DEFAULT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `qty` double NOT NULL,
   `production_cost` double NOT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3923,9 +4068,9 @@ INSERT INTO `product_damages` (`id`, `product_id`, `size_id`, `code`, `qty`, `pr
 --
 
 CREATE TABLE `product_images` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `image` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `product_id` int NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -5605,21 +5750,21 @@ INSERT INTO `product_images` (`id`, `product_id`, `image`, `created_at`, `update
 --
 
 CREATE TABLE `product_stocks` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `size_id` int(11) DEFAULT NULL,
-  `code` varchar(255) DEFAULT NULL,
-  `barcode` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `product_id` int NOT NULL,
+  `size_id` int DEFAULT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `barcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `production_cost` double NOT NULL,
   `price` double NOT NULL,
   `discount_price` double DEFAULT NULL,
   `wholesale_price` double DEFAULT NULL,
-  `qty` double NOT NULL DEFAULT 0,
-  `sold_qty` double NOT NULL DEFAULT 0,
-  `is_sale` double NOT NULL DEFAULT 0,
-  `unit` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `qty` double NOT NULL DEFAULT '0',
+  `sold_qty` double NOT NULL DEFAULT '0',
+  `is_sale` double NOT NULL DEFAULT '0',
+  `unit` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -6631,7 +6776,7 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 (1010, 282, 1, 'FT-050 ( M )', NULL, 180, 350, 245, 200, 4, 0, 0, NULL, NULL, 1, '2023-05-08 14:48:35', '2023-07-17 11:02:27'),
 (1011, 283, 1, 'FT-085 ( M )', NULL, 180, 350, 245, 200, 9, 0, 0, NULL, NULL, 1, '2023-05-08 14:55:53', '2023-07-17 11:02:48'),
 (1012, 284, 1, 'FT-084 ( M )', NULL, 180, 350, 245, 200, 10, 0, 0, NULL, NULL, 1, '2023-05-08 15:01:38', '2023-07-17 11:03:05'),
-(1013, 285, 1, 'FT-082 ( M )', NULL, 180, 350, NULL, 200, 8, 0, 0, NULL, NULL, 1, '2023-05-08 15:11:18', '2023-07-30 13:00:42'),
+(1013, 285, 1, 'FT-082 ( M )', NULL, 180, 350, NULL, 200, 9, 0, 0, NULL, NULL, 1, '2023-05-08 15:11:18', '2023-08-02 11:26:36'),
 (1014, 285, 2, 'FT-082 ( L )', NULL, 180, 350, NULL, 200, 11, 0, 0, NULL, NULL, 1, '2023-05-08 15:11:18', '2023-07-24 11:54:00'),
 (1015, 285, 3, 'FT-082 ( XL )', NULL, 180, 350, NULL, 200, 0, 0, 0, NULL, NULL, 1, '2023-05-08 15:11:18', '2023-07-24 14:54:17'),
 (1016, 285, 4, 'FT-082 ( XXL )', NULL, 180, 350, NULL, 200, 1, 0, 0, NULL, NULL, 1, '2023-05-08 15:11:18', '2023-05-08 15:11:18'),
@@ -7100,7 +7245,7 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 (1491, 439, 3, 'TS-001 ( XL )', NULL, 200, 390, NULL, 220, 0, 0, 0, NULL, NULL, 1, '2023-07-18 14:42:07', '2023-07-29 13:32:46'),
 (1492, 439, 4, 'TS-001 ( XXL)', NULL, 200, 390, NULL, 220, 1, 0, 0, NULL, NULL, 1, '2023-07-18 14:42:07', '2023-07-22 17:57:12'),
 (1493, 440, 1, 'TS-002 ( M )', NULL, 200, 390, NULL, 220, 0, 0, 0, NULL, NULL, 1, '2023-07-18 14:48:29', '2023-07-24 11:51:51'),
-(1494, 440, 2, 'TS-002 ( L )', NULL, 200, 390, NULL, 220, 3, 0, 0, NULL, NULL, 1, '2023-07-18 14:48:29', '2023-07-30 13:00:42'),
+(1494, 440, 2, 'TS-002 ( L )', NULL, 200, 390, NULL, 220, 4, 0, 0, NULL, NULL, 1, '2023-07-18 14:48:29', '2023-08-02 11:45:26'),
 (1495, 440, 3, 'TS-002 ( XL )', NULL, 200, 390, NULL, 220, 9, 0, 0, NULL, NULL, 1, '2023-07-18 14:48:29', '2023-07-29 14:23:34'),
 (1496, 440, 4, 'TS-002 ( XXL )', NULL, 200, 390, NULL, 220, 1, 0, 0, NULL, NULL, 1, '2023-07-18 14:48:29', '2023-07-24 17:13:41'),
 (1497, 441, 1, 'TS-003 ( M )', NULL, 200, 390, NULL, 220, 8, 0, 0, NULL, NULL, 1, '2023-07-18 14:52:14', '2023-07-24 17:18:16'),
@@ -7115,7 +7260,7 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 (1506, 443, 2, 'TS-005 ( L )', NULL, 200, 390, NULL, 220, 14, 0, 0, NULL, NULL, 1, '2023-07-18 15:03:07', '2023-07-30 12:16:33'),
 (1507, 443, 3, 'TS-005 ( XL )', NULL, 200, 390, NULL, 220, 20, 0, 0, NULL, NULL, 1, '2023-07-18 15:03:07', '2023-07-28 18:51:30'),
 (1508, 443, 4, 'TS-005 ( XXL )', NULL, 200, 390, NULL, 220, 0, 0, 0, NULL, NULL, 1, '2023-07-18 15:03:07', '2023-07-22 18:15:30'),
-(1509, 444, 1, 'TS-006 ( M )', NULL, 200, 390, NULL, 220, 1, 0, 0, NULL, NULL, 1, '2023-07-18 15:40:54', '2023-07-30 13:00:42'),
+(1509, 444, 1, 'TS-006 ( M )', NULL, 200, 390, NULL, 220, 2, 0, 0, NULL, NULL, 1, '2023-07-18 15:40:54', '2023-08-02 11:45:26'),
 (1510, 444, 2, 'TS-006 ( L )', NULL, 200, 390, NULL, 220, 9, 0, 0, NULL, NULL, 1, '2023-07-18 15:40:54', '2023-07-29 15:21:26'),
 (1511, 444, 3, 'TS-006 ( XL )', NULL, 200, 390, NULL, 220, 8, 0, 0, NULL, NULL, 1, '2023-07-18 15:40:54', '2023-07-29 14:23:34'),
 (1512, 444, 4, 'TS-006 ( XXL )', NULL, 200, 390, NULL, 220, 1, 0, 0, NULL, NULL, 1, '2023-07-18 15:40:54', '2023-07-28 18:51:30'),
@@ -7164,7 +7309,7 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 (1555, 457, 4, 'GO-082 ( XXL )', NULL, 350, 750, 525, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-20 17:56:43', '2023-07-20 17:56:43'),
 (1556, 457, 5, 'GO-082 ( XXXL )', NULL, 350, 750, 525, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-20 17:56:43', '2023-07-22 20:16:18'),
 (1557, 458, 1, 'GO-083 ( M )', NULL, 350, 690, NULL, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-20 18:48:56', '2023-07-20 18:48:56'),
-(1558, 458, 2, 'GO-083 ( L )', NULL, 350, 690, NULL, 450, 10, 0, 0, NULL, NULL, 1, '2023-07-20 18:48:56', '2023-07-30 12:32:51'),
+(1558, 458, 2, 'GO-083 ( L )', NULL, 350, 690, NULL, 450, 11, 0, 0, NULL, NULL, 1, '2023-07-20 18:48:56', '2023-08-01 09:28:21'),
 (1559, 458, 3, 'GO-083 ( XL )', NULL, 350, 690, NULL, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-20 18:48:56', '2023-07-23 13:02:31'),
 (1560, 458, 4, 'GO-083 ( XXL )', NULL, 350, 690, NULL, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-20 18:48:56', '2023-07-29 19:33:40'),
 (1561, 458, 5, 'GO-083 ( XXXL )', NULL, 350, 690, NULL, 450, 2, 0, 0, NULL, NULL, 1, '2023-07-20 18:48:56', '2023-07-23 13:02:54'),
@@ -7194,7 +7339,7 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 (1585, 465, 4, 'GO-091 ( XXL )', NULL, 350, 690, NULL, 450, 2, 0, 0, NULL, NULL, 1, '2023-07-21 11:01:22', '2023-07-24 17:19:27'),
 (1586, 465, 5, 'GO-091 ( XXXL )', NULL, 350, 690, NULL, 450, 1, 0, 0, NULL, NULL, 1, '2023-07-21 11:01:22', '2023-07-29 18:49:43'),
 (1587, 466, 1, 'GO-094 ( M )', NULL, 350, 690, NULL, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-21 11:19:57', '2023-07-24 11:59:07'),
-(1588, 466, 2, 'GO-094 ( L )', NULL, 350, 690, NULL, 450, 9, 0, 0, NULL, NULL, 1, '2023-07-21 11:19:57', '2023-07-30 12:32:51'),
+(1588, 466, 2, 'GO-094 ( L )', NULL, 350, 690, NULL, 450, 10, 0, 0, NULL, NULL, 1, '2023-07-21 11:19:57', '2023-08-01 09:28:21'),
 (1589, 466, 3, 'GO-094 ( XL )', NULL, 350, 690, NULL, 450, 6, 0, 0, NULL, NULL, 1, '2023-07-21 11:19:57', '2023-07-29 18:49:55'),
 (1590, 466, 4, 'GO-094 ( XXL )', NULL, 350, 690, NULL, 450, 1, 0, 0, NULL, NULL, 1, '2023-07-21 11:19:57', '2023-07-29 13:49:46'),
 (1591, 466, 5, 'GO-094 ( XXXL )', NULL, 350, 690, NULL, 450, 0, 0, 0, NULL, NULL, 1, '2023-07-21 11:19:57', '2023-07-23 13:32:22'),
@@ -7283,24 +7428,24 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 (1673, 482, 5, 'GO-112 ( XXXL )', NULL, 350, 690, NULL, 450, 4, 0, 0, NULL, NULL, 1, '2023-07-27 11:57:33', '2023-07-28 12:48:02'),
 (1674, 483, 1, 'GO-113 ( M )', NULL, 360, 750, NULL, 450, 6, 0, 0, NULL, NULL, 1, '2023-07-27 12:05:26', '2023-07-30 11:57:38'),
 (1675, 483, 2, 'GO-113 ( L )', NULL, 360, 750, NULL, 450, 27, 0, 0, NULL, NULL, 1, '2023-07-27 12:05:26', '2023-07-30 11:59:50'),
-(1676, 483, 3, 'GO-113 ( XL )', NULL, 360, 750, NULL, 450, 4, 0, 0, NULL, NULL, 1, '2023-07-27 12:05:26', '2023-07-30 12:07:14'),
+(1676, 483, 3, 'GO-113 ( XL )', NULL, 360, 750, NULL, 450, 5, 0, 0, NULL, NULL, 1, '2023-07-27 12:05:26', '2023-08-10 07:08:27'),
 (1677, 483, 4, 'GO-113 ( XXL )', NULL, 360, 750, NULL, 450, 7, 0, 0, NULL, NULL, 1, '2023-07-27 12:05:26', '2023-07-29 19:33:40'),
 (1678, 483, 5, 'GO-113 ( XXXL )', NULL, 360, 750, NULL, 450, 1, 0, 0, NULL, NULL, 1, '2023-07-27 12:05:26', '2023-07-29 15:18:42'),
-(1679, 484, 1, 'GO-109 ( M )', NULL, 360, 750, NULL, 450, 20, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-07-27 12:58:41'),
+(1679, 484, 1, 'GO-109 ( M )', NULL, 360, 750, NULL, 450, 19, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-08-01 09:43:01'),
 (1680, 484, 2, 'GO-109 ( L )', NULL, 360, 750, NULL, 450, 36, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-07-29 14:59:20'),
 (1681, 484, 3, 'GO-109 ( XL )', NULL, 360, 750, NULL, 450, 26, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-07-30 11:55:05'),
-(1682, 484, 4, 'GO-109 ( XXL )', NULL, 360, 750, NULL, 450, 10, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-07-29 14:56:49'),
+(1682, 484, 4, 'GO-109 ( XXL )', NULL, 360, 750, NULL, 450, 9, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-08-01 09:43:01'),
 (1683, 484, 5, 'GO-109 ( XXXL )', NULL, 360, 750, NULL, 450, 2, 0, 0, NULL, NULL, 1, '2023-07-27 12:09:59', '2023-07-29 15:16:38'),
-(1684, 485, 1, 'GO-110 ( M )', NULL, 360, 750, NULL, 460, 14, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-07-29 18:20:43'),
+(1684, 485, 1, 'GO-110 ( M )', NULL, 360, 750, NULL, 460, 13, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-08-10 07:07:27'),
 (1685, 485, 2, 'GO-110 ( L )', NULL, 360, 750, NULL, 460, 24, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-07-27 20:10:26'),
 (1686, 485, 3, 'GO-110 ( XL )', NULL, 360, 750, NULL, 460, 25, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-07-27 12:47:17'),
-(1687, 485, 4, 'GO-110 ( XXL )', NULL, 360, 750, NULL, 460, 12, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-07-28 17:38:07'),
-(1688, 485, 5, 'GO-110 ( XXXL )', NULL, 360, 750, NULL, 460, 2, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-07-27 12:50:12'),
-(1689, 486, 1, 'GO-092 ( M )', NULL, 350, 690, NULL, 450, 11, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-07-27 15:00:49'),
-(1690, 486, 2, 'GO-092 ( L )', NULL, 350, 690, NULL, 450, 17, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-07-27 15:02:04'),
-(1691, 486, 3, 'GO-092 ( XL )', NULL, 350, 690, NULL, 450, 11, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-07-27 15:02:31'),
-(1692, 486, 4, 'GO-092 ( XXL )', NULL, 350, 690, NULL, 450, 6, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-07-27 15:03:04'),
-(1693, 486, 5, 'GO-092 ( XXXL )', NULL, 350, 690, NULL, 450, 2, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-07-27 15:03:50');
+(1687, 485, 4, 'GO-110 ( XXL )', NULL, 360, 750, NULL, 460, 9, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-09-05 07:16:15'),
+(1688, 485, 5, 'GO-110 ( XXXL )', NULL, 360, 750, NULL, 460, 0, 0, 0, NULL, NULL, 1, '2023-07-27 12:13:40', '2023-08-27 05:31:31'),
+(1689, 486, 1, 'GO-092 ( M )', NULL, 350, 690, NULL, 450, 5, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-09-05 07:16:15'),
+(1690, 486, 2, 'GO-092 ( L )', NULL, 350, 690, NULL, 450, 16, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-08-27 05:48:53'),
+(1691, 486, 3, 'GO-092 ( XL )', NULL, 350, 690, NULL, 450, 1, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-08-31 09:58:50'),
+(1692, 486, 4, 'GO-092 ( XXL )', NULL, 350, 690, NULL, 450, 1, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-08-31 09:58:50'),
+(1693, 486, 5, 'GO-092 ( XXXL )', NULL, 350, 690, NULL, 450, 1, 0, 0, NULL, NULL, 1, '2023-07-27 13:57:48', '2023-08-31 09:48:09');
 
 -- --------------------------------------------------------
 
@@ -7309,11 +7454,11 @@ INSERT INTO `product_stocks` (`id`, `product_id`, `size_id`, `code`, `barcode`, 
 --
 
 CREATE TABLE `product_stock_histories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `size_id` int(11) DEFAULT NULL,
-  `qty` double NOT NULL DEFAULT 0,
-  `note` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `product_id` int NOT NULL,
+  `size_id` int DEFAULT NULL,
+  `qty` double NOT NULL DEFAULT '0',
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -9674,14 +9819,14 @@ INSERT INTO `product_stock_histories` (`id`, `product_id`, `size_id`, `qty`, `no
 --
 
 CREATE TABLE `ratings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `rating` int(11) NOT NULL,
-  `comment` text DEFAULT NULL,
-  `is_active` tinyint(4) NOT NULL DEFAULT 1,
-  `customer_id` int(10) UNSIGNED DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `product_id` int UNSIGNED NOT NULL,
+  `rating` int NOT NULL,
+  `comment` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint NOT NULL DEFAULT '1',
+  `customer_id` int UNSIGNED DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -9693,9 +9838,9 @@ CREATE TABLE `ratings` (
 --
 
 CREATE TABLE `roles` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `guard_name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -9717,8 +9862,8 @@ INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VAL
 --
 
 CREATE TABLE `role_has_permissions` (
-  `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `role_id` bigint(20) UNSIGNED NOT NULL
+  `permission_id` bigint UNSIGNED NOT NULL,
+  `role_id` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -9737,110 +9882,40 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (9, 1),
 (10, 1),
 (11, 1),
-(11, 4),
 (12, 1),
-(12, 4),
 (13, 1),
-(13, 4),
 (14, 1),
-(14, 4),
 (15, 1),
-(15, 4),
 (16, 1),
-(16, 4),
 (17, 1),
-(17, 4),
 (18, 1),
-(18, 4),
 (19, 1),
-(19, 4),
 (20, 1),
-(20, 4),
 (21, 1),
-(21, 3),
-(21, 4),
 (22, 1),
-(22, 3),
-(22, 4),
 (23, 1),
-(23, 3),
-(23, 4),
 (24, 1),
-(24, 3),
-(24, 4),
 (25, 1),
-(25, 3),
-(25, 4),
 (26, 1),
-(26, 2),
-(26, 3),
-(26, 4),
 (27, 1),
-(27, 2),
-(27, 3),
-(27, 4),
 (28, 1),
-(28, 2),
-(28, 3),
-(28, 4),
 (29, 1),
-(29, 2),
-(29, 3),
-(29, 4),
 (30, 1),
-(30, 2),
-(30, 3),
-(30, 4),
 (31, 1),
-(31, 2),
-(31, 3),
-(31, 4),
 (32, 1),
-(32, 2),
-(32, 3),
-(32, 4),
 (33, 1),
-(33, 2),
-(33, 3),
-(33, 4),
 (34, 1),
-(34, 2),
-(34, 3),
-(34, 4),
 (35, 1),
-(35, 2),
-(35, 3),
-(35, 4),
 (36, 1),
-(36, 3),
-(36, 4),
 (37, 1),
-(37, 3),
-(37, 4),
 (38, 1),
-(38, 3),
-(38, 4),
 (39, 1),
-(39, 3),
-(39, 4),
 (40, 1),
-(40, 3),
-(40, 4),
 (41, 1),
-(41, 3),
-(41, 4),
 (42, 1),
-(42, 3),
-(42, 4),
 (43, 1),
-(43, 3),
-(43, 4),
 (44, 1),
-(44, 3),
-(44, 4),
 (45, 1),
-(45, 3),
-(45, 4),
 (46, 1),
 (47, 1),
 (48, 1),
@@ -9864,36 +9939,135 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (66, 1),
 (67, 1),
 (68, 1),
-(68, 4),
 (69, 1),
-(69, 4),
 (70, 1),
-(70, 4),
 (71, 1),
-(71, 4),
 (72, 1),
-(72, 4),
 (73, 1),
-(73, 4),
 (74, 1),
-(74, 4),
 (75, 1),
-(75, 4),
 (76, 1),
-(76, 4),
 (77, 1),
-(77, 4),
 (78, 1),
-(78, 4),
 (79, 1),
-(79, 4),
 (80, 1),
-(80, 4),
 (81, 1),
-(81, 4),
 (82, 1),
-(82, 4),
 (83, 1),
+(84, 1),
+(85, 1),
+(86, 1),
+(87, 1),
+(88, 1),
+(89, 1),
+(90, 1),
+(91, 1),
+(92, 1),
+(93, 1),
+(94, 1),
+(95, 1),
+(96, 1),
+(97, 1),
+(98, 1),
+(99, 1),
+(100, 1),
+(101, 1),
+(102, 1),
+(103, 1),
+(104, 1),
+(105, 1),
+(106, 1),
+(107, 1),
+(26, 2),
+(27, 2),
+(28, 2),
+(29, 2),
+(30, 2),
+(31, 2),
+(32, 2),
+(33, 2),
+(34, 2),
+(35, 2),
+(73, 2),
+(84, 2),
+(85, 2),
+(88, 2),
+(94, 2),
+(21, 3),
+(22, 3),
+(23, 3),
+(24, 3),
+(25, 3),
+(26, 3),
+(27, 3),
+(28, 3),
+(29, 3),
+(30, 3),
+(31, 3),
+(32, 3),
+(33, 3),
+(34, 3),
+(35, 3),
+(36, 3),
+(37, 3),
+(38, 3),
+(39, 3),
+(40, 3),
+(41, 3),
+(42, 3),
+(43, 3),
+(44, 3),
+(45, 3),
+(11, 4),
+(12, 4),
+(13, 4),
+(14, 4),
+(15, 4),
+(16, 4),
+(17, 4),
+(18, 4),
+(19, 4),
+(20, 4),
+(21, 4),
+(22, 4),
+(23, 4),
+(24, 4),
+(25, 4),
+(26, 4),
+(27, 4),
+(28, 4),
+(29, 4),
+(30, 4),
+(31, 4),
+(32, 4),
+(33, 4),
+(34, 4),
+(35, 4),
+(36, 4),
+(37, 4),
+(38, 4),
+(39, 4),
+(40, 4),
+(41, 4),
+(42, 4),
+(43, 4),
+(44, 4),
+(45, 4),
+(68, 4),
+(69, 4),
+(70, 4),
+(71, 4),
+(72, 4),
+(73, 4),
+(74, 4),
+(75, 4),
+(76, 4),
+(77, 4),
+(78, 4),
+(79, 4),
+(80, 4),
+(81, 4),
+(82, 4),
 (83, 4);
 
 -- --------------------------------------------------------
@@ -9903,33 +10077,33 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 --
 
 CREATE TABLE `settings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `logo` varchar(255) DEFAULT NULL,
-  `footer_logo` varchar(255) DEFAULT NULL,
-  `favicon` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `additional_phone` varchar(255) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `combine_address` text DEFAULT NULL,
-  `vat` varchar(255) NOT NULL DEFAULT '0',
-  `shipping_charge` double NOT NULL DEFAULT 0,
-  `shipping_charge_dhaka` double NOT NULL DEFAULT 0,
-  `shipping_charge_dhaka_metro` double NOT NULL DEFAULT 0,
-  `maximum_wallet` double NOT NULL DEFAULT 0,
-  `minimum_cart` double NOT NULL DEFAULT 0,
-  `facebook` varchar(255) DEFAULT NULL,
-  `instagram` varchar(255) DEFAULT NULL,
-  `twitter` varchar(255) DEFAULT NULL,
-  `youtube` varchar(255) DEFAULT NULL,
-  `linkedin` varchar(255) DEFAULT NULL,
-  `meta_title` varchar(255) DEFAULT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  `meta_tag` varchar(255) DEFAULT NULL,
-  `meta_image` varchar(255) DEFAULT NULL,
-  `slider_option` varchar(255) NOT NULL DEFAULT 'image',
-  `video` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `footer_logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `favicon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `additional_phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `combine_address` text COLLATE utf8mb4_unicode_ci,
+  `vat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `shipping_charge` double NOT NULL DEFAULT '0',
+  `shipping_charge_dhaka` double NOT NULL DEFAULT '0',
+  `shipping_charge_dhaka_metro` double NOT NULL DEFAULT '0',
+  `maximum_wallet` double NOT NULL DEFAULT '0',
+  `minimum_cart` double NOT NULL DEFAULT '0',
+  `facebook` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `instagram` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `youtube` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `linkedin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_tag` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `slider_option` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'image',
+  `video` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -9948,9 +10122,9 @@ INSERT INTO `settings` (`id`, `name`, `logo`, `footer_logo`, `favicon`, `email`,
 --
 
 CREATE TABLE `sizes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -9973,12 +10147,12 @@ INSERT INTO `sizes` (`id`, `title`, `is_active`, `created_at`, `updated_at`) VAL
 --
 
 CREATE TABLE `sliders` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `image2` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `button_text` varchar(255) DEFAULT NULL,
-  `link` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `button_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `link` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -9999,8 +10173,8 @@ INSERT INTO `sliders` (`id`, `image`, `image2`, `title`, `button_text`, `link`, 
 --
 
 CREATE TABLE `subscribers` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10012,12 +10186,12 @@ CREATE TABLE `subscribers` (
 --
 
 CREATE TABLE `suppliers` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `opening_balance` double NOT NULL DEFAULT 0,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `opening_balance` double NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10029,12 +10203,12 @@ CREATE TABLE `suppliers` (
 --
 
 CREATE TABLE `supplier_payments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `supplier_id` int(10) UNSIGNED NOT NULL,
-  `bank_id` int(10) UNSIGNED NOT NULL,
-  `amount` double UNSIGNED NOT NULL DEFAULT 0,
+  `id` bigint UNSIGNED NOT NULL,
+  `supplier_id` int UNSIGNED NOT NULL,
+  `bank_id` int UNSIGNED NOT NULL,
+  `amount` double UNSIGNED NOT NULL DEFAULT '0',
   `payment_date` date DEFAULT NULL,
-  `note` text DEFAULT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10046,10 +10220,10 @@ CREATE TABLE `supplier_payments` (
 --
 
 CREATE TABLE `trendings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `link` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10068,20 +10242,21 @@ INSERT INTO `trendings` (`id`, `type`, `link`, `image`, `created_at`, `updated_a
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dob` date DEFAULT NULL,
-  `type` int(11) NOT NULL DEFAULT 2 COMMENT '1 - Officials | 2 - Customer',
-  `is_active` int(11) NOT NULL DEFAULT 1,
+  `type` int NOT NULL DEFAULT '2' COMMENT '1 - Officials | 2 - Customer',
+  `is_active` int NOT NULL DEFAULT '1',
+  `is_fraud` int NOT NULL DEFAULT '0',
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10090,156 +10265,159 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `username`, `phone`, `image`, `city`, `address`, `dob`, `type`, `is_active`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Sadek Nurul', 'sadeknurul5@gmail.com', 'sadeknurul', '01763100517', NULL, NULL, 'Dhaka, Bangladesh', NULL, 1, 1, NULL, '$2y$10$4kMAxGsg9gYjTFxSkaWKTuB390n4sIfCIDkxEWhkRBA1FCHpeI466', 'rnM50I9lUByxiMVCWqkLSDrTNSibv1VLPGD0RRQaWd5yJgmW1XmaeX7FI4GM', '2022-06-16 07:58:41', '2022-06-16 07:58:41'),
-(3, 'Rajesh Ghosh', 'rajashghosh73@gmail.com', NULL, '01779601942', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$LJhecgQVFAZhn2yGaMYYRuqHfI.l84RuXSmTdf.7VOE6SdjtxXeVm', NULL, '2022-08-20 11:38:02', '2022-08-20 11:38:02'),
-(4, 'Md tahasanul Khair Shahad', 'shahad452415@gmail.com', NULL, '+8801778649056', NULL, NULL, '৬২/গ মায়ের আচল,শান্তিনগর বাজার রোড,ঢাকা।', NULL, 2, 1, NULL, '$2y$10$9xjudES695EMDvNwohk4oeKSysISX8KmQ88tnl1dAehKRl5PWmAau', NULL, '2022-08-20 16:51:32', '2022-08-20 16:54:34'),
-(6, 'Jibon', 'jibon6949raj@gmail.com', NULL, '01739697244', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$ygFeRXzTGa5vIh8w.dM2R.BHpNUEV/4Floj6HPFT0d2mUkdXkmyO2', NULL, '2022-08-25 10:31:40', '2022-08-25 10:31:40'),
-(62, 'NOOR SADID', 'noorsadid@gmail.com', 'noor', '01722208968', NULL, NULL, NULL, NULL, 1, 1, NULL, '$2y$10$okx6VLcfUBqYP55gsPGi6ezN6Op0YIsSy57rHSt93R65xWhFiYUmi', 'C5cSjBBZ4KjeqXBIBN5HcGrpV5buBXmFewgOt3ZGpBreXTtdPoIQeYq2azbv', '2023-02-26 13:07:17', '2023-02-26 13:07:17'),
-(69, 'mamun', 'mamunrohan135@gmail.com', 'mamunrohan135@gmail.com', '01580652493', NULL, NULL, NULL, NULL, 1, 1, NULL, '$2y$10$t/SQ9RFzC93fK5sUTD.kneS.n2hJ7vRMKFLuyNPN5M3OZmwL6sRVO', 'DXq41TpjyI7eyVvJkAdrxi27X4wCCmCC5GVtkMvoEAPaS5DPq0Z2bPmMU6Yh', '2023-03-12 18:38:41', '2023-04-06 20:42:43'),
-(71, 'Shabuj ahmad', 'shabujahmad4@gmail.com', NULL, '01893749514', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$p8UmXeyyjJkoAU6rfmEODORHDyFgfVqfpo.jX68i6AavPpS5vM2Wa', NULL, '2023-03-15 02:18:24', '2023-03-15 02:18:24'),
-(76, 'MD. ASADUJJAMAN SHAD', 'ahmednihan88@gmail.com', NULL, '01772285742', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$GpLSu4ngHrQi7fZgW0ou6.PkvNQ4CbF0zY7wP3a/FpHD3B2Lo2.lS', NULL, '2023-04-13 20:06:27', '2023-04-13 20:06:27'),
-(81, 'MAHBUB', 'mahbub2580@yahoo.com', NULL, '01738539076', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$CnkJpbhoy8Z6z051UQp8ye0ZCADBNwOx7ZDriN25EWIGV1BiiH0UW', NULL, '2023-05-10 22:05:53', '2023-05-10 22:05:53'),
-(84, 'Sk affan', 'skaffan7525@gmail.com', NULL, '01949454872', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$XtiOQwnWb7UII16NaB2m3uNh5CJBqrgKBKreCslGBzklwBiI0urme', NULL, '2023-05-17 15:48:11', '2023-05-17 15:48:11'),
-(95, 'Mehedi Hasan', 'fisequaltoma@gmail.com', NULL, '01798041189', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$12J.QSoR/qicLEaVjwkifeIIYq34jChMJJFASkqLtnoPdlEqlkRIi', NULL, '2023-07-22 16:12:47', '2023-07-22 16:12:47'),
-(97, 'Md Bablu', NULL, NULL, '01824693216', NULL, '10', NULL, NULL, 2, 1, NULL, '$2y$10$KmTqtIKW.vdBG1pFpB8wNuUs1LmyK4lliXLIDuUcPxdFLiTv1jh9C', NULL, '2023-07-24 12:41:28', '2023-07-24 12:41:28'),
-(98, 'Arika Islam', 'raseasd748@mahmul.com', 'arika123', '+880 1779-510154', NULL, NULL, NULL, NULL, 1, 1, NULL, '$2y$10$chbibwE6X2DI7ZSDfi.6rumrWMGymJGOm6SahR3ubxwbUSgoD.xgC', 'hHIowZPnbv5lO48Riv1P2gCchBMhb0W6iG4iAU6TbrkBJlWKFLDc5XP9moba', '2023-07-24 14:47:08', '2023-07-24 14:47:08'),
-(99, 'Nafis Abdullah', 'nafis@imbdagency.com', 'nafis123', '01603155570', NULL, NULL, NULL, NULL, 1, 1, NULL, '$2y$10$Ik5aifJ7fWwx9xKZYz7buOUEmvEj89SH/lopJp0RIGEiM3NpGQO2a', NULL, '2023-07-24 14:59:02', '2023-07-24 14:59:18'),
-(100, 'Rasel Rasel', NULL, NULL, '01846943236', NULL, '13', NULL, NULL, 2, 1, NULL, '$2y$10$gsqqwuY9tH7htGtfh8R8OO1Amc7QR43mUD1lKJN3z3US5GaptdZRu', NULL, '2023-07-24 16:24:09', '2023-07-24 16:24:09'),
-(101, 'Asim Das', NULL, NULL, '01712-448672', NULL, '4', 'barisal bimbondor babugang rahamatpur', NULL, 2, 1, NULL, '$2y$10$h5d96ajE/x6HVK5gGRI5Busd9MVwG.pRr1YvHsQkPl2ZDIZ7IMzpm', NULL, '2023-07-24 16:38:05', '2023-07-24 16:38:05'),
-(102, 'MD. LALIN HOSSAIN', 'lalinhossain36@gmail.com', NULL, '01738616868', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$H/OwgR40IhLDAFWbuOwekOaDTCCJM3Gy9BBw380ii/cTJCHwCOBVK', 'TgP30oKuOcBByViSSCLdIPXlzDYrRy0tq0LymZUGIpcFlN7ZAy52wlGrpgph', '2023-07-24 20:56:07', '2023-07-24 20:56:07'),
-(103, 'TOHIDUL ISLAM', 'infotohidulislam@gmail.com', 'tohidul islam', '0172286614', NULL, NULL, NULL, NULL, 1, 1, NULL, '$2y$10$qN70EPOYSPMrqymxP50VQ.Ohv/ock3RCF9RXn.qfWt6hONk7l0IPi', NULL, '2023-07-25 11:53:33', '2023-07-25 11:53:33'),
-(104, 'Tasnima Sejuti', 'tsejuti6@gmail.com', 'tsejuti6@gmail.com', '01783163514', NULL, NULL, NULL, NULL, 1, 1, NULL, '$2y$10$ZeVdV5j12.dmvYOIUjX5audFYzzDnyjQk8de.LbdkpZgi/V72Df7S', NULL, '2023-07-25 12:04:20', '2023-07-25 12:04:20'),
-(105, 'Al AmAl Aminin', NULL, NULL, '01639475361', NULL, '14', 'shyamoli, north adabor 4tola masjid er samne', NULL, 2, 1, NULL, '$2y$10$JchWV6g6oivJ7mP4AvevoedTbThAHLFg0s222aWQWqGuEzDIi9kda', NULL, '2023-07-25 13:50:43', '2023-07-25 13:50:43'),
-(106, 'Swopnil Ahmed', NULL, NULL, '01316926616', NULL, '40', 'Mymensingh sadar thanaghat tample er sathe', NULL, 2, 1, NULL, '$2y$10$/AWRwHa7uplCNuAl0GnDEeJHHOYzkPN/g5ddq2S5eTLhmf1cKFl7K', NULL, '2023-07-25 14:30:56', '2023-07-25 14:30:56'),
-(107, 'Farhad Ahmed', 'farhad0ahmed@gmail.Com', NULL, '01776-484472', NULL, '24', '204 Jail Road Jashore', NULL, 2, 1, NULL, '$2y$10$JchWV6g6oivJ7mP4AvevoedTbThAHLFg0s222aWQWqGuEzDIi9kda', NULL, NULL, NULL),
-(108, 'Akash', 'harryakash47@gmail.com', NULL, '01601753853', NULL, '24', '30mil, satkhira', NULL, 2, 1, NULL, '$2y$10$JchWV6g6oivJ7mP4AvevoedTbThAHLFg0s222aWQWqGuEzDIi9kda', NULL, NULL, NULL),
-(114, 'Jubayer Ahmed Juber', NULL, NULL, '01724381181', NULL, '61', 'chatok pouroshova ward 09. basa 01', NULL, 2, 1, NULL, '$2y$10$pcsHGUzZOhPcyrl6bV7MyeRshQhvUXHZHQbWpBe2yJlj5a74xrGvu', NULL, '2023-07-25 16:05:45', '2023-07-25 16:05:45'),
-(117, 'Imam Hossain', NULL, NULL, '01716160702', NULL, '10', 'Lokman market,, madam bibir hat,,, vatiary,,, sitakunda,,, chittagong', NULL, 2, 1, NULL, '$2y$10$jppzoWszUBSLkGeEELah7eW4oMRScPWWk6g8oaU1YhNVF7wC2AUAK', NULL, '2023-07-25 17:11:20', '2023-07-25 17:11:20'),
-(118, 'md rony', NULL, NULL, '01747678677', NULL, '14', 'uttara 10,  4number road  siraj market', NULL, 2, 1, NULL, '$2y$10$Do6ClwNwhM/fpEE/Igi/o.cOrlhA6ZQKIxed11xZQzHot9.jm3tgS', NULL, '2023-07-25 17:27:25', '2023-07-25 17:27:25'),
-(119, 'GM Ramjan', NULL, NULL, '01756443287', NULL, '58', 'laukhola jajira sharitpur', NULL, 2, 1, NULL, '$2y$10$vCM2MgEH4aBm.A8sgmLrke9SGhQMdd8eIpByuMlQzM./.PJoksNgW', NULL, '2023-07-25 17:29:41', '2023-07-25 17:29:41'),
-(120, 'md salman', NULL, NULL, '01700910585', NULL, '19', '7tala ,garments , maleker bari  gazipur', NULL, 2, 1, NULL, '$2y$10$4Z42tAgtRxSm1eBjAP0jDe28iFnmZmiNdnSmLaxsmkOpHBqecloM.', NULL, '2023-07-25 17:34:23', '2023-07-25 17:34:23'),
-(121, 'Romjan Ali', NULL, NULL, '01724028498', NULL, '35', 'Magura sadar Thana,magura', NULL, 2, 1, NULL, '$2y$10$OBvm0RC/4uHHx96Ub9akguN0OPpJqJVOoMl9tTZvVEqnN5tfGUoJW', NULL, '2023-07-25 17:55:16', '2023-07-25 17:55:16'),
-(122, 'sheikh mahin mahbub', NULL, NULL, '01300490816', NULL, '14', 'Arambag motijheel', NULL, 2, 1, NULL, '$2y$10$KayxQlJ0ZPIMLNOmRTBJs.QUHqqV14JwtnBNdj6.i09jzEauVzvYe', NULL, '2023-07-25 18:27:55', '2023-07-25 18:27:55'),
-(123, 'Md Mizan', NULL, NULL, '01722693439', NULL, '61', 'Sunamganj sadar nilpur bazar.', NULL, 2, 1, NULL, '$2y$10$1tKapUsrZZGE/3k/rzF9ruoanASpOx/kDdvQ005paVKHcR6AsCgcS', NULL, '2023-07-25 19:35:25', '2023-07-25 19:35:25'),
-(126, 'Jafor Ridoy', NULL, NULL, '01915391131', NULL, '14', 'Surjosen Hall ; Dhaka University', NULL, 2, 1, NULL, '$2y$10$XXLQsyqe4Ev1FaUOEl27n.qNKis9tQlhm.IEwJwLsujoOl5X7IfuW', NULL, '2023-07-26 12:33:03', '2023-07-26 12:33:03'),
-(127, 'Md Moshiur', NULL, NULL, '01917006090', NULL, '14', 'Muhammod pur, Haosing socity # rod #7', NULL, 2, 1, NULL, '$2y$10$CKeP2EHh5HX4dQWen/YTMeJZ0OfEGK48wOCGJBYr5RY7o1DKLbvkq', NULL, '2023-07-26 12:38:55', '2023-07-26 12:38:55'),
-(128, 'Md Hossain Shahid Sarwar', NULL, NULL, '01521735153', NULL, '14', 'NTMC bir uttam genarel ajijur t=rahman sark bijoy shorony tejgaon , prime minister er tran karjoloy', NULL, 2, 1, NULL, '$2y$10$XrZBZS/KpX2GifXmGl.lc.kyArKkCf.LbbYLWQqggTZC8dT4rJmc2', NULL, '2023-07-26 12:43:30', '2023-07-26 12:43:30'),
-(129, 'Jõ Hîr', NULL, NULL, '01324925662 01966560578', NULL, '19', 'lichu bagan gorgoria mastar bari sreepur gazipur', NULL, 2, 1, NULL, '$2y$10$1/gbR/04OweAvFANb5QWfe7S3huIpFeEtjOTRQ.EWSycZ1Cn8Byli', NULL, '2023-07-26 13:29:00', '2023-07-26 13:29:00'),
-(130, 'Aryan Khan Shojib', NULL, NULL, '01714475518', NULL, '40', 'Court bobhon, gafargaon, mymensingh', NULL, 2, 1, NULL, '$2y$10$RUGVsCkbPw2tYLOmFAnbseYdYycHH6SDETOk3UD2q2R4aBFf/VUWu', NULL, '2023-07-26 13:44:17', '2023-07-26 13:44:17'),
-(131, 'Md Anamul', NULL, NULL, '01972745827', NULL, '19', 'gazipur chwrasta joydebpur road 3', NULL, 2, 1, NULL, '$2y$10$x/dweMqTLR/4RM/gHj3T4emq7fhDiitir7y9GPzuELCDqN6mhxDNe', NULL, '2023-07-26 13:48:21', '2023-07-26 13:48:21'),
-(133, 'Sajjad Hossain', NULL, NULL, '01718334748', NULL, '19', 'gazipur konabri', NULL, 2, 1, NULL, '$2y$10$ED6jGebqglaSMaQDIWbH4OYWaZ7BLytzd9Bq6VlXXyaw9VmVz04dC', NULL, '2023-07-26 13:52:37', '2023-07-26 13:52:37'),
-(134, 'Pradyut Mazumder', NULL, NULL, '01866699930', NULL, '10', 'laxmi mohajan bari , mojumdar stor sgoorika , pahartoli ctg', NULL, 2, 1, NULL, '$2y$10$q.AZPJZxAmNMOzjERfpbh.n9N7XNkra/zzBp7NFYJOz.BkjP1MyGm', NULL, '2023-07-26 14:18:01', '2023-07-26 14:18:01'),
-(135, 'Ayush Sarkar Sammo', NULL, NULL, '01774598070', NULL, '64', 'Thakurgaon, college para', NULL, 2, 1, NULL, '$2y$10$i51Or/vXhEkx1z7Z5qFvwOw9zaLpMhSLZGmeW7Wx9uNbv11nLmPEK', NULL, '2023-07-26 14:23:24', '2023-07-26 14:23:24'),
-(136, 'Mohammad Jahed', NULL, NULL, '1814702879', NULL, '10', 'chattogram chandgaon thana kalur ghat kapti rastar matha', NULL, 2, 1, NULL, '$2y$10$XT2g63/wSE/yvTMRhDT2juhPVWFsXCnd.nOGvOOJHsiOhfHI88oo6', NULL, '2023-07-26 14:31:21', '2023-07-26 14:31:21'),
-(137, 'Rowshon Habib Rony', 'rhrony0009@gmail.com', NULL, '01839096877', NULL, '1', 'CB- 56/4, Puran Kachukhet R/A, Dhaka Cantonment', NULL, 2, 1, NULL, '$2y$10$vfsf0nHt2Bfy9NZPrvC8Zece3EAArc8ZppvXWzfwuGtlzN7ANVsUW', NULL, '2023-07-26 14:48:02', '2023-07-26 14:48:02'),
-(138, 'poragh', NULL, NULL, '01724465641', NULL, '40', '35/09 purbo gohailkandhi jamtola masjid pora bari myamnshing', NULL, 2, 1, NULL, '$2y$10$kJ1L1kbntRq0Sbzu7IGogO2oE05ykACTj5ghCNLeeZJJvGFAJuCeO', NULL, '2023-07-26 16:16:21', '2023-07-26 16:16:21'),
-(139, 'Esa Ahmed', NULL, NULL, '01713958911', NULL, '3', 'Barguna sador', NULL, 2, 1, NULL, '$2y$10$ADNy5RSiaObjDKLk89/WE.IvLxxxJsrjn.pZQSyIXP7UX/wWNoSGq', NULL, '2023-07-26 16:24:44', '2023-07-26 16:24:44'),
-(140, 'sohel rahman', NULL, NULL, '01711586440', NULL, '14', 'gabtoli dahka', NULL, 2, 1, NULL, '$2y$10$Rl.eSLJhzFO0EoG2pk4krux0f.vrAKROwCoIGsX3SMW6N2x4kwFVy', NULL, '2023-07-26 18:04:07', '2023-07-26 18:04:07'),
-(141, 'Tarek Babu', NULL, NULL, '01721522189', NULL, '14', 'Bibir Bagicha 2no. gate Nasrin Vila', NULL, 2, 1, NULL, '$2y$10$CtDRGaZYrGD9UPAZ../UwO4T7VC7SWtAkJ.BgDewV7xBTL7wJRXJ.', NULL, '2023-07-26 18:36:29', '2023-07-26 18:36:29'),
-(142, 'Asad Khan', 'asadrailway69@gmail.com', NULL, '01710505060', NULL, NULL, NULL, NULL, 2, 1, NULL, '$2y$10$ap3faBDp7YRwkGnfJqSKUOJvCwYA3GjJm06fQ7.Kh.BukHUUJN9Oy', NULL, '2023-07-26 18:37:52', '2023-07-26 18:37:52'),
-(149, 'Asif Uz Zaman', 'asifbd.2009@gmail.com', NULL, '01761801223', NULL, '14', 'Asif uz zaman, (9th Floor), Acc. Dept., Biwta Bhavan, 141-143, Motijheel, Dhaka-1000', NULL, 2, 1, NULL, '$2y$10$YJnKlq8x8j8D//aOhl0r2OhQVxaGtJHPVY5ab0JvZVEWwxoY7IggS', NULL, '2023-07-26 21:47:47', '2023-07-26 21:47:47'),
-(150, 'Shawon', 'kshawon306@gmail.com', NULL, '01736305960', NULL, '7', 'Police laion', NULL, 2, 1, NULL, '$2y$10$CGfx1uYbWvEZrSXh6HcOfeFpZCOwLU77HUjWDDnPoZCZwEH6DEJlq', NULL, '2023-07-26 23:21:01', '2023-07-26 23:21:01'),
-(151, 'Amir Bin Farsi Hasan', NULL, NULL, '01629255220', NULL, '14', 'dhanmondi 7/A baitusalam jame mosjid er sathe', NULL, 2, 1, NULL, '$2y$10$s20yx/f7czxQCOAAYYSACeWOTFVt0qJ/6BIn2KwJ4VrQma3LWqimS', NULL, '2023-07-27 12:10:41', '2023-07-27 12:10:41'),
-(152, 'Mohammed Saiful', NULL, NULL, '01779199985', NULL, '14', '70/1 Hazi osman Gani road Dhaka Bangshal police station', NULL, 2, 1, NULL, '$2y$10$Hr8FueT2gr7R6SokuXRFDO4zhUeDEv3s/cFb8EB/ON7aoxN5XbJTW', NULL, '2023-07-27 12:17:50', '2023-07-27 12:17:50'),
-(153, 'mr tanvir', NULL, NULL, '01711906567', NULL, '14', 'office', NULL, 2, 1, NULL, '$2y$10$zCkd1NfBZ5oglAwOrH3.RePwm20yZeFPADJgoiroqAuILraRKwQz.', NULL, '2023-07-27 12:19:30', '2023-07-27 12:19:30'),
-(154, 'Himu Rahman', NULL, NULL, '01707077916', NULL, '14', '154.R.Rahman market 2nd floor Nawabpur road Dhaka gulistan', NULL, 2, 1, NULL, '$2y$10$MLFKq6OeanhHelnvyAc8nO1di098f6m7W7PQrL5F3e.3PERyJUHPi', NULL, '2023-07-27 12:26:31', '2023-07-27 12:26:31'),
-(155, 'MD SAMSUR RAHMAN', NULL, NULL, '01913660160', NULL, '14', 'Hotel As Shams International Fakirapool Box culvart Road Motijheel Dhaka', NULL, 2, 1, NULL, '$2y$10$qW/.f.3XKcaVq8Blfr/J8OZzZH0hJ2CbhFSd6Y9p.gxFTJrXLFm/.', NULL, '2023-07-27 12:27:58', '2023-07-27 12:27:58'),
-(156, 'AB Parvez', NULL, NULL, '01715102799', NULL, '14', 'Imperial Capital Ltd. Saiham Sky View Tower (3rd Floor), 45 Bijoynagar (Opposite side of Hotel 71), Dhaka-1000', NULL, 2, 1, NULL, '$2y$10$fktizR34xv8UVsHxqlmt2eQOcjfEiC7zy3bD91XO1yDHU6OTcODyG', NULL, '2023-07-27 12:30:21', '2023-07-27 12:30:21'),
-(157, 'Kýãw Hìñ', NULL, NULL, '01878383324', NULL, '55', 'Rangamati sadar', NULL, 2, 1, NULL, '$2y$10$AMqLICbSnixUbMnAZO2l6u2JThu90X/GC10EQhsr6YjZZSzQjiiQG', NULL, '2023-07-27 12:37:39', '2023-07-27 12:37:39'),
-(158, 'mr. shaid', NULL, NULL, '01964401933', NULL, '14', 'H-49, R-27, B-A, banani', NULL, 2, 1, NULL, '$2y$10$n/OFvp6vhnqC9M2y1PSFRej7iG8UGWu65LooeqU1MSLjDBUWIMGEq', NULL, '2023-07-27 12:48:07', '2023-07-27 12:48:07'),
-(159, 'Rabiul Hasan Biplob', NULL, NULL, '01717142347', NULL, '41', 'bnghabaria collage para ,  naogaon sador', NULL, 2, 1, NULL, '$2y$10$sx9j3uzO50YoephE8LVpj.xwuSR93VTBR9HSYg9N0kaXS.9/WUUXi', NULL, '2023-07-27 12:55:22', '2023-07-27 12:55:22'),
-(160, 'GM Abdul Wahab', NULL, NULL, '01712624481', NULL, '57', 'shaymnagor ,sthkhira , dhumghat nasir ali bridge songlongo bazar', NULL, 2, 1, NULL, '$2y$10$Hj7cxib7ySeRNCBj.JKWFON/fJGw5rVPAPG.zXSQDTbnSOY5WdyEe', NULL, '2023-07-27 13:00:05', '2023-07-27 13:00:05'),
-(161, 'Sohag Ctg', NULL, NULL, '01788691564', NULL, '10', 'joraganj ,mirsharai CTG.', NULL, 2, 1, NULL, '$2y$10$NUiK.VU0Eq6q2408hTWs.eZxKUYx0Gbc2j/6x/s0lbh5X.m9ME72G', NULL, '2023-07-27 13:01:52', '2023-07-27 13:01:52'),
-(162, 'Iqbal Hossain Shagor', NULL, NULL, '01783200433', NULL, '13', 'Comilla chouddogram batisha', NULL, 2, 1, NULL, '$2y$10$KmJ9AZ3zxSBtd/fcK5k8xO3ULnIk7q851o6.IFTVWb.Ab0clHD55W', NULL, '2023-07-27 13:09:11', '2023-07-27 13:09:11'),
-(163, 'Sukanta Das', NULL, NULL, '01641555905', NULL, '10', 'chnadanaish CTG.', NULL, 2, 1, NULL, '$2y$10$BsJuj.bokvp53HSKLt1Mw.c00W/9mfHL1zXN6HuDUIXoux9CqfSIu', NULL, '2023-07-27 13:41:15', '2023-07-27 13:41:15'),
-(164, 'MD Sahin Mridha', NULL, NULL, '01316116342', NULL, '36', 'manikganj , horirampur , dhulshura', NULL, 2, 1, NULL, '$2y$10$OTy0u9FKtfA5w3gYETnE/uupYIoha2gbKJUtU0ZSKS8.MY69QKbx.', NULL, '2023-07-27 13:46:54', '2023-07-27 13:46:54'),
-(165, 'Asad Chandan', NULL, NULL, '01715 105 405', NULL, '10', 'fenail square [abasik] 14 tola, flat -A14 ,gate no-02 sholo-shor CTG', NULL, 2, 1, NULL, '$2y$10$w1GsUkl.YAN2T38olyAaRui722DsDiWn18rQ8fpX1sINAHZLInhdS', NULL, '2023-07-27 14:06:06', '2023-07-27 14:06:06'),
-(166, 'gopinath mondal', NULL, NULL, '01787070651', NULL, '14', 'Paschim Brahmonkitta Jame Masjid kalindi Keraniganj', NULL, 2, 1, NULL, '$2y$10$eBlNiY3AoODP1Q.W1LHWg.2K3QB9TyBQM8xDuTSkQFrOdb4tEKnd.', NULL, '2023-07-27 14:09:39', '2023-07-27 14:09:39'),
-(167, 'Chapal Ponting', NULL, NULL, '01710288702', NULL, '63', 'Halim Adhunik hospital  Mirzapur, tangail..', NULL, 2, 1, NULL, '$2y$10$1nxgkMUKfh3IaVsvOVBO8.Hxq9FQ/Q/BoGKH9mdV1VhLOUlhyn7hu', NULL, '2023-07-27 14:11:35', '2023-07-27 14:11:35'),
-(168, 'Ahmed Rumel', NULL, NULL, '01711189479', NULL, '62', 'Kadamtoli  Sylhet', NULL, 2, 1, NULL, '$2y$10$w0nJ1wbaGwHHmT3CqRJGIuJWruhLi4ZTnbHo3w1cP1MDcVMIaOhfW', NULL, '2023-07-27 16:00:24', '2023-07-27 16:00:24'),
-(169, 'Salahuddin Khan', NULL, NULL, '1777322008', NULL, '14', 'mirpur 1, budhijibi shaid minar main gate doyal restera', NULL, 2, 1, NULL, '$2y$10$Tc.YDAeZAbud8cnuQu2/dufZFDNJs12mWMSKi8O4HpkDB06aYOMvi', NULL, '2023-07-27 16:31:35', '2023-07-27 16:31:35'),
-(170, 'Mohimmoy Bhowmick', NULL, NULL, '01869322386', NULL, '14', 'Basudndhara C block road no 2 house no 61 dhaka', NULL, 2, 1, NULL, '$2y$10$HFZ28LnEkUwPCoXM/cyRn.HImW0fToOB1vMzUOQ2kWkL65Pzyjbr2', NULL, '2023-07-27 16:33:07', '2023-07-27 16:33:07'),
-(171, 'sanjib rema', NULL, NULL, '01728638143', NULL, '14', 'Moreau House, House no.28, Rd. no. 3, Block-B, Banasree, Rampura, Dhaka-1219.', NULL, 2, 1, NULL, '$2y$10$IYHzZQ8gpInYp9Vw7G752.iIPUA5LiSAUeSAwVQ21/XmQZJ7v3.q.', NULL, '2023-07-27 17:46:44', '2023-07-27 17:46:44'),
-(172, 'Redwan Hamidi', NULL, NULL, '01876447510', NULL, '17', 'Address: Southeast Bank Limited,,, Sonagazi Branch.  Thana:- Sonagazi. District: Feni.', NULL, 2, 1, NULL, '$2y$10$JyIBfxS.suvMmqieCGSmZe0iet6My7TLh/zsSemKQ1oiVvoNgXmh.', NULL, '2023-07-27 17:56:14', '2023-07-27 17:56:14'),
-(173, 'Imran Khan', NULL, NULL, '01836015980', NULL, '43', 'Sonarga,narayngonj, noyapur , Sadipor ,union', NULL, 2, 1, NULL, '$2y$10$kSREZDytnRymFRKRxCw1Qu9.yLODdskhAXtR3cj3pxxA/Iw.OadeK', NULL, '2023-07-27 18:03:18', '2023-07-27 18:03:18'),
-(174, 'Shibbir Ahmed', NULL, NULL, '01672199242', NULL, '62', 'Shylet zakigonj Zakigonj bajar', NULL, 2, 1, NULL, '$2y$10$qeSozP.4ud0JVSGR5iZyYuKxuhYKRUW5Dcv8oh6aEKkJd90Eokr.2', NULL, '2023-07-27 18:22:14', '2023-07-27 18:22:14'),
-(175, 'Liton Das', NULL, NULL, '01716469330', NULL, '65', 'Old hospital road Moulvibazar', NULL, 2, 1, NULL, '$2y$10$UtfczANsyufDgXpUiXjYhOZxpv.QF737cgIkluyoJM/jkQ5fYmvPC', NULL, '2023-07-27 18:43:18', '2023-07-27 18:43:18'),
-(176, 'Md Habibur Rahman', NULL, NULL, '01716077323', NULL, '54', 'supra , chandrima , rajshai', NULL, 2, 1, NULL, '$2y$10$bxcVXd4KNqTg2J0NiTtRIuiSsMtKYAnVuEXp8DCDoZevDxbI2KVtq', NULL, '2023-07-27 18:48:24', '2023-07-27 18:48:24'),
-(177, 'Shimul D', NULL, NULL, '01758419991', NULL, '62', 'Kajalshah,Sylhet Sador', NULL, 2, 1, NULL, '$2y$10$ZbBBCpsfOTyAyWe4cG0MiOM13Dg.qekz.3d0Y50LbnCBIVpizbrzi', NULL, '2023-07-27 18:51:35', '2023-07-27 18:51:35'),
-(178, 'Johny Sheikh', NULL, NULL, '01712854548', NULL, '30', 'kurigram sador , jolil biri mor.', NULL, 2, 1, NULL, '$2y$10$H1dS4sxEJtpbfmFeybxl8OTsdp06MS8z.O8HemjQeAVVL7yraNXLO', NULL, '2023-07-27 18:55:30', '2023-07-27 18:55:30'),
-(179, 'tajul islam', NULL, NULL, '01999977405', NULL, '14', 'office', NULL, 2, 1, NULL, '$2y$10$0upKOmhSb3jEHMAZOholcu/lf0OtZ0Nfd7m7Ga7A79m73g1B4sdEC', NULL, '2023-07-27 20:10:26', '2023-07-27 20:10:26'),
-(180, 'Alin Nabi', NULL, NULL, '01816871206', NULL, '14', '89/141, R. k. Mission Road, Gopibag(8th lane), Dhaka-1203.', NULL, 2, 1, NULL, '$2y$10$udxisXIFUXFmuY/y47iFj.Jm63Qa2495jYy5t/vh7za788vDh1GSy', NULL, '2023-07-28 12:18:31', '2023-07-28 12:18:31'),
-(181, 'Syed Mominul Haque Sajib', NULL, NULL, '01711373702', NULL, '14', 'Merul baddah dit project road-14 plot -66.', NULL, 2, 1, NULL, '$2y$10$VU3aAnOeG0nxnKmw7P8g3O1wIjkquMiMmiZOmLiziZvcVxDTkSuCi', NULL, '2023-07-28 12:20:23', '2023-07-28 12:20:23'),
-(182, 'Farhan Akhter Arif Shawon', NULL, NULL, '01916034927', NULL, '14', '390/2/A  Jafrabad Pulpar Moshjid Mohammadpur 3rd floor.', NULL, 2, 1, NULL, '$2y$10$dfKbvKpjPhSN8TWUkTzGY.COXSlrrG1r3pNYQPT4JUeRU7KT4KYk6', NULL, '2023-07-28 12:22:47', '2023-07-28 12:22:47'),
-(183, 'Khan Mamun', NULL, NULL, '01713953065', NULL, '25', 'সদর রোড কৈখালী বাজার,গ্রামীণফোন টাওয়ারের নিচে', NULL, 2, 1, NULL, '$2y$10$SJoPI94brQ0FanMrYAFWweZTJM5mjcYRrpszncOcKzipt1Clc.6LW', NULL, '2023-07-28 12:23:37', '2023-07-28 12:23:37'),
-(184, 'Sd Metun', NULL, NULL, '01822925415', NULL, '13', 'sen nagor bazar , megna cumilla', NULL, 2, 1, NULL, '$2y$10$TF1hqoVtjdUODWNUKnhR4uPzFSGTTYcHl5bTic3zzwQw1LKaLAc9K', NULL, '2023-07-28 12:43:28', '2023-07-28 12:43:28'),
-(185, 'Probir Biswas', NULL, NULL, '01920111156', NULL, '28', 'Jella khulna. Tana terokhada', NULL, 2, 1, NULL, '$2y$10$Wfl7FG.IUos5aK3eG0OJaelthZNkMWE.f3q6Y2KN2ogjv0xFqRROi', NULL, '2023-07-28 12:45:16', '2023-07-28 12:45:16'),
-(186, 'Palas Kundu', NULL, NULL, '01999685655', NULL, '31', 'beramara kustia', NULL, 2, 1, NULL, '$2y$10$cmnNWlCYD8eo4tS3pWpjrucpxpBsNBREQS1oh5Aw/LIEyFhC1WO9y', NULL, '2023-07-28 12:48:02', '2023-07-28 12:48:02'),
-(187, 'IMRUL HASAN', NULL, NULL, '+8801715162737', NULL, '10', 'Sitakunda,', NULL, 2, 1, NULL, '$2y$10$ox9YSD6vozGvSDVLf8TFiOGv9Um9Gg.u35j4AjM2epsD0O3phU.7m', NULL, '2023-07-28 15:34:06', '2023-07-28 15:34:06'),
-(188, 'Md Ashikur Rahman Talukder', NULL, NULL, '01717005740', NULL, '56', 'bukultola goneshpur , rangpur sador', NULL, 2, 1, NULL, '$2y$10$v7UQXl3QBLajmO/stjfIx.z7gax/ORJeUQsk5rkhbdC8mH2KlbHI.', NULL, '2023-07-28 15:34:28', '2023-07-28 15:34:28'),
-(189, 'Hridoy Shikder', NULL, NULL, '01690083640', NULL, '13', 'Barura,comilla sonaimuri bazaer', NULL, 2, 1, NULL, '$2y$10$yIb4qs13bGB7NApOIcsW/.3rC5W7DHMhLfNcByFIP7PiX91xbIWDe', NULL, '2023-07-28 15:36:32', '2023-07-28 15:36:32'),
-(190, 'Chandan Saha', NULL, NULL, '01717021725', NULL, '60', 'bonoful confectionary  monirampur bazar , sahajadpur , sirajganj', NULL, 2, 1, NULL, '$2y$10$VaX5aOUJ3deTdkfPekR73uXE39QuznRsrz23F6vaVjYoU5ZxAX.KG', NULL, '2023-07-28 15:41:51', '2023-07-28 15:41:51'),
-(191, 'Md Jowel Rana', NULL, NULL, '01716127689', NULL, '40', 'batajur bazar bhaluka,Mymensingh', NULL, 2, 1, NULL, '$2y$10$4arVSAP6DGkT2BgzD3m4beTAMc28eAHInJI0AEnfwGDaokxTIlTae', NULL, '2023-07-28 15:57:27', '2023-07-28 15:57:27'),
-(192, 'md. alaamin', NULL, NULL, '0196894792', NULL, '14', 'office .', NULL, 2, 1, NULL, '$2y$10$eFC9l1IxWAPasanJonTGyu6L3ornBCvMwxNlHEFQ7oD2NEgBCI95O', NULL, '2023-07-28 16:56:55', '2023-07-28 16:56:55'),
-(193, 'Tahmid Tahi', NULL, NULL, '01730721651', NULL, '65', 'Pharmacy, Rabirbazar P.O- Prithimpassa Thana-Kulaura Dis-Moulvibazar', NULL, 2, 1, NULL, '$2y$10$WRCE7UDLD3HyMUwjgktwuuSiM5iXFCSkjdQd7ve2gk.O4tcHLO45G', NULL, '2023-07-28 17:03:44', '2023-07-28 17:03:44'),
-(194, 'Tazrian Niloy', NULL, NULL, '01953385388', NULL, '26', 'Jhenaidah sodor,  adarsha para', NULL, 2, 1, NULL, '$2y$10$rEwzaR5pm6oyhaAcETAlfeo6pMPzSk2HcmOLKZyGgdPR4RRrILNIa', NULL, '2023-07-28 17:05:39', '2023-07-28 17:05:39'),
-(195, 'M.a. Mabud Ali', NULL, NULL, '01723685911', NULL, '22', 'upozelia prani shampod office khetlal , joypurhat', NULL, 2, 1, NULL, '$2y$10$0ecbHWv6QWmhnm5MVeCNHegQtNK4.EcwyHp6f.gDd0U14LzYFdOBG', NULL, '2023-07-28 17:09:47', '2023-07-28 17:09:47'),
-(196, 'Asif Raihan', NULL, NULL, '01816-611511', NULL, '14', 'Dhaka, Dohar.  Meghula Bazar. First Security islami Bank', NULL, 2, 1, NULL, '$2y$10$dZXsJEM3WYvVQ0aIJOR.u.UziHVZj75q9J5pahtx3MvXHZ8qCz02e', NULL, '2023-07-28 17:13:11', '2023-07-28 17:13:11'),
-(197, 'A R Mohan Mahmud', NULL, NULL, '01327096407', NULL, '13', 'daudkandi bazar daudkandi cumlila', NULL, 2, 1, NULL, '$2y$10$jc.oaWo6.T8agwJ8s4Nf8OVv5oVlJohwKzS3KGkCWzJsYKjNk7.Yu', NULL, '2023-07-28 17:33:15', '2023-07-28 17:33:15'),
-(198, 'Enayetur Rahman', NULL, NULL, '01819476400', NULL, '51', 'bari no-77,  boro masjid road , patukhali', NULL, 2, 1, NULL, '$2y$10$kyb./TRwtVYfEvDG9eqa8OuwT/KF1ouoh4Lv3kUWqCqST.ujxCpAi', NULL, '2023-07-28 17:38:07', '2023-07-28 17:38:07'),
-(199, 'uttam kumar', NULL, NULL, '01715661782', NULL, '63', 'ghatail tangail', NULL, 2, 1, NULL, '$2y$10$8Zvvqsx3x3jC0AthWP8lguxGGFcFe1//jqSY2l7P42uU4dxtWCU4G', NULL, '2023-07-28 17:43:01', '2023-07-28 17:43:01'),
-(200, 'Saidur Rhaman Babu', NULL, NULL, '01683708444 01793540473', NULL, '43', 'gohgnagor  purbo mosina bandar naraynganj', NULL, 2, 1, NULL, '$2y$10$ViWTrN1vOYQohtzMTIeeeO.jTRumxLfhFGsJ33GE.iHxb0RG2UdUC', NULL, '2023-07-28 17:49:43', '2023-07-28 17:49:43'),
-(201, 'Khan Md Shahnawaz', NULL, NULL, '01716224086', NULL, '47', 'Saidpur Near mohila college  , Nilphamari', NULL, 2, 1, NULL, '$2y$10$nj8ib.eYLjoPiz.zhcc9quccP0wYE9yIIa6TTrFWLqSc8qcA1SOQa', NULL, '2023-07-28 17:59:58', '2023-07-28 17:59:58'),
-(202, 'Sp Shaon', NULL, NULL, '01741502494', NULL, '24', 'Banapol bazar', NULL, 2, 1, NULL, '$2y$10$R/br4qCKWX1uljfHcvqtQewGKbWOHX/DiX9x1.uK9TpvULoLx7bL.', NULL, '2023-07-28 18:07:39', '2023-07-28 18:07:39'),
-(203, 'Md. Harun Ur Rashid', NULL, NULL, '01672305147', NULL, '14', 'House 2, Road 119, Gulshan 2, Dhaka 1212', NULL, 2, 1, NULL, '$2y$10$A6g/coqep4aptsJEFkX1JukDVS3iws32t6poza7rvp68Ms7KdxlFq', NULL, '2023-07-28 18:49:17', '2023-07-28 18:49:17'),
-(204, 'Md Hasanuzzaman', NULL, NULL, '01611577164', NULL, '14', 'K-3/h-2, munsi bari jame mosjid, bosundhara,vatara, dhaka-1229', NULL, 2, 1, NULL, '$2y$10$TgO0zFlS9DEYIX8jx9HmreEQMra54A3uH1/79ptYyQs5Ou20rkHzO', NULL, '2023-07-28 18:53:45', '2023-07-28 18:53:45'),
-(205, 'Md Jubaer Khan', NULL, NULL, '01603123031', NULL, '29', 'komlapur , bhirab , kishorganj', NULL, 2, 1, NULL, '$2y$10$iNvb2u95KZpoR6COXdl63eBN5350Eaahrt1gSbuygF6Sxf63ZpJMG', NULL, '2023-07-28 19:24:41', '2023-07-28 19:24:41'),
-(206, 'Adnan Bin Ashraf', NULL, NULL, '01819402308', NULL, '14', '187, Green Road, Kalabagan  Opposite of Dhaka Tower  Near Surjer Hashi Clinic', NULL, 2, 1, NULL, '$2y$10$3QltQ6xM9/lTgF2t3T0woei5WxpeH0hfM9WPYKRQe3CS8geagWL0C', NULL, '2023-07-28 19:31:09', '2023-07-28 19:31:09'),
-(207, 'M R Raj', NULL, NULL, '01984668247', NULL, '14', 'United hospital, Gulshan 2', NULL, 2, 1, NULL, '$2y$10$vhvNjjA2AwUvGLxb250TZ.xQysD5wHOOPXQR/m5ZxeSyhWTlcNyzW', NULL, '2023-07-29 11:58:10', '2023-07-29 11:58:10'),
-(208, 'Sohan Tanvir', NULL, NULL, '01744137888', NULL, '14', '1/27,C,East Basaboo,Madina Masjid goli,Kadamtala Bridge,Basaboo,Dhaka', NULL, 2, 1, NULL, '$2y$10$MqD3vywUfT/NY5lwrsfRsuyXLk6Gb7JHbCd3iYJId9hYAOkXKtej.', NULL, '2023-07-29 12:04:46', '2023-07-29 12:04:46'),
-(209, 'Irshad Hawladar', NULL, NULL, '01833342777', NULL, '14', '9 no gopi kishan lane, rangs anamika tower, flat #B-11, (near Amira showroom), wari, dhaka 1203. name: irshad hawladar', NULL, 2, 1, NULL, '$2y$10$ZcodILxOsRMZLZxNk4BTJuuv67K0Z67t3V9DUHzYqjtGk/9L6iPUC', NULL, '2023-07-29 12:06:20', '2023-07-29 12:06:20'),
-(210, 'Md. Sajjad Hossain', NULL, NULL, '01687-151389', NULL, '14', '66/2/2 Wasa road, Maniknagar, Dhaka', NULL, 2, 1, NULL, '$2y$10$xx59pH1eZT5PIxaIKH9Iy.HF710rvtp2l7LuCmNLME40T5c4/YNHm', NULL, '2023-07-29 12:08:36', '2023-07-29 12:08:36'),
-(211, 'Sreedip Saha', NULL, NULL, '01730228205', NULL, '4', 'kat potty road barishal', NULL, 2, 1, NULL, '$2y$10$7igRWSTJVNnWT6N0NnmYle2H8MYp23q5Fd4LKr1c8OUIAfYzbeUkW', NULL, '2023-07-29 13:30:14', '2023-07-29 13:30:14'),
-(212, 'Md Suhel Ahmed', NULL, NULL, '01604047479', NULL, '62', 'gwainghat , shalutikor bazar sylhet', NULL, 2, 1, NULL, '$2y$10$TQ4AgvD3mWeCIdRbio0Hjuv77p./p4zVT/kSzKrLRMHjfges4PeHe', NULL, '2023-07-29 13:32:46', '2023-07-29 13:32:46'),
-(213, 'Maidul Islam', NULL, NULL, '01778708839', NULL, '33', 'laxmipur ,  hospital road', NULL, 2, 1, NULL, '$2y$10$lALDwjagVNeWf3jDtujxteSz967Wbi1gAyP3Y6usAKZ/QlQTXTPkC', NULL, '2023-07-29 13:49:46', '2023-07-29 13:49:46'),
-(214, 'Abu Sayeed', NULL, NULL, '01914424348', NULL, '44', 'owapodha gate, palash, Narshindhi', NULL, 2, 1, NULL, '$2y$10$7HM6ReRYnZFh6iWrxOnwO.skEJ2sOIYVsMNxIt0PqQELK3liBcJGO', NULL, '2023-07-29 13:56:25', '2023-07-29 13:56:25'),
-(215, 'Muhammad Hasan', NULL, NULL, '01326028108', NULL, '56', 'Tatipara puraton moszid er pasthe, rangpur, 5402', NULL, 2, 1, NULL, '$2y$10$Js8tE9oTp9hLiJ7Zb65WouXdbGG9VX0aj79XjGYZ95tgk4ZTiCbOO', NULL, '2023-07-29 14:19:39', '2023-07-29 14:19:39'),
-(216, 'Walk Out', NULL, NULL, '01935382767', NULL, '37', 'Dis:maherpur Thana :gangni, gangni upozila health complex', NULL, 2, 1, NULL, '$2y$10$Bdmx/SbaWtE2K7hzc/cXD.dK.dtLQRvCFpsxlUN/VnxxvC/12tiV2', NULL, '2023-07-29 14:21:35', '2023-07-29 14:21:35'),
-(217, 'Md Saiful Islam', NULL, NULL, '01814870543', NULL, '14', 'Vill+po: Nagar konda Bazar para, ps: savar, dhaka', NULL, 2, 1, NULL, '$2y$10$V5irvJQtS5/S8LuMh1jzpuO4KQC5orui4/1lUnrO63YhjfxomK0OK', NULL, '2023-07-29 14:23:34', '2023-07-29 14:23:34'),
-(218, 'Jitu Oni', NULL, NULL, '01771122211 01931340607', NULL, '14', 'kamrangirchar, al hera comminute center', NULL, 2, 1, NULL, '$2y$10$jR.NlbkBWraP/UbFZ7d2hucm6OOBjBhcdDZocsmUYfM5vdDkEU5xG', NULL, '2023-07-29 14:29:47', '2023-07-29 14:29:47'),
-(219, 'Musrat Hasan Khan', NULL, NULL, '01755532751', NULL, '31', 'British American Tobacco Bangladesh Kushtia Leaf Factory Choursah', NULL, 2, 1, NULL, '$2y$10$pVI3CEPi2nP4T2TZNG0v/OC.W2wUk0ENOgQogS/KzBqli3b1YMbrW', NULL, '2023-07-29 15:04:12', '2023-07-29 15:04:12'),
-(220, 'Jahidur Rahman Jewel', NULL, NULL, '01712-164726', NULL, '24', 'jessor sador,  tv clinic  more ,', NULL, 2, 1, NULL, '$2y$10$lGVTb5S4zct40K3vEV8xJeV6uyIp4VjhnOfU9Q6acnDEQHVXc0Dpa', NULL, '2023-07-29 15:12:05', '2023-07-29 15:12:05'),
-(221, 'Mrh Saikat', NULL, NULL, '01780101284', NULL, '39', 'Thana  : Sreenagar Jila munshigonj Products sreenagar bazar theke nibo', NULL, 2, 1, NULL, '$2y$10$u9ThT2arWFKBrw2vgNAF5.rkzILbEpMJQWSZgxQhhDMptbp8M1Spa', NULL, '2023-07-29 15:16:38', '2023-07-29 15:16:38'),
-(222, 'imarn najir', NULL, NULL, '01304-639109', NULL, '15', 'dinajpur , sikdar hat', NULL, 2, 1, NULL, '$2y$10$dVvi1/MHHmUuZoEKGi1xUe1OZ/Z9qmjJbyzytCeWspdtEAUEpLwkC', NULL, '2023-07-29 15:18:42', '2023-07-29 15:18:42'),
-(223, 'Rubel Islam', NULL, NULL, '01729630624', NULL, '14', '26 no government hokars market tibbat koloni bazar Tejgaon Dhaka 1208', NULL, 2, 1, NULL, '$2y$10$HDF3jJctd/ZemLrWd.I.5e0AYN8i/6KvKAjtBbOxQ1CrYjhyhop0u', NULL, '2023-07-29 15:21:26', '2023-07-29 15:21:26'),
-(224, 'Abdur Rahim', NULL, NULL, '01853-992124', NULL, '10', 'chattagram ,panchlaish , hamjarbag abasik elaka', NULL, 2, 1, NULL, '$2y$10$489wvdURNtI0tNwf0Ni/ge1SydJP4xmdPDfD5LEVH8SFQOVhLVJqy', NULL, '2023-07-29 15:54:07', '2023-07-29 15:54:07'),
-(225, 'Pavel Barek', NULL, NULL, '01722-859077', NULL, '54', 'Rajshai cort collage ,', NULL, 2, 1, NULL, '$2y$10$vWt8c.ZscleJ2GxTutleO.JjFCfXYa9eoCO9T7u4L1uSx9fsRanTq', NULL, '2023-07-29 15:59:51', '2023-07-29 15:59:51'),
-(226, 'Tazul Islam', NULL, NULL, '01682720062', NULL, '43', 'bicic 1 no gate , fatullah narayangonj', NULL, 2, 1, NULL, '$2y$10$xJZ7u07HwAb2S.h05ZKx5uvwz.OEVZqA/AayasERe/jBw3myNam0i', NULL, '2023-07-29 16:18:54', '2023-07-29 16:18:54'),
-(227, 'raihan', NULL, NULL, '01688278832', NULL, '48', 'sonaimuri , noakhali', NULL, 2, 1, NULL, '$2y$10$7f/ZXCF/AW7gfpkenPUw3OFMZzvnWcpxksrOQ2PQYiwfwG3BnztMS', NULL, '2023-07-29 16:24:49', '2023-07-29 16:24:49'),
-(228, 'Rafiqul Islam Belal', NULL, NULL, '01790101353', NULL, '22', 'kalai pouroshova office , jaypurhat', NULL, 2, 1, NULL, '$2y$10$20vwcv0bQLj8E0Jytw9/SOErTOObV7mVh8NPAdbDptq9OeH0v4j9G', NULL, '2023-07-29 16:44:49', '2023-07-29 16:44:49'),
-(229, 'Ashish Ghosh', NULL, NULL, '01700501290', NULL, '57', 'vomra shatkhira , khulna', NULL, 2, 1, NULL, '$2y$10$ICnIfAqlZn0adAlO4ourUeCmcnsezjSAPlY0eMt2h3IVrUyH8qnVW', NULL, '2023-07-29 16:49:56', '2023-07-29 16:49:56'),
-(230, 'Saidur Rhaman Babu', NULL, NULL, '01683708444', NULL, '43', 'gopnogor purbo moshinabond, narayanganj', NULL, 2, 1, NULL, '$2y$10$wuRZe1AMfMs4ghW9lDuJA.sox1s7Jm5lPJj9aNdBuzMQtFX05Wn/m', NULL, '2023-07-29 16:56:16', '2023-07-29 16:56:16'),
-(231, 'Krishno Das', NULL, NULL, '01305661626', NULL, '4', 'barishal... Port road Bazar.. Barishal', NULL, 2, 1, NULL, '$2y$10$PXTHB/1Vp6uSFzlk4pArJ.HbZTWYw6aIP86TPKmFUUphkgR3Ih8Ia', NULL, '2023-07-29 17:00:43', '2023-07-29 17:00:43'),
-(232, 'Shikder Jony', NULL, NULL, '01873179236', NULL, '29', 'akhra bazar shilpogolar samne , kishorganj sodor', NULL, 2, 1, NULL, '$2y$10$QQvK5HtyKHfCl6VpflGT/.dTJ41MqZEAkMMtNtk.kUOO5EdNKL0Oe', NULL, '2023-07-29 17:05:29', '2023-07-29 17:05:29'),
-(233, 'Mizanur Rahman', NULL, NULL, '01711536018', NULL, '14', '78/1 Arjot Para Tejgaon Dhaka 1215', NULL, 2, 1, NULL, '$2y$10$L278I/DAOnKBfqjCZCYO0./symn9E4/XvNpMZtL8qwr1lT1v2dgzG', NULL, '2023-07-29 17:09:36', '2023-07-29 17:09:36'),
-(234, 'MD Shohanur Rahman Shuvo', NULL, NULL, '01722925700', NULL, '56', 'baluya vata kali mondir , bodorganj', NULL, 2, 1, NULL, '$2y$10$QeOzFJY/623LCTGdLJR23eBSvZaTqUoCMriFC.gHvtx1G.D76dDKa', NULL, '2023-07-29 17:13:36', '2023-07-29 17:13:36'),
-(235, 'Hira Hasan', NULL, NULL, '01918853049', NULL, '15', 'dinajpur', NULL, 2, 1, NULL, '$2y$10$/O3goQuQtD5AbzKEkBBBMOIoe1H6vRkOWcWso95NG/oHQ9wn55NyK', NULL, '2023-07-29 17:19:40', '2023-07-29 17:19:40'),
-(236, 'md. munna', NULL, NULL, '01754753753', NULL, '14', 'office', NULL, 2, 1, NULL, '$2y$10$y7hLdMRmN/nqGEOVXJeOU.tG7L13830DYkOK7uuYvZv1YLoHF1rqu', NULL, '2023-07-29 17:35:04', '2023-07-29 17:35:04'),
-(237, 'SH Topu', NULL, NULL, '01912078644', NULL, '14', '15/ kha, bosu bazar, Doyagonj, Dhaka 1100', NULL, 2, 1, NULL, '$2y$10$BO/PrtppMiW4w8bB/iYSC.Y7zFerjhwbd.SsTinuWKmmRfbeObIMi', NULL, '2023-07-29 18:16:25', '2023-07-29 18:16:25'),
-(238, 'Rayhan Morshed', NULL, NULL, '01710005953', NULL, '29', 'Bajitpur brance kishorganj', NULL, 2, 1, NULL, '$2y$10$M8mRZoAO92BmiMZnlvkar./WxtLsRDxtIPx73WnuYc45GRDjQfAtC', NULL, '2023-07-29 18:20:43', '2023-07-29 18:20:43'),
-(239, 'Hipu Johan', NULL, NULL, '01714115059', NULL, '10', '91, Al- Islam Chamber, Agrabad, Chittagong', NULL, 2, 1, NULL, '$2y$10$U9zUnbvh8OsavI8ZhtnX6umJX.KOKQ0e7sy0ARKzRk/t9.PUBje5u', NULL, '2023-07-29 19:33:40', '2023-07-29 19:33:40'),
-(240, 'Sadhan Das', NULL, NULL, '01575169793', NULL, '2', 'bhandarban sador , stadium aleka', NULL, 2, 1, NULL, '$2y$10$XiZ5EAR2QTmGhMjSI7o9w.y2VQtPkPWqbM36OvO6Cdg7DCMAsLqCi', NULL, '2023-07-29 19:38:12', '2023-07-29 19:38:12'),
-(241, 'Ibrahim Hossain', 'swaponhossain302@gmail.com', NULL, '01720242224', NULL, '34', 'Bagerpar', NULL, 2, 1, NULL, '$2y$10$mH3lRfi75z1DWbVFtRDfuu/PcBUsJab8M8FqjPC9tZF7e4sqKiRh6', NULL, '2023-07-29 20:37:15', '2023-07-29 20:37:15'),
-(242, 'Rasel Ahmed', NULL, NULL, '01753-052000', NULL, '14', '128/1', NULL, 2, 1, NULL, '$2y$10$HkLiSm1LQRzfEe8Dl827lur.NftEdHG78KFOEgfUh9plCRlsrnOrC', NULL, '2023-07-29 21:24:07', '2023-07-29 21:24:07'),
-(243, 'abu bakor', NULL, NULL, '01728889609', NULL, '14', 'Jurain medical road dhaka1204', NULL, 2, 1, NULL, '$2y$10$h.K5642sal6xlr24AUtG7eM/.YdnBW/t2tlpdUIveQlYblVG6FOy2', NULL, '2023-07-30 11:40:11', '2023-07-30 11:40:11'),
-(244, 'Faysal fuhad', NULL, NULL, '01972392136', NULL, '14', 'Chandrashila suvastu tower  69/1,Panthapath, Dhaka 1205', NULL, 2, 1, NULL, '$2y$10$llfFb00Cj1rpDrrM9wdUY.CMiFVNGFTcgRmuWAVErSFSqqjQ3OF9q', NULL, '2023-07-30 11:57:38', '2023-07-30 11:57:38'),
-(245, 'Azizur Rahman', NULL, NULL, '01683248666', NULL, '14', 'malibag CID office elaka', NULL, 2, 1, NULL, '$2y$10$ZHuJoEbdu4K5C8qYyHTRoOCNvnOa/dW.ifwgK/9.L3Ej.pMMKuLUm', NULL, '2023-07-30 11:59:50', '2023-07-30 11:59:50'),
-(246, 'Ķháĺífâ Ebñý Ŕáđíf', NULL, NULL, '01568019599', NULL, '14', 'Dhaka khilgaon sipahibag nobinbag', NULL, 2, 1, NULL, '$2y$10$ZWj85Al1gh7RYGVmXr.wMOrEoFCSm3Y2qj5Kfm5NugSYEq8iuNdLC', NULL, '2023-07-30 12:05:29', '2023-07-30 12:05:29'),
-(247, 'Mohoshin Ghani Shovon', NULL, NULL, '01720-219127', NULL, '14', 'Dhanmondi new 9a  . Shonkor plaza goli. House numb 126', NULL, 2, 1, NULL, '$2y$10$3S/u4QK1MD9z2yN20SUXLeHcdVHQk2GNlG6q8P/FlIlHE9VaxN1N.', NULL, '2023-07-30 12:07:14', '2023-07-30 12:07:14'),
-(248, 'Ruhul Amin', NULL, NULL, '01711194475', NULL, '14', 'moddoh badda link road gulshan -1', NULL, 2, 1, NULL, '$2y$10$BoDC01agtenuPdSxaSfwsu9M.T0RInKlMfNkESKpzTndGyeKPiHwy', NULL, '2023-07-30 12:09:03', '2023-07-30 12:09:03'),
-(249, 'Mamun Sikder', NULL, NULL, '01755171054', NULL, '14', 'toh -132 badda link road', NULL, 2, 1, NULL, '$2y$10$2LboSbnDXQgbmVU.8z0gQ.Zm4Cr8r.fzEaAwsha7FkoTTwJOipX0a', NULL, '2023-07-30 12:32:51', '2023-07-30 12:32:51'),
-(250, 'Jantle Park J Rasel Ahmedantle', NULL, NULL, '01980151567', NULL, '14', 'islampur,road,babubazar', NULL, 2, 1, NULL, '$2y$10$u4h4zzFIB1M/.URZ26AnX.dIRjnjkx/JwLd2XeEAlUEVHveVDhNFa', NULL, '2023-07-30 13:00:42', '2023-07-30 13:00:42');
+INSERT INTO `users` (`id`, `name`, `email`, `username`, `phone`, `image`, `city`, `address`, `dob`, `type`, `is_active`, `is_fraud`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Sadek Nurul', 'sadeknurul5@gmail.com', 'sadeknurul', '01763100517', NULL, NULL, 'Dhaka, Bangladesh', NULL, 1, 1, 0, NULL, '$2y$10$4kMAxGsg9gYjTFxSkaWKTuB390n4sIfCIDkxEWhkRBA1FCHpeI466', 'FO4MSdVvQftvlN4UC4nGgcDT02AZ6RMzkCzospqz4iQB9yViGr9xjHMUY3IC', '2022-06-16 07:58:41', '2022-06-16 07:58:41'),
+(3, 'Rajesh Ghosh', 'rajashghosh73@gmail.com', NULL, '01779601942', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$LJhecgQVFAZhn2yGaMYYRuqHfI.l84RuXSmTdf.7VOE6SdjtxXeVm', NULL, '2022-08-20 11:38:02', '2023-07-31 10:37:08'),
+(4, 'Md tahasanul Khair Shahad', 'shahad452415@gmail.com', NULL, '+8801778649056', NULL, NULL, '৬২/গ মায়ের আচল,শান্তিনগর বাজার রোড,ঢাকা।', NULL, 2, 1, 0, NULL, '$2y$10$9xjudES695EMDvNwohk4oeKSysISX8KmQ88tnl1dAehKRl5PWmAau', NULL, '2022-08-20 16:51:32', '2022-08-20 16:54:34'),
+(6, 'Jibon', 'jibon6949raj@gmail.com', NULL, '01739697244', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$ygFeRXzTGa5vIh8w.dM2R.BHpNUEV/4Floj6HPFT0d2mUkdXkmyO2', NULL, '2022-08-25 10:31:40', '2022-08-25 10:31:40'),
+(62, 'NOOR SADID', 'noorsadid@gmail.com', 'noor', '01722208968', NULL, NULL, NULL, NULL, 1, 1, 0, NULL, '$2y$10$okx6VLcfUBqYP55gsPGi6ezN6Op0YIsSy57rHSt93R65xWhFiYUmi', 'C5cSjBBZ4KjeqXBIBN5HcGrpV5buBXmFewgOt3ZGpBreXTtdPoIQeYq2azbv', '2023-02-26 13:07:17', '2023-02-26 13:07:17'),
+(69, 'mamun', 'mamunrohan135@gmail.com', 'mamunrohan135@gmail.com', '01580652493', NULL, NULL, NULL, NULL, 1, 1, 0, NULL, '$2y$10$t/SQ9RFzC93fK5sUTD.kneS.n2hJ7vRMKFLuyNPN5M3OZmwL6sRVO', 'DXq41TpjyI7eyVvJkAdrxi27X4wCCmCC5GVtkMvoEAPaS5DPq0Z2bPmMU6Yh', '2023-03-12 18:38:41', '2023-04-06 20:42:43'),
+(71, 'Shabuj ahmad', 'shabujahmad4@gmail.com', NULL, '01893749514', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$p8UmXeyyjJkoAU6rfmEODORHDyFgfVqfpo.jX68i6AavPpS5vM2Wa', NULL, '2023-03-15 02:18:24', '2023-03-15 02:18:24'),
+(76, 'MD. ASADUJJAMAN SHAD', 'ahmednihan88@gmail.com', NULL, '01772285742', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$GpLSu4ngHrQi7fZgW0ou6.PkvNQ4CbF0zY7wP3a/FpHD3B2Lo2.lS', NULL, '2023-04-13 20:06:27', '2023-04-13 20:06:27'),
+(81, 'MAHBUB', 'mahbub2580@yahoo.com', NULL, '01738539076', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$CnkJpbhoy8Z6z051UQp8ye0ZCADBNwOx7ZDriN25EWIGV1BiiH0UW', NULL, '2023-05-10 22:05:53', '2023-05-10 22:05:53'),
+(84, 'Sk affan', 'skaffan7525@gmail.com', NULL, '01949454872', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$XtiOQwnWb7UII16NaB2m3uNh5CJBqrgKBKreCslGBzklwBiI0urme', NULL, '2023-05-17 15:48:11', '2023-05-17 15:48:11'),
+(95, 'Mehedi Hasan', 'fisequaltoma@gmail.com', NULL, '01798041189', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$12J.QSoR/qicLEaVjwkifeIIYq34jChMJJFASkqLtnoPdlEqlkRIi', NULL, '2023-07-22 16:12:47', '2023-07-22 16:12:47'),
+(97, 'Md Bablu', NULL, NULL, '01824693216', NULL, '10', NULL, NULL, 2, 1, 0, NULL, '$2y$10$KmTqtIKW.vdBG1pFpB8wNuUs1LmyK4lliXLIDuUcPxdFLiTv1jh9C', NULL, '2023-07-24 12:41:28', '2023-07-24 12:41:28'),
+(98, 'Arika Islam', 'raseasd748@mahmul.com', 'arika123', '+880 1779-510154', NULL, NULL, NULL, NULL, 1, 1, 0, NULL, '$2y$10$chbibwE6X2DI7ZSDfi.6rumrWMGymJGOm6SahR3ubxwbUSgoD.xgC', 'hHIowZPnbv5lO48Riv1P2gCchBMhb0W6iG4iAU6TbrkBJlWKFLDc5XP9moba', '2023-07-24 14:47:08', '2023-07-24 14:47:08'),
+(99, 'Nafis Abdullah', 'nafis@imbdagency.com', 'nafis123', '01603155570', NULL, NULL, NULL, NULL, 1, 1, 0, NULL, '$2y$10$Ik5aifJ7fWwx9xKZYz7buOUEmvEj89SH/lopJp0RIGEiM3NpGQO2a', NULL, '2023-07-24 14:59:02', '2023-07-24 14:59:18'),
+(100, 'Rasel Rasel', NULL, NULL, '01846943236', NULL, '13', NULL, NULL, 2, 1, 0, NULL, '$2y$10$gsqqwuY9tH7htGtfh8R8OO1Amc7QR43mUD1lKJN3z3US5GaptdZRu', NULL, '2023-07-24 16:24:09', '2023-07-24 16:24:09'),
+(101, 'Asim Das', NULL, NULL, '01712-448672', NULL, '4', 'barisal bimbondor babugang rahamatpur', NULL, 2, 1, 0, NULL, '$2y$10$h5d96ajE/x6HVK5gGRI5Busd9MVwG.pRr1YvHsQkPl2ZDIZ7IMzpm', NULL, '2023-07-24 16:38:05', '2023-07-24 16:38:05'),
+(102, 'MD. LALIN HOSSAIN', 'lalinhossain36@gmail.com', NULL, '01738616868', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$H/OwgR40IhLDAFWbuOwekOaDTCCJM3Gy9BBw380ii/cTJCHwCOBVK', 'TgP30oKuOcBByViSSCLdIPXlzDYrRy0tq0LymZUGIpcFlN7ZAy52wlGrpgph', '2023-07-24 20:56:07', '2023-07-24 20:56:07'),
+(103, 'TOHIDUL ISLAM', 'infotohidulislam@gmail.com', 'tohidul islam', '0172286614', NULL, NULL, NULL, NULL, 1, 1, 0, NULL, '$2y$10$qN70EPOYSPMrqymxP50VQ.Ohv/ock3RCF9RXn.qfWt6hONk7l0IPi', NULL, '2023-07-25 11:53:33', '2023-07-25 11:53:33'),
+(104, 'Tasnima Sejuti', 'tsejuti6@gmail.com', 'tsejuti6@gmail.com', '01783163514', NULL, NULL, NULL, NULL, 1, 1, 0, NULL, '$2y$10$ZeVdV5j12.dmvYOIUjX5audFYzzDnyjQk8de.LbdkpZgi/V72Df7S', NULL, '2023-07-25 12:04:20', '2023-07-25 12:04:20'),
+(105, 'Al AmAl Aminin', NULL, NULL, '01639475361', NULL, '14', 'shyamoli, north adabor 4tola masjid er samne', NULL, 2, 1, 0, NULL, '$2y$10$JchWV6g6oivJ7mP4AvevoedTbThAHLFg0s222aWQWqGuEzDIi9kda', NULL, '2023-07-25 13:50:43', '2023-07-25 13:50:43'),
+(106, 'Swopnil Ahmed', NULL, NULL, '01316926616', NULL, '40', 'Mymensingh sadar thanaghat tample er sathe', NULL, 2, 1, 0, NULL, '$2y$10$/AWRwHa7uplCNuAl0GnDEeJHHOYzkPN/g5ddq2S5eTLhmf1cKFl7K', NULL, '2023-07-25 14:30:56', '2023-07-25 14:30:56'),
+(107, 'Farhad Ahmed', 'farhad0ahmed@gmail.Com', NULL, '01776-484472', NULL, '24', '204 Jail Road Jashore', NULL, 2, 1, 0, NULL, '$2y$10$JchWV6g6oivJ7mP4AvevoedTbThAHLFg0s222aWQWqGuEzDIi9kda', NULL, NULL, NULL),
+(108, 'Akash', 'harryakash47@gmail.com', NULL, '01601753853', NULL, '24', '30mil, satkhira', NULL, 2, 1, 0, NULL, '$2y$10$JchWV6g6oivJ7mP4AvevoedTbThAHLFg0s222aWQWqGuEzDIi9kda', NULL, NULL, NULL),
+(114, 'Jubayer Ahmed Juber', NULL, NULL, '01724381181', NULL, '61', 'chatok pouroshova ward 09. basa 01', NULL, 2, 1, 0, NULL, '$2y$10$pcsHGUzZOhPcyrl6bV7MyeRshQhvUXHZHQbWpBe2yJlj5a74xrGvu', NULL, '2023-07-25 16:05:45', '2023-07-25 16:05:45'),
+(117, 'Imam Hossain', NULL, NULL, '01716160702', NULL, '10', 'Lokman market,, madam bibir hat,,, vatiary,,, sitakunda,,, chittagong', NULL, 2, 1, 0, NULL, '$2y$10$jppzoWszUBSLkGeEELah7eW4oMRScPWWk6g8oaU1YhNVF7wC2AUAK', NULL, '2023-07-25 17:11:20', '2023-07-25 17:11:20'),
+(118, 'md rony', NULL, NULL, '01747678677', NULL, '14', 'uttara 10,  4number road  siraj market', NULL, 2, 1, 0, NULL, '$2y$10$Do6ClwNwhM/fpEE/Igi/o.cOrlhA6ZQKIxed11xZQzHot9.jm3tgS', NULL, '2023-07-25 17:27:25', '2023-07-25 17:27:25'),
+(119, 'GM Ramjan', NULL, NULL, '01756443287', NULL, '58', 'laukhola jajira sharitpur', NULL, 2, 1, 0, NULL, '$2y$10$vCM2MgEH4aBm.A8sgmLrke9SGhQMdd8eIpByuMlQzM./.PJoksNgW', NULL, '2023-07-25 17:29:41', '2023-07-25 17:29:41'),
+(120, 'md salman', NULL, NULL, '01700910585', NULL, '19', '7tala ,garments , maleker bari  gazipur', NULL, 2, 1, 0, NULL, '$2y$10$4Z42tAgtRxSm1eBjAP0jDe28iFnmZmiNdnSmLaxsmkOpHBqecloM.', NULL, '2023-07-25 17:34:23', '2023-07-25 17:34:23'),
+(121, 'Romjan Ali', NULL, NULL, '01724028498', NULL, '35', 'Magura sadar Thana,magura', NULL, 2, 1, 0, NULL, '$2y$10$OBvm0RC/4uHHx96Ub9akguN0OPpJqJVOoMl9tTZvVEqnN5tfGUoJW', NULL, '2023-07-25 17:55:16', '2023-07-25 17:55:16'),
+(122, 'sheikh mahin mahbub', NULL, NULL, '01300490816', NULL, '14', 'Arambag motijheel', NULL, 2, 1, 0, NULL, '$2y$10$KayxQlJ0ZPIMLNOmRTBJs.QUHqqV14JwtnBNdj6.i09jzEauVzvYe', NULL, '2023-07-25 18:27:55', '2023-07-25 18:27:55'),
+(123, 'Md Mizan', NULL, NULL, '01722693439', NULL, '61', 'Sunamganj sadar nilpur bazar.', NULL, 2, 1, 0, NULL, '$2y$10$1tKapUsrZZGE/3k/rzF9ruoanASpOx/kDdvQ005paVKHcR6AsCgcS', NULL, '2023-07-25 19:35:25', '2023-07-25 19:35:25'),
+(126, 'Jafor Ridoy', NULL, NULL, '01915391131', NULL, '14', 'Surjosen Hall ; Dhaka University', NULL, 2, 1, 0, NULL, '$2y$10$XXLQsyqe4Ev1FaUOEl27n.qNKis9tQlhm.IEwJwLsujoOl5X7IfuW', NULL, '2023-07-26 12:33:03', '2023-07-26 12:33:03'),
+(127, 'Md Moshiur', NULL, NULL, '01917006090', NULL, '14', 'Muhammod pur, Haosing socity # rod #7', NULL, 2, 1, 0, NULL, '$2y$10$CKeP2EHh5HX4dQWen/YTMeJZ0OfEGK48wOCGJBYr5RY7o1DKLbvkq', NULL, '2023-07-26 12:38:55', '2023-07-26 12:38:55'),
+(128, 'Md Hossain Shahid Sarwar', NULL, NULL, '01521735153', NULL, '14', 'NTMC bir uttam genarel ajijur t=rahman sark bijoy shorony tejgaon , prime minister er tran karjoloy', NULL, 2, 1, 0, NULL, '$2y$10$XrZBZS/KpX2GifXmGl.lc.kyArKkCf.LbbYLWQqggTZC8dT4rJmc2', NULL, '2023-07-26 12:43:30', '2023-07-26 12:43:30'),
+(129, 'Jõ Hîr', NULL, NULL, '01324925662 01966560578', NULL, '19', 'lichu bagan gorgoria mastar bari sreepur gazipur', NULL, 2, 1, 0, NULL, '$2y$10$1/gbR/04OweAvFANb5QWfe7S3huIpFeEtjOTRQ.EWSycZ1Cn8Byli', NULL, '2023-07-26 13:29:00', '2023-07-26 13:29:00'),
+(130, 'Aryan Khan Shojib', NULL, NULL, '01714475518', NULL, '40', 'Court bobhon, gafargaon, mymensingh', NULL, 2, 1, 0, NULL, '$2y$10$RUGVsCkbPw2tYLOmFAnbseYdYycHH6SDETOk3UD2q2R4aBFf/VUWu', NULL, '2023-07-26 13:44:17', '2023-07-26 13:44:17'),
+(131, 'Md Anamul', NULL, NULL, '01972745827', NULL, '19', 'gazipur chwrasta joydebpur road 3', NULL, 2, 1, 0, NULL, '$2y$10$x/dweMqTLR/4RM/gHj3T4emq7fhDiitir7y9GPzuELCDqN6mhxDNe', NULL, '2023-07-26 13:48:21', '2023-07-26 13:48:21'),
+(133, 'Sajjad Hossain', NULL, NULL, '01718334748', NULL, '19', 'gazipur konabri', NULL, 2, 1, 0, NULL, '$2y$10$ED6jGebqglaSMaQDIWbH4OYWaZ7BLytzd9Bq6VlXXyaw9VmVz04dC', NULL, '2023-07-26 13:52:37', '2023-07-26 13:52:37'),
+(134, 'Pradyut Mazumder', NULL, NULL, '01866699930', NULL, '10', 'laxmi mohajan bari , mojumdar stor sgoorika , pahartoli ctg', NULL, 2, 1, 0, NULL, '$2y$10$q.AZPJZxAmNMOzjERfpbh.n9N7XNkra/zzBp7NFYJOz.BkjP1MyGm', NULL, '2023-07-26 14:18:01', '2023-07-26 14:18:01'),
+(135, 'Ayush Sarkar Sammo', NULL, NULL, '01774598070', NULL, '64', 'Thakurgaon, college para', NULL, 2, 1, 0, NULL, '$2y$10$i51Or/vXhEkx1z7Z5qFvwOw9zaLpMhSLZGmeW7Wx9uNbv11nLmPEK', NULL, '2023-07-26 14:23:24', '2023-07-26 14:23:24'),
+(136, 'Mohammad Jahed', NULL, NULL, '1814702879', NULL, '10', 'chattogram chandgaon thana kalur ghat kapti rastar matha', NULL, 2, 1, 0, NULL, '$2y$10$XT2g63/wSE/yvTMRhDT2juhPVWFsXCnd.nOGvOOJHsiOhfHI88oo6', NULL, '2023-07-26 14:31:21', '2023-07-26 14:31:21'),
+(137, 'Rowshon Habib Rony', 'rhrony0009@gmail.com', NULL, '01839096877', NULL, '1', 'CB- 56/4, Puran Kachukhet R/A, Dhaka Cantonment', NULL, 2, 1, 0, NULL, '$2y$10$vfsf0nHt2Bfy9NZPrvC8Zece3EAArc8ZppvXWzfwuGtlzN7ANVsUW', NULL, '2023-07-26 14:48:02', '2023-07-26 14:48:02'),
+(138, 'poragh', NULL, NULL, '01724465641', NULL, '40', '35/09 purbo gohailkandhi jamtola masjid pora bari myamnshing', NULL, 2, 1, 0, NULL, '$2y$10$kJ1L1kbntRq0Sbzu7IGogO2oE05ykACTj5ghCNLeeZJJvGFAJuCeO', NULL, '2023-07-26 16:16:21', '2023-07-26 16:16:21'),
+(139, 'Esa Ahmed', NULL, NULL, '01713958911', NULL, '3', 'Barguna sador', NULL, 2, 1, 0, NULL, '$2y$10$ADNy5RSiaObjDKLk89/WE.IvLxxxJsrjn.pZQSyIXP7UX/wWNoSGq', NULL, '2023-07-26 16:24:44', '2023-07-26 16:24:44'),
+(140, 'sohel rahman', NULL, NULL, '01711586440', NULL, '14', 'gabtoli dahka', NULL, 2, 1, 0, NULL, '$2y$10$Rl.eSLJhzFO0EoG2pk4krux0f.vrAKROwCoIGsX3SMW6N2x4kwFVy', NULL, '2023-07-26 18:04:07', '2023-07-26 18:04:07'),
+(141, 'Tarek Babu', NULL, NULL, '01721522189', NULL, '14', 'Bibir Bagicha 2no. gate Nasrin Vila', NULL, 2, 1, 0, NULL, '$2y$10$CtDRGaZYrGD9UPAZ../UwO4T7VC7SWtAkJ.BgDewV7xBTL7wJRXJ.', NULL, '2023-07-26 18:36:29', '2023-07-26 18:36:29'),
+(142, 'Asad Khan', 'asadrailway69@gmail.com', NULL, '01710505060', NULL, NULL, NULL, NULL, 2, 1, 0, NULL, '$2y$10$ap3faBDp7YRwkGnfJqSKUOJvCwYA3GjJm06fQ7.Kh.BukHUUJN9Oy', NULL, '2023-07-26 18:37:52', '2023-07-26 18:37:52'),
+(149, 'Asif Uz Zaman', 'asifbd.2009@gmail.com', NULL, '01761801223', NULL, '14', 'Asif uz zaman, (9th Floor), Acc. Dept., Biwta Bhavan, 141-143, Motijheel, Dhaka-1000', NULL, 2, 1, 0, NULL, '$2y$10$YJnKlq8x8j8D//aOhl0r2OhQVxaGtJHPVY5ab0JvZVEWwxoY7IggS', NULL, '2023-07-26 21:47:47', '2023-07-26 21:47:47'),
+(150, 'Shawon', 'kshawon306@gmail.com', NULL, '01736305960', NULL, '7', 'Police laion', NULL, 2, 1, 0, NULL, '$2y$10$CGfx1uYbWvEZrSXh6HcOfeFpZCOwLU77HUjWDDnPoZCZwEH6DEJlq', NULL, '2023-07-26 23:21:01', '2023-07-26 23:21:01'),
+(151, 'Amir Bin Farsi Hasan', NULL, NULL, '01629255220', NULL, '14', 'dhanmondi 7/A baitusalam jame mosjid er sathe', NULL, 2, 1, 0, NULL, '$2y$10$s20yx/f7czxQCOAAYYSACeWOTFVt0qJ/6BIn2KwJ4VrQma3LWqimS', NULL, '2023-07-27 12:10:41', '2023-07-27 12:10:41'),
+(152, 'Mohammed Saiful', NULL, NULL, '01779199985', NULL, '14', '70/1 Hazi osman Gani road Dhaka Bangshal police station', NULL, 2, 1, 0, NULL, '$2y$10$Hr8FueT2gr7R6SokuXRFDO4zhUeDEv3s/cFb8EB/ON7aoxN5XbJTW', NULL, '2023-07-27 12:17:50', '2023-07-27 12:17:50'),
+(153, 'mr tanvir', NULL, NULL, '01711906567', NULL, '14', 'office', NULL, 2, 1, 0, NULL, '$2y$10$zCkd1NfBZ5oglAwOrH3.RePwm20yZeFPADJgoiroqAuILraRKwQz.', NULL, '2023-07-27 12:19:30', '2023-07-27 12:19:30'),
+(154, 'Himu Rahman', NULL, NULL, '01707077916', NULL, '14', '154.R.Rahman market 2nd floor Nawabpur road Dhaka gulistan', NULL, 2, 1, 0, NULL, '$2y$10$MLFKq6OeanhHelnvyAc8nO1di098f6m7W7PQrL5F3e.3PERyJUHPi', NULL, '2023-07-27 12:26:31', '2023-07-27 12:26:31'),
+(155, 'MD SAMSUR RAHMAN', NULL, NULL, '01913660160', NULL, '14', 'Hotel As Shams International Fakirapool Box culvart Road Motijheel Dhaka', NULL, 2, 1, 0, NULL, '$2y$10$qW/.f.3XKcaVq8Blfr/J8OZzZH0hJ2CbhFSd6Y9p.gxFTJrXLFm/.', NULL, '2023-07-27 12:27:58', '2023-07-27 12:27:58'),
+(156, 'AB Parvez', NULL, NULL, '01715102799', NULL, '14', 'Imperial Capital Ltd. Saiham Sky View Tower (3rd Floor), 45 Bijoynagar (Opposite side of Hotel 71), Dhaka-1000', NULL, 2, 1, 0, NULL, '$2y$10$fktizR34xv8UVsHxqlmt2eQOcjfEiC7zy3bD91XO1yDHU6OTcODyG', NULL, '2023-07-27 12:30:21', '2023-07-27 12:30:21'),
+(157, 'Kýãw Hìñ', NULL, NULL, '01878383324', NULL, '55', 'Rangamati sadar', NULL, 2, 1, 0, NULL, '$2y$10$AMqLICbSnixUbMnAZO2l6u2JThu90X/GC10EQhsr6YjZZSzQjiiQG', NULL, '2023-07-27 12:37:39', '2023-07-27 12:37:39'),
+(158, 'mr. shaid', NULL, NULL, '01964401933', NULL, '14', 'H-49, R-27, B-A, banani', NULL, 2, 1, 0, NULL, '$2y$10$n/OFvp6vhnqC9M2y1PSFRej7iG8UGWu65LooeqU1MSLjDBUWIMGEq', NULL, '2023-07-27 12:48:07', '2023-07-27 12:48:07'),
+(159, 'Rabiul Hasan Biplob', NULL, NULL, '01717142347', NULL, '41', 'bnghabaria collage para ,  naogaon sador', NULL, 2, 1, 0, NULL, '$2y$10$sx9j3uzO50YoephE8LVpj.xwuSR93VTBR9HSYg9N0kaXS.9/WUUXi', NULL, '2023-07-27 12:55:22', '2023-07-27 12:55:22'),
+(160, 'GM Abdul Wahab', NULL, NULL, '01712624481', NULL, '57', 'shaymnagor ,sthkhira , dhumghat nasir ali bridge songlongo bazar', NULL, 2, 1, 0, NULL, '$2y$10$Hj7cxib7ySeRNCBj.JKWFON/fJGw5rVPAPG.zXSQDTbnSOY5WdyEe', NULL, '2023-07-27 13:00:05', '2023-07-27 13:00:05'),
+(161, 'Sohag Ctg', NULL, NULL, '01788691564', NULL, '10', 'joraganj ,mirsharai CTG.', NULL, 2, 1, 0, NULL, '$2y$10$NUiK.VU0Eq6q2408hTWs.eZxKUYx0Gbc2j/6x/s0lbh5X.m9ME72G', NULL, '2023-07-27 13:01:52', '2023-07-27 13:01:52'),
+(162, 'Iqbal Hossain Shagor', NULL, NULL, '01783200433', NULL, '13', 'Comilla chouddogram batisha', NULL, 2, 1, 0, NULL, '$2y$10$KmJ9AZ3zxSBtd/fcK5k8xO3ULnIk7q851o6.IFTVWb.Ab0clHD55W', NULL, '2023-07-27 13:09:11', '2023-07-27 13:09:11'),
+(163, 'Sukanta Das', NULL, NULL, '01641555905', NULL, '10', 'chnadanaish CTG.', NULL, 2, 1, 0, NULL, '$2y$10$BsJuj.bokvp53HSKLt1Mw.c00W/9mfHL1zXN6HuDUIXoux9CqfSIu', NULL, '2023-07-27 13:41:15', '2023-07-27 13:41:15'),
+(164, 'MD Sahin Mridha', NULL, NULL, '01316116342', NULL, '36', 'manikganj , horirampur , dhulshura', NULL, 2, 1, 0, NULL, '$2y$10$OTy0u9FKtfA5w3gYETnE/uupYIoha2gbKJUtU0ZSKS8.MY69QKbx.', NULL, '2023-07-27 13:46:54', '2023-07-27 13:46:54'),
+(165, 'Asad Chandan', NULL, NULL, '01715 105 405', NULL, '10', 'fenail square [abasik] 14 tola, flat -A14 ,gate no-02 sholo-shor CTG', NULL, 2, 1, 0, NULL, '$2y$10$w1GsUkl.YAN2T38olyAaRui722DsDiWn18rQ8fpX1sINAHZLInhdS', NULL, '2023-07-27 14:06:06', '2023-07-27 14:06:06'),
+(166, 'gopinath mondal', NULL, NULL, '01787070651', NULL, '14', 'Paschim Brahmonkitta Jame Masjid kalindi Keraniganj', NULL, 2, 1, 0, NULL, '$2y$10$eBlNiY3AoODP1Q.W1LHWg.2K3QB9TyBQM8xDuTSkQFrOdb4tEKnd.', NULL, '2023-07-27 14:09:39', '2023-07-27 14:09:39'),
+(167, 'Chapal Ponting', NULL, NULL, '01710288702', NULL, '63', 'Halim Adhunik hospital  Mirzapur, tangail..', NULL, 2, 1, 0, NULL, '$2y$10$1nxgkMUKfh3IaVsvOVBO8.Hxq9FQ/Q/BoGKH9mdV1VhLOUlhyn7hu', NULL, '2023-07-27 14:11:35', '2023-07-27 14:11:35'),
+(168, 'Ahmed Rumel', NULL, NULL, '01711189479', NULL, '62', 'Kadamtoli  Sylhet', NULL, 2, 1, 0, NULL, '$2y$10$w0nJ1wbaGwHHmT3CqRJGIuJWruhLi4ZTnbHo3w1cP1MDcVMIaOhfW', NULL, '2023-07-27 16:00:24', '2023-07-27 16:00:24'),
+(169, 'Salahuddin Khan', NULL, NULL, '1777322008', NULL, '14', 'mirpur 1, budhijibi shaid minar main gate doyal restera', NULL, 2, 1, 0, NULL, '$2y$10$Tc.YDAeZAbud8cnuQu2/dufZFDNJs12mWMSKi8O4HpkDB06aYOMvi', NULL, '2023-07-27 16:31:35', '2023-07-27 16:31:35'),
+(170, 'Mohimmoy Bhowmick', NULL, NULL, '01869322386', NULL, '14', 'Basudndhara C block road no 2 house no 61 dhaka', NULL, 2, 1, 0, NULL, '$2y$10$HFZ28LnEkUwPCoXM/cyRn.HImW0fToOB1vMzUOQ2kWkL65Pzyjbr2', NULL, '2023-07-27 16:33:07', '2023-07-27 16:33:07'),
+(171, 'sanjib rema', NULL, NULL, '01728638143', NULL, '14', 'Moreau House, House no.28, Rd. no. 3, Block-B, Banasree, Rampura, Dhaka-1219.', NULL, 2, 1, 0, NULL, '$2y$10$IYHzZQ8gpInYp9Vw7G752.iIPUA5LiSAUeSAwVQ21/XmQZJ7v3.q.', NULL, '2023-07-27 17:46:44', '2023-07-27 17:46:44'),
+(172, 'Redwan Hamidi', NULL, NULL, '01876447510', NULL, '17', 'Address: Southeast Bank Limited,,, Sonagazi Branch.  Thana:- Sonagazi. District: Feni.', NULL, 2, 1, 0, NULL, '$2y$10$JyIBfxS.suvMmqieCGSmZe0iet6My7TLh/zsSemKQ1oiVvoNgXmh.', NULL, '2023-07-27 17:56:14', '2023-07-27 17:56:14'),
+(173, 'Imran Khan', NULL, NULL, '01836015980', NULL, '43', 'Sonarga,narayngonj, noyapur , Sadipor ,union', NULL, 2, 1, 0, NULL, '$2y$10$kSREZDytnRymFRKRxCw1Qu9.yLODdskhAXtR3cj3pxxA/Iw.OadeK', NULL, '2023-07-27 18:03:18', '2023-07-27 18:03:18'),
+(174, 'Shibbir Ahmed', NULL, NULL, '01672199242', NULL, '62', 'Shylet zakigonj Zakigonj bajar', NULL, 2, 1, 0, NULL, '$2y$10$qeSozP.4ud0JVSGR5iZyYuKxuhYKRUW5Dcv8oh6aEKkJd90Eokr.2', NULL, '2023-07-27 18:22:14', '2023-07-27 18:22:14'),
+(175, 'Liton Das', NULL, NULL, '01716469330', NULL, '65', 'Old hospital road Moulvibazar', NULL, 2, 1, 0, NULL, '$2y$10$UtfczANsyufDgXpUiXjYhOZxpv.QF737cgIkluyoJM/jkQ5fYmvPC', NULL, '2023-07-27 18:43:18', '2023-07-27 18:43:18'),
+(176, 'Md Habibur Rahman', NULL, NULL, '01716077323', NULL, '54', 'supra , chandrima , rajshai', NULL, 2, 1, 0, NULL, '$2y$10$bxcVXd4KNqTg2J0NiTtRIuiSsMtKYAnVuEXp8DCDoZevDxbI2KVtq', NULL, '2023-07-27 18:48:24', '2023-07-27 18:48:24'),
+(177, 'Shimul D', NULL, NULL, '01758419991', NULL, '62', 'Kajalshah,Sylhet Sador', NULL, 2, 1, 0, NULL, '$2y$10$ZbBBCpsfOTyAyWe4cG0MiOM13Dg.qekz.3d0Y50LbnCBIVpizbrzi', NULL, '2023-07-27 18:51:35', '2023-07-27 18:51:35'),
+(178, 'Johny Sheikh', NULL, NULL, '01712854548', NULL, '30', 'kurigram sador , jolil biri mor.', NULL, 2, 1, 0, NULL, '$2y$10$H1dS4sxEJtpbfmFeybxl8OTsdp06MS8z.O8HemjQeAVVL7yraNXLO', NULL, '2023-07-27 18:55:30', '2023-07-27 18:55:30'),
+(179, 'tajul islam', NULL, NULL, '01999977405', NULL, '14', 'office', NULL, 2, 1, 0, NULL, '$2y$10$0upKOmhSb3jEHMAZOholcu/lf0OtZ0Nfd7m7Ga7A79m73g1B4sdEC', NULL, '2023-07-27 20:10:26', '2023-07-27 20:10:26'),
+(180, 'Alin Nabi', NULL, NULL, '01816871206', NULL, '14', '89/141, R. k. Mission Road, Gopibag(8th lane), Dhaka-1203.', NULL, 2, 1, 0, NULL, '$2y$10$udxisXIFUXFmuY/y47iFj.Jm63Qa2495jYy5t/vh7za788vDh1GSy', NULL, '2023-07-28 12:18:31', '2023-07-28 12:18:31'),
+(181, 'Syed Mominul Haque Sajib', NULL, NULL, '01711373702', NULL, '14', 'Merul baddah dit project road-14 plot -66.', NULL, 2, 1, 0, NULL, '$2y$10$VU3aAnOeG0nxnKmw7P8g3O1wIjkquMiMmiZOmLiziZvcVxDTkSuCi', NULL, '2023-07-28 12:20:23', '2023-07-28 12:20:23'),
+(182, 'Farhan Akhter Arif Shawon', NULL, NULL, '01916034927', NULL, '14', '390/2/A  Jafrabad Pulpar Moshjid Mohammadpur 3rd floor.', NULL, 2, 1, 0, NULL, '$2y$10$dfKbvKpjPhSN8TWUkTzGY.COXSlrrG1r3pNYQPT4JUeRU7KT4KYk6', NULL, '2023-07-28 12:22:47', '2023-07-28 12:22:47'),
+(183, 'Khan Mamun', NULL, NULL, '01713953065', NULL, '25', 'সদর রোড কৈখালী বাজার,গ্রামীণফোন টাওয়ারের নিচে', NULL, 2, 1, 0, NULL, '$2y$10$SJoPI94brQ0FanMrYAFWweZTJM5mjcYRrpszncOcKzipt1Clc.6LW', NULL, '2023-07-28 12:23:37', '2023-07-28 12:23:37'),
+(184, 'Sd Metun', NULL, NULL, '01822925415', NULL, '13', 'sen nagor bazar , megna cumilla', NULL, 2, 1, 0, NULL, '$2y$10$TF1hqoVtjdUODWNUKnhR4uPzFSGTTYcHl5bTic3zzwQw1LKaLAc9K', NULL, '2023-07-28 12:43:28', '2023-07-28 12:43:28'),
+(185, 'Probir Biswas', NULL, NULL, '01920111156', NULL, '28', 'Jella khulna. Tana terokhada', NULL, 2, 1, 0, NULL, '$2y$10$Wfl7FG.IUos5aK3eG0OJaelthZNkMWE.f3q6Y2KN2ogjv0xFqRROi', NULL, '2023-07-28 12:45:16', '2023-07-28 12:45:16'),
+(186, 'Palas Kundu', NULL, NULL, '01999685655', NULL, '31', 'beramara kustia', NULL, 2, 1, 0, NULL, '$2y$10$cmnNWlCYD8eo4tS3pWpjrucpxpBsNBREQS1oh5Aw/LIEyFhC1WO9y', NULL, '2023-07-28 12:48:02', '2023-07-28 12:48:02'),
+(187, 'IMRUL HASAN', NULL, NULL, '+8801715162737', NULL, '10', 'Sitakunda,', NULL, 2, 1, 0, NULL, '$2y$10$ox9YSD6vozGvSDVLf8TFiOGv9Um9Gg.u35j4AjM2epsD0O3phU.7m', NULL, '2023-07-28 15:34:06', '2023-07-28 15:34:06'),
+(188, 'Md Ashikur Rahman Talukder', NULL, NULL, '01717005740', NULL, '56', 'bukultola goneshpur , rangpur sador', NULL, 2, 1, 0, NULL, '$2y$10$v7UQXl3QBLajmO/stjfIx.z7gax/ORJeUQsk5rkhbdC8mH2KlbHI.', NULL, '2023-07-28 15:34:28', '2023-07-28 15:34:28'),
+(189, 'Hridoy Shikder', NULL, NULL, '01690083640', NULL, '13', 'Barura,comilla sonaimuri bazaer', NULL, 2, 1, 0, NULL, '$2y$10$yIb4qs13bGB7NApOIcsW/.3rC5W7DHMhLfNcByFIP7PiX91xbIWDe', NULL, '2023-07-28 15:36:32', '2023-07-28 15:36:32'),
+(190, 'Chandan Saha', NULL, NULL, '01717021725', NULL, '60', 'bonoful confectionary  monirampur bazar , sahajadpur , sirajganj', NULL, 2, 1, 0, NULL, '$2y$10$VaX5aOUJ3deTdkfPekR73uXE39QuznRsrz23F6vaVjYoU5ZxAX.KG', NULL, '2023-07-28 15:41:51', '2023-07-28 15:41:51'),
+(191, 'Md Jowel Rana', NULL, NULL, '01716127689', NULL, '40', 'batajur bazar bhaluka,Mymensingh', NULL, 2, 1, 0, NULL, '$2y$10$4arVSAP6DGkT2BgzD3m4beTAMc28eAHInJI0AEnfwGDaokxTIlTae', NULL, '2023-07-28 15:57:27', '2023-07-28 15:57:27'),
+(192, 'md. alaamin', NULL, NULL, '0196894792', NULL, '14', 'office .', NULL, 2, 1, 0, NULL, '$2y$10$eFC9l1IxWAPasanJonTGyu6L3ornBCvMwxNlHEFQ7oD2NEgBCI95O', NULL, '2023-07-28 16:56:55', '2023-07-28 16:56:55'),
+(193, 'Tahmid Tahi', NULL, NULL, '01730721651', NULL, '65', 'Pharmacy, Rabirbazar P.O- Prithimpassa Thana-Kulaura Dis-Moulvibazar', NULL, 2, 1, 0, NULL, '$2y$10$WRCE7UDLD3HyMUwjgktwuuSiM5iXFCSkjdQd7ve2gk.O4tcHLO45G', NULL, '2023-07-28 17:03:44', '2023-07-28 17:03:44'),
+(194, 'Tazrian Niloy', NULL, NULL, '01953385388', NULL, '26', 'Jhenaidah sodor,  adarsha para', NULL, 2, 1, 0, NULL, '$2y$10$rEwzaR5pm6oyhaAcETAlfeo6pMPzSk2HcmOLKZyGgdPR4RRrILNIa', NULL, '2023-07-28 17:05:39', '2023-07-28 17:05:39'),
+(195, 'M.a. Mabud Ali', NULL, NULL, '01723685911', NULL, '22', 'upozelia prani shampod office khetlal , joypurhat', NULL, 2, 1, 0, NULL, '$2y$10$0ecbHWv6QWmhnm5MVeCNHegQtNK4.EcwyHp6f.gDd0U14LzYFdOBG', NULL, '2023-07-28 17:09:47', '2023-07-28 17:09:47'),
+(196, 'Asif Raihan', NULL, NULL, '01816-611511', NULL, '14', 'Dhaka, Dohar.  Meghula Bazar. First Security islami Bank', NULL, 2, 1, 0, NULL, '$2y$10$dZXsJEM3WYvVQ0aIJOR.u.UziHVZj75q9J5pahtx3MvXHZ8qCz02e', NULL, '2023-07-28 17:13:11', '2023-07-28 17:13:11'),
+(197, 'A R Mohan Mahmud', NULL, NULL, '01327096407', NULL, '13', 'daudkandi bazar daudkandi cumlila', NULL, 2, 1, 0, NULL, '$2y$10$jc.oaWo6.T8agwJ8s4Nf8OVv5oVlJohwKzS3KGkCWzJsYKjNk7.Yu', NULL, '2023-07-28 17:33:15', '2023-07-28 17:33:15'),
+(198, 'Enayetur Rahman', NULL, NULL, '01819476400', NULL, '51', 'bari no-77,  boro masjid road , patukhali', NULL, 2, 1, 0, NULL, '$2y$10$kyb./TRwtVYfEvDG9eqa8OuwT/KF1ouoh4Lv3kUWqCqST.ujxCpAi', NULL, '2023-07-28 17:38:07', '2023-07-28 17:38:07'),
+(199, 'uttam kumar', NULL, NULL, '01715661782', NULL, '63', 'ghatail tangail', NULL, 2, 1, 0, NULL, '$2y$10$8Zvvqsx3x3jC0AthWP8lguxGGFcFe1//jqSY2l7P42uU4dxtWCU4G', NULL, '2023-07-28 17:43:01', '2023-07-28 17:43:01'),
+(200, 'Saidur Rhaman Babu', NULL, NULL, '01683708444 01793540473', NULL, '43', 'gohgnagor  purbo mosina bandar naraynganj', NULL, 2, 1, 0, NULL, '$2y$10$ViWTrN1vOYQohtzMTIeeeO.jTRumxLfhFGsJ33GE.iHxb0RG2UdUC', NULL, '2023-07-28 17:49:43', '2023-07-28 17:49:43'),
+(201, 'Khan Md Shahnawaz', NULL, NULL, '01716224086', NULL, '47', 'Saidpur Near mohila college  , Nilphamari', NULL, 2, 1, 0, NULL, '$2y$10$nj8ib.eYLjoPiz.zhcc9quccP0wYE9yIIa6TTrFWLqSc8qcA1SOQa', NULL, '2023-07-28 17:59:58', '2023-07-28 17:59:58'),
+(202, 'Sp Shaon', NULL, NULL, '01741502494', NULL, '24', 'Banapol bazar', NULL, 2, 1, 0, NULL, '$2y$10$R/br4qCKWX1uljfHcvqtQewGKbWOHX/DiX9x1.uK9TpvULoLx7bL.', NULL, '2023-07-28 18:07:39', '2023-07-28 18:07:39'),
+(203, 'Md. Harun Ur Rashid', NULL, NULL, '01672305147', NULL, '14', 'House 2, Road 119, Gulshan 2, Dhaka 1212', NULL, 2, 1, 0, NULL, '$2y$10$A6g/coqep4aptsJEFkX1JukDVS3iws32t6poza7rvp68Ms7KdxlFq', NULL, '2023-07-28 18:49:17', '2023-07-28 18:49:17'),
+(204, 'Md Hasanuzzaman', NULL, NULL, '01611577164', NULL, '14', 'K-3/h-2, munsi bari jame mosjid, bosundhara,vatara, dhaka-1229', NULL, 2, 1, 0, NULL, '$2y$10$TgO0zFlS9DEYIX8jx9HmreEQMra54A3uH1/79ptYyQs5Ou20rkHzO', NULL, '2023-07-28 18:53:45', '2023-07-28 18:53:45'),
+(205, 'Md Jubaer Khan', NULL, NULL, '01603123031', NULL, '29', 'komlapur , bhirab , kishorganj', NULL, 2, 1, 0, NULL, '$2y$10$iNvb2u95KZpoR6COXdl63eBN5350Eaahrt1gSbuygF6Sxf63ZpJMG', NULL, '2023-07-28 19:24:41', '2023-07-28 19:24:41'),
+(206, 'Adnan Bin Ashraf', NULL, NULL, '01819402308', NULL, '14', '187, Green Road, Kalabagan  Opposite of Dhaka Tower  Near Surjer Hashi Clinic', NULL, 2, 1, 0, NULL, '$2y$10$3QltQ6xM9/lTgF2t3T0woei5WxpeH0hfM9WPYKRQe3CS8geagWL0C', NULL, '2023-07-28 19:31:09', '2023-07-28 19:31:09'),
+(207, 'M R Raj', NULL, NULL, '01984668247', NULL, '14', 'United hospital, Gulshan 2', NULL, 2, 1, 0, NULL, '$2y$10$vhvNjjA2AwUvGLxb250TZ.xQysD5wHOOPXQR/m5ZxeSyhWTlcNyzW', NULL, '2023-07-29 11:58:10', '2023-07-29 11:58:10'),
+(208, 'Sohan Tanvir', NULL, NULL, '01744137888', NULL, '14', '1/27,C,East Basaboo,Madina Masjid goli,Kadamtala Bridge,Basaboo,Dhaka', NULL, 2, 1, 0, NULL, '$2y$10$MqD3vywUfT/NY5lwrsfRsuyXLk6Gb7JHbCd3iYJId9hYAOkXKtej.', NULL, '2023-07-29 12:04:46', '2023-07-29 12:04:46'),
+(209, 'Irshad Hawladar', NULL, NULL, '01833342777', NULL, '14', '9 no gopi kishan lane, rangs anamika tower, flat #B-11, (near Amira showroom), wari, dhaka 1203. name: irshad hawladar', NULL, 2, 1, 0, NULL, '$2y$10$ZcodILxOsRMZLZxNk4BTJuuv67K0Z67t3V9DUHzYqjtGk/9L6iPUC', NULL, '2023-07-29 12:06:20', '2023-07-29 12:06:20'),
+(210, 'Md. Sajjad Hossain', NULL, NULL, '01687-151389', NULL, '14', '66/2/2 Wasa road, Maniknagar, Dhaka', NULL, 2, 1, 0, NULL, '$2y$10$xx59pH1eZT5PIxaIKH9Iy.HF710rvtp2l7LuCmNLME40T5c4/YNHm', NULL, '2023-07-29 12:08:36', '2023-07-29 12:08:36'),
+(211, 'Sreedip Saha', NULL, NULL, '01730228205', NULL, '4', 'kat potty road barishal', NULL, 2, 1, 0, NULL, '$2y$10$7igRWSTJVNnWT6N0NnmYle2H8MYp23q5Fd4LKr1c8OUIAfYzbeUkW', NULL, '2023-07-29 13:30:14', '2023-07-29 13:30:14'),
+(212, 'Md Suhel Ahmed', NULL, NULL, '01604047479', NULL, '62', 'gwainghat , shalutikor bazar sylhet', NULL, 2, 1, 0, NULL, '$2y$10$TQ4AgvD3mWeCIdRbio0Hjuv77p./p4zVT/kSzKrLRMHjfges4PeHe', NULL, '2023-07-29 13:32:46', '2023-07-29 13:32:46'),
+(213, 'Maidul Islam', NULL, NULL, '01778708839', NULL, '33', 'laxmipur ,  hospital road', NULL, 2, 1, 0, NULL, '$2y$10$lALDwjagVNeWf3jDtujxteSz967Wbi1gAyP3Y6usAKZ/QlQTXTPkC', NULL, '2023-07-29 13:49:46', '2023-07-29 13:49:46'),
+(214, 'Abu Sayeed', NULL, NULL, '01914424348', NULL, '44', 'owapodha gate, palash, Narshindhi', NULL, 2, 1, 0, NULL, '$2y$10$7HM6ReRYnZFh6iWrxOnwO.skEJ2sOIYVsMNxIt0PqQELK3liBcJGO', NULL, '2023-07-29 13:56:25', '2023-07-29 13:56:25'),
+(215, 'Muhammad Hasan', NULL, NULL, '01326028108', NULL, '56', 'Tatipara puraton moszid er pasthe, rangpur, 5402', NULL, 2, 1, 0, NULL, '$2y$10$Js8tE9oTp9hLiJ7Zb65WouXdbGG9VX0aj79XjGYZ95tgk4ZTiCbOO', NULL, '2023-07-29 14:19:39', '2023-07-29 14:19:39'),
+(216, 'Walk Out', NULL, NULL, '01935382767', NULL, '37', 'Dis:maherpur Thana :gangni, gangni upozila health complex', NULL, 2, 1, 0, NULL, '$2y$10$Bdmx/SbaWtE2K7hzc/cXD.dK.dtLQRvCFpsxlUN/VnxxvC/12tiV2', NULL, '2023-07-29 14:21:35', '2023-07-29 14:21:35'),
+(217, 'Md Saiful Islam', NULL, NULL, '01814870543', NULL, '14', 'Vill+po: Nagar konda Bazar para, ps: savar, dhaka', NULL, 2, 1, 0, NULL, '$2y$10$V5irvJQtS5/S8LuMh1jzpuO4KQC5orui4/1lUnrO63YhjfxomK0OK', NULL, '2023-07-29 14:23:34', '2023-07-29 14:23:34'),
+(218, 'Jitu Oni', NULL, NULL, '01771122211 01931340607', NULL, '14', 'kamrangirchar, al hera comminute center', NULL, 2, 1, 0, NULL, '$2y$10$jR.NlbkBWraP/UbFZ7d2hucm6OOBjBhcdDZocsmUYfM5vdDkEU5xG', NULL, '2023-07-29 14:29:47', '2023-07-29 14:29:47'),
+(219, 'Musrat Hasan Khan', NULL, NULL, '01755532751', NULL, '31', 'British American Tobacco Bangladesh Kushtia Leaf Factory Choursah', NULL, 2, 1, 0, NULL, '$2y$10$pVI3CEPi2nP4T2TZNG0v/OC.W2wUk0ENOgQogS/KzBqli3b1YMbrW', NULL, '2023-07-29 15:04:12', '2023-07-29 15:04:12'),
+(220, 'Jahidur Rahman Jewel', NULL, NULL, '01712-164726', NULL, '24', 'jessor sador,  tv clinic  more ,', NULL, 2, 1, 0, NULL, '$2y$10$lGVTb5S4zct40K3vEV8xJeV6uyIp4VjhnOfU9Q6acnDEQHVXc0Dpa', NULL, '2023-07-29 15:12:05', '2023-07-29 15:12:05'),
+(221, 'Mrh Saikat', NULL, NULL, '01780101284', NULL, '39', 'Thana  : Sreenagar Jila munshigonj Products sreenagar bazar theke nibo', NULL, 2, 1, 0, NULL, '$2y$10$u9ThT2arWFKBrw2vgNAF5.rkzILbEpMJQWSZgxQhhDMptbp8M1Spa', NULL, '2023-07-29 15:16:38', '2023-07-29 15:16:38'),
+(222, 'imarn najir', NULL, NULL, '01304-639109', NULL, '15', 'dinajpur , sikdar hat', NULL, 2, 1, 0, NULL, '$2y$10$dVvi1/MHHmUuZoEKGi1xUe1OZ/Z9qmjJbyzytCeWspdtEAUEpLwkC', NULL, '2023-07-29 15:18:42', '2023-07-29 15:18:42'),
+(223, 'Rubel Islam', NULL, NULL, '01729630624', NULL, '14', '26 no government hokars market tibbat koloni bazar Tejgaon Dhaka 1208', NULL, 2, 1, 0, NULL, '$2y$10$HDF3jJctd/ZemLrWd.I.5e0AYN8i/6KvKAjtBbOxQ1CrYjhyhop0u', NULL, '2023-07-29 15:21:26', '2023-07-29 15:21:26'),
+(224, 'Abdur Rahim', NULL, NULL, '01853-992124', NULL, '10', 'chattagram ,panchlaish , hamjarbag abasik elaka', NULL, 2, 1, 0, NULL, '$2y$10$489wvdURNtI0tNwf0Ni/ge1SydJP4xmdPDfD5LEVH8SFQOVhLVJqy', NULL, '2023-07-29 15:54:07', '2023-07-29 15:54:07'),
+(225, 'Pavel Barek', NULL, NULL, '01722-859077', NULL, '54', 'Rajshai cort collage ,', NULL, 2, 1, 0, NULL, '$2y$10$vWt8c.ZscleJ2GxTutleO.JjFCfXYa9eoCO9T7u4L1uSx9fsRanTq', NULL, '2023-07-29 15:59:51', '2023-07-29 15:59:51'),
+(226, 'Tazul Islam', NULL, NULL, '01682720062', NULL, '43', 'bicic 1 no gate , fatullah narayangonj', NULL, 2, 1, 0, NULL, '$2y$10$xJZ7u07HwAb2S.h05ZKx5uvwz.OEVZqA/AayasERe/jBw3myNam0i', NULL, '2023-07-29 16:18:54', '2023-07-29 16:18:54'),
+(227, 'raihan', NULL, NULL, '01688278832', NULL, '48', 'sonaimuri , noakhali', NULL, 2, 1, 0, NULL, '$2y$10$7f/ZXCF/AW7gfpkenPUw3OFMZzvnWcpxksrOQ2PQYiwfwG3BnztMS', NULL, '2023-07-29 16:24:49', '2023-07-29 16:24:49'),
+(228, 'Rafiqul Islam Belal', NULL, NULL, '01790101353', NULL, '22', 'kalai pouroshova office , jaypurhat', NULL, 2, 1, 0, NULL, '$2y$10$20vwcv0bQLj8E0Jytw9/SOErTOObV7mVh8NPAdbDptq9OeH0v4j9G', NULL, '2023-07-29 16:44:49', '2023-07-29 16:44:49'),
+(229, 'Ashish Ghosh', NULL, NULL, '01700501290', NULL, '57', 'vomra shatkhira , khulna', NULL, 2, 1, 0, NULL, '$2y$10$ICnIfAqlZn0adAlO4ourUeCmcnsezjSAPlY0eMt2h3IVrUyH8qnVW', NULL, '2023-07-29 16:49:56', '2023-07-29 16:49:56'),
+(230, 'Saidur Rhaman Babu', NULL, NULL, '01683708444', NULL, '43', 'gopnogor purbo moshinabond, narayanganj', NULL, 2, 1, 0, NULL, '$2y$10$wuRZe1AMfMs4ghW9lDuJA.sox1s7Jm5lPJj9aNdBuzMQtFX05Wn/m', NULL, '2023-07-29 16:56:16', '2023-07-29 16:56:16'),
+(231, 'Krishno Das', NULL, NULL, '01305661626', NULL, '4', 'barishal... Port road Bazar.. Barishal', NULL, 2, 1, 0, NULL, '$2y$10$PXTHB/1Vp6uSFzlk4pArJ.HbZTWYw6aIP86TPKmFUUphkgR3Ih8Ia', NULL, '2023-07-29 17:00:43', '2023-07-29 17:00:43'),
+(232, 'Shikder Jony', NULL, NULL, '01873179236', NULL, '29', 'akhra bazar shilpogolar samne , kishorganj sodor', NULL, 2, 1, 0, NULL, '$2y$10$QQvK5HtyKHfCl6VpflGT/.dTJ41MqZEAkMMtNtk.kUOO5EdNKL0Oe', NULL, '2023-07-29 17:05:29', '2023-07-29 17:05:29'),
+(233, 'Mizanur Rahman', NULL, NULL, '01711536018', NULL, '14', '78/1 Arjot Para Tejgaon Dhaka 1215', NULL, 2, 1, 0, NULL, '$2y$10$L278I/DAOnKBfqjCZCYO0./symn9E4/XvNpMZtL8qwr1lT1v2dgzG', NULL, '2023-07-29 17:09:36', '2023-07-29 17:09:36'),
+(234, 'MD Shohanur Rahman Shuvo', NULL, NULL, '01722925700', NULL, '56', 'baluya vata kali mondir , bodorganj', NULL, 2, 1, 0, NULL, '$2y$10$QeOzFJY/623LCTGdLJR23eBSvZaTqUoCMriFC.gHvtx1G.D76dDKa', NULL, '2023-07-29 17:13:36', '2023-07-29 17:13:36'),
+(235, 'Hira Hasan', NULL, NULL, '01918853049', NULL, '15', 'dinajpur', NULL, 2, 1, 0, NULL, '$2y$10$/O3goQuQtD5AbzKEkBBBMOIoe1H6vRkOWcWso95NG/oHQ9wn55NyK', NULL, '2023-07-29 17:19:40', '2023-07-29 17:19:40'),
+(236, 'md. munna', NULL, NULL, '01754753753', NULL, '14', 'office', NULL, 2, 1, 0, NULL, '$2y$10$y7hLdMRmN/nqGEOVXJeOU.tG7L13830DYkOK7uuYvZv1YLoHF1rqu', NULL, '2023-07-29 17:35:04', '2023-07-29 17:35:04'),
+(237, 'SH Topu', NULL, NULL, '01912078644', NULL, '14', '15/ kha, bosu bazar, Doyagonj, Dhaka 1100', NULL, 2, 1, 0, NULL, '$2y$10$BO/PrtppMiW4w8bB/iYSC.Y7zFerjhwbd.SsTinuWKmmRfbeObIMi', NULL, '2023-07-29 18:16:25', '2023-07-29 18:16:25'),
+(238, 'Rayhan Morshed', NULL, NULL, '01710005953', NULL, '29', 'Bajitpur brance kishorganj', NULL, 2, 1, 0, NULL, '$2y$10$M8mRZoAO92BmiMZnlvkar./WxtLsRDxtIPx73WnuYc45GRDjQfAtC', NULL, '2023-07-29 18:20:43', '2023-07-29 18:20:43'),
+(239, 'Hipu Johan', NULL, NULL, '01714115059', NULL, '10', '91, Al- Islam Chamber, Agrabad, Chittagong', NULL, 2, 1, 0, NULL, '$2y$10$U9zUnbvh8OsavI8ZhtnX6umJX.KOKQ0e7sy0ARKzRk/t9.PUBje5u', NULL, '2023-07-29 19:33:40', '2023-07-29 19:33:40'),
+(240, 'Sadhan Das', NULL, NULL, '01575169793', NULL, '2', 'bhandarban sador , stadium aleka', NULL, 2, 1, 0, NULL, '$2y$10$XiZ5EAR2QTmGhMjSI7o9w.y2VQtPkPWqbM36OvO6Cdg7DCMAsLqCi', NULL, '2023-07-29 19:38:12', '2023-07-29 19:38:12'),
+(241, 'Ibrahim Hossain', 'swaponhossain302@gmail.com', NULL, '01720242224', NULL, '34', 'Bagerpar', NULL, 2, 0, 0, NULL, '$2y$10$mH3lRfi75z1DWbVFtRDfuu/PcBUsJab8M8FqjPC9tZF7e4sqKiRh6', NULL, '2023-07-29 20:37:15', '2023-07-31 10:47:28'),
+(242, 'Rasel Ahmed', NULL, NULL, '01753-052000', NULL, '14', '128/1', NULL, 2, 1, 0, NULL, '$2y$10$HkLiSm1LQRzfEe8Dl827lur.NftEdHG78KFOEgfUh9plCRlsrnOrC', NULL, '2023-07-29 21:24:07', '2023-07-29 21:24:07'),
+(243, 'abu bakor', NULL, NULL, '01728889609', NULL, '14', 'Jurain medical road dhaka1204', NULL, 2, 1, 0, NULL, '$2y$10$h.K5642sal6xlr24AUtG7eM/.YdnBW/t2tlpdUIveQlYblVG6FOy2', NULL, '2023-07-30 11:40:11', '2023-07-30 11:40:11'),
+(244, 'Faysal fuhad', NULL, NULL, '01972392136', NULL, '14', 'Chandrashila suvastu tower  69/1,Panthapath, Dhaka 1205', NULL, 2, 1, 0, NULL, '$2y$10$llfFb00Cj1rpDrrM9wdUY.CMiFVNGFTcgRmuWAVErSFSqqjQ3OF9q', NULL, '2023-07-30 11:57:38', '2023-07-30 11:57:38'),
+(245, 'Azizur Rahman', NULL, NULL, '01683248666', NULL, '14', 'malibag CID office elaka', NULL, 2, 1, 0, NULL, '$2y$10$ZHuJoEbdu4K5C8qYyHTRoOCNvnOa/dW.ifwgK/9.L3Ej.pMMKuLUm', NULL, '2023-07-30 11:59:50', '2023-07-30 11:59:50'),
+(246, 'Ķháĺífâ Ebñý Ŕáđíf', NULL, NULL, '01568019599', NULL, '14', 'Dhaka khilgaon sipahibag nobinbag', NULL, 2, 1, 0, NULL, '$2y$10$ZWj85Al1gh7RYGVmXr.wMOrEoFCSm3Y2qj5Kfm5NugSYEq8iuNdLC', NULL, '2023-07-30 12:05:29', '2023-07-30 12:05:29'),
+(247, 'Mohoshin Ghani Shovon', NULL, NULL, '01720-219127', NULL, '14', 'Dhanmondi new 9a  . Shonkor plaza goli. House numb 126', NULL, 2, 1, 0, NULL, '$2y$10$3S/u4QK1MD9z2yN20SUXLeHcdVHQk2GNlG6q8P/FlIlHE9VaxN1N.', NULL, '2023-07-30 12:07:14', '2023-07-30 12:07:14'),
+(248, 'Ruhul Amin', NULL, NULL, '01711194475', NULL, '14', 'moddoh badda link road gulshan -1', NULL, 2, 1, 0, NULL, '$2y$10$BoDC01agtenuPdSxaSfwsu9M.T0RInKlMfNkESKpzTndGyeKPiHwy', NULL, '2023-07-30 12:09:03', '2023-07-30 12:09:03'),
+(249, 'Mamun Sikder', NULL, NULL, '01755171054', NULL, '14', 'toh -132 badda link road', NULL, 2, 1, 0, NULL, '$2y$10$2LboSbnDXQgbmVU.8z0gQ.Zm4Cr8r.fzEaAwsha7FkoTTwJOipX0a', NULL, '2023-07-30 12:32:51', '2023-07-30 12:32:51'),
+(250, 'Jantle Park J Rasel Ahmedantle', NULL, NULL, '01980151567', NULL, '14', 'islampur,road,babubazar', NULL, 2, 1, 1, NULL, '$2y$10$u4h4zzFIB1M/.URZ26AnX.dIRjnjkx/JwLd2XeEAlUEVHveVDhNFa', NULL, '2023-07-30 13:00:42', '2023-08-01 10:06:24'),
+(251, 'Chelsea Vega', 'niso@mailinator.com', NULL, '+1 (521) 676-9917', NULL, '34', 'Magnam et eiusmod ei', NULL, 2, 1, 0, NULL, '$2y$10$3Bf9qPWprtPj1J96X9mS2.3mWoV7EO4Mvp7A7tOu5YYiVkCJqPjty', NULL, '2023-08-03 05:14:24', '2023-08-03 05:14:24'),
+(252, 'aasdasd', 'sadeknasdasdurul5@gmail.com', NULL, '01545454423', NULL, '3', 'asdasdasd', NULL, 2, 1, 0, NULL, '$2y$10$hPD.4yPN/CyrApgjKTMYSOll6XheFkto/4bnToY4pJC/UePp.QQFm', NULL, '2023-08-03 05:34:45', '2023-08-03 05:34:45'),
+(253, 'asdsdasdasd adasd', 'ay00sdasdasd09@gmail.com', NULL, '01545454454, 01545454454', NULL, NULL, 'asdasdasdasd', NULL, 2, 1, 0, NULL, '$2y$10$X96CiggDavDiu1MtntkuTOJKpIzC63JmYsXrTDiqZxh8HdaDKol4W', NULL, '2023-08-26 07:44:46', '2023-08-26 07:44:46');
 
 -- --------------------------------------------------------
 
@@ -10248,12 +10426,12 @@ INSERT INTO `users` (`id`, `name`, `email`, `username`, `phone`, `image`, `city`
 --
 
 CREATE TABLE `wallets` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `customer_id` int(10) UNSIGNED NOT NULL,
-  `amount` double UNSIGNED NOT NULL DEFAULT 0,
-  `used_amount` double UNSIGNED NOT NULL DEFAULT 0,
-  `point` double UNSIGNED NOT NULL DEFAULT 0,
-  `used_point` double UNSIGNED NOT NULL DEFAULT 0,
+  `id` bigint UNSIGNED NOT NULL,
+  `customer_id` int UNSIGNED NOT NULL,
+  `amount` double UNSIGNED NOT NULL DEFAULT '0',
+  `used_amount` double UNSIGNED NOT NULL DEFAULT '0',
+  `point` double UNSIGNED NOT NULL DEFAULT '0',
+  `used_point` double UNSIGNED NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10265,13 +10443,13 @@ CREATE TABLE `wallets` (
 --
 
 CREATE TABLE `wallet_entries` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `wallet_id` int(10) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `wallet_id` int UNSIGNED NOT NULL,
   `cash_in` double DEFAULT NULL,
   `cash_out` double DEFAULT NULL,
   `point_in` double DEFAULT NULL,
   `point_out` double DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10283,9 +10461,9 @@ CREATE TABLE `wallet_entries` (
 --
 
 CREATE TABLE `wishlists` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `customer_id` int NOT NULL,
+  `product_id` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -10365,6 +10543,12 @@ ALTER TABLE `bank_transactions`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `bkash_numbers`
+--
+ALTER TABLE `bkash_numbers`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `brands`
 --
 ALTER TABLE `brands`
@@ -10384,6 +10568,12 @@ ALTER TABLE `coupons`
   ADD UNIQUE KEY `coupons_code_unique` (`code`);
 
 --
+-- Indexes for table `courier_names`
+--
+ALTER TABLE `courier_names`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `districts`
 --
 ALTER TABLE `districts`
@@ -10399,6 +10589,29 @@ ALTER TABLE `expenses`
 -- Indexes for table `expense_entries`
 --
 ALTER TABLE `expense_entries`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `facebook_orders`
+--
+ALTER TABLE `facebook_orders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `facebook_orders_courier_id_foreign` (`courier_id`),
+  ADD KEY `facebook_orders_order_status_id_foreign` (`order_status_id`),
+  ADD KEY `facebook_orders_special_status_id_foreign` (`special_status_id`),
+  ADD KEY `facebook_orders_bkash_business_id_foreign` (`bkash_business_id`);
+
+--
+-- Indexes for table `facebook_order_products`
+--
+ALTER TABLE `facebook_order_products`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `facebook_order_products_order_id_foreign` (`order_id`);
+
+--
+-- Indexes for table `facebook_order_statuses`
+--
+ALTER TABLE `facebook_order_statuses`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -10444,6 +10657,12 @@ ALTER TABLE `order_products`
 -- Indexes for table `order_returns`
 --
 ALTER TABLE `order_returns`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `order_special_statuses`
+--
+ALTER TABLE `order_special_statuses`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -10643,287 +10862,338 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT for table `accessories`
 --
 ALTER TABLE `accessories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `accessory_amounts`
 --
 ALTER TABLE `accessory_amounts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=568;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=568;
 
 --
 -- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `asset_deductions`
 --
 ALTER TABLE `asset_deductions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `banks`
 --
 ALTER TABLE `banks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `bank_contras`
 --
 ALTER TABLE `bank_contras`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bank_transactions`
 --
 ALTER TABLE `bank_transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `bkash_numbers`
+--
+ALTER TABLE `bkash_numbers`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `brands`
 --
 ALTER TABLE `brands`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `coupons`
 --
 ALTER TABLE `coupons`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `courier_names`
+--
+ALTER TABLE `courier_names`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `districts`
 --
 ALTER TABLE `districts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `expense_entries`
 --
 ALTER TABLE `expense_entries`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `facebook_orders`
+--
+ALTER TABLE `facebook_orders`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `facebook_order_products`
+--
+ALTER TABLE `facebook_order_products`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `facebook_order_statuses`
+--
+ALTER TABLE `facebook_order_statuses`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `order_products`
 --
 ALTER TABLE `order_products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=335;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=369;
 
 --
 -- AUTO_INCREMENT for table `order_returns`
 --
 ALTER TABLE `order_returns`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT for table `order_special_statuses`
+--
+ALTER TABLE `order_special_statuses`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `order_statuses`
 --
 ALTER TABLE `order_statuses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `pages`
 --
 ALTER TABLE `pages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `partners`
 --
 ALTER TABLE `partners`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `partner_transactions`
 --
 ALTER TABLE `partner_transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `productions`
 --
 ALTER TABLE `productions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `production_accessories`
 --
 ALTER TABLE `production_accessories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `production_costs`
 --
 ALTER TABLE `production_costs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `production_suppliers`
 --
 ALTER TABLE `production_suppliers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=488;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=488;
 
 --
 -- AUTO_INCREMENT for table `product_damages`
 --
 ALTER TABLE `product_damages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1439;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1439;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1997;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1997;
 
 --
 -- AUTO_INCREMENT for table `product_stocks`
 --
 ALTER TABLE `product_stocks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1695;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1695;
 
 --
 -- AUTO_INCREMENT for table `product_stock_histories`
 --
 ALTER TABLE `product_stock_histories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2363;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2363;
 
 --
 -- AUTO_INCREMENT for table `ratings`
 --
 ALTER TABLE `ratings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sizes`
 --
 ALTER TABLE `sizes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sliders`
 --
 ALTER TABLE `sliders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `subscribers`
 --
 ALTER TABLE `subscribers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `supplier_payments`
 --
 ALTER TABLE `supplier_payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `trendings`
 --
 ALTER TABLE `trendings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=251;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=257;
 
 --
 -- AUTO_INCREMENT for table `wallets`
 --
 ALTER TABLE `wallets`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `wallet_entries`
 --
 ALTER TABLE `wallet_entries`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `facebook_orders`
+--
+ALTER TABLE `facebook_orders`
+  ADD CONSTRAINT `facebook_orders_bkash_business_id_foreign` FOREIGN KEY (`bkash_business_id`) REFERENCES `bkash_numbers` (`id`) ON DELETE RESTRICT,
+  ADD CONSTRAINT `facebook_orders_courier_id_foreign` FOREIGN KEY (`courier_id`) REFERENCES `courier_names` (`id`) ON DELETE RESTRICT,
+  ADD CONSTRAINT `facebook_orders_order_status_id_foreign` FOREIGN KEY (`order_status_id`) REFERENCES `facebook_order_statuses` (`id`) ON DELETE RESTRICT,
+  ADD CONSTRAINT `facebook_orders_special_status_id_foreign` FOREIGN KEY (`special_status_id`) REFERENCES `order_special_statuses` (`id`) ON DELETE RESTRICT;
+
+--
+-- Constraints for table `facebook_order_products`
+--
+ALTER TABLE `facebook_order_products`
+  ADD CONSTRAINT `facebook_order_products_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `facebook_orders` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `model_has_permissions`
