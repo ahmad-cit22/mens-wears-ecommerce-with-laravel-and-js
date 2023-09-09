@@ -25,7 +25,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">
-                    <table id="example1" class="table table-bordered table-hover">
+                    <table id="example1" class="table table-bordered table-hover datatable">
                         <thead>
                             <tr>
                                 <th>S.N</th>
@@ -172,6 +172,7 @@
     <script>
         $(function() {
             $("#example1").DataTable({
+                // "serverSide": true,
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
