@@ -44,7 +44,19 @@ class HomeController extends Controller {
     public function cache_clear() {
         Artisan::call("cache:clear");
 
-        Alert::toast('Cache cleared!', 'success');
+        // Artisan::call("route:cache");
+        // Artisan::call("config:cache");
+        // dd(2);
+
+        Alert::toast('Cache cleared & regenerated!', 'success');
         return back();
     }
+
+    // public function cache_make() {
+    //     Artisan::call("route:cache");
+    //     Artisan::call("config:cache");
+
+    //     Alert::toast('Configuration & routes cached successfully!', 'success');
+    //     return back();
+    // }
 }
