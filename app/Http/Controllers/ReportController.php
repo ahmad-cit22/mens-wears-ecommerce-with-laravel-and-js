@@ -30,7 +30,7 @@ class ReportController extends Controller {
             $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
             $production_cost = 0;
             $other_income = BankTransaction::where('other_income', 1)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
-            $expenses = ExpenseEntry::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->orderBy('id', 'DESC')->get();
+            $expenses = ExpenseEntry::whereMonth('date', Carbon::now()->month)->whereYear('date', Carbon::now()->year)->orderBy('id', 'DESC')->get();
             $expense_types = Expense::all();
             $order_amount = $orders->sum('price');
             foreach ($orders as $order) {
@@ -56,20 +56,20 @@ class ReportController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->whereBetween('created_at', [$start_date, $end_date])->get();
                 $other_income = BankTransaction::where('other_income', 1)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
-                $expenses = ExpenseEntry::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $expenses = ExpenseEntry::whereBetween('date', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             } else {
                 $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
                 $other_income = BankTransaction::where('other_income', 1)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
-                $expenses = ExpenseEntry::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->orderBy('id', 'DESC')->get();
+                $expenses = ExpenseEntry::whereMonth('date', Carbon::now()->month)->whereYear('date', Carbon::now()->year)->orderBy('id', 'DESC')->get();
             }
             $production_cost = 0;
             $order_amount = $orders->sum('price');
             foreach ($orders as $order) {
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty; 
+                    return $t->production_cost * $t->qty;
                 });
             }
             $expense_types = Expense::all();

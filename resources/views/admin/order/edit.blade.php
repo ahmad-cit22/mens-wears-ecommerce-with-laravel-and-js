@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                    </div> -->
 
 
                     <!-- Main content -->
@@ -160,7 +160,9 @@
                                             </div>
                                             <div class="col-8 text-right">
                                                 <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
-                                                <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                @if ($order->price > 0)
+                                                    <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                @endif
                                                 @if ($order->discount_amount != null)
                                                     <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
                                                 @endif
@@ -249,11 +251,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                      </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->

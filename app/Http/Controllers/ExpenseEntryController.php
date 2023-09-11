@@ -75,7 +75,7 @@ class ExpenseEntryController extends Controller {
             if (!empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-                $data = ExpenseEntry::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $data = ExpenseEntry::whereBetween('date', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
