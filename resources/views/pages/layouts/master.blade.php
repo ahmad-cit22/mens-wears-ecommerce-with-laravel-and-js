@@ -31,7 +31,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@yield('title', $settings->name)</title>
-    <meta name="robots" content="noindex, follow" />
+    {{-- <meta name="robots" content="noindex, follow" /> --}}
     @yield('meta_description')
     @yield('meta_keywords')
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

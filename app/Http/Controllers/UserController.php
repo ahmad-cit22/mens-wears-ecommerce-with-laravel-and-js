@@ -171,7 +171,7 @@ class UserController extends Controller {
 
     public function customer_index() {
         if (auth()->user()->can('customer.list')) {
-            $customers = User::where('type', 2)->orderBy('id', 'DESC')->get();
+            $customers = User::where('type', 2)->orderBy('id', 'DESC')->paginate(10);
             return view('admin.customer.index', compact('customers'));
         } else {
             session()->flash('error', 'Access Denied !');

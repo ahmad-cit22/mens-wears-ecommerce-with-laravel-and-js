@@ -41,9 +41,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($customers as $customer)
+                            @foreach ($customers as $key => $customer)
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
+                                    @php
+                                        $i = $customers->perPage() * ($customers->currentPage() - 1);
+                                    @endphp
+                                    <td>{{ $i + $key + 1 }}</td>
                                     <td>{{ $customer->name . ' ' . $customer->last_name }}</td>
                                     <td>{{ $customer->email }}</td>
                                     @if (Auth::id() == 1)
@@ -161,6 +164,23 @@
                         </tfoot>
                     </table>
                 </div>
+                @php
+                    $total = $customers->total();
+                    $currentPage = $customers->currentPage();
+                    $perPage = $customers->perPage();
+                    
+                    $from = ($currentPage - 1) * $perPage + 1;
+                    $to = min($currentPage * $perPage, $total);
+                @endphp
+
+                <p class="ml-4">
+                    Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                </p>
+                <div class="row justify-content-center">
+                    {{ $customers->links() }}
+                </div>
+
+                {{-- {{ $paginator->getOptions() }} --}}
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -169,26 +189,18 @@
 @endsection
 
 @section('scripts')
-    <script>
+    {{-- <script>
         $(function() {
             $("#example1").DataTable({
                 // "serverSide": true,
+                "paging": false,
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
         });
-    </script>
+    </script> --}}
 
     <script>
         function changeStatus(selectElement, id) {
