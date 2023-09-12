@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Auth;
 use Illuminate\Support\Facades\Artisan;
 use RealRashid\SweetAlert\Facades\Alert;
+use Spatie\Sitemap\SitemapGenerator;
 
 class HomeController extends Controller {
     /**
@@ -44,19 +45,15 @@ class HomeController extends Controller {
     public function cache_clear() {
         Artisan::call("cache:clear");
 
-        // Artisan::call("route:cache");
-        // Artisan::call("config:cache");
-        // dd(2);
-
         Alert::toast('Cache cleared & regenerated!', 'success');
         return back();
     }
 
-    // public function cache_make() {
-    //     Artisan::call("route:cache");
-    //     Artisan::call("config:cache");
+    public function sitemap_generate() {
+        $path = public_path('sitemap.xml');
+        SitemapGenerator::create('https://gobyfabrifest.com')->writeToFile($path);
 
-    //     Alert::toast('Configuration & routes cached successfully!', 'success');
-    //     return back();
-    // }
+        Alert::toast('Sitemap generated!', 'success');
+        return back();
+    }
 }

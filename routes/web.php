@@ -111,6 +111,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 
 	Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 	Route::get('/cache-clear', [App\Http\Controllers\HomeController::class, 'cache_clear'])->name('cache.clear');
+	Route::get('/sitemap-generate', [App\Http\Controllers\HomeController::class, 'sitemap_generate'])->name('sitemap.generate');
 
 	// Role Routes
 	Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
