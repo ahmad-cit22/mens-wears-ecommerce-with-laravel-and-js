@@ -26,6 +26,15 @@
                     @endcan
                 </div>
                 <!-- /.card-header -->
+                <div class="row mt-3">
+                    <div class="col-9"></div>
+                    <div class="col-3">
+                        <div class="d-flex" style="gap: 10px;">
+                            <input id="page-search-field" class="form-control" type="number" name="pageNo" placeholder="Go to Page" style="width: 75%">
+                            <a id="page-search-btn" class="btn btn-sm btn-primary">Search</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover">
                         <thead>
@@ -115,6 +124,7 @@
                         </tfoot>
                     </table>
                 </div>
+
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -127,7 +137,7 @@
 @section('scripts')
     <script>
         $(function() {
-            $("#example1").DataTable({
+            var table = $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
@@ -142,6 +152,22 @@
                 "autoWidth": false,
                 "responsive": true,
             });
+
+            var pageNo = 6
+            table.page(pageNo - 1).draw('page');
         });
+
+        $('page-search-btn').click(function() {
+            alert(pageNo);
+            let pageNo = $('page-search-field').val();
+            alert(pageNo);
+            abc(pageNo);
+        })
+
+        function abc(pageNo) {
+            var table = $('#example1').DataTable();
+            var pageNo = pageNo
+            table.page(pageNo - 1).draw('page');
+        };
     </script>
 @endsection

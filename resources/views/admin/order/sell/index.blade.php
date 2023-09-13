@@ -314,5 +314,11 @@
             });
 
         });
+
+        // $(document).ready(function() {
+        //     var table = $('#example').DataTable();
+        //     var pageNo = 6
+        //     table.page(pageNo - 1).draw('page');
+        // });
     </script>
 @endsection
