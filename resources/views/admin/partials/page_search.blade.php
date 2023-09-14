@@ -1,4 +1,4 @@
-<div class="row mt-3">
+<div class="row mt-3 mb-2">
     <div class="col-10"></div>
     <div class="col-2">
         <div class="d-flex" style="gap: 10px;">

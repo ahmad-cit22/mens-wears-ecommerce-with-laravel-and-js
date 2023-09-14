@@ -118,7 +118,7 @@
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
                 <div class="table-responsive">
-                    <table id="example1" class="table table-bordered table-hover datatable">
+                    <table id="data-table" class="table table-bordered table-hover datatable">
                         <thead>
                             <tr>
                                 <th>S.N</th>
