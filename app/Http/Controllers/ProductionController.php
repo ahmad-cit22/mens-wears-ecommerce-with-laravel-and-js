@@ -16,20 +16,17 @@ use Illuminate\Http\Request;
 use Auth;
 use Alert;
 
-class ProductionController extends Controller
-{
+class ProductionController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('production.index')) {
             $productions = Production::orderBy('id', 'DESC')->get();
             return view('admin.production-sheet.index', compact('productions'));
-        }
-        else {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -39,16 +36,14 @@ class ProductionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         if (auth()->user()->can('product.create')) {
             $suppliers = Supplier::orderBy('name', 'ASC')->get();
             $categories = Category::orderBy('id', 'ASC')->get();
             $products = Product::orderBy('id', 'DESC')->get();
             $accessories = Accessory::orderBy('id', 'DESC')->get();
-            return view('admin.production-sheet.create', compact('suppliers', 'categories','products', 'accessories'));
-        }
-        else {
+            return view('admin.production-sheet.create', compact('suppliers', 'categories', 'products', 'accessories'));
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -59,8 +54,7 @@ class ProductionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (auth()->user()->can('product.create')) {
             $production = new Production;
             $production->product_code = $request->product_code;
@@ -79,7 +73,7 @@ class ProductionController extends Controller
                 $supplier->amount = $request->fabric_amount;
                 $supplier->type = 'fabric';
                 $supplier->save();
-            }    
+            }
             // Contrast Fabric
             if (!is_null($request->contrast_supplier_id) && !is_null($request->contrast_amount)) {
                 $supplier = new ProductionSupplier;
@@ -89,7 +83,7 @@ class ProductionController extends Controller
                 $supplier->amount = $request->contrast_amount;
                 $supplier->type = 'contrast';
                 $supplier->save();
-            }    
+            }
             // Swing
             if (!is_null($request->swing_supplier_id) && !is_null($request->swing_amount)) {
                 $supplier = new ProductionSupplier;
@@ -110,7 +104,7 @@ class ProductionController extends Controller
                 $supplier->type = 'printing';
                 $supplier->save();
             }
-            
+
 
             $i = 0;
             foreach ($request->accessory_id as $item) {
@@ -147,8 +141,7 @@ class ProductionController extends Controller
             $production->save();
             Alert::toast('Production Sheet Created!', 'success');
             return back();
-        }
-        else {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -159,43 +152,38 @@ class ProductionController extends Controller
      * @param  \App\Models\Production  $production
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         if (auth()->user()->can('product.view')) {
-           $production = Production::find($id);
-           if (!is_null($production)) {
-               $fabric = ProductionSupplier::where('production_id', $production->id)->where('type', 'fabric')->first();
-               $contrast = ProductionSupplier::where('production_id', $production->id)->where('type', 'contrast')->first();
-               $swing = ProductionSupplier::where('production_id', $production->id)->where('type', 'swing')->first();
-               $printing = ProductionSupplier::where('production_id', $production->id)->where('type', 'printing')->first();
-               $suppliers = Supplier::orderBy('name', 'ASC')->get();
-               return view('admin.production-sheet.show', compact('production', 'fabric', 'contrast', 'swing', 'printing', 'suppliers'));
-           }
-           else {
-            Alert::toast('Production Sheet Not Found!', 'error');
-            return back();
-           }
-        }
-        else {
+            $production = Production::find($id);
+            if (!is_null($production)) {
+                $fabric = ProductionSupplier::where('production_id', $production->id)->where('type', 'fabric')->first();
+                $contrast = ProductionSupplier::where('production_id', $production->id)->where('type', 'contrast')->first();
+                $swing = ProductionSupplier::where('production_id', $production->id)->where('type', 'swing')->first();
+                $printing = ProductionSupplier::where('production_id', $production->id)->where('type', 'printing')->first();
+                $suppliers = Supplier::orderBy('name', 'ASC')->get();
+                return view('admin.production-sheet.show', compact('production', 'fabric', 'contrast', 'swing', 'printing', 'suppliers'));
+            } else {
+                Alert::toast('Production Sheet Not Found!', 'error');
+                return back();
+            }
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
-    public function recalculate($id)
-    {
+    public function recalculate($id) {
         $production = Production::find($id);
         if (!is_null($production)) {
             $total = 0;
             $total += $production->suppliers->sum('amount') + $production->costs->sum('amount') + $production->accessories->sum('amount');
-            $production->unit_cost = $total/$production->output_units;
+            $production->unit_cost = $total / $production->output_units;
             $production->save();
             Alert::toast('Production sheet updated', 'success');
             return back();
         }
     }
 
-    public function supplier(Request $request, $id)
-    {
+    public function supplier(Request $request, $id) {
         $production = Production::find($id);
         if (!is_null($production)) {
             $supplier = new ProductionSupplier;
@@ -210,8 +198,7 @@ class ProductionController extends Controller
         }
     }
 
-    public function accessory(Request $request, $id)
-    {
+    public function accessory(Request $request, $id) {
         $production = Production::find($id);
         if (!is_null($production)) {
             $accessory = new ProductionAccessory;
@@ -230,8 +217,7 @@ class ProductionController extends Controller
         }
     }
 
-    public function cost(Request $request, $id)
-    {
+    public function cost(Request $request, $id) {
         $production = Production::find($id);
         if (!is_null($production)) {
             $cost = new ProductionCost;
@@ -250,8 +236,7 @@ class ProductionController extends Controller
      * @param  \App\Models\Production  $production
      * @return \Illuminate\Http\Response
      */
-    public function edit(Production $production)
-    {
+    public function edit(Production $production) {
         //
     }
 
@@ -262,8 +247,7 @@ class ProductionController extends Controller
      * @param  \App\Models\Production  $production
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Production $production)
-    {
+    public function update(Request $request, Production $production) {
         //
     }
 
@@ -273,8 +257,7 @@ class ProductionController extends Controller
      * @param  \App\Models\Production  $production
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Production $production)
-    {
+    public function destroy(Production $production) {
         //
     }
 }

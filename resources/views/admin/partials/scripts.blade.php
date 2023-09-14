@@ -107,3 +107,16 @@
         window.print();
     });
 </script>
+
+<script>
+    $('#page-search-btn').click(function() {
+        let pageNo = $('#page-search-field').val();
+        abc(pageNo);
+    })
+
+    function abc(pageNo) {
+        var table = $('#data-table').DataTable();
+        var pageNo = pageNo
+        table.page(pageNo - 1).draw('page');
+    };
+</script>
