@@ -70,12 +70,12 @@ class ExpenseEntryController extends Controller {
         $date_from = '';
         $date_to = '';
 
-        if (auth()->user()->can('expense.index')) {
+        if (auth()->user()->can('expense.view')) {
             $banks = Bank::all();
             if (!empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-                $data = ExpenseEntry::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $data = ExpenseEntry::whereBetween('date', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -117,6 +117,12 @@ class ExpenseEntryController extends Controller {
                         $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
 
                         return $data;
+                    })
+                    ->addColumn('action', function ($row) {
+                        $btn = '<a href="#editModal' . $row->id . '" class="btn btn-primary" data-toggle="modal" title="Edit Entry"><i class="fas fa-edit"></i></a>
+                          <a href="#deleteModal' . $row->id . '" class="btn btn-danger" data-toggle="modal" title="Delete Entry"><i class="fas fa-trash"></i></a>';
+
+                        return $btn;
                     })
                     ->rawColumns(['expense_type', 'bank', 'date', 'action'])
                     ->make(true);
@@ -231,7 +237,7 @@ class ExpenseEntryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        if (auth()->user()->can('expense.create')) {
+        if (auth()->user()->can('expense.edit')) {
             $this->validate($request, [
                 'expense_id' => 'required|integer',
                 'amount' => 'required|numeric',
@@ -273,7 +279,7 @@ class ExpenseEntryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        if (auth()->user()->can('expense.create')) {
+        if (auth()->user()->can('expense.delete')) {
             $expense = ExpenseEntry::find($id);
 
             if (!is_null($expense)) {

@@ -428,9 +428,9 @@
                             </a>
                             <ul class="nav nav-treeview">
 
-                                @if (auth()->user()->can('expense.index'))
+                                @if (auth()->user()->can('expense_type.index'))
                                     <li class="nav-item">
-                                        <a href="{{ route('expense_type.index') }}" class="nav-link">
+                                        <a href="{{ route('expense.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Expense Type</p>
                                         </a>

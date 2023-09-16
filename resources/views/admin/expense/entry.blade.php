@@ -78,6 +78,7 @@
                     <a href="#create-expense" class="btn btn-primary bg-purple" data-toggle="modal">Create New Expense</a>
                 </div>
                 <!-- /.card-header -->
+                @include('admin.partials.page_search')
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -317,7 +318,7 @@
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ordering: false,
+                ordering: true,
                 columns: [{
                         data: 'id'
                     },

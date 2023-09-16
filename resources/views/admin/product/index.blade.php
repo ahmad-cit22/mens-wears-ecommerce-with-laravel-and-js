@@ -26,10 +26,11 @@
                     @endcan
                 </div>
                 <!-- /.card-header -->
+                @include('admin.partials.page_search')
                 <div class="card-body table-responsive">
-                    <table id="example1" class="table table-bordered table-hover">
+                    <table id="data-table" class="table table-bordered table-hover">
                         <thead>
-                            <tr>
+                            <tr> 
                                 <th>S.N</th>
                                 <th>Product</th>
                                 <th>Category</th>
@@ -115,6 +116,7 @@
                         </tfoot>
                     </table>
                 </div>
+
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -127,7 +129,7 @@
 @section('scripts')
     <script>
         $(function() {
-            $("#example1").DataTable({
+            var table = $("#data-table").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,

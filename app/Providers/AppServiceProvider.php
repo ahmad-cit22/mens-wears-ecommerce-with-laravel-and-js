@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider {
@@ -24,5 +25,7 @@ class AppServiceProvider extends ServiceProvider {
         view()->composer('*', function ($view) {
             $view->with('settings', Setting::find(1));
         });
+
+        Paginator::useBootstrap();
     }
 }

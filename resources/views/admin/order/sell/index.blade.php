@@ -206,6 +206,7 @@
                     </form>
                 </div>
                 <!-- /.card-header -->
+                @include('admin.partials.page_search')
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -314,5 +315,11 @@
             });
 
         });
+
+        // $(document).ready(function() {
+        //     var table = $('#example').DataTable();
+        //     var pageNo = 6
+        //     table.page(pageNo - 1).draw('page');
+        // });
     </script>
 @endsection

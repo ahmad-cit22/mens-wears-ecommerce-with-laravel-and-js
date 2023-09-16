@@ -56,8 +56,9 @@
                     <h5 class="text-danger mt-4">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
                 </div>
                 <!-- /.card-header -->
+                @include('admin.partials.page_search')
                 <div class="card-body table-responsive">
-                    <table id="example1" class="table table-bordered table-hover">
+                    <table id="data-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>S.N</th>
@@ -140,7 +141,7 @@
 @section('scripts')
     <script>
         $(function() {
-            $("#example1").DataTable({
+            $("#data-table").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,

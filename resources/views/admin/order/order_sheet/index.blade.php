@@ -116,8 +116,9 @@
                     </form>
                 </div>
                 <!-- /.card-header -->
+                @include('admin.partials.page_search')
                 <div class="table-responsive">
-                    <table id="example1" class="table table-bordered table-hover datatable">
+                    <table id="data-table" class="table table-bordered table-hover datatable">
                         <thead>
                             <tr>
                                 <th>S.N</th>
@@ -256,7 +257,7 @@
 @section('scripts')
     <script>
         $(function() {
-            $("#example1").DataTable({
+            $("#data-table").DataTable({
                 "responsive": false,
                 "lengthChange": false,
                 "autoWidth": false,
@@ -287,7 +288,7 @@
         });
     </script>
 
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         $(function() {
 
             var table = $('#data-table').DataTable({
@@ -327,5 +328,5 @@
             });
 
         });
-    </script>
+    </script> --}}
 @endsection
