@@ -24,6 +24,20 @@
     </script>
     <!-- End Google Tag Manager -->
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPLMG5ECY6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZPLMG5ECY6');
+    </script>
+    <!-- Google tag (gtag.js) -->
+
     <!--facebook-domain-verification-->
     <meta name="facebook-domain-verification" content="lakjzs0vhg73078a1sirl7arc7mvux"  />
     <!--facebook-domain-verification-->
@@ -31,7 +45,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@yield('title', $settings->name)</title>
-    {{-- <meta name="robots" content="noindex, follow" /> --}}
+
     @yield('meta_description')
     @yield('meta_keywords')
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
