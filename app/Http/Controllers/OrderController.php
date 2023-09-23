@@ -130,6 +130,16 @@ class OrderController extends Controller {
         }
     }
 
+    public function sell_report() {
+        if (auth()->user()->can('sell.index')) {
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $categories = Category::all();
+            return view('admin.order.sell.sell-report', compact('orders', 'categories'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function wholesale_index(Request $request) {
         $date_from = '';
         $date_to = '';
