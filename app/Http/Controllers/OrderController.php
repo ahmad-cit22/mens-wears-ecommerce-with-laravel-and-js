@@ -680,10 +680,11 @@ class OrderController extends Controller {
                 }
                 $order->is_final = 1;
                 $order->save();
-                Alert::toast('Sell Updated !', 'success');
+
+                Alert::toast('Sell Updated!', 'success');
                 return redirect()->route('order.index');
             } else {
-                Alert::toast('Something went wrong !', 'error');
+                Alert::toast('Something went wrong!', 'error');
                 return back();
             }
         } else {

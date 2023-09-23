@@ -179,6 +179,18 @@ class UserController extends Controller {
         }
     }
 
+    public function customer_search(Request $request) {
+        $search = $request->search;
+        $search_phone = $request->search_phone;
+
+        $customers = User::where('type', 2)->where('name', 'like', '%' . $search . '%')->where('phone', 'like', '%' . $search_phone . '%')->orderBy('id', 'DESC')->paginate(10);
+        // $customers->appends(array('search' => $request->search,));
+        if (count($customers) > 0) {
+            return view('admin.customer.index', compact('customers'));
+        }
+        return back()->with('error', 'No results Found');
+    }
+
     public function customer_destroy($id) {
         $customer = User::find($id);
         if (!is_null($customer)) {

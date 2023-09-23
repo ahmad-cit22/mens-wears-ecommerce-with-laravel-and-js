@@ -24,6 +24,26 @@
 
                 </div>
                 <!-- /.card-header -->
+                <div class="row mt-3">
+                    <div class="col-6">
+                    </div>
+                    <div class="col-3">
+                        <form class="row" action="{{ route('customer.search') }}" method="get" role="search">
+                            <input type="text" placeholder="Search with name.." name="search" class="form-control" style="width: 80%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="col-3">
+                        <form class="row" action="{{ route('customer.search') }}" method="get" role="search">
+                            <input type="number" placeholder="Search with phone.." name="search_phone" class="form-control" style="width: 80%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-right mr-3 mt-2"><a href="{{ route('customer.index') }}">
+                        <i class="fas fa-reply fa-sm mr-1"></i> Reset Results
+                    </a></p>
                 <div class="card-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover datatable">
                         <thead>

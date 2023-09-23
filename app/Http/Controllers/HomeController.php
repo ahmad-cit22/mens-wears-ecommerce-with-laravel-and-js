@@ -45,7 +45,7 @@ class HomeController extends Controller {
     public function cache_clear() {
         Artisan::call("cache:clear");
 
-        Alert::toast('Cache cleared & regenerated!', 'success');
+        Alert::toast('Cache cleared!', 'success');
         return back();
     }
 
