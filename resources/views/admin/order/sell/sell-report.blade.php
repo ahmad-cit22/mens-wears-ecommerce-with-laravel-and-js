@@ -70,6 +70,90 @@
                       </div>
                   </div>
                   <hr>
+                  <div class="card-header p-4">
+                      <form action="{{ route('sell.report_search') }}" method="get">
+                          @csrf
+                          <div class="row">
+                              <div class="col-md-4">
+                                  <div class="form-group">
+                                      <label>Date From</label>
+                                      <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
+                                      @error('date_from')
+                                          <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                          </span>
+                                      @enderror
+                                  </div>
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group">
+                                      <label>Date To</label>
+                                      <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
+                                      @error('date_to')
+                                          <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                          </span>
+                                      @enderror
+                                  </div>
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group">
+                                      <label>Status</label>
+                                      <select name="order_status_id" class="select2 form-control @error('order_status_id') is-invalid @enderror">
+                                          <option value="">Please Select a Status (Optional)</option>
+                                          @foreach (App\Models\OrderStatus::where('is_active', 1)->get() as $status)
+                                              <option value="{{ $status->id }}" {{ $order_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                          @endforeach
+
+                                      </select>
+                                      @error('order_status_id')
+                                          <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                          </span>
+                                      @enderror
+                                  </div>
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group">
+                                      <label>District</label>
+                                      <select name="district_id" id="district_id" class="select2 form-control @error('district_id') is-invalid @enderror">
+                                          <option value="">Please Select a District (Optional)</option>
+                                          @foreach (App\Models\District::get() as $district)
+                                              <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                          @endforeach
+
+                                      </select>
+                                      @error('district_id')
+                                          <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                          </span>
+                                      @enderror
+                                  </div>
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group">
+                                      <label>Area</label>
+                                      <select name="area_id" id="areas" class="select2 form-control @error('area_id') is-invalid @enderror">
+                                          <option value="">Please Select an Area (Optional)</option>
+
+
+                                      </select>
+                                      @error('area_id')
+                                          <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                          </span>
+                                      @enderror
+                                  </div>
+                              </div>
+                              <div class="col-md-4">
+                                  <div class="form-group">
+                                      <label style="color: #fff;">.</label>
+                                      <button type="submit" class="form-control btn  btn-primary">Search</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
                   <div class="row mt-5 categoryCardBox">
                       @foreach ($categories as $key => $category)
                           @php
@@ -129,4 +213,27 @@
               </div>
           </div>
       </section>
+  @endsection
+
+  @section('scripts')
+      <script>
+          $('#district_id').change(function() {
+              var district_id = $(this).val();
+              if (district_id == '') {
+                  district_id = -1;
+              }
+              var option = "<option value=''>Please Select an Area (Optional)</option>";
+              var url = "{{ url('/') }}";
+
+              $.get(url + "/get-area/" + district_id, function(data) {
+                  data = JSON.parse(data);
+                  data.forEach(function(element) {
+                      option += "<option value='" + element.id + "'>" + element.name + "</option>";
+                  });
+                  //console.log(option);
+                  $('#areas').html(option);
+              });
+
+          });
+      </script>
   @endsection
