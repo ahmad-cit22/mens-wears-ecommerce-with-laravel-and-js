@@ -216,7 +216,7 @@
   @endsection
 
   @section('scripts')
-      <script>
+      <script> 
           $('#district_id').change(function() {
               var district_id = $(this).val();
               if (district_id == '') {
