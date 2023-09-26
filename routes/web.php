@@ -136,6 +136,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Customer Routes
 	Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
 		Route::get('/', [App\Http\Controllers\UserController::class, 'customer_index'])->name('index');
+		Route::get('/search', [App\Http\Controllers\UserController::class, 'customer_search'])->name('search');
 		Route::post('/change-password-by-admin/{id}', [App\Http\Controllers\UserController::class, 'customer_password_change'])->name('password.change.admin');
 		Route::post('/destroy/{id}', [App\Http\Controllers\UserController::class, 'customer_destroy'])->name('destroy');
 		Route::post('/status/update/{id}', [App\Http\Controllers\UserController::class, 'customer_status_update'])->name('status_update');
@@ -242,8 +243,10 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Sell Routes
 	Route::group(['prefix' => 'sell', 'as' => 'sell.'], function () {
 		Route::get('/', [App\Http\Controllers\OrderController::class, 'sell_index'])->name('index');
+		Route::get('/report', [App\Http\Controllers\OrderController::class, 'sell_report'])->name('report');
 		Route::get('/wholesale', [App\Http\Controllers\OrderController::class, 'wholesale_index'])->name('wholesale.index');
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'sell_search'])->name('search');
+		Route::get('/report_search', [App\Http\Controllers\OrderController::class, 'report_search'])->name('report_search');
 		Route::get('/wholesale-search', [App\Http\Controllers\OrderController::class, 'wholesale_search'])->name('wholesale.search');
 	});
 

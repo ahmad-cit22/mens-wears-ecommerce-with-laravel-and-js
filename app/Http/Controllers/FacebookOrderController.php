@@ -173,6 +173,8 @@ class FacebookOrderController extends Controller {
         $date_from = '';
         $date_to = '';
 
+        $orders = FacebookOrder::orderBy('id', 'DESC')->get();
+
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
@@ -182,6 +184,30 @@ class FacebookOrderController extends Controller {
 
                 $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+
+            if (!empty($request->order_status_id) && empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+
+            if (empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $special_status_id = $request->special_status_id;
+
+                $orders = FacebookOrder::where('special_status_id', $special_status_id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;

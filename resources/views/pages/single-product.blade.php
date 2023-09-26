@@ -202,21 +202,21 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </div> -->
                                 @if ($product->type == 'single')
                                     @if ($product->is_offer == 1)
-                                        <h3 style="margin-bottom: 25px; margin-top: 20px;"><del class="text-danger">{{ env('CURRENCY') }}{{ $product->variation->price }}</del>
-                                            {{ env('CURRENCY') }}{{ $product->variation->discount_price }}</h3>
+                                        <h3 style="margin-bottom: 25px; margin-top: 20px;"><del class="text-danger">&#2547; {{ $product->variation->price }}</del>
+                                            &#2547; {{ $product->variation->discount_price }}</h3>
                                     @else
                                         <h3 style="margin-bottom: 25px; margin-top: 20px;">
-                                            {{ env('CURRENCY') }}{{ $product->variation->price }}</h3>
+                                            &#2547; {{ $product->variation->price }}</h3>
                                     @endif
                                 @else
                                     @if ($product->is_offer == 1)
                                         <h3 style="margin-bottom: 25px; margin-top: 20px;">
-                                            <del class="text-danger">{{ env('CURRENCY') }}{{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}</del>
-                                            {{ env('CURRENCY') }}{{ $product->variations->where('discount_price', $product->variations->min('discount_price'))->first()->discount_price }}
+                                            <del class="text-danger">&#2547; {{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}</del>
+                                            &#2547; {{ $product->variations->where('discount_price', $product->variations->min('discount_price'))->first()->discount_price }}
                                         </h3>
                                     @else
                                         <h3 style="margin-bottom: 25px; margin-top: 20px;">
-                                            {{ env('CURRENCY') }}{{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}
+                                            &#2547; {{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}
                                         </h3>
                                     @endif
                                 @endif

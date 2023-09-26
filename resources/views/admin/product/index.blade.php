@@ -34,7 +34,7 @@
                                 <th>S.N</th>
                                 <th>Product</th>
                                 <th>Category</th>
-                                <th>Brand</th>
+                                <th>Brand</th> 
                                 <th>Type</th>
                                 <th>Stock</th>
                                 <th>Status</th>

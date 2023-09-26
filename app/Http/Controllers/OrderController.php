@@ -130,6 +130,77 @@ class OrderController extends Controller {
         }
     }
 
+    public function sell_report(Request $request) {
+        $date_from = '';
+        $date_to = '';
+        $order_status_id = '';
+
+        if (auth()->user()->can('sell.index')) {
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $categories = Category::all();
+            return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function report_search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+        $order_status_id = '';
+
+        if (auth()->user()->can('sell.index')) {
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+
+                $orders = Order::where('order_status_id', $order_status_id)
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+            if ((!empty($request->order_status_id) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->order_status_id) && empty($request->date_from) && !empty($request->date_to))) {
+
+                $order_status_id = $request->order_status_id;
+
+                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+            }
+            if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $order_status_id = $request->order_status_id;
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+            if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
+                $orders = Order::orderBy('id', 'DESC')->get();
+            }
+
+            // 2nd step filter
+            $district_id = $request->district_id;
+
+            if (!empty($request->district_id) && !empty($request->area_id)) {
+
+                $orders = $orders->where('district_id', $request->district_id)->where('area_id', $request->area_id);
+            }
+            if (!empty($request->district_id) && empty($request->area_id)) {
+                $orders = $orders->where('district_id', $request->district_id);
+            }
+
+            $orders = $orders->where('is_final', 1)->where('source', '!=', 'Wholesale');
+
+            $categories = Category::all();
+            return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function wholesale_index(Request $request) {
         $date_from = '';
         $date_to = '';
@@ -680,10 +751,11 @@ class OrderController extends Controller {
                 }
                 $order->is_final = 1;
                 $order->save();
-                Alert::toast('Sell Updated !', 'success');
+
+                Alert::toast('Sell Updated!', 'success');
                 return redirect()->route('order.index');
             } else {
-                Alert::toast('Something went wrong !', 'error');
+                Alert::toast('Something went wrong!', 'error');
                 return back();
             }
         } else {

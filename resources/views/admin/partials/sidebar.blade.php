@@ -335,6 +335,12 @@
 
                                 @if (auth()->user()->can('sell.index'))
                                     <li class="nav-item">
+                                        <a href="{{ route('sell.report') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Sells Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{ route('sell.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Sell List</p>

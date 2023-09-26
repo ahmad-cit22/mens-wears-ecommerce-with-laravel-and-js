@@ -17,16 +17,16 @@
         <div class="product-price">
         	@if($product->type == 'single')
                 @if($product->is_offer == 1)
-                <del class="text-danger"><span class="new-price">{{ env('CURRENCY') }}{{ $product->variation->price }}</span></del> <span class="new-price">{{ env('CURRENCY') }}{{ $product->variation->discount_price }}
+                <del class="text-danger"><span class="new-price">&#2547; {{ $product->variation->price }}</span></del> <span class="new-price">&#2547; {{ $product->variation->discount_price }}
                 @else
-                <span class="new-price">{{ env('CURRENCY') }}{{ $product->variation->price }}</span>
+                <span class="new-price">&#2547; {{ $product->variation->price }}</span>
                 @endif
             
             @else
                 @if($product->is_offer == 1)
-                <del class="text-danger"><span class="new-price">{{ env('CURRENCY') }}{{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}</span></del> <span class="new-price">{{ env('CURRENCY') }}{{ $product->variations->where('discount_price', $product->variations->min('discount_price'))->first()->discount_price }}</span>
+                <del class="text-danger"><span class="new-price">&#2547; {{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}</span></del> <span class="new-price">&#2547; {{ $product->variations->where('discount_price', $product->variations->min('discount_price'))->first()->discount_price }}</span>
                 @else
-                <span class="new-price">{{ env('CURRENCY') }}{{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}</span>
+                <span class="new-price">&#2547; {{ $product->variations->where('price', $product->variations->min('price'))->first()->price }}</span>
                 @endif
             @endif
         </div>
