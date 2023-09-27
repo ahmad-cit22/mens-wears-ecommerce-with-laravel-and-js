@@ -64,7 +64,7 @@
                             <div class="sidebar-widget-list mt-50">
                                 <ul>
                                     <!-- <li><a href="#">Electronics & Tech</a> <span>(16)</span></li> -->
-                                    <label><input type="radio" name="category_id" value="all" style="background-color: none;border: none;width: auto;height: auto;" checked> ALL</label>
+                                    <label><input type="radio" name="category_id" value="all" style="background-color: none;border: none;width: auto;height: auto;" checked>ALL</label>
                                     @foreach (App\Models\Category::orderBy('position', 'ASC')->get() as $category)
                                         <div>
                                             <label><input type="radio" name="category_id" value="{{ $category->id }}" style="background-color: none;border: none;width: auto;height: auto;"> {{ $category->title }}</label> <span style="float: right;">({{ count($category->products) }})</span>
