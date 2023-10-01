@@ -205,7 +205,7 @@
                                                     </td>
                                                     <td>{{ env('CURRENCY') }}{{ $product->price }}</td>
                                                     <td>{{ $product->qty }}</td>
-                                                    <td>{{ env('CURRENCY') }}{{ $product->price * $product->qty }}</td>
+                                                    <td>&#2547; {{ $product->price * $product->qty }}</td>
                                                 </tr>
                                             @endforeach
                                             <tr>
@@ -228,7 +228,7 @@
                                             @endif
                                             <tr>
                                                 <td colspan="4" align="right">Total:</td>
-                                                <td>{{ env('CURRENCY') }}{{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}</td>
+                                                <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}</td>
                                             </tr>
                                             @if ($order->advance)
                                                 <tr>
@@ -238,7 +238,7 @@
                                             @endif
                                             <tr>
                                                 <td colspan="4" align="right">Total Payable:</td>
-                                                <td>{{ env('CURRENCY') }}{{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
+                                                <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

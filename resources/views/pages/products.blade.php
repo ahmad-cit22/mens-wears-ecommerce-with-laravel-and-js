@@ -118,7 +118,7 @@
                                 <a class="btn btn-primary" onclick="product_price_filter()" style="color: #fff;">FILTER</a>
                             </fieldset>
                         </div>
-
+                        
                         <div class="sidebar-widget">
                             <div class="shop-sidebar-banner default-overlay">
                                 <a href="#"><img alt="" src="assets/images/banner/sidebar-banner.jpg"></a>

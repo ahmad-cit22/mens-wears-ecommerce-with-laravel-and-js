@@ -169,7 +169,7 @@
                                 <p class="itemtext">{{ $product->qty }}</p>
                             </td>
                             <td class="tableitem">
-                                <p class="itemtext">{{ env('CURRENCY') }}{{ $product->price }}</p>
+                                <p class="itemtext">&#2547; {{ $product->price }}</p>
                             </td>
                         </tr>
                     @endforeach
@@ -201,7 +201,7 @@
                                 <h2>Discount (-)</h2>
                             </td>
                             <td class="payment">
-                                <h2>{{ env('CURRENCY') }}{{ $order->discount_amount }}</h2>
+                                <h2>&#2547; {{ $order->discount_amount }}</h2>
                             </td>
                         </tr>
                     @endif
@@ -210,7 +210,7 @@
                             <h2>Total</h2>
                         </td>
                         <td class="payment">
-                            <h2>{{ env('CURRENCY') }}{{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</h2>
+                            <h2>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</h2>
                         </td>
                     </tr>
 
