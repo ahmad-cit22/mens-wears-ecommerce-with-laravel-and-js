@@ -44,10 +44,22 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="pro-pagination-style text-center">
-                        <ul>
-                            {{ $products->links('pagination::bootstrap-4') }}
-                        </ul>
+                    <div class="">
+                        {{-- @php
+                            $total = $products->total();
+                            $currentPage = $products->currentPage();
+                            $perPage = $products->perPage();
+                            
+                            $from = ($currentPage - 1) * $perPage + 1;
+                            $to = min($currentPage * $perPage, $total);
+                        @endphp
+
+                        <p class="ml-4">
+                            Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                        </p> --}}
+                        <div class="row justify-content-center">
+                            <div class="col-4">{{ $products->links() }}</div>
+                        </div>
                     </div>
                 </div>
             </div>

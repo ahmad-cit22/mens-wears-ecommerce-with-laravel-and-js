@@ -58,7 +58,7 @@ class PageController extends Controller {
     }
 
     public function products() {
-        $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->paginate(30);
+        $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->paginate(15);
         $page = Page::find(2);
         $min_price = ProductStock::min('price');
         $max_price = ProductStock::max('price');
@@ -73,7 +73,7 @@ class PageController extends Controller {
 
     public function offer_products() {
         $page = Page::find(9);
-        $products = Product::where('is_active', 1)->where('is_offer', 1)->orderBy('id', 'DESC')->get();
+        $products = Product::where('is_active', 1)->where('is_offer', 1)->orderBy('id', 'DESC')->paginate(16);
         return view('pages.offer-product', compact('products', 'page'));
     }
 
@@ -85,7 +85,7 @@ class PageController extends Controller {
                 session()->flash('error', 'This product is not available right now.');
                 return back();
             }
-            $similar_products = Product::where('is_active', 1)->where('category_id', $product->category_id)->inRandomOrder()->get();
+            $similar_products = Product::where('is_active', 1)->where('category_id', $product->category_id)->inRandomOrder()->get()->take(10);
             $share = Share::page(route('single.product', [$product->id, Str::slug($product->title)]), $product->title)
                 ->facebook()
                 ->twitter()
@@ -183,21 +183,21 @@ class PageController extends Controller {
         if ($category_id != 'all' && $brand_id != 'all') {
             $category = Category::find($category_id);
             if ($category->parent_id == 0) {
-                $products = Product::where('category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
+                $products = Product::where('category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(24);
             } else {
-                $products = Product::where('sub_category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
+                $products = Product::where('sub_category_id', $category_id)->where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(24);
             }
         } else if ($category_id != 'all' && $brand_id == 'all') {
             $category = Category::find($category_id);
             if ($category->parent_id == 0) {
-                $products = Product::where('category_id', $category_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
+                $products = Product::where('category_id', $category_id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(24);
             } else {
-                $products = Product::where('sub_category_id', $category_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
+                $products = Product::where('sub_category_id', $category_id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(24);
             }
         } else if ($category_id == 'all' && $brand_id != 'all') {
-            $products = Product::where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->get();
+            $products = Product::where('brand_id', $brand_id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(24);
         } else {
-            $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->get();
+            $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->paginate(24);
         }
 
         $product_ids = ProductStock::whereBetween('price', [$min_price, $max_price])->pluck('product_id')->toArray();
@@ -235,7 +235,7 @@ class PageController extends Controller {
 
     public function search_result(Request $request) {
         $query = $request->search;
-        $products = Product::where('is_active', 1)->where('title', 'LIKE', '%' . $query . '%')->orWhere('description', 'LIKE', '%' . $query . '%')->get();
+        $products = Product::where('is_active', 1)->where('title', 'LIKE', '%' . $query . '%')->orWhere('description', 'LIKE', '%' . $query . '%')->paginate(20);
         return view('pages.search-result', compact('products'));
     }
 
@@ -247,7 +247,7 @@ class PageController extends Controller {
 
     public function category_products($id, $slug) {
         $category = Category::find($id);
-        $products = Product::where('category_id', $id)->orWhere('sub_category_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(32);
+        $products = Product::where('category_id', $id)->orWhere('sub_category_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(16);
         if (!is_null($category)) {
             return view('pages.category-product', compact('category', 'products'));
         } else {
@@ -258,7 +258,7 @@ class PageController extends Controller {
 
     public function brand_products($id, $slug) {
         $brand = Brand::find($id);
-        $products = Product::where('brand_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(30);
+        $products = Product::where('brand_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(16);
         if (!is_null($brand)) {
             return view('pages.brand-product', compact('brand', 'products'));
         } else {
