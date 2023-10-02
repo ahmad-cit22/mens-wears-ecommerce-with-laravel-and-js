@@ -17,7 +17,7 @@
         <div class="container-fluid">
             <div class="breadcrumb-content text-center">
                 <div class="breadcrumb-title">
-                    <h2>Cancellation & Refund Policy</h2>
+                    <h2>Cancellation & Refund Policy </h2>
                 </div>
                 <ul>
                     <li>
