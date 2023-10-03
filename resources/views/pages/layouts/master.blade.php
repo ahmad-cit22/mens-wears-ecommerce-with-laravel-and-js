@@ -72,7 +72,7 @@
     <div id="fb-customer-chat" class="fb-customerchat">
     </div>
     <div class="main-wrapper">
-        @include('pages.partials.header')
+        @include('pages.partials.header') <br><br>
         @yield('content')
         @include('pages.partials.footer')
     </div>

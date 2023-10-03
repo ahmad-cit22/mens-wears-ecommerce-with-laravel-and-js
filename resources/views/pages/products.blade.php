@@ -14,21 +14,21 @@
 
 @section('content')
     <!-- <div class="breadcrumb-area section-padding-1 breadcrumb-bg-1 breadcrumb-ptb-2">
-            <div class="container-fluid">
-                <div class="breadcrumb-content text-center">
-                    <div class="breadcrumb-title">
-                        <h2>Shop</h2>
-                    </div>
-                    <ul>
-                        <li>
-                            <a href="{{ route('index') }}">Home 01 </a>
-                        </li>
-                        <li><span> &gt; </span></li>
-                        <li class="active"> shop </li>
-                    </ul>
-                </div>
-            </div>
-        </div> -->
+                        <div class="container-fluid">
+                            <div class="breadcrumb-content text-center">
+                                <div class="breadcrumb-title">
+                                    <h2>Shop</h2>
+                                </div>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('index') }}">Home 01 </a>
+                                    </li>
+                                    <li><span> &gt; </span></li>
+                                    <li class="active"> shop </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div> -->
     <div class="shop-area section-padding-3 pt-70 pb-100">
         <div class="container-fluid">
             <div class="row flex-row-reverse">
@@ -46,13 +46,22 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <div class="pro-pagination-style text-center">
-                                <ul>
-                                    {{ $products->links('pagination::bootstrap-4') }}
-                                    <!-- <li><a class="active" href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li> -->
-                                </ul>
+                            <div class="">
+                                {{-- @php
+                                    $total = $products->total();
+                                    $currentPage = $products->currentPage();
+                                    $perPage = $products->perPage();
+                                    
+                                    $from = ($currentPage - 1) * $perPage + 1;
+                                    $to = min($currentPage * $perPage, $total);
+                                @endphp
+
+                                <p class="ml-4">
+                                    Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                                </p> --}}
+                                <div class="row justify-content-center">
+                                    <div class="col-6">{{ $products->links() }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -64,7 +73,7 @@
                             <div class="sidebar-widget-list mt-50">
                                 <ul>
                                     <!-- <li><a href="#">Electronics & Tech</a> <span>(16)</span></li> -->
-                                    <label><input type="radio" name="category_id" value="all" style="background-color: none;border: none;width: auto;height: auto;" checked> ALL</label>
+                                    <label><input type="radio" name="category_id" value="all" style="background-color: none;border: none;width: auto;height: auto;" checked>ALL</label>
                                     @foreach (App\Models\Category::orderBy('position', 'ASC')->get() as $category)
                                         <div>
                                             <label><input type="radio" name="category_id" value="{{ $category->id }}" style="background-color: none;border: none;width: auto;height: auto;"> {{ $category->title }}</label> <span style="float: right;">({{ count($category->products) }})</span>
@@ -90,14 +99,14 @@
                         <div class="sidebar-widget mb-70">
                             <h4 class="pro-sidebar-title">Filter by price </h4>
                             <!-- <div class="price-filter mt-60">
-                                    <div id="slider-range"></div>
-                                    <div class="price-slider-amount">
-                                        <div class="label-input">
-                                            <span>Price: </span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
-                                        </div>
-                                        <button type="button">Filter</button>
-                                    </div>
-                                </div> -->
+                                                <div id="slider-range"></div>
+                                                <div class="price-slider-amount">
+                                                    <div class="label-input">
+                                                        <span>Price: </span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                                                    </div>
+                                                    <button type="button">Filter</button>
+                                                </div>
+                                            </div> -->
                             <fieldset class="filter-price">
 
                                 <div class="price-field">

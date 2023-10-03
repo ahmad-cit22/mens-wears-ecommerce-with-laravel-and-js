@@ -19,6 +19,23 @@
                                         @include('pages.partials.product')
                                     </div>
                                 @endforeach
+                                <div class="">
+                                    @php
+                                        $total = $products->total();
+                                        $currentPage = $products->currentPage();
+                                        $perPage = $products->perPage();
+                                        
+                                        $from = ($currentPage - 1) * $perPage + 1;
+                                        $to = min($currentPage * $perPage, $total);
+                                    @endphp
+
+                                    <p class="ml-4">
+                                        Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                                    </p>
+                                    <div class="row justify-content-center">
+                                        <div class="col-4">{{ $products->links() }}</div>
+                                    </div>
+                                </div>
                             @else
                                 <h3 class="text-center p-4">Products not found.</h3>
                                 <p class="text-center"><a href="{{ route('products') }}">Browse Other Products</a></p>
