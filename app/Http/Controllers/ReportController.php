@@ -29,17 +29,29 @@ class ReportController extends Controller {
         if (auth()->user()->can('report.income')) {
             $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
             $production_cost = 0;
+            $retail_production_cost = 0;
+            $wholesale_production_cost = 0;
             $other_income = BankTransaction::where('other_income', 1)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
             $expenses = ExpenseEntry::whereMonth('date', Carbon::now()->month)->whereYear('date', Carbon::now()->year)->orderBy('id', 'DESC')->get();
             $expense_types = Expense::all();
-            $order_amount = $orders->sum('price');
-            foreach ($orders as $order) {
-                $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
-                });
-            }
+            $retail_order_amount = $orders->where('source', '!=', 'Wholesale')->sum('price');
+            $wholesale_order_amount = $orders->where('source', 'Wholesale')->sum('price');
+            $order_amount = $retail_order_amount + $wholesale_order_amount;
 
-            return view('admin.report.income-statement', compact('order_amount', 'production_cost', 'other_income', 'expenses', 'expense_types', 'date_from', 'date_to'));
+            foreach ($orders as $order) {
+                if ($order->source != 'Wholesale') {
+                    $retail_production_cost += $order->order_product->sum(function ($t) {
+                        return $t->production_cost * $t->qty;
+                    });
+                } else {
+                    $wholesale_production_cost += $order->order_product->sum(function ($t) {
+                        return $t->production_cost * $t->qty;
+                    });
+                }
+            }
+            $production_cost = $retail_production_cost + $wholesale_production_cost;
+
+            return view('admin.report.income-statement', compact('order_amount', 'production_cost', 'retail_order_amount', 'wholesale_order_amount', 'retail_production_cost', 'wholesale_production_cost', 'other_income', 'expenses', 'expense_types', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }

@@ -227,6 +227,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/return/{id}', [App\Http\Controllers\OrderController::class, 'return'])->name('return');
 		Route::post('/apply-cod/{id}', [App\Http\Controllers\OrderController::class, 'apply_cod'])->name('apply.cod');
 		Route::get('/remove-discount/{id}', [App\Http\Controllers\OrderController::class, 'remove_discount'])->name('remove.discount');
+		Route::get('/remove-loss/{id}', [App\Http\Controllers\OrderController::class, 'remove_loss'])->name('remove.loss');
 		// Invoice route
 		Route::get('/generate-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_invoice'])->name('invoice.generate');
 		Route::get('/generate-pos-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_pos_invoice'])->name('invoice.pos.generate');

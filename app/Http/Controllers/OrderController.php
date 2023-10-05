@@ -935,4 +935,24 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
+
+    public function remove_loss($id) {
+        if (auth()->user()->can('order.edit') || auth()->user()->can('add.loss')) {
+            $order = Order::find($id);
+
+            if (!is_null($order)) {
+                $order->add_loss = 0;
+                $order->save();
+
+                Alert::toast('Loss Removed!', 'success');
+
+                return back();
+            } else {
+                Alert::toast('Something went wrong!', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
 }

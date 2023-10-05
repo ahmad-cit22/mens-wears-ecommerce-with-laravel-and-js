@@ -80,13 +80,23 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Sells</td>
-                                <td>{{ env('CURRENCY') }}{{ round($order_amount) }}</td>
+                                <td>Retail Sells</td>
+                                <td class="text-success font-weight-bold">{{ env('CURRENCY') }}{{ round($retail_order_amount) }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Cost of good sold</td>
-                                <td>{{ env('CURRENCY') }}{{ round($production_cost, 2) }}</td>
+                                <td>Wholesale Sells</td>
+                                <td class="text-success font-weight-bold">{{ env('CURRENCY') }}{{ round($wholesale_order_amount) }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Cost of good sold (Retail)</td>
+                                <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($retail_production_cost, 2) }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Cost of good sold (Wholesale)</td>
+                                <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($wholesale_production_cost, 2) }}</td>
                                 <td></td>
                             </tr>
                             <tr>
@@ -124,7 +134,7 @@
                                 @if ($sum > 0)
                                     <tr>
                                         <td>{{ $type_name }}</td>
-                                        <td>{{ env('CURRENCY') }}{{ $sum }}</td>
+                                        <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ $sum }}</td>
                                         <td></td>
                                     </tr>
                                 @endif
