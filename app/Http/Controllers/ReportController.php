@@ -36,7 +36,8 @@ class ReportController extends Controller {
             $expense_types = Expense::all();
             $retail_order_amount = $orders->where('source', '!=', 'Wholesale')->sum('price');
             $wholesale_order_amount = $orders->where('source', 'Wholesale')->sum('price');
-            $order_amount = $retail_order_amount + $wholesale_order_amount;
+            // $order_amount = $retail_order_amount + $wholesale_order_amount;
+            $order_amount = $orders->sum('price');
 
             foreach ($orders as $order) {
                 if ($order->source != 'Wholesale') {
@@ -48,8 +49,11 @@ class ReportController extends Controller {
                         return $t->production_cost * $t->qty;
                     });
                 }
+                $production_cost += $order->order_product->sum(function ($t) {
+                    return $t->production_cost * $t->qty;
+                });
             }
-            $production_cost = $retail_production_cost + $wholesale_production_cost;
+            // $production_cost = $retail_production_cost + $wholesale_production_cost;
 
             return view('admin.report.income-statement', compact('order_amount', 'production_cost', 'retail_order_amount', 'wholesale_order_amount', 'retail_production_cost', 'wholesale_production_cost', 'other_income', 'expenses', 'expense_types', 'date_from', 'date_to'));
         } else {
@@ -78,15 +82,32 @@ class ReportController extends Controller {
                 $expenses = ExpenseEntry::whereMonth('date', Carbon::now()->month)->whereYear('date', Carbon::now()->year)->orderBy('id', 'DESC')->get();
             }
             $production_cost = 0;
+            $retail_production_cost = 0;
+            $wholesale_production_cost = 0;
+
+            $retail_order_amount = $orders->where('source', '!=', 'Wholesale')->sum('price');
+            $wholesale_order_amount = $orders->where('source', 'Wholesale')->sum('price');
+            // $order_amount = $retail_order_amount + $wholesale_order_amount;
             $order_amount = $orders->sum('price');
+
             foreach ($orders as $order) {
+                if ($order->source != 'Wholesale') {
+                    $retail_production_cost += $order->order_product->sum(function ($t) {
+                        return $t->production_cost * $t->qty;
+                    });
+                } else {
+                    $wholesale_production_cost += $order->order_product->sum(function ($t) {
+                        return $t->production_cost * $t->qty;
+                    });
+                }
                 $production_cost += $order->order_product->sum(function ($t) {
                     return $t->production_cost * $t->qty;
                 });
             }
+            // $production_cost = $retail_production_cost + $wholesale_production_cost;
             $expense_types = Expense::all();
 
-            return view('admin.report.income-statement', compact('order_amount', 'production_cost', 'other_income', 'expenses', 'expense_types', 'date_from', 'date_to'));
+            return view('admin.report.income-statement', compact('order_amount', 'production_cost', 'retail_order_amount', 'wholesale_order_amount', 'retail_production_cost', 'wholesale_production_cost', 'other_income', 'expenses', 'expense_types', 'date_from', 'date_to'));
         } else {
             abort(403, 'Unauthorized action.');
         }
