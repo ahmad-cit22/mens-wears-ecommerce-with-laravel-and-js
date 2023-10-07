@@ -88,7 +88,7 @@
                                                 <span class="badge badge-info ml-1">COD Applied</span>
                                             @endif
                                             @if ($order->add_loss == 1)
-                                                <span class="badge badge-primary ml-1">Loss Added</span>
+                                                <span class="badge badge-danger ml-1">Loss Added</span>
                                             @endif <br>
                                         </div>
 
