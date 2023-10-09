@@ -285,6 +285,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Order Sheet (FOS) Routes
 	Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {
 		Route::get('/', [App\Http\Controllers\FacebookOrderController::class, 'index'])->name('index');
+		Route::get('/search_table', [App\Http\Controllers\FacebookOrderController::class, 'fos_search'])->name('search_table');
 		Route::get('/create', [App\Http\Controllers\FacebookOrderController::class, 'create'])->name('create');
 		Route::get('/wholesale-create', [App\Http\Controllers\FacebookOrderController::class, 'wholesale_create'])->name('wholesale.create');
 		Route::post('/store', [App\Http\Controllers\FacebookOrderController::class, 'store'])->name('store');

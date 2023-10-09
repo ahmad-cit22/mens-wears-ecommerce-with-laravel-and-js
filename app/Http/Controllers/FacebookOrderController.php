@@ -40,9 +40,30 @@ class FacebookOrderController extends Controller {
         $special_status_id = '';
 
         if (auth()->user()->can('order_sheet.index')) {
-            $orders = FacebookOrder::orderBy('id', 'DESC')->get();
+            $orders = FacebookOrder::orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
             return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function fos_search(Request $request) {
+        $date_from = '';
+        $date_to = '';
+        $order_status_id = '';
+        $special_status_id = '';
+
+        $search = $request->search;
+        $search_phone = $request->search_phone;
+
+
+        if (auth()->user()->can('order_sheet.index')) {
+            $orders = FacebookOrder::where('name', 'like', '%' . $search . '%')->where('phone', 'like', '%' . $search_phone . '%')->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
+            if (count($orders) > 0) {
+                return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
+            }
+            return back()->with('error', 'No results Found');
         } else {
             abort(403, 'Unauthorized action.');
         }

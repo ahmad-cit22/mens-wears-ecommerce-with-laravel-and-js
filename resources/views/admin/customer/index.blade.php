@@ -41,9 +41,11 @@
                         </form>
                     </div>
                 </div>
-                <p class="text-right mr-3 mt-2"><a href="{{ route('customer.index') }}">
+                <p class="text-right mr-3 mt-2">
+                    <a href="{{ route('customer.index') }}">
                         <i class="fas fa-reply fa-sm mr-1"></i> Reset Results
-                    </a></p>
+                    </a>
+                </p>
                 <div class="card-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover datatable">
                         <thead>
@@ -197,7 +199,7 @@
                     Showing {{ $from }} to {{ $to }} of {{ $total }} entries
                 </p>
                 <div class="row justify-content-center">
-                    {{ $customers->links() }}
+                    {{ $customers->withQueryString()->links() }}
                 </div>
 
                 {{-- {{ $paginator->getOptions() }} --}}

@@ -116,7 +116,31 @@
                     </form>
                 </div>
                 <!-- /.card-header -->
-                @include('admin.partials.page_search')
+                {{-- @include('admin.partials.page_search') --}}
+
+                <div class="row mt-3">
+                    <div class="col-6">
+                    </div>
+
+                    <div class="col-3">
+                        <form class="row" action="{{ route('fos.search_table') }}" method="get" role="search">
+                            <input type="text" placeholder="Search with name.." name="search" class="form-control" style="width: 80%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="col-3">
+                        <form class="row" action="{{ route('fos.search_table') }}" method="get" role="search">
+                            <input type="number" placeholder="Search with phone.." name="search_phone" class="form-control" style="width: 80%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-right mr-3 mt-2">
+                    <a href="{{ route('fos.index') }}">
+                        <i class="fas fa-reply fa-sm mr-1"></i> Reset Results
+                    </a>
+                </p>
                 <div class="table-responsive">
                     <table id="data-table" class="table table-bordered table-hover datatable">
                         <thead>
@@ -245,6 +269,22 @@
                         </tfoot>
                     </table>
                 </div>
+
+                @php
+                    $total = $orders->total();
+                    $currentPage = $orders->currentPage();
+                    $perPage = $orders->perPage();
+                    
+                    $from = ($currentPage - 1) * $perPage + 1;
+                    $to = min($currentPage * $perPage, $total);
+                @endphp
+
+                <p class="ml-4">
+                    Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                </p>
+                <div class="row justify-content-center">
+                    {{ $orders->withQueryString()->links() }}
+                </div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -256,15 +296,15 @@
 
 @section('scripts')
     <script>
-        $(function() {
-            $("#data-table").DataTable({
-                "responsive": false,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        // $(function() {
+        //     $("#data-table").DataTable({
+        //         "responsive": false,
+        //         "lengthChange": false,
+        //         "autoWidth": false,
+        //         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        //     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-        });
+        // });
     </script>
 
     <script>
