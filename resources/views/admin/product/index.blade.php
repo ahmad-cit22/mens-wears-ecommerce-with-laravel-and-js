@@ -30,11 +30,11 @@
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
-                            <tr> 
+                            <tr>
                                 <th>S.N</th>
                                 <th>Product</th>
                                 <th>Category</th>
-                                <th>Brand</th> 
+                                <th>Brand</th>
                                 <th>Type</th>
                                 <th>Stock</th>
                                 <th>Status</th>
