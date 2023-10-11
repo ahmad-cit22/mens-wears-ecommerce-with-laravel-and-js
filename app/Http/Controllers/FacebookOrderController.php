@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class FacebookOrderController extends Controller {
-    public function index(Request $request) {
+    public function index(Request $request, ) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
@@ -194,7 +194,7 @@ class FacebookOrderController extends Controller {
         $date_from = '';
         $date_to = '';
 
-        $orders = FacebookOrder::orderBy('id', 'DESC')->get();
+        $orders = FacebookOrder::orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -204,7 +204,7 @@ class FacebookOrderController extends Controller {
                 $special_status_id = $request->special_status_id;
 
                 $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -216,7 +216,7 @@ class FacebookOrderController extends Controller {
                 $order_status_id = $request->order_status_id;
                 $special_status_id = $request->special_status_id;
 
-                $orders = FacebookOrder::where('order_status_id', $order_status_id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -228,7 +228,7 @@ class FacebookOrderController extends Controller {
                 $order_status_id = $request->order_status_id;
                 $special_status_id = $request->special_status_id;
 
-                $orders = FacebookOrder::where('special_status_id', $special_status_id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('special_status_id', $special_status_id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -240,7 +240,7 @@ class FacebookOrderController extends Controller {
                 $order_status_id = $request->order_status_id;
                 $special_status_id = $request->special_status_id;
 
-                $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -251,7 +251,7 @@ class FacebookOrderController extends Controller {
                 $order_status_id = $request->order_status_id;
                 $special_status_id = $request->special_status_id;
 
-                $orders = FacebookOrder::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
             }
 
             if ((empty($request->order_status_id) && !empty($request->special_status_id) && empty($request->date_from) && empty($request->date_to)) || (empty($request->order_status_id) && !empty($request->special_status_id) && !empty($request->date_from) && empty($request->date_to)) || (empty($request->order_status_id) && !empty($request->special_status_id) && empty($request->date_from) && !empty($request->date_to))) {
@@ -259,7 +259,7 @@ class FacebookOrderController extends Controller {
                 $order_status_id = $request->order_status_id;
                 $special_status_id = $request->special_status_id;
 
-                $orders = FacebookOrder::where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::where('special_status_id', $special_status_id)->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
             }
 
             if (empty($request->order_status_id) && empty($request->special_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -267,7 +267,7 @@ class FacebookOrderController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
                 $special_status_id = $request->special_status_id;
-                $orders = FacebookOrder::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -278,7 +278,7 @@ class FacebookOrderController extends Controller {
                 $order_status_id = '';
                 $special_status_id = '';
 
-                $orders = FacebookOrder::orderBy('id', 'DESC')->get();
+                $orders = FacebookOrder::orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
             }
 
             return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));

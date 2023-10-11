@@ -136,7 +136,7 @@ class OrderController extends Controller {
         $order_status_id = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
             $categories = Category::all();
             return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));
         } else {

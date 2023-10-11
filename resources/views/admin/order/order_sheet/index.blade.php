@@ -116,23 +116,29 @@
                     </form>
                 </div>
                 <!-- /.card-header -->
-                {{-- @include('admin.partials.page_search') --}}
 
                 <div class="row mt-3">
                     <div class="col-6">
                     </div>
 
-                    <div class="col-3">
+                    <div class="col-2">
                         <form class="row" action="{{ route('fos.search_table') }}" method="get" role="search">
-                            <input type="text" placeholder="Search with name.." name="search" class="form-control" style="width: 80%; margin-right: 10px">
+                            <input type="text" placeholder="Search with name.." name="search" class="form-control" style="width: 70%; margin-right: 10px">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
                         </form>
                     </div>
 
-                    <div class="col-3">
+                    <div class="col-2">
                         <form class="row" action="{{ route('fos.search_table') }}" method="get" role="search">
-                            <input type="number" placeholder="Search with phone.." name="search_phone" class="form-control" style="width: 80%; margin-right: 10px">
+                            <input type="number" placeholder="Search with phone.." name="search_phone" class="form-control" style="width: 70%; margin-right: 10px">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="col-2">
+                        <form class="row" action="{{ route('fos.index') }}" method="get" role="search">
+                            <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
                         </form>
                     </div>
                 </div>
@@ -146,7 +152,7 @@
                         <thead>
                             <tr>
                                 <th>S.N</th>
-                                <th style="min-width: 60px">Memo</th>
+                                <th style="min-width: 90px">Memo</th>
                                 <th style="min-width: 131px">Customer Name</th>
                                 <th>Phone</th>
                                 <th style="min-width: 180px">Address</th>
@@ -296,18 +302,6 @@
 
 @section('scripts')
     <script>
-        // $(function() {
-        //     $("#data-table").DataTable({
-        //         "responsive": false,
-        //         "lengthChange": false,
-        //         "autoWidth": false,
-        //         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        //     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        // });
-    </script>
-
-    <script>
         $('#district_id').change(function() {
             var district_id = $(this).val();
             if (district_id == '') {
@@ -327,46 +321,4 @@
 
         });
     </script>
-
-    {{-- <script type="text/javascript">
-        $(function() {
-
-            var table = $('#data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ordering: false,
-                columns: [{
-                        data: 'id'
-                    },
-                    {
-                        data: 'code'
-                    },
-                    {
-                        data: 'name'
-                    },
-                    {
-                        data: 'phone'
-                    },
-                    {
-                        data: 'status'
-                    },
-                    {
-                        data: 'note'
-                    },
-                    {
-                        data: 'source'
-                    },
-                    {
-                        data: 'date'
-                    },
-                    {
-                        data: 'action',
-                        orderable: false,
-                        searchable: true
-                    },
-                ]
-            });
-
-        });
-    </script> --}}
 @endsection

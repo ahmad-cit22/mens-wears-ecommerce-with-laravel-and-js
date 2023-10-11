@@ -60,7 +60,7 @@
                                     Showing {{ $from }} to {{ $to }} of {{ $total }} entries
                                 </p> --}}
                                 <div class="row justify-content-center">
-                                    <div class="col-6">{{ $products->links() }}</div>
+                                    <div class="col-6">{{ $products->withQueryString()->links() }}</div>
                                 </div>
                             </div>
                         </div>
