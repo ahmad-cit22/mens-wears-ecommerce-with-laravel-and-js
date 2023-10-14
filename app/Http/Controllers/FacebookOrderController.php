@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class FacebookOrderController extends Controller {
-    public function index(Request $request, ) {
+    public function index(Request $request) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
@@ -75,7 +75,7 @@ class FacebookOrderController extends Controller {
                 Session::forget('wholesale_price');
             }
 
-            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -91,7 +91,7 @@ class FacebookOrderController extends Controller {
 
     public function wholesale_create(Request $request) {
         session(['wholesale_price' => 1]);
-        $products = ProductStock::orderBy('id', 'DESC')->get();
+        $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
         $categories = Category::orderBy('title', 'ASC')->get();
         $brands = Brand::orderBy('title', 'ASC')->get();
         $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
