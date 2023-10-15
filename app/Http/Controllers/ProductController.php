@@ -28,9 +28,24 @@ class ProductController extends Controller {
      */
     public function index() {
         if (auth()->user()->can('product.index')) {
-            $products = Product::orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->get();
+            $products = Product::orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
             // return $products;
             return view('admin.product.index', compact('products'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function product_search(Request $request) {
+
+        $search = $request->search;
+
+        if (auth()->user()->can('product.index')) {
+            $products = Product::where('title', 'like', '%' . $search . '%')->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            if (count($products) > 0) {
+                return view('admin.product.index', compact('products'));
+            }
+            return back()->with('error', 'No results Found');
         } else {
             abort(403, 'Unauthorized action.');
         }

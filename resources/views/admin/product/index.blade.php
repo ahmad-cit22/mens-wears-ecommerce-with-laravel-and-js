@@ -22,11 +22,33 @@
             <div class="card">
                 <div class="card-header">
                     @can('product.create')
-                        <a href="{{ route('product.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Product</a>
+                        <a href="{{ route('product.create') }}" class="btn btn-primary"><i class="fas fa-plus mr-2"></i>Add Product</a>
                     @endcan
                 </div>
                 <!-- /.card-header -->
-                @include('admin.partials.page_search')
+                <div class="row mt-3">
+                    <div class="col-lg-7">
+                    </div>
+
+                    <div class="col-lg-3">
+                        <form class="row" action="{{ route('product.search_table') }}" method="get" role="search">
+                            <input type="text" placeholder="Search with product name.." name="search" class="form-control" style="width: 70%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <form class="row" action="{{ route('product.index') }}" method="get" role="search">
+                            <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-right mr-4 mt-2">
+                    <a href="{{ route('product.index') }}">
+                        <i class="fas fa-reply fa-sm mr-1"></i> Reset Results
+                    </a>
+                </p>
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -116,7 +138,21 @@
                         </tfoot>
                     </table>
                 </div>
+                @php
+                    $total = $products->total();
+                    $currentPage = $products->currentPage();
+                    $perPage = $products->perPage();
+                    
+                    $from = ($currentPage - 1) * $perPage + 1;
+                    $to = min($currentPage * $perPage, $total);
+                @endphp
 
+                <p class="ml-4">
+                    Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                </p>
+                <div class="row justify-content-center">
+                    {{ $products->withQueryString()->links() }}
+                </div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -128,22 +164,22 @@
 
 @section('scripts')
     <script>
-        $(function() {
-            var table = $("#data-table").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
+        // $(function() {
+        //     var table = $("#data-table").DataTable({
+        //         "responsive": true,
+        //         "lengthChange": false,
+        //         "autoWidth": false,
+        //         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        //     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        //     $('#example2').DataTable({
+        //         "paging": true,
+        //         "lengthChange": false,
+        //         "searching": true,
+        //         "ordering": true,
+        //         "info": true,
+        //         "autoWidth": false,
+        //         "responsive": true,
+        //     });
+        // });
     </script>
 @endsection

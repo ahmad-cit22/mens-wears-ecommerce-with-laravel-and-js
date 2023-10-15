@@ -185,6 +185,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Product Routes
 	Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
 		Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('index');
+		Route::get('/search_table', [App\Http\Controllers\ProductController::class, 'product_search'])->name('search_table');
 		Route::get('/create', [App\Http\Controllers\ProductController::class, 'create'])->name('create');
 		Route::post('/stote', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
 		Route::get('/edit/{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
