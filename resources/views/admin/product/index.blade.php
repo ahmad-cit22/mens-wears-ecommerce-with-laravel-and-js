@@ -27,10 +27,10 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="row mt-3">
-                    <div class="col-lg-7">
+                    <div class="col-lg-6">
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <form class="row" action="{{ route('product.search_table') }}" method="get" role="search">
                             <input type="text" placeholder="Search with product name.." name="search" class="form-control" style="width: 70%; margin-right: 10px">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
