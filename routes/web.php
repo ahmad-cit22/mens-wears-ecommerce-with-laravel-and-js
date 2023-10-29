@@ -185,6 +185,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Product Routes
 	Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
 		Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('index');
+		Route::get('/search_table', [App\Http\Controllers\ProductController::class, 'product_search'])->name('search_table');
 		Route::get('/create', [App\Http\Controllers\ProductController::class, 'create'])->name('create');
 		Route::post('/stote', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
 		Route::get('/edit/{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
@@ -227,6 +228,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/return/{id}', [App\Http\Controllers\OrderController::class, 'return'])->name('return');
 		Route::post('/apply-cod/{id}', [App\Http\Controllers\OrderController::class, 'apply_cod'])->name('apply.cod');
 		Route::get('/remove-discount/{id}', [App\Http\Controllers\OrderController::class, 'remove_discount'])->name('remove.discount');
+		Route::get('/remove-loss/{id}', [App\Http\Controllers\OrderController::class, 'remove_loss'])->name('remove.loss');
 		// Invoice route
 		Route::get('/generate-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_invoice'])->name('invoice.generate');
 		Route::get('/generate-pos-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_pos_invoice'])->name('invoice.pos.generate');
@@ -284,6 +286,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Order Sheet (FOS) Routes
 	Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {
 		Route::get('/', [App\Http\Controllers\FacebookOrderController::class, 'index'])->name('index');
+		Route::get('/search_table', [App\Http\Controllers\FacebookOrderController::class, 'fos_search'])->name('search_table');
 		Route::get('/create', [App\Http\Controllers\FacebookOrderController::class, 'create'])->name('create');
 		Route::get('/wholesale-create', [App\Http\Controllers\FacebookOrderController::class, 'wholesale_create'])->name('wholesale.create');
 		Route::post('/store', [App\Http\Controllers\FacebookOrderController::class, 'store'])->name('store');

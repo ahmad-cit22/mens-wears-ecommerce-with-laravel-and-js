@@ -40,7 +40,26 @@
                                         ) }}
                                 </h3>
 
-                                <p>Total Accumulated Sales </p>
+                                <h4>Total Accumulated Sales </h4>
+
+                                <h5>Retail:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
+                                <h5>Wholesale:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-stats-bars"></i>
@@ -57,13 +76,32 @@
                                     {{ env('CURRENCY') .
                                         ' ' .
                                         round(
-                                        $yearly_orders->filter(function ($order) {
-                                                return $order->order_status_id != 5;
-                                            })->sum('price'),
-                                    ) }}
+                                            $yearly_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5;
+                                                })->sum('price'),
+                                        ) }}
                                 </h3>
 
-                                <p>Current Year Sales</p>
+                                <h4>Current Year Sales</h4>
+
+                                <h5>Retail:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $yearly_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
+                                <h5>Wholesale:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $yearly_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person-add"></i>
@@ -81,13 +119,32 @@
                                     {{ env('CURRENCY') .
                                         ' ' .
                                         round(
-                                        $monthly_orders->filter(function ($order) {
-                                                return $order->order_status_id != 5;
-                                            })->sum('price'),
-                                    ) }}
+                                            $monthly_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5;
+                                                })->sum('price'),
+                                        ) }}
                                 </h3>
 
-                                <p>Current Month Sales</p>
+                                <h4>Current Month Sales</h4>
+
+                                <h5>Retail:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $monthly_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
+                                <h5>Wholesale:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $monthly_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-pie-graph"></i>
@@ -104,13 +161,32 @@
                                     {{ env('CURRENCY') .
                                         ' ' .
                                         round(
-                                        $daily_orders->filter(function ($order) {
-                                                return $order->order_status_id != 5;
-                                            })->sum('price'),
-                                    ) }}
+                                            $daily_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5;
+                                                })->sum('price'),
+                                        ) }}
                                 </h3>
 
-                                <p>Today's Sales</p>
+                                <h4>Today's Sales</h4>
+
+                                <h5>Retail:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $daily_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
+                                <h5>Wholesale:
+                                    {{ env('CURRENCY') .
+                                        ' ' .
+                                        round(
+                                            $daily_orders->filter(function ($order) {
+                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                })->sum('price'),
+                                        ) }}
+                                </h5>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-bag"></i>

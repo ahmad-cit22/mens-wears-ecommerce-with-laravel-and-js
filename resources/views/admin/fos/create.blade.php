@@ -407,42 +407,6 @@
                                     </svg>
                                 </button>
                             </div>
-                            {{-- <div class="modal-body">
-
-                                <div class="form-group row">
-
-                                    <div class="col-md-12">
-                                        <label class="text-body">Customer Name</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="text" name="name" class="form-control" placeholder="Enter Customer Name">
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label class="text-body">Email</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="email" name="email" class="form-control" placeholder="Enter E-mail">
-                                        </fieldset>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-body">Phone</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number">
-                                        </fieldset>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row ">
-                                    <div class="col-md-12">
-                                        <label class="text-body">Address</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="text" name="text" class="form-control " placeholder="Enter Address" name="shipping_address">
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-info float-right" data-dismiss="modal">Ok</button>
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -683,9 +647,21 @@
                     }
                 });
             } else {
-                $('#discount_amount_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(0));
-                $('#discount').val(0);
+                var url = "{{ route('fos.apply.discount') }}";
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        amount: 0,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        $('#discount_amount_label').html(response);
+                        $('#total_amount').html(parseInt(subtotal) - parseInt(response));
+                        $('#discount').val(response);
+                    }
+                });
             }
 
         }

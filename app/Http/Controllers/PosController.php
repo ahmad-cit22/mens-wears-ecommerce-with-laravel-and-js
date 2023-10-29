@@ -42,7 +42,7 @@ class PosController extends Controller {
             }
 
             $couriers = CourierName::all();
-            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -61,7 +61,7 @@ class PosController extends Controller {
         if (auth()->user()->can('wholesale.create')) {
             session(['wholesale_price' => 1]);
             $couriers = CourierName::all();
-            $products = ProductStock::orderBy('id', 'DESC')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();

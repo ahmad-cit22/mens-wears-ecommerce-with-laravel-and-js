@@ -27,23 +27,32 @@
                 <div class="row mt-3">
                     <div class="col-6">
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <form class="row" action="{{ route('customer.search') }}" method="get" role="search">
-                            <input type="text" placeholder="Search with name.." name="search" class="form-control" style="width: 80%; margin-right: 10px">
+                            <input type="text" placeholder="Search with name.." name="search" class="form-control" style="width: 70%; margin-right: 10px">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
                         </form>
                     </div>
 
-                    <div class="col-3">
+                    <div class="col-2">
                         <form class="row" action="{{ route('customer.search') }}" method="get" role="search">
-                            <input type="number" placeholder="Search with phone.." name="search_phone" class="form-control" style="width: 80%; margin-right: 10px">
+                            <input type="number" placeholder="Search with phone.." name="search_phone" class="form-control" style="width: 70%; margin-right: 10px">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
                         </form>
                     </div>
+
+                    <div class="col-2">
+                        <form class="row" action="{{ route('customer.index') }}" method="get" role="search">
+                            <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
+                        </form>
+                    </div>
                 </div>
-                <p class="text-right mr-3 mt-2"><a href="{{ route('customer.index') }}">
+                <p class="text-right mr-3 mt-2">
+                    <a href="{{ route('customer.index') }}">
                         <i class="fas fa-reply fa-sm mr-1"></i> Reset Results
-                    </a></p>
+                    </a>
+                </p>
                 <div class="card-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover datatable">
                         <thead>
@@ -75,7 +84,7 @@
                                         <td>{{ $customer->phone }}</td>
                                     @endif
                                     <td>{{ optional($customer->referrer)->name }}</td>
-                                    <td><img src="{{ asset('images/customer/' . $customer->image) }}" width="100"></td>
+                                    <td><img src="{{ $customer->image != null ? asset('images/customer/' . $customer->image) : asset('images/user/user-avatar-icon.jpg') }}" width="50"></td>
                                     <td>
                                         <form action="{{ route('customer.status_update', $customer->id) }}" method="POST">
                                             @csrf
@@ -197,7 +206,7 @@
                     Showing {{ $from }} to {{ $to }} of {{ $total }} entries
                 </p>
                 <div class="row justify-content-center">
-                    {{ $customers->links() }}
+                    {{ $customers->withQueryString()->links() }}
                 </div>
 
                 {{-- {{ $paginator->getOptions() }} --}}
@@ -209,19 +218,6 @@
 @endsection
 
 @section('scripts')
-    {{-- <script>
-        $(function() {
-            $("#example1").DataTable({
-                // "serverSide": true,
-                "paging": false,
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        });
-    </script> --}}
-
     <script>
         function changeStatus(selectElement, id) {
             let formElement = selectElement.parentNode;

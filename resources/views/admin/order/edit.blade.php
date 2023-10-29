@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -64,41 +64,51 @@
                                     <address>
                                         Name: <strong>{{ $order->name }}</strong><br>
                                         Phone: <strong>{{ $order->phone }}</strong><br>
-                                        Email: {{ $order->email }}<br>
+                                        @if ($order->email != null)
+                                            Email: {{ $order->email }}<br>
+                                        @endif
                                         Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
                                         @if ($order->courier_name)
                                             Courier Name: {{ $order->courier_name }}<br>
                                         @endif
-                                        Order Source: {{ $order->source }}
                                     </address>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
                                     <address>
-                                        <div>
-                                            Satus: <span class="badge badge-{{ $order->status->color }}"> {{ $order->status->title }}</span>
+                                        <div class="mb-1">
+                                            Status: <span class="ml-1 badge badge-{{ $order->status->color }}"> {{ $order->status->title }}</span>
                                             @if ($order->is_return == 1)
-                                                <span class="badge badge-danger ml-1">Returned</span><br>
+                                                <span class="badge badge-danger ml-1">Returned</span>
                                             @elseif ($order->is_return == 2)
-                                                <span class="badge badge-danger ml-1">Returned Partially</span><br>
+                                                <span class="badge badge-danger ml-1">Returned Partially</span>
                                             @else
                                             @endif
+                                            @if ($order->cod != 0)
+                                                <span class="badge badge-info ml-1">COD Applied</span>
+                                            @endif
+                                            @if ($order->add_loss == 1)
+                                                <span class="badge badge-danger ml-1">Loss Added</span>
+                                            @endif <br>
                                         </div>
 
-                                        Order Track Number: <strong># {{ $order->code }}</strong><br>
-                                        Payment Satus: <spane class="badge badge-{{ $order->payment_status == 1 ? 'success' : 'danger' }}"> {{ $order->payment_status == 1 ? 'Paid' : 'Not Paid' }}</spane><br>
-                                        Payment Method: <strong># {{ $order->payment_method }}</strong><br>
-                                        @if ($order->payment_method == 'Bkash' || $order->payment_method == 'Rocket')
-                                            Transaction ID: <strong> {{ $order->transaction_id }}</strong><br>
-                                            Sender Phone: <strong> {{ $order->sender_phone }}</strong><br>
-                                            Amount: <strong>{{ env('CURRENCY') }} {{ $order->sender_amount }}</strong><br>
+                                        Order Track Number: <strong class="ml-1"># {{ $order->code }}</strong><br>
+                                        Payment Satus: <span class="badge badge-{{ $order->payment_status == 1 ? 'success' : 'danger' }}"> {{ $order->payment_status == 1 ? 'Paid' : 'Not Paid' }}</span><br>
+                                        @if ($order->payment_method != null)
+                                            Payment Method: <strong> {{ $order->payment_method }}</strong><br>
+                                            @if ($order->payment_method == 'Bkash' || $order->payment_method == 'Rocket')
+                                                Transaction ID: <strong> {{ $order->transaction_id }}</strong><br>
+                                                Sender Phone: <strong> {{ $order->sender_phone }}</strong><br>
+                                                Amount: <strong>{{ env('CURRENCY') }} {{ $order->sender_amount }}</strong><br>
+                                            @endif
                                         @endif
+                                        Order Source: {{ $order->source }}
                                     </address>
                                 </div>
                             </div>
                             <!-- /.row -->
 
-                            <div class="row">
+                            <div class="row mt-3">
                                 <div class="col-md-6 border-right">
                                     <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
                                         @csrf
@@ -159,7 +169,11 @@
                                                 </div>
                                             </div>
                                             <div class="col-8 text-right">
-                                                <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                                @if (1)
+                                                    <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                                @else
+                                                    <a href="{{ route('order.remove.loss', $order->id) }}" class="btn btn-primary bg-info">Removed Loss</a>
+                                                @endif
                                                 @if ($order->price > 0)
                                                     <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
                                                 @endif
@@ -216,10 +230,12 @@
                                                 <td colspan="4" align="right">Discount (-):</td>
                                                 <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
                                             </tr>
-                                            <tr>
-                                                <td colspan="4" align="right">COD (-):</td>
-                                                <td>{{ env('CURRENCY') }}{{ $order->cod == null ? 0 : $order->cod }}</td>
-                                            </tr>
+                                            @if ($order->cod != 0)
+                                                <tr>
+                                                    <td colspan="4" align="right">COD (-):</td>
+                                                    <td>{{ env('CURRENCY') }}{{ $order->cod }}</td>
+                                                </tr>
+                                            @endif
                                             @if ($order->wallet_amount != null)
                                                 <tr>
                                                     <td colspan="4" align="right">Wallet Use:</td>
@@ -251,11 +267,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                                                          <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                      </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                              </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
@@ -299,6 +315,7 @@
                     <form action="{{ route('expenseentry.loss.store') }}" method="POST">
                         @csrf
                         <div class="row">
+                            <input type="hidden" name="order_id" value="{{ $order->id }}" readonly>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Bank*</label>

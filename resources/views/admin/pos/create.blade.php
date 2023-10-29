@@ -982,10 +982,22 @@
                     }
                 });
             } else {
-                var shipping_charge = $('#shipping_charge').val();
-                $('#discount_amount_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(0));
-                $('#discount').val(0);
+                var url = "{{ route('pos.apply.discount') }}";
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        amount: 0,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        var shipping_charge = $('#shipping_charge').val();
+                        $('#discount_amount_label').html(response);
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
+                        $('#discount').val(response);
+                    }
+                });
             }
 
         }

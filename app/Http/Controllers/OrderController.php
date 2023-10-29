@@ -136,7 +136,7 @@ class OrderController extends Controller {
         $order_status_id = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
             $categories = Category::all();
             return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));
         } else {
@@ -925,6 +925,26 @@ class OrderController extends Controller {
                 $order->discount_amount = null;
                 $order->save();
                 Alert::toast('Discount Removed!', 'success');
+
+                return back();
+            } else {
+                Alert::toast('Something went wrong!', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function remove_loss($id) {
+        if (auth()->user()->can('order.edit') || auth()->user()->can('add.loss')) {
+            $order = Order::find($id);
+
+            if (!is_null($order)) {
+                $order->add_loss = 0;
+                $order->save();
+
+                Alert::toast('Loss Removed!', 'success');
 
                 return back();
             } else {

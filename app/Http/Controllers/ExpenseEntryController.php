@@ -8,6 +8,7 @@ use App\Models\Bank;
 use Illuminate\Http\Request;
 use Auth;
 use Alert;
+use App\Models\Order;
 use Carbon\Carbon;
 use DataTables;
 
@@ -185,24 +186,34 @@ class ExpenseEntryController extends Controller {
                 'amount' => 'required|numeric',
             ]);
 
-            $expense = new ExpenseEntry;
-            $expense->expense_id = 2;
-            $expense->bank_id = $request->bank_id;
-            $expense->amount = $request->amount;
-            $expense->date = Carbon::now()->format('Y-m-d');
-            $expense->note = $request->note;
-            $expense->save();
+            if ($request->amount > 0) {
+                $expense = new ExpenseEntry;
+                $expense->expense_id = 2;
+                $expense->bank_id = $request->bank_id;
+                $expense->amount = $request->amount;
+                $expense->date = Carbon::now()->format('Y-m-d');
+                $expense->note = $request->note;
+                $expense->save();
 
-            if ($request->bank_id != '' && $request->bank_id > 0) {
-                $transaction = new BankTransaction;
-                $transaction->bank_id = $request->bank_id;
-                $transaction->expense_id = $expense->id;
-                $transaction->note = $request->note;
-                $transaction->debit = $request->amount;
-                $transaction->date = $request->date;
-                $transaction->save();
+                if ($request->bank_id != '' && $request->bank_id > 0) {
+                    $transaction = new BankTransaction;
+                    $transaction->bank_id = $request->bank_id;
+                    $transaction->expense_id = $expense->id;
+                    $transaction->note = $request->note;
+                    $transaction->debit = $request->amount;
+                    $transaction->date = $request->date;
+                    $transaction->save();
+                }
+
+                $order = Order::find($request->order_id);
+                $order->add_loss = 1;
+                $order->save();
+
+                Alert::toast('Loss added', 'success');
+            } else {
+                Alert::toast('Enter loss amount correctly!', 'error');
             }
-            Alert::toast('Loss added', 'success');
+
             return back();
         } else {
             abort(403, 'Unauthorized action.');
