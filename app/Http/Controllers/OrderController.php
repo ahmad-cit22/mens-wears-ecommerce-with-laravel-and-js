@@ -15,6 +15,8 @@ use App\Models\OrderReturn;
 use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
+use App\Exports\SellListExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller {
     /**
@@ -129,6 +131,11 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
+
+    // public function export_to_excel()
+    // {
+    //     return Excel::download(new SellListExport, 'sells.xlsx');
+    // }
 
     public function sell_report(Request $request) {
         $date_from = '';
