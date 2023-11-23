@@ -126,6 +126,11 @@
                 </div>
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
+                <p class="text-left ml-4 mb-0 mt-0">
+                    <a href="{{ route('sell.sell.export') }}">
+                        <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
+                    </a>
+                </p>
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -159,18 +164,6 @@
 
 @section('scripts')
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        });
-    </script>
-
-    <script>
         $('#district_id').change(function() {
             var district_id = $(this).val();
             if (district_id == '') {
@@ -193,7 +186,6 @@
 
     <script type="text/javascript">
         $(function() {
-
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -231,25 +223,7 @@
                         searchable: true
                     },
                 ],
-                {
-                    // extend: 'print',
-                    // exportOptions: {
-                    //     customizeData: function(d) {
-                    //         var exportBody = GetDataToExport();
-                    //         d.body.length = 0;
-                    //         d.body.push.apply(d.body, exportBody);
-                    //     }
-                    // }
-                }
             });
-            // }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-            // $("#data-table").DataTable({
-            //     "responsive": true,
-            //     "lengthChange": false,
-            //     "autoWidth": false,
-            //     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            // }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });
 

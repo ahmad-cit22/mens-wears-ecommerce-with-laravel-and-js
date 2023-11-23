@@ -203,6 +203,11 @@
 
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
+                <p class="text-left ml-4 mb-0 mt-0">
+                    <a href="{{ route('sell.wholesale.export') }}">
+                        <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
+                    </a>
+                </p>
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>

@@ -16,6 +16,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
 use App\Exports\SellListExport;
+use App\Exports\WholeSaleListExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller {
@@ -132,10 +133,15 @@ class OrderController extends Controller {
         }
     }
 
-    // public function export_to_excel()
-    // {
-    //     return Excel::download(new SellListExport, 'sells.xlsx');
-    // }
+    public function sell_export_excel()
+    {
+        return Excel::download(new SellListExport, 'sell_list.xlsx');
+    }
+
+    public function wholesale_export_excel()
+    {
+        return Excel::download(new WholeSaleListExport, 'wholesale_list.xlsx');
+    }
 
     public function sell_report(Request $request) {
         $date_from = '';

@@ -36,10 +36,10 @@ class SellListExport implements FromCollection, WithHeadings
     } 
     public function collection()
     {
-        // return Order::orderBy('id', 'DESC')->where('is_final', 1)->with('status')->select('id', 'price', 'title', 'created_at', 'updated_at')->get();
         return DB::table('orders')
                 ->orderBy('id', 'DESC')
                 ->where('is_final', 1)
+                ->where('source', '!=', 'Wholesale')
                 ->leftjoin('districts', 'orders.district_id', 'districts.id')
                 ->leftjoin('areas', 'orders.area_id', 'areas.id')
                 ->leftjoin('order_statuses', 'orders.order_status_id', 'order_statuses.id')

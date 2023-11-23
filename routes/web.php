@@ -250,6 +250,8 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'sell_search'])->name('search');
 		Route::get('/report_search', [App\Http\Controllers\OrderController::class, 'report_search'])->name('report_search');
 		Route::get('/wholesale-search', [App\Http\Controllers\OrderController::class, 'wholesale_search'])->name('wholesale.search');
+		Route::get('/sell-export', [App\Http\Controllers\OrderController::class, 'sell_export_excel'])->name('sell.export');
+		Route::get('/wholesale-export', [App\Http\Controllers\OrderController::class, 'wholesale_export_excel'])->name('wholesale.export');
 	});
 
 	// Sell Return Routes
