@@ -295,6 +295,12 @@
                                             </a>
                                         </li>
                                     @endforeach
+                                    <li class="nav-item">
+                                        <a href="{{ route('order.export.excel') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Export to Excel</p>
+                                        </a>
+                                    </li>
                                 @endif
                             </ul>
                         </li>
@@ -346,6 +352,12 @@
                                             <p>Sell List</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('sell.export.excel') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Export to Excel (Retail)</p>
+                                        </a>
+                                    </li>
                                 @endif
 
                                 @if (auth()->user()->can('order.return'))
@@ -362,6 +374,12 @@
                                         <a href="{{ route('sell.wholesale.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Wholesale List</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('sell.wholesale.export.excel') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Export to Excel (Wholesale)</p>
                                         </a>
                                     </li>
                                 @endif

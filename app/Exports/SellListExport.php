@@ -12,6 +12,13 @@ class SellListExport implements FromCollection, WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */ 
+    // public $data;
+
+    // public function __construct($data)
+    // {
+    //     $this->data = $data;
+    // }
+
     public function headings():array{
         return [
             'Id',

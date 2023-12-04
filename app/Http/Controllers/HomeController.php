@@ -52,7 +52,7 @@ class HomeController extends Controller {
     public function sitemap_generate() {
         $path = public_path('sitemap.xml');
         SitemapGenerator::create('https://gobyfabrifest.com')->writeToFile($path);
-
+        
         Alert::toast('Sitemap generated!', 'success');
         return back();
     }

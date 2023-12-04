@@ -214,6 +214,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Order Routes
 	Route::group(['prefix' => 'order', 'as' => 'order.'], function () {
 		Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('index');
+		Route::get('/export-excel', [App\Http\Controllers\OrderController::class, 'order_export_excel2'])->name('export.excel');
 		Route::get('/status/{id}', [App\Http\Controllers\OrderController::class, 'orders_by_status'])->name('status.filter');
 		//Route::get('/create', [App\Http\Controllers\OrderController::class, 'create'])->name('create');
 		Route::post('/stote', [App\Http\Controllers\OrderController::class, 'store'])->name('store');
@@ -239,17 +240,22 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/current-month', [App\Http\Controllers\OrderController::class, 'current_month'])->name('current.month');
 		Route::get('/today', [App\Http\Controllers\OrderController::class, 'today'])->name('today');
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'search'])->name('search');
+		Route::get('/search/export', [App\Http\Controllers\OrderController::class, 'search_export'])->name('search.export');
 		Route::get('/customer-orders/{id}', [App\Http\Controllers\OrderController::class, 'customer_orders'])->name('customer.orders');
 	});
 
 	// Sell Routes
 	Route::group(['prefix' => 'sell', 'as' => 'sell.'], function () {
 		Route::get('/', [App\Http\Controllers\OrderController::class, 'sell_index'])->name('index');
+		Route::get('/export-excel', [App\Http\Controllers\OrderController::class, 'sell_export_excel2'])->name('export.excel');
 		Route::get('/report', [App\Http\Controllers\OrderController::class, 'sell_report'])->name('report');
 		Route::get('/wholesale', [App\Http\Controllers\OrderController::class, 'wholesale_index'])->name('wholesale.index');
+		Route::get('/wholesale-export-excel', [App\Http\Controllers\OrderController::class, 'wholesale_export_excel2'])->name('wholesale.export.excel');
 		Route::get('/search', [App\Http\Controllers\OrderController::class, 'sell_search'])->name('search');
+		Route::get('/search-export', [App\Http\Controllers\OrderController::class, 'sell_search_export'])->name('search.export');
 		Route::get('/report_search', [App\Http\Controllers\OrderController::class, 'report_search'])->name('report_search');
 		Route::get('/wholesale-search', [App\Http\Controllers\OrderController::class, 'wholesale_search'])->name('wholesale.search');
+		Route::get('/wholesale-search-export', [App\Http\Controllers\OrderController::class, 'wholesale_search_export'])->name('wholesale.search.export');
 		Route::get('/sell-export', [App\Http\Controllers\OrderController::class, 'sell_export_excel'])->name('sell.export');
 		Route::get('/wholesale-export', [App\Http\Controllers\OrderController::class, 'wholesale_export_excel'])->name('wholesale.export');
 	});

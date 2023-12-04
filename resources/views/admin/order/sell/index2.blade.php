@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <hr>
-                    <form action="{{ route('sell.search') }}" method="get">
+                    <form action="{{ route('sell.search.export') }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -125,17 +125,12 @@
                     </form>
                 </div>
                 <!-- /.card-header -->
-                @include('admin.partials.page_search')
-                <p class="text-left ml-4 mb-0 mt-0">
-                    {{-- @php
-                        session([
-                            'orders' => $orders,
-                        ]);
-                    @endphp --}}
+                {{-- @include('admin.partials.page_search') --}}
+                {{-- <p class="text-left ml-4 mb-0 mt-0">
                     <a href="{{ route('sell.sell.export') }}">
                         <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
                     </a>
-                </p>
+                </p> --}}
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -149,11 +144,32 @@
                                 <th>Source</th>
                                 <th>COD</th>
                                 <th>Date</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($orders as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->code }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td width="9%">{{ $item->phone }}</td>
+                                    <td>
+                                        @if ($item->is_return == 1)
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
+                                            <span class="badge badge-danger">Returned</span>
+                                        @elseif ($item->is_return == 2)
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
+                                            <span class="badge badge-danger">Returned Partially</span>
+                                        @else
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
+                                        @endif
+                                    </td>
+                                    <td width="13%">{{ $item->note }}</td>
+                                    <td>{{ $item->source }}</td>
+                                    <td>{{ $item->cod }}</td>
+                                    <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
 
                     </table>
@@ -190,45 +206,55 @@
     </script>
 
     <script type="text/javascript">
+        // $(function() {
+        //     var table = $('#data-table').DataTable({
+        //         processing: true,
+        //         serverSide: true,
+        //         ordering: false,
+        //         columns: [{
+        //                 data: 'id'
+        //             },
+        //             {
+        //                 data: 'code'
+        //             },
+        //             {
+        //                 data: 'name'
+        //             },
+        //             {
+        //                 data: 'phone'
+        //             },
+        //             {
+        //                 data: 'status'
+        //             },
+        //             {
+        //                 data: 'note'
+        //             },
+        //             {
+        //                 data: 'source'
+        //             },
+        //             {
+        //                 data: 'cod'
+        //             },
+        //             {
+        //                 data: 'date'
+        //             },
+        //             {
+        //                 data: 'action',
+        //                 orderable: false,
+        //                 searchable: true
+        //             },
+        //         ],
+        //     });
+
+        // });
+
         $(function() {
-            var table = $('#data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ordering: false,
-                columns: [{
-                        data: 'id'
-                    },
-                    {
-                        data: 'code'
-                    },
-                    {
-                        data: 'name'
-                    },
-                    {
-                        data: 'phone'
-                    },
-                    {
-                        data: 'status'
-                    },
-                    {
-                        data: 'note'
-                    },
-                    {
-                        data: 'source'
-                    },
-                    {
-                        data: 'cod'
-                    },
-                    {
-                        data: 'date'
-                    },
-                    {
-                        data: 'action',
-                        orderable: false,
-                        searchable: true
-                    },
-                ],
-            });
+            $("#data-table").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
 
         });
 
