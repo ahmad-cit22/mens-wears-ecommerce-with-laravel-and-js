@@ -217,9 +217,9 @@
                                                             <span class="text-danger ml-2">({{ $product->return_qty }} Product(s) Returned)</span>
                                                         @endif
                                                     </td>
-                                                    <td>{{ env('CURRENCY') }}{{ $product->price }}</td>
+                                                    <td>{{ env('CURRENCY') }}{{ $product->product->variation->price }}</td>
                                                     <td>{{ $product->qty }}</td>
-                                                    <td>&#2547; {{ $product->price * $product->qty }}</td>
+                                                    <td>&#2547; {{ $product->product->variation->price * $product->qty }}</td>
                                                 </tr>
                                             @endforeach
                                             <tr>

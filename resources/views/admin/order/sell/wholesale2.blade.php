@@ -95,7 +95,7 @@
                                     <label>Date From</label>
                                     <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
                                     @error('date_from')
-                                        <span class="invalid-feedback" role="alert">
+                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
