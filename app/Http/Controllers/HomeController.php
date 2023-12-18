@@ -31,7 +31,7 @@ class HomeController extends Controller {
             $orders_not_final = Order::all();
             $yearly_orders = Order::where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->get();
             $monthly_orders = Order::where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
-                ->get();
+                ->get(); 
             $daily_orders = Order::where('is_final', 1)->whereDate('created_at', Carbon::today())->get();
             return view('admin.index', compact('orders', 'orders_not_final', 'yearly_orders', 'monthly_orders', 'daily_orders'));
         } else if (Auth::user()->type == 2) {
@@ -43,16 +43,16 @@ class HomeController extends Controller {
     }
 
     public function cache_clear() {
-        Artisan::call("cache:clear");
+        Artisan::call("optimize:clear");
 
-        Alert::toast('Cache cleared!', 'success');
+        Alert::toast('All Cache cleared!', 'success');
         return back();
     }
 
     public function sitemap_generate() {
         $path = public_path('sitemap.xml');
         SitemapGenerator::create('https://gobyfabrifest.com')->writeToFile($path);
-
+        
         Alert::toast('Sitemap generated!', 'success');
         return back();
     }

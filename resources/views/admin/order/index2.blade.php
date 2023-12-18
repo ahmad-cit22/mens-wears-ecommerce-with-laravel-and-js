@@ -1,48 +1,16 @@
 @extends('admin.layouts.master')
-
-@section('style')
-    <style>
-        .categoryCardBox {
-            gap: 20px
-        }
-
-        .categoryCard1 {
-            padding: 15px 15px 0px;
-            padding-left: 22px;
-            border-radius: 14px;
-            background: rgba(235, 98, 0, 0.888);
-            color: white;
-            display: inline-block;
-            max-width: 22% !important;
-            box-shadow: 0px 4px 12px 1px rgba(124, 48, 0, 0.665);
-        }
-
-        .categoryCard2 {
-            padding: 15px 15px 0px;
-            padding-left: 22px;
-            border-radius: 14px;
-            background: rgba(238, 99, 0, 0.773);
-            color: white;
-            display: inline-block;
-            max-width: 22% !important;
-            box-shadow: 0px 4px 14px 2px rgba(124, 48, 0, 0.665);
-        }
-    </style>
-@endsection
-
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Wholesale Sells</h1>
+                    <h1 class="m-0">Orders</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item">Sells</li>
-                        <li class="breadcrumb-item active">Wholesale</li>
+                        <li class="breadcrumb-item active">order</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -53,71 +21,16 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <div class="row">
-                        <div class="col-12">
-                            <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
-                            <h3 class="text-success">Total Sold Amount :
-                                {{ round(
-                                    $orders->filter(function ($order) {
-                                            return $order->order_status_id != 5 && $order->is_return != 1;
-                                        })->sum('price'),
-                                ) }} TK
-                            </h3>
-                            <h5 class="text-" style="color: #e97900">Total Sells Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} (Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</h5>
-                            <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
-                        </div>
-                    </div>
-                    <div class="row mt-5 categoryCardBox">
-                        @foreach ($categories as $key => $category)
-                            @php
-                                $sells_cat = 0;
-                                $sells_amount_cat = 0;
-                            @endphp
-                            @if ($category->parent_id == 0)
-                                @foreach ($orders as $item)
-                                    @if ($item->order_status_id != 5 && $item->is_return == 0)
-                                        @foreach ($item->order_product as $order_product)
-                                            @if ($order_product->product->category_id == $category->id)
-                                                @php
-                                                    $sells_cat += $order_product->qty;
-                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
-                                                @endphp
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                                @if ($sells_cat > 0)
-                                    <div class="col-3 gap-3 mb-2 categoryCard1">
-                                        <h4 class=""><b>{{ $category->title }}</b></h4>
-                                        <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
-                                        <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
-                                    </div>
-                                @endif
-                            @else
-                                @foreach ($orders as $item)
-                                    @if ($item->order_status_id != 5 && $item->is_return == 0)
-                                        @foreach ($item->order_product as $order_product)
-                                            @if ($order_product->product->sub_category_id == $category->id)
-                                                @php
-                                                    $sells_cat += $order_product->qty;
-                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
-                                                @endphp
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                                @if ($sells_cat > 0)
-                                    <div class="col-3 gap-3 mb-2 categoryCard2">
-                                        <h5><b>{{ $category->parent->title . ' - ' . $category->title }}</b></h5>
-                                        <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
-                                        <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
-                                    </div>
-                                @endif
-                            @endif
-                        @endforeach
-                    </div>
+                    <h4>Total Orders From Website : {{ count($orders->where('source', 'Website')) }}</h4>
+                    <h4>Total Ordered Amount :
+                        {{ round(
+                            $orders->filter(function ($order) {
+                                    return $order->order_status_id != 5;
+                                })->sum('price'),
+                        ) }} TK
+                    </h4>
                     <hr>
-                    <form action="{{ route('sell.wholesale.search') }}" method="get">
+                    <form action="{{ route('order.search.export') }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -200,14 +113,8 @@
                         </div>
                     </form>
                 </div>
-
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
-                <p class="text-left ml-4 mb-0 mt-0">
-                    <a href="{{ route('sell.wholesale.export') }}">
-                        <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
-                    </a>
-                </p>
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -215,17 +122,36 @@
                                 <th>S.N</th>
                                 <th>Code</th>
                                 <th>Customer Name</th>
-                                <th width="9%">Phone</th>
+                                <th>Phone</th>
                                 <th>Status</th>
-                                <th width="13%">Note</th>
+                                <th width="20%">Note</th>
                                 <th>Source</th>
-                                <th>COD</th>
                                 <th>Date</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($orders as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->code }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td width="9%">{{ $item->phone }}</td>
+                                    <td>
+                                        @if ($item->is_return == 1)
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
+                                            <span class="badge badge-danger">Returned</span>
+                                        @elseif ($item->is_return == 2)
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
+                                            <span class="badge badge-danger">Returned Partially</span>
+                                        @else
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
+                                        @endif
+                                    </td>
+                                    <td width="13%">{{ $item->note }}</td>
+                                    <td>{{ $item->source }}</td>
+                                    <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
 
                     </table>
@@ -242,12 +168,12 @@
 @section('scripts')
     <script>
         $(function() {
-            $("#example1").DataTable({
+            $("#data-table").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
 
         });
     </script>
@@ -273,7 +199,7 @@
         });
     </script>
 
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         $(function() {
 
             var table = $('#data-table').DataTable({
@@ -302,9 +228,6 @@
                         data: 'source'
                     },
                     {
-                        data: 'cod'
-                    },
-                    {
                         data: 'date'
                     },
                     {
@@ -316,5 +239,5 @@
             });
 
         });
-    </script>
+    </script> --}}
 @endsection

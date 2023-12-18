@@ -1,6 +1,6 @@
 @php
     $business = App\Models\Setting::find(1);
-    
+
     $discount = 0;
     if (Session::has('coupon_discount')) {
         $discount = Session::get('coupon_discount');
@@ -136,7 +136,11 @@
                             </div>
 
                         </div>
-                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.index') }}">Sell List</a>
+                        @if (Session::has('wholesale_price'))
+                            <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.wholesale.index') }}">Wholesale List</a>
+                        @else
+                            <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.index') }}">Sell List</a>
+                        @endif
 
                         {{-- <div class="topbar-item folder-data">
                             <div class="btn btn-icon  w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#folderpop">
@@ -299,7 +303,7 @@
                                     <div class="d-flex justify-content-between colorfull-select">
                                         <div class="selectmain">
                                             <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
-                                            <select name="district_id" class="select2 select-down" id="district_id" required>
+                                            <select name="district_id" class="select2 select-down" id="district_id">
                                                 <option value="">--- Select ---</option>
                                                 @foreach ($districts as $district)
                                                     <option value="{{ $district->id }}">{{ $district->name }}</option>
@@ -308,7 +312,7 @@
                                         </div>
                                         <div class="d-flex flex-column selectmain">
                                             <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
-                                            <select name="area_id" class="select2 select-down" id="areas" required>
+                                            <select name="area_id" class="select2 select-down" id="areas">
                                                 <!-- <option value="">Please Select an Area</option> -->
                                             </select>
                                         </div>

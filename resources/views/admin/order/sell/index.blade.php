@@ -23,24 +23,24 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                      <div class="col-lg-7">
-                          <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
-                          <h3 class="text-success">Total Sold Amount :
-                              {{ round(
-                                  $orders->filter(function ($order) {
-                                          return $order->order_status_id != 5 && $order->is_return != 1;
-                                      })->sum('price'),
-                              ) }} TK
-                          </h3>
-                          <h5 class="text-" style="color: #e97900">Total Sells Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} (Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</h5>
-                          <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
-                      </div>
-                      <div class="col-lg-5">
-                          <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
-                          <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
-                      </div>
-                  </div>
-                  <hr>
+                        <div class="col-lg-7">
+                            <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
+                            <h3 class="text-success">Total Sold Amount :
+                                {{ round(
+                                    $orders->filter(function ($order) {
+                                            return $order->order_status_id != 5 && $order->is_return != 1;
+                                        })->sum('price'),
+                                ) }} TK
+                            </h3>
+                            <h5 class="text-" style="color: #e97900">Total Sells Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} (Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</h5>
+                            <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
+                        </div>
+                        <div class="col-lg-5">
+                            <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
+                            <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
+                        </div>
+                    </div>
+                    <hr>
                     <form action="{{ route('sell.search') }}" method="get">
                         @csrf
                         <div class="row">
@@ -126,6 +126,16 @@
                 </div>
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
+                <p class="text-left ml-4 mb-0 mt-0">
+                    {{-- @php
+                        session([
+                            'orders' => $orders,
+                        ]);
+                    @endphp --}}
+                    <a href="{{ route('sell.sell.export') }}">
+                        <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
+                    </a>
+                </p>
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -159,18 +169,6 @@
 
 @section('scripts')
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        });
-    </script>
-
-    <script>
         $('#district_id').change(function() {
             var district_id = $(this).val();
             if (district_id == '') {
@@ -193,7 +191,6 @@
 
     <script type="text/javascript">
         $(function() {
-
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -230,7 +227,7 @@
                         orderable: false,
                         searchable: true
                     },
-                ]
+                ],
             });
 
         });

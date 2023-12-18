@@ -318,7 +318,7 @@
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ordering: true,
+                ordering: false,
                 columns: [{
                         data: 'id'
                     },

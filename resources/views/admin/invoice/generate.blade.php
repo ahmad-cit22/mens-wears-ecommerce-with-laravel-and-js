@@ -103,7 +103,7 @@
                     <th width="50px" style="text-align: left;">Product Name</th>
                     <th scope="col" style="text-align: center;">Quantity</th>
                     <th scope="col" style="text-align: right;">Price</th>
-                    <!-- <th scope="col" style="text-align: right;"> Sub Total</th> -->
+                    <th scope="col" style="text-align: right;">Sub Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,8 +113,8 @@
                         <td width="350px" style="text-align: left;">{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
                         </td>
                         <td style="text-align: center;">{{ $product->qty }}</td>
-                        <td style="text-align: right;">{{ $product->price }}/-</td>
-                        <!-- <td style="text-align: right;"><span>{{ $product->price * $product->qty }}/-</span> -->
+                        <td style="text-align: right;">{{ $product->product->variation->price }}/-</td>
+                        <td style="text-align: right;"><span>{{ $product->product->variation->price * $product->qty }}/-</span>
 
                         </td>
                     </tr>
@@ -126,6 +126,12 @@
     <div style="margin: 15px 0 30px; text-align: right;">
         <table>
             <tbody style="text-align: right;">
+                @if ($order->cod)
+                    <tr style="text-align: right;">
+                        <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>COD (-)</b></td>
+                        <td style="text-align: right;">{{ $order->cod }}/-</td>
+                    </tr>
+                @endif
                 <tr style="text-align: right;">
                     <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Sub Total</b></td>
                     <td style="text-align: right;">{{ $order->price + $order->discount_amount }}/-</td>

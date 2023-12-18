@@ -1,2 +1,3 @@
+Sitemap: https://gobyfabrifest.com/sitemap.xml
 User-agent: *
 Disallow:

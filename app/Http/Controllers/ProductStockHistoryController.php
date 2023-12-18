@@ -85,7 +85,7 @@ class ProductStockHistoryController extends Controller {
             }
             $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->get();
             $categories = Category::all();
-            $p_stocks = ProductStock::where('is_active', 1)->with('product', 'size')->get();
+            $p_stocks = ProductStock::where('is_active', 1)->orderBy('id', 'DESC')->with('product', 'size')->get();
             $total_production_cost = ProductStock::where('is_active', 1)->get()->sum(function ($t) {
                 return $t->production_cost * $t->qty;
             });

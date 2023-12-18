@@ -9,6 +9,16 @@ class Order extends Model
 {
     use HasFactory;
 
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+    
     public function status()
     {
     	return $this->belongsTo(OrderStatus::class, 'order_status_id');
@@ -22,15 +32,5 @@ class Order extends Model
     public function customer()
     {
     	return $this->belongsTo(User::class, 'customer_id');
-    }
-
-    public function area()
-    {
-        return $this->belongsTo(Area::class);
-    }
-
-    public function district()
-    {
-        return $this->belongsTo(District::class);
     }
 }

@@ -114,7 +114,6 @@
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-danger">Permanent Delete</button>
                                                 </form>
-
                                             </div>
                                             <div class="modal-footer">
                                             </div>
@@ -142,7 +141,7 @@
                     $total = $products->total();
                     $currentPage = $products->currentPage();
                     $perPage = $products->perPage();
-                    
+
                     $from = ($currentPage - 1) * $perPage + 1;
                     $to = min($currentPage * $perPage, $total);
                 @endphp

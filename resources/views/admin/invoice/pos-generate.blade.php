@@ -169,7 +169,7 @@
                                 <p class="itemtext">{{ $product->qty }}</p>
                             </td>
                             <td class="tableitem">
-                                <p class="itemtext">&#2547; {{ $product->price }}</p>
+                                <p class="itemtext">&#2547; {{ $product->product->variation->price }}</p>
                             </td>
                         </tr>
                     @endforeach
@@ -202,6 +202,17 @@
                             </td>
                             <td class="payment">
                                 <h2>&#2547; {{ $order->discount_amount }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+                    @if ($order->cod)
+                        <tr class="tabletitle">
+
+                            <td class="Rate" colspan="2" style="text-align: center;">
+                                <h2>COD (-)</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>&#2547; {{ $order->cod }}</h2>
                             </td>
                         </tr>
                     @endif

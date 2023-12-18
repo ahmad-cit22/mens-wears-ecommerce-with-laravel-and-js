@@ -1,35 +1,5 @@
 @extends('admin.layouts.master')
 
-@section('style')
-    <style>
-        .categoryCardBox {
-            gap: 20px
-        }
-
-        .categoryCard1 {
-            padding: 15px 15px 0px;
-            padding-left: 22px;
-            border-radius: 14px;
-            background: rgba(235, 98, 0, 0.888);
-            color: white;
-            display: inline-block;
-            max-width: 22% !important;
-            box-shadow: 0px 4px 12px 1px rgba(124, 48, 0, 0.665);
-        }
-
-        .categoryCard2 {
-            padding: 15px 15px 0px;
-            padding-left: 22px;
-            border-radius: 14px;
-            background: rgba(238, 99, 0, 0.773);
-            color: white;
-            display: inline-block;
-            max-width: 22% !important;
-            box-shadow: 0px 4px 14px 2px rgba(124, 48, 0, 0.665);
-        }
-    </style>
-@endsection
-
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -117,7 +87,7 @@
                         @endforeach
                     </div>
                     <hr>
-                    <form action="{{ route('sell.wholesale.search') }}" method="get">
+                    <form action="{{ route('sell.wholesale.search.export') }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -125,7 +95,7 @@
                                     <label>Date From</label>
                                     <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
                                     @error('date_from')
-                                        <span class="invalid-feedback" role="alert">
+                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
@@ -200,14 +170,13 @@
                         </div>
                     </form>
                 </div>
-
                 <!-- /.card-header -->
-                @include('admin.partials.page_search')
-                <p class="text-left ml-4 mb-0 mt-0">
-                    <a href="{{ route('sell.wholesale.export') }}">
+                {{-- @include('admin.partials.page_search') --}}
+                {{-- <p class="text-left ml-4 mb-0 mt-0">
+                    <a href="{{ route('sell.sell.export') }}">
                         <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
                     </a>
-                </p>
+                </p> --}}
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -221,11 +190,32 @@
                                 <th>Source</th>
                                 <th>COD</th>
                                 <th>Date</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($orders as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->code }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td width="9%">{{ $item->phone }}</td>
+                                    <td>
+                                        @if ($item->is_return == 1)
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
+                                            <span class="badge badge-danger">Returned</span>
+                                        @elseif ($item->is_return == 2)
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
+                                            <span class="badge badge-danger">Returned Partially</span>
+                                        @else
+                                            <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
+                                        @endif
+                                    </td>
+                                    <td width="13%">{{ $item->note }}</td>
+                                    <td>{{ $item->source }}</td>
+                                    <td>{{ $item->cod }}</td>
+                                    <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
 
                     </table>
@@ -240,18 +230,6 @@
 @endsection
 
 @section('scripts')
-    <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        });
-    </script>
-
     <script>
         $('#district_id').change(function() {
             var district_id = $(this).val();
@@ -274,47 +252,62 @@
     </script>
 
     <script type="text/javascript">
-        $(function() {
+        // $(function() {
+        //     var table = $('#data-table').DataTable({
+        //         processing: true,
+        //         serverSide: true,
+        //         ordering: false,
+        //         columns: [{
+        //                 data: 'id'
+        //             },
+        //             {
+        //                 data: 'code'
+        //             },
+        //             {
+        //                 data: 'name'
+        //             },
+        //             {
+        //                 data: 'phone'
+        //             },
+        //             {
+        //                 data: 'status'
+        //             },
+        //             {
+        //                 data: 'note'
+        //             },
+        //             {
+        //                 data: 'source'
+        //             },
+        //             {
+        //                 data: 'cod'
+        //             },
+        //             {
+        //                 data: 'date'
+        //             },
+        //             {
+        //                 data: 'action',
+        //                 orderable: false,
+        //                 searchable: true
+        //             },
+        //         ],
+        //     });
 
-            var table = $('#data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ordering: false,
-                columns: [{
-                        data: 'id'
-                    },
-                    {
-                        data: 'code'
-                    },
-                    {
-                        data: 'name'
-                    },
-                    {
-                        data: 'phone'
-                    },
-                    {
-                        data: 'status'
-                    },
-                    {
-                        data: 'note'
-                    },
-                    {
-                        data: 'source'
-                    },
-                    {
-                        data: 'cod'
-                    },
-                    {
-                        data: 'date'
-                    },
-                    {
-                        data: 'action',
-                        orderable: false,
-                        searchable: true
-                    },
-                ]
-            });
+        // });
+
+        $(function() {
+            $("#data-table").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
 
         });
+
+        // $(document).ready(function() {
+        //     var table = $('#example').DataTable();
+        //     var pageNo = 6
+        //     table.page(pageNo - 1).draw('page');
+        // });
     </script>
 @endsection
