@@ -22,8 +22,10 @@ class ExpenseEntryController extends Controller {
         $date_from = '';
         $date_to = '';
 
+        // return ExpenseEntry::orderBy('created_at', 'desc')->get();
+
         if (auth()->user()->can('expense.view')) {
-            $data = ExpenseEntry::orderBy('id', 'DESC')->get();
+            $data = ExpenseEntry::orderBy('date', 'desc')->get();
             $banks = Bank::all();
             if ($request->ajax()) {
                 return Datatables::of($data)
@@ -76,12 +78,12 @@ class ExpenseEntryController extends Controller {
             if (!empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
-                $data = ExpenseEntry::whereBetween('date', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $data = ExpenseEntry::whereBetween('date', [$start_date, $end_date])->orderBy('created_at', 'desc')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             } else {
-                $data = ExpenseEntry::orderBy('id', 'DESC')->get();
+                $data = ExpenseEntry::orderBy('date', 'desc')->get();
             }
 
             $bank_id = $request->bank_id;
@@ -191,7 +193,7 @@ class ExpenseEntryController extends Controller {
                 $expense->expense_id = 2;
                 $expense->bank_id = $request->bank_id;
                 $expense->amount = $request->amount;
-                $expense->date = Carbon::now()->format('Y-m-d');
+                $expense->date = $request->date;
                 $expense->note = $request->note;
                 $expense->save();
 
