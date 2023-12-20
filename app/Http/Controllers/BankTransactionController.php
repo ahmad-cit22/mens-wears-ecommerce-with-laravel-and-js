@@ -96,7 +96,7 @@ class BankTransactionController extends Controller
             }
             $transaction->save();
             Alert::toast('New Transaction created', 'success');
-            return back(); 
+            return back();
         }
         else
         {
