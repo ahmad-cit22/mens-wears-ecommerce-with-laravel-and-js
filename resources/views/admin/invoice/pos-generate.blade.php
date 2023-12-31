@@ -132,7 +132,9 @@
                     Order ID : <b>{{ $order->code }}</b></br>
                     Name : {{ $order->name }}</br>
                     Phone : <b>{{ $order->phone }}</b></br>
-                    Email : {{ $order->email }}</br>
+                    @if ($order->email)
+                        Email : {{ $order->email }}</br>
+                    @endif
                     Address : {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}</br>
                     @if ($order->courier_name)
                         Courier Name: {{ $order->courier_name }}<br>
@@ -169,7 +171,13 @@
                                 <p class="itemtext">{{ $product->qty }}</p>
                             </td>
                             <td class="tableitem">
-                                <p class="itemtext">&#2547; {{ $product->product->variation->price }}</p>
+                                <p class="itemtext">
+                                    @if ($order->source == 'Wholesale')
+                                        &#2547; {{ $product->product->variation->wholesale_price }}
+                                    @else
+                                        &#2547; {{ $product->product->variation->price }}
+                                    @endif
+                                </p>
                             </td>
                         </tr>
                     @endforeach
@@ -185,15 +193,17 @@
                             <h2>{{ env('CURRENCY') }}{{ $order->delivery_charge }}</h2>
                         </td>
                     </tr>
-                    <tr class="tabletitle">
+                    @if ($order->advance)
+                        <tr class="tabletitle">
 
-                        <td class="Rate" colspan="2" style="text-align: center;">
-                            <h2>Advanced (-)</h2>
-                        </td>
-                        <td class="payment">
-                            <h2>{{ env('CURRENCY') }}{{ $order->advance }}</h2>
-                        </td>
-                    </tr>
+                            <td class="Rate" colspan="2" style="text-align: center;">
+                                <h2>Advanced (-)</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ env('CURRENCY') }}{{ $order->advance }}</h2>
+                            </td>
+                        </tr>
+                    @endif
                     @if ($order->discount_amount)
                         <tr class="tabletitle">
 
@@ -218,7 +228,7 @@
                     @endif
                     <tr class="tabletitle">
                         <td class="Rate" colspan="2" style="text-align: center;">
-                            <h2>Total</h2>
+                            <h2>Total Payable</h2>
                         </td>
                         <td class="payment">
                             <h2>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</h2>
