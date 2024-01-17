@@ -12,6 +12,7 @@ use App\Models\Size;
 use App\Models\Supplier;
 use App\Models\SupplierPayment;
 use App\Models\Accessory;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 use Auth;
 use Alert;
@@ -432,45 +433,51 @@ class ProductController extends Controller {
         if (auth()->user()->can('product.delete')) {
             $product = Product::find($id);
             if (!is_null($product)) {
+                if (!OrderProduct::where('product_id', $id)->exists()) {
+    
+                    if (File::exists('images/product/' . $product->image)) {
+                        File::delete('images/product/' . $product->image);
+                    }
+                    if (File::exists('images/product/pos_images/' . $product->image)) {
+                        File::delete('images/product/pos_images/' . $product->image);
+                    }
+                    if (File::exists('images/product/' . $product->size_chart)) {
+                        File::delete('images/product/' . $product->size_chart);
+                    }
+                    $product_gallery_images = ProductImage::where('product_id', $id)->get();
 
-                if (File::exists('images/product/' . $product->image)) {
-                    File::delete('images/product/' . $product->image);
-                }
-                if (File::exists('images/product/pos_images/' . $product->image)) {
-                    File::delete('images/product/pos_images/' . $product->image);
-                }
-                if (File::exists('images/product/' . $product->size_chart)) {
-                    File::delete('images/product/' . $product->size_chart);
-                }
-                $product_gallery_images = ProductImage::where('product_id', $id)->get();
-
-                foreach ($product_gallery_images as $key => $gallery_image) {
-                    if (!is_null($gallery_image)) {
-                        if (File::exists('images/product/' . $gallery_image->image)) {
-                            File::delete('images/product/' . $gallery_image->image);
+                    foreach ($product_gallery_images as $key => $gallery_image) {
+                        if (!is_null($gallery_image)) {
+                            if (File::exists('images/product/' . $gallery_image->image)) {
+                                File::delete('images/product/' . $gallery_image->image);
+                            }
+                            $gallery_image->delete();
                         }
-                        $gallery_image->delete();
                     }
-                }
 
-                if ($product->type == 'single') {
-                    $product_stock = ProductStock::find($product->variation->id);
+                    if ($product->type == 'single') {
+                        $product_stock = ProductStock::find($product->variation->id);
 
-                    $product_stock->delete();
-                }
-
-                if ($product->type == 'variation') {
-                    $exists = ProductStock::where('product_id', $product->id)->get();
-                    if (!is_null($exists)) {
-                        $prodduct_stock = ProductStock::where('product_id', $product->id);
-                        $prodduct_stock->delete();
+                        $product_stock->delete();
                     }
+
+                    if ($product->type == 'variation') {
+                        $exists = ProductStock::where('product_id', $product->id)->get();
+                        if (!is_null($exists)) {
+                            $prodduct_stock = ProductStock::where('product_id', $product->id);
+                            $prodduct_stock->delete();
+                        }
+                    }
+
+                    $product->delete();
+
+                    Alert::toast('Product Deleted!', 'success');
+                    return redirect()->route('product.index');
+                } else {
+                    Alert::toast('Sorry! There is orders containing this product.', 'warning');
+                    return back();
                 }
 
-                $product->delete();
-
-                Alert::toast('Product Deleted!', 'success');
-                return redirect()->route('product.index');
             } else {
                 Alert::toast('Product Not Found!', 'warning');
                 return back();
