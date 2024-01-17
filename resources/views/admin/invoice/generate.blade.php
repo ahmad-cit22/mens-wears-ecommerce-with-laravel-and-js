@@ -113,9 +113,21 @@
                         <td width="350px" style="text-align: left;">{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
                         </td>
                         <td style="text-align: center;">{{ $product->qty }}</td>
-                        <td style="text-align: right;">{{ $product->product->variation->price }}/-</td>
-                        <td style="text-align: right;"><span>{{ $product->product->variation->price * $product->qty }}/-</span>
-
+                        <td style="text-align: right;">
+                            @if ($order->source == 'Wholesale')
+                                {{ $product->product->variation->wholesale_price }}/-
+                            @else
+                                {{ $product->product->variation->price }}/-
+                            @endif
+                        </td>
+                        <td style="text-align: right;">
+                            <span>
+                                @if ($order->source == 'Wholesale')
+                                    {{ $product->product->variation->wholesale_price * $product->qty }}/-
+                                @else
+                                    {{ $product->product->variation->price * $product->qty }}/-
+                                @endif
+                            </span>
                         </td>
                     </tr>
                 @endforeach

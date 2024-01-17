@@ -77,11 +77,13 @@
                                 @foreach ($orders as $item)
                                     @if ($item->order_status_id != 5 && $item->is_return == 0)
                                         @foreach ($item->order_product as $order_product)
-                                            @if ($order_product->product->category_id == $category->id)
-                                                @php
-                                                    $sells_cat += $order_product->qty;
-                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
-                                                @endphp
+                                            @if ($order_product->product)
+                                                @if ($order_product->product->category_id == $category->id)
+                                                    @php
+                                                        $sells_cat += $order_product->qty;
+                                                        $sells_amount_cat += $order_product->price * $order_product->qty;
+                                                    @endphp
+                                                @endif
                                             @endif
                                         @endforeach
                                     @endif
@@ -97,11 +99,13 @@
                                 @foreach ($orders as $item)
                                     @if ($item->order_status_id != 5 && $item->is_return == 0)
                                         @foreach ($item->order_product as $order_product)
-                                            @if ($order_product->product->sub_category_id == $category->id)
-                                                @php
-                                                    $sells_cat += $order_product->qty;
-                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
-                                                @endphp
+                                            @if ($order_product->product)
+                                                @if ($order_product->product->sub_category_id == $category->id)
+                                                    @php
+                                                        $sells_cat += $order_product->qty;
+                                                        $sells_amount_cat += $order_product->price * $order_product->qty;
+                                                    @endphp
+                                                @endif
                                             @endif
                                         @endforeach
                                     @endif
