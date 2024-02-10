@@ -225,6 +225,7 @@
                                 <th>Source</th>
                                 <th>COD</th>
                                 <th>Date</th>
+                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -312,6 +313,9 @@
                         data: 'date'
                     },
                     {
+                        data: 'created_by',
+                    },
+                    {
                         data: 'action',
                         orderable: false,
                         searchable: true
@@ -319,6 +323,10 @@
                 ]
             });
 
+        });
+
+        $(document).ready(function() {
+            $('#data-table_filter').find("input").focus();
         });
     </script>
 @endsection

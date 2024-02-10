@@ -19,6 +19,8 @@ class CreateProductStockHistoriesTable extends Migration
             $table->integer('size_id')->nullable();
             $table->double('qty')->default(0);
             $table->string('note')->nullable();
+            $table->string('reference_code')->nullable();
+            $table->longText('remarks')->nullable();
             $table->timestamps();
         });
     }

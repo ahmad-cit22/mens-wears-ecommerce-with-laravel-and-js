@@ -63,6 +63,21 @@
             word-wrap: break-word;
             word-break: break-all;
         } */
+
+        .badge-packet-done {
+            background: rgb(75, 119, 0) !important;
+            color: #fff !important;
+        }
+
+        .badge-in-transit {
+            background: rgb(0, 92, 112) !important;
+            color: #fff !important;
+        }
+
+        .badge-delivered {
+            background: rgb(0, 41, 112) !important;
+            color: #fff !important;
+        }
     </style>
     @yield('style')
     <script src="https://cdn.tiny.cloud/1/yze2qblheth712tqw6y3f30283f8nch1bogp0jzpsm3rn79f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>

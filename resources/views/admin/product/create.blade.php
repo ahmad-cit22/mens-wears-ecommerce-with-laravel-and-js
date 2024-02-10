@@ -123,7 +123,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label"><b>Short Description</b></label>
                             <div class="col-sm-10">
-                                <textarea class="tinymce form-control @error('short_description') is-invalid @enderror" name="short_description">{{ old('short_description') }}</textarea>
+                                <textarea class="summernote form-control @error('short_description') is-invalid @enderror" name="short_description">{{ old('short_description') }}</textarea>
                                 @error('short_description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -135,7 +135,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label"><b>Description *</b></label>
                             <div class="col-sm-10">
-                                <textarea class="tinymce form-control @error('description') is-invalid @enderror" name="description">{{ old('description') }}</textarea>
+                                <textarea class="summernote form-control @error('description') is-invalid @enderror" name="description">{{ old('description') }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -144,13 +144,22 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-5">
                             <label class="col-sm-2 col-form-label"><b>Type*</b></label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-4">
                                 <label><input type="radio" name="type" value="single" checked> Single </label>
                                 <label><input type="radio" name="type" value="variation"> Variation </label>
 
                                 @error('type')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label class="col-sm-2 col-form-label"><b>Reference Code</b></label>
+                            <div class="col-sm-4">
+                                <input type="text" name="reference_code" class="form-control  @error('reference_code') is-invalid @enderror">
+                                @error('reference_code')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -322,7 +331,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <label>Opening Stockasd*</label>
+                                            <label>Opening Stock*</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control @error('qtys') is-invalid @enderror" name="qtys[]">
                                                 <div class="input-group-append">

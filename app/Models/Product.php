@@ -51,4 +51,8 @@ class Product extends Model
     {
         return $this->hasMany(Rating:: class);
     }
+    
+    public function created_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'product_id', 'id')->where('work_name', 'create_product')->latest()->with('adder');
+    }
 }

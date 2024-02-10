@@ -33,4 +33,32 @@ class Order extends Model
     {
     	return $this->belongsTo(User::class, 'customer_id');
     }
+
+    public function created_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'create_order')->latest()->with('adder');
+    }
+
+    public function printed_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'print_memo')->latest()->with('adder');
+    }
+
+    public function packaged_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'packaging')->latest()->with('adder');
+    }
+
+    public function order_paid_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'order_paid')->latest()->with('adder');
+    }
+    
+    public function order_returned_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'order_return')->latest()->with('adder');
+    }
+    
+    public function add_loss_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'add_loss')->latest()->with('adder');
+    }
+    
+    public function apply_cod_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'apply_cod')->latest()->with('adder');
+    }
 }

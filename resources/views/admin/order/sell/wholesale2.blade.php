@@ -95,7 +95,7 @@
                                     <label>Date From</label>
                                     <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
                                     @error('date_from')
-                                         <span class="invalid-feedback" role="alert">
+                                        <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
@@ -185,11 +185,13 @@
                                 <th>Code</th>
                                 <th>Customer Name</th>
                                 <th width="9%">Phone</th>
+                                <th>Order Info</th>
                                 <th>Status</th>
                                 <th width="13%">Note</th>
                                 <th>Source</th>
-                                <th>COD</th>
                                 <th>Date</th>
+                                <th>COD</th>
+                                <th>Created By</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -199,6 +201,20 @@
                                     <td>{{ $item->code }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td width="9%">{{ $item->phone }}</td>
+                                    <td>
+                                        <p class="m-0"><b>Sub Total: {{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></p>
+                                        <p class="m-0"><b>Delivery Charge: {{ $item->delivery_charge }}/- </b></p>
+                                        @if ($item->discount_amount)
+                                            <p class="m-0"><b>Discount: {{ $item->discount_amount }}/- </b></p>
+                                        @endif
+                                        @if ($item->advance)
+                                            <p class="m-0"><b>Advance: {{ $item->advance }}/- </b></p>
+                                        @endif
+                                        @if ($item->cod)
+                                            <p class="m-0"><b>COD: {{ $item->cod }}/- </b></p>
+                                        @endif
+                                        <p class="m-0"><b>Total Payable: {{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                    </td>
                                     <td>
                                         @if ($item->is_return == 1)
                                             <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
@@ -212,8 +228,15 @@
                                     </td>
                                     <td width="13%">{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
-                                    <td>{{ $item->cod }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
+                                    <td>{{ $item->cod }}</td>
+                                    <td>
+                                        @if ($item->created_by)
+                                            <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>
+                                        @else
+                                            --
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

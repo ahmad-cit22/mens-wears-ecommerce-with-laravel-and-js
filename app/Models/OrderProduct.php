@@ -18,6 +18,11 @@ class OrderProduct extends Model
     {
     	return $this->belongsTo(Product::class);
     }
+    
+    public function stock()
+    {
+    	return ProductStock::where('product_id', $this->product->id)->where('size_id', $this->size_id)->first();
+    }
 
     public function size()
     {

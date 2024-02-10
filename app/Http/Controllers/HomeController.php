@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\TrackingWorkName;
 use Carbon\Carbon;
 use Auth;
 use Illuminate\Support\Facades\Artisan;
@@ -47,6 +48,32 @@ class HomeController extends Controller {
 
         Alert::toast('All Cache cleared!', 'success');
         return back();
+
+        // $tasks = [
+        //     'create_order_sheet',
+        //     'create_orders',
+        //     'print_memo',
+        //     'packaging',
+        //     'order_paid',
+        //     'order_return',
+        //     'expense_entry',
+        //     'add_loss',
+        //     'add_cod',
+        //     'add_discount',
+        //     'add_stock',
+        //     'create_cash_flow',
+        //     'create_bkash_record',
+        //     'create_product',
+        //     'reject_product',
+        //     'damage_product',
+        // ];
+
+        // foreach ($tasks as $key => $task) {
+        //     TrackingWorkName::create([
+        //         'work_name' => $task,
+        //     ]);
+        // }
+
     }
 
     public function sitemap_generate() {

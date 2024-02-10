@@ -200,6 +200,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 	// Product Stock Routes
 	Route::group(['prefix' => 'stock', 'as' => 'stock.'], function () {
 		Route::get('/add-stock', [App\Http\Controllers\ProductStockHistoryController::class, 'add_stock'])->name('add');
+		Route::post('/add-stock-barcode-scan', [App\Http\Controllers\ProductStockHistoryController::class, 'add_stock_barcode_scan'])->name('add.barcode.scan');
 		Route::get('/current-stock', [App\Http\Controllers\ProductStockHistoryController::class, 'current'])->name('current');
 		Route::get('/history', [App\Http\Controllers\ProductStockHistoryController::class, 'index'])->name('index');
 		Route::post('/stote', [App\Http\Controllers\ProductStockHistoryController::class, 'store'])->name('store');
@@ -233,7 +234,12 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		// Invoice route
 		Route::get('/generate-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_invoice'])->name('invoice.generate');
 		Route::get('/generate-pos-invoice/{id}', [App\Http\Controllers\OrderController::class, 'generate_pos_invoice'])->name('invoice.pos.generate');
-
+		Route::get('/packaging/{id}', [App\Http\Controllers\OrderController::class, 'packaging'])->name('packaging');
+		Route::post('/product-barcode-check', [App\Http\Controllers\OrderController::class, 'product_barcode_check'])->name('barcode.check');
+		Route::get('/product-barcode-check-confirm/{id}', [App\Http\Controllers\OrderController::class, 'product_barcode_check_confirm'])->name('barcode.check.confirm');
+		Route::get('/order-packet-done/{id}', [App\Http\Controllers\OrderController::class, 'packet_done'])->name('packet_done');
+		Route::post('/refer-code-store/{id}', [App\Http\Controllers\OrderController::class, 'refer_code_store'])->name('refer_code.store');
+		
 		// Report routes
 		Route::get('/all', [App\Http\Controllers\OrderController::class, 'all_orders'])->name('all');
 		Route::get('/current-year', [App\Http\Controllers\OrderController::class, 'current_year'])->name('current.year');

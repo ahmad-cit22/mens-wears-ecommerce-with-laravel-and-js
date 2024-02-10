@@ -31,12 +31,15 @@
                         <thead>
                             <tr>
                                 <th>S.N</th>
+                                <th>Reference Code</th>
                                 <th>Product</th>
                                 <th>Size</th>
                                 <th>Qty</th>
                                 <th>Production Cost</th>
                                 <th>Price</th>
                                 <th>Note</th>
+                                <th>Remarks</th>
+                                <th>Added By</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -123,6 +126,10 @@
                         name: 'id'
                     },
                     {
+                        data: 'reference_code',
+                        name: 'reference_code'
+                    },
+                    {
                         data: 'product',
                         name: 'product'
                     },
@@ -145,6 +152,14 @@
                     {
                         data: 'note',
                         name: 'note'
+                    },
+                    {
+                        data: 'remarks',
+                        name: 'remarks'
+                    },
+                    {
+                        data: 'created_by',
+                        name: 'created_by'
                     },
                     {
                         data: 'date',

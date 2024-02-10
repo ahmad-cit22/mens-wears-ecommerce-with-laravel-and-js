@@ -22,6 +22,7 @@ class CreateOrderProductsTable extends Migration
             $table->double('price');
             $table->double('qty');
             $table->double('return_qty')->nullable();
+            $table->integer('is_checked')->nullable();
             $table->double('discount_amount')->nullable();
             $table->string('note')->nullable();
             $table->timestamps();
