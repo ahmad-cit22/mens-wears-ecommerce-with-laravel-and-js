@@ -88,8 +88,9 @@
                                 <th>Amount</th>
                                 <th>Bank</th>
                                 <th>Note</th>
-                                <th>Date</th>
+                                <th>Expense Date</th>
                                 <th>Entry Date</th>
+                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -279,7 +280,7 @@
 
                         </div>
                         <div class="modal-footer">
-                        </div> 
+                        </div>
                     </div>
                 </div>
                 <!-- Delete expense Modal -->
@@ -341,6 +342,9 @@
                         data: 'date',
                         orderable: false,
                         searchable: true
+                    },
+                    {
+                        data: 'created_by',
                     },
                     {
                         data: 'action',

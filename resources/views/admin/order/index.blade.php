@@ -219,5 +219,9 @@
             });
 
         });
+
+        $(document).ready(function() {
+            $('#data-table_filter').find("input").focus();
+        });
     </script>
 @endsection

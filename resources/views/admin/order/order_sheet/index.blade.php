@@ -170,6 +170,7 @@
                                 <th style="max-width: 80px">Email</th>
                                 <th>Whatsapp Number</th>
                                 <th style="min-width: 130px">Date</th>
+                                <th>Created By</th>
                                 <th style="min-width: 60px">Action</th>
                             </tr>
                         </thead>
@@ -218,6 +219,14 @@
                                     <td>{{ $order->whatsapp_num ?? '--' }}</td>
 
                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y g:iA') }}</td>
+
+                                    <td>
+                                        @if ($order->created_by)
+                                            <a href="{{ route('user.edit', $order->created_by->user_id) }}" style="color: #fff !important; text-decoration: underline;">{{ $order->created_by->adder->name }}</a>
+                                        @else
+                                            --
+                                        @endif
+                                    </td>
 
                                     <td>
                                         <a href="{{ route('fos.edit', $order->id) }}" class="btn btn-sm btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
@@ -270,6 +279,7 @@
                                 <th>Email</th>
                                 <th>Whatsapp Number</th>
                                 <th style="min-width: 130px">Date</th>
+                                <th>Created By</th>
                                 <th style="min-width: 60px">Action</th>
                             </tr>
                         </tfoot>
@@ -280,7 +290,7 @@
                     $total = $orders->total();
                     $currentPage = $orders->currentPage();
                     $perPage = $orders->perPage();
-                    
+
                     $from = ($currentPage - 1) * $perPage + 1;
                     $to = min($currentPage * $perPage, $total);
                 @endphp

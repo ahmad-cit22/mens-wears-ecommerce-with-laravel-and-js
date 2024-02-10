@@ -239,18 +239,23 @@
             </div>
             <!--End Table-->
 
-            @if ($order->note)
+            {{-- @if ($order->note)
                 <div class="info mb-1">
                     <p class="" style="font-style: italic; font-size: 11px">
                         Note : {{ $order->note }}
                     </p>
                 </div>
-            @endif
+            @endif --}}
 
             <div id="legalcopy">
-                <p class="legal"><strong>Thank you for your shopping!</strong>  .
+                <p class="legal"><strong>Thank you for your shopping!</strong>
                 </p>
             </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 15px">
+            <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($order->code, 'C39') }}" alt="barcode" width="160" /><br>
+            <p style="margin: 3px 0;">www.gobyfabrifest.com</p>
         </div>
         <!--End InvoiceBot-->
     </div>

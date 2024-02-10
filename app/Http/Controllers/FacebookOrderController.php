@@ -12,6 +12,7 @@ use App\Models\OrderProduct;
 use App\Models\User;
 use App\Models\District;
 use App\Models\Area;
+use App\Models\WorkTrackingEntry;
 
 use Illuminate\Http\Request;
 use Auth;
@@ -40,8 +41,8 @@ class FacebookOrderController extends Controller {
         $special_status_id = '';
 
         if (auth()->user()->can('order_sheet.index')) {
-            $orders = FacebookOrder::orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business')->paginate(10);
-
+            $orders = FacebookOrder::orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business', 'customer', 'created_by')->paginate(10);
+// return $orders->first();
             return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -183,6 +184,13 @@ class FacebookOrderController extends Controller {
 
             Session::forget('coupon_discount');
             Session::forget('wholesale_price');
+
+            WorkTrackingEntry::create([
+                'order_sheet_id' => $order->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'create_order_sheet'
+            ]);
+
             Alert::toast('Order added successfully!', 'success');
             return redirect()->route('fos.create');
         } else {

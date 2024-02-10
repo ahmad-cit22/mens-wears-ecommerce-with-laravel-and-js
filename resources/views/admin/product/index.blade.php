@@ -60,6 +60,7 @@
                                 <th>Type</th>
                                 <th>Stock</th>
                                 <th>Status</th>
+                                <th>Created By</th>
                                 <th>Meta Description</th>
                                 <th>Action</th>
                             </tr>
@@ -88,6 +89,13 @@
                                         @endif
                                     </td>
                                     <td><span class="badge badge-{{ $product->is_active == 1 ? 'success' : 'danger' }}">{{ $product->is_active == 1 ? 'Active' : 'Inactive' }}</span></td>
+                                    <td>
+                                        @if ($product->created_by)
+                                            <a href="{{ route('user.edit', $product->created_by->user_id) }}">{{ $product->created_by->adder->name }}</a>
+                                        @else
+                                            --
+                                        @endif
+                                    </td>
                                     <td>{{ $product->meta_description }}</td>
                                     <td>
                                         @can('product.edit')
@@ -131,6 +139,7 @@
                                 <th>Brand</th>
                                 <th>Type</th>
                                 <th>Status</th>
+                                <th>Created By</th>
                                 <th>Meta Description</th>
                                 <th>Action</th>
                             </tr>

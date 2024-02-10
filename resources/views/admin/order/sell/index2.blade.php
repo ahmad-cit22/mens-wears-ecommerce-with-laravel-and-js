@@ -139,20 +139,41 @@
                                 <th>Code</th>
                                 <th>Customer Name</th>
                                 <th width="9%">Phone</th>
+                                <th width="13%">Order Info</th>
+                                <th width="13%">Courier Info</th>
                                 <th>Status</th>
                                 <th width="13%">Note</th>
                                 <th>Source</th>
+                                <th width="9%">Date</th>
                                 <th>COD</th>
-                                <th>Date</th>
+                                <th>Created By</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->code }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td width="9%">{{ $item->phone }}</td>
+                                    <td><b>{{ $item->code }}</b></td>
+                                    <td><b>{{ $item->name }}</b></td>
+                                    <td width="9%"><b>{{ $item->phone }}</b></td>
+                                    <td>
+                                        <p class="m-0">Sub Total: <b>{{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></p>
+                                        <p class="m-0">Delivery Charge: <b>{{ $item->delivery_charge }}/- </b></p>
+                                        @if ($item->discount_amount)
+                                            <p class="m-0">Discount: <b>{{ $item->discount_amount }}/- </b></p>
+                                        @endif
+                                        @if ($item->advance)
+                                            <p class="m-0">Advance: <b>{{ $item->advance }}/- </b></p>
+                                        @endif
+                                        @if ($item->cod)
+                                            <p class="m-0">COD: <b>{{ $item->cod }}/- </b></p>
+                                        @endif
+                                        <p class="m-0">Total Payable: <b>{{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                    </td>
+                                    <td>
+                                        <p class="m-0">Courier: <b>{{ $item->courier_name }} </b></p>
+                                        <p class="m-0">Refer Code: <b>{{ $item->refer_code ?? 'N/A' }} </b></p>
+                                    </td>
                                     <td>
                                         @if ($item->is_return == 1)
                                             <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span> <br>
@@ -166,8 +187,15 @@
                                     </td>
                                     <td width="13%">{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
-                                    <td>{{ $item->cod }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
+                                    <td>{{ $item->cod }}</td>
+                                    <td>
+                                        @if ($item->created_by)
+                                            <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>
+                                        @else
+                                            --
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

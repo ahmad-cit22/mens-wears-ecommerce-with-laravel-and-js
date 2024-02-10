@@ -13,6 +13,7 @@ use App\Models\Supplier;
 use App\Models\SupplierPayment;
 use App\Models\Accessory;
 use App\Models\OrderProduct;
+use App\Models\WorkTrackingEntry;
 use Illuminate\Http\Request;
 use Auth;
 use Alert;
@@ -85,6 +86,10 @@ class ProductController extends Controller {
             $size_id = $request->size_id;
             $qty = $request->qty;
             $stock = ProductStock::where('product_id', $product_id)->where('size_id', $size_id)->first();
+            
+            $stock->barcode = $stock->id + 1000;
+            $stock->save();
+            
             return view('admin.product.print-label-result', compact('stock', 'qty'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -196,6 +201,7 @@ class ProductController extends Controller {
                 $stock_history = new ProductStockHistory;
                 $stock_history->product_id = $product->id;
                 $stock_history->qty = $request->qty;
+                $stock_history->reference_code = $request->reference_code;
                 $stock_history->note = 'Opening Stock';
                 $stock_history->save();
             }
@@ -225,6 +231,7 @@ class ProductController extends Controller {
                         $stock_history->product_id = $product->id;
                         $stock_history->size_id = $request->sizes[$i];
                         $stock_history->qty = $request->qtys[$i];
+                        $stock_history->reference_code = $request->reference_code;
                         $stock_history->note = 'Opening Stock';
                         $stock_history->save();
                     }
@@ -248,6 +255,19 @@ class ProductController extends Controller {
                     $i = $i + 1;
                 }
             }
+
+            WorkTrackingEntry::create([
+                        'product_id' => $product->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'create_product'
+            ]);
+
+            WorkTrackingEntry::create([
+                        'product_id' => $product->id,
+                        'product_stock_history_id' => $stock_history->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'add_stock'
+            ]);
 
             Alert::toast('Product Added!', 'success');
             return redirect()->route('product.index');

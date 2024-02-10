@@ -58,9 +58,9 @@
     $('.select2').select2();
 
     // Summernote
-    // $('.summernote').summernote({
-    //   height : 200,
-    // });
+    $('.summernote').summernote({
+        height: 200,
+    });
 </script>
 
 <script>

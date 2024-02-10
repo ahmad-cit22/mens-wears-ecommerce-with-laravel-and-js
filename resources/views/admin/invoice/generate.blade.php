@@ -20,7 +20,7 @@
         }
 
         .contactDetails {
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .customar_info {
@@ -59,7 +59,7 @@
             <table style="border: 0px;">
                 <tr>
                     <td style="border: 0px"><img src="{{ asset('images/website/' . $business->footer_logo) }}" class="center"></td>
-                    <td width="35%" style="border: 0px; text-align: right; font-size: 2px !important;">
+                    <td width="35%" style="border: 0px; text-align: right;">
                         <p class="contactDetails"> Contact No.: {{ $business->phone }}<br>
                             Address: {{ $business->address }}
                         </p>
@@ -69,7 +69,7 @@
 
 
         </div>
-        <table style="margin-top: 35px;">
+        <table style="margin-top: 12px;">
             <tr>
                 <th style="border: 0px solid white;">
                     <div>
@@ -193,13 +193,11 @@
         <p><b>Payment Method:</b>&nbsp;&nbsp; {{ $order->payment_method }}</p>
     @endif
 
-    {{-- @if ($order->note != null)
-        <div class="info" style="margin-top: 25px">
-            <p class="" style="font-style: italic; font-size: 11px; margin-left: 5px;">
-                Note : {{ $order->note }}
-            </p>
-        </div>
-    @endif --}}
+    <div style="text-align: center;">
+        <p>Thank you for your shopping at GoByFabrifest!</p>
+        <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($order->code, 'C39') }}" alt="barcode" width="185" style="margin: 10px 0" /><br>
+        <p style="margin: 0px; font-size: 12px">www.gobyfabrifest.com</p>
+    </div>
 
 </body>
 

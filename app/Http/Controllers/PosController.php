@@ -12,6 +12,7 @@ use App\Models\OrderProduct;
 use App\Models\User;
 use App\Models\District;
 use App\Models\Area;
+use App\Models\WorkTrackingEntry;
 
 use Illuminate\Http\Request;
 use Auth;
@@ -181,12 +182,13 @@ class PosController extends Controller {
                 $order->source = 'Offline';
             }
 
+            $order->order_status_id = 2;
             $order->is_final = 1;
             $order->note = $request->note;
 
             $order->save();
 
-            // Calculate discoutn percentage
+            // Calculate discount percentage
 
             $percentage = ($discount / Cart::subtotal()) * 100;
 
@@ -213,10 +215,16 @@ class PosController extends Controller {
             //     Mail::send(new OrderMail($order));
             // }
 
-
             Session::forget('coupon_discount');
             Session::forget('wholesale_price');
-            Alert::toast('One Sell added', 'success');
+            
+            WorkTrackingEntry::create([
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'create_order'
+            ]);
+
+            Alert::toast('One Sell Added', 'success');
 
             if (Session::has('wholesale_price')) {
                 return redirect()->route('wholesale.create', 'none');

@@ -908,10 +908,12 @@
 
         }
 
+        var checkReq = false;
         $("#barcode").keyup(function() {
             var barcode = $(this).val();
             if (!isNaN(barcode)) {
-                if (barcode.length == 4) {
+                if (barcode.length == 4 && !checkReq) {
+                    checkReq = true;
                     //alert(barcode);
                     url = "{{ route('pos.barcode.cart.add') }}";
                     $.ajax({
@@ -930,13 +932,13 @@
                             $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
                             $('#cart_table').html(response.cart_table);
                             $("#barcode").val('');
+                            checkReq = false;
                         }
                     });
                 }
             } else {
 
             }
-
         });
 
         function update_cart(rowId) {

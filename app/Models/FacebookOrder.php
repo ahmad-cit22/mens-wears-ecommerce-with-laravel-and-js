@@ -33,4 +33,8 @@ class FacebookOrder extends Model {
     public function customer() {
         return $this->belongsTo(User::class, 'customer_id');
     }
+    
+    public function created_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_sheet_id', 'id')->where('work_name', 'create_order_sheet')->with('adder');
+    }
 }

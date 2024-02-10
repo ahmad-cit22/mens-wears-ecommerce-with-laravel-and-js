@@ -18,4 +18,8 @@ class ProductStockHistory extends Model
     {
     	return $this->belongsTo(Size::class);
     }
+
+    public function created_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'product_stock_history_id', 'id')->where('work_name', 'add_stock')->latest()->with('adder');
+    }
 }

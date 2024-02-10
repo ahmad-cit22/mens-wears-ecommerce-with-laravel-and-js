@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\ProductStock;
+use App\Models\WorkTrackingEntry;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -74,9 +76,9 @@ class OrderController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -109,6 +111,16 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -161,7 +173,7 @@ class OrderController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
             $categories = Category::all();
             
             return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to'));
@@ -175,7 +187,7 @@ class OrderController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', 'Wholesale')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', 'Wholesale')->with('created_by')->get();
             $categories = Category::all();
             
             return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to'));
@@ -260,9 +272,9 @@ class OrderController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('wholesale.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('created_by')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->get();
+                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('created_by')->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -295,6 +307,16 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -547,7 +569,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -556,19 +578,19 @@ class OrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('created_by')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::orderBy('id', 'DESC')->get();
+                $orders = Order::orderBy('id', 'DESC')->with('created_by')->get();
             }
 
             // 2nd step filter
@@ -611,6 +633,16 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -646,7 +678,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -655,19 +687,19 @@ class OrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('created_by')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::orderBy('id', 'DESC')->get();
+                $orders = Order::orderBy('id', 'DESC')->with('created_by')->get();
             }
 
             // 2nd step filter
@@ -710,6 +742,16 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -745,7 +787,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -754,19 +796,19 @@ class OrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+                $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('created_by')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
             }
 
             // 2nd step filter
@@ -809,6 +851,16 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -844,7 +896,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -859,13 +911,13 @@ class OrderController extends Controller {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->get();
+                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
             }
 
             // 2nd step filter
@@ -908,6 +960,16 @@ class OrderController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
@@ -1040,6 +1102,12 @@ class OrderController extends Controller {
                         }
                         $order->is_final = 0;
                     }
+                } else if ($request->order_status_id == 6) {
+                    WorkTrackingEntry::create([
+                        'order_id' => $order->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'print_memo'
+                    ]);
                 }
 
                 $order->order_status_id = $request->order_status_id;
@@ -1059,13 +1127,82 @@ class OrderController extends Controller {
         }
     }
 
+    public function packet_done($id) {
+        if (auth()->user()->can('order.edit')) {
+            $order = Order::find($id);
+            if (!is_null($order)) {
+                $order->order_status_id = 7;
+                $order->save();
+
+                WorkTrackingEntry::create([
+                        'order_id' => $order->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'packaging'
+                    ]); 
+
+                Alert::toast('Status Updated!', 'success');
+                return back();
+            } else {
+                Alert::toast('Something went wrong !', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function refer_code_store(Request $request, $id) {
+        if (auth()->user()->can('order.edit')) {
+            $order = Order::find($id);
+            if (!is_null($order)) {
+
+                $order->refer_code = $request->refer_code;
+                if ($request->refer_code) {
+                    $order->order_status_id = 8;
+                    $order->save();
+    
+                    Alert::toast('Courier Reference Code Saved', 'success');
+                } else {
+                    $order->order_status_id = 7;
+                    $order->save();
+    
+                    Alert::toast('Courier Reference Code Removed', 'success');
+                }
+                
+                return back();
+            } else {
+                Alert::toast('Something went wrong !', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function change_payment_status(Request $request, $id) {
         if (auth()->user()->can('order.edit')) {
             $order = Order::find($id);
             if (!is_null($order)) {
                 $order->payment_status = $request->payment_status;
+                
+                if ($request->payment_status) {
+                    $order->order_status_id = 9;
+
+                    WorkTrackingEntry::where('order_id', $order->id)->where('user_id', Auth::id())->where('work_name', 'order_paid')->delete();
+
+                    WorkTrackingEntry::create([
+                        'order_id' => $order->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'order_paid'
+                    ]);
+                } else {
+                    $order->order_status_id = 8;
+                    
+                    WorkTrackingEntry::where('order_id', $order->id)->where('user_id', Auth::id())->where('work_name', 'order_paid')->delete();
+                }
+                
                 $order->save();
-                Alert::toast('Status Updated !', 'success');
+                Alert::toast('Status Updated!', 'success');
                 return back();
             } else {
                 Alert::toast('Something went wrong !', 'error');
@@ -1228,6 +1365,13 @@ class OrderController extends Controller {
                     $order->cod = $order->cod ? $order->cod + $cod : $cod;
                     $order->price -= $cod;
                     $order->save();
+
+                    WorkTrackingEntry::create([
+                        'order_id' => $order->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'apply_cod'
+                    ]);
+
                     Alert::toast('COD applied successfully', 'success');
                     return back();
                 } else {
@@ -1292,4 +1436,67 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
+    
+    public function packaging($id) {
+        if (auth()->user()->can('order.edit') || auth()->user()->can('add.loss')) {
+            $order = Order::find($id);
+
+            // return 1;
+            return view('admin.order.packaging', compact('order'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    
+    public function product_barcode_check(Request $request) {
+        if (auth()->user()->can('order.edit') || auth()->user()->can('add.loss')) {
+            $order_product_id = $request->order_product_id;
+            $barcode = $request->barcode;
+            $stock_id = $request->stock_id;
+            $scanned_product = ProductStock::find($barcode - 1000);
+            $is_matched = false;
+
+            if ($scanned_product) {
+                if ($barcode == $stock_id + 1000) {
+                    $is_matched == 1;
+                        return view('admin.order.modals.check-product', [
+                            'status' => 'success',
+                            'scanned_product' => $scanned_product,
+                            'barcode' => $barcode,
+                            'order_product_id' => $order_product_id,
+                        ]);
+                } else {
+                    return view('admin.order.modals.check-product', [
+                            'status' => 'not_matched',
+                            'scanned_product' => $scanned_product,
+                            'barcode' => $barcode,
+                        ]);
+                }
+            } else {
+                return view('admin.order.modals.check-product', [
+                            'status' => 'not_found',
+                            'scanned_product' => null,
+                            'barcode' => $barcode
+                        ]);
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+    
+    public function product_barcode_check_confirm($id) {
+        if (auth()->user()->can('order.edit')) {
+            $order_product = OrderProduct::find($id);
+            $order_product->is_checked = 1;
+            
+            $order_product->save();
+
+            Alert::toast('Checking Status Updated!', 'success');
+
+            return back();
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
 }

@@ -26,6 +26,7 @@ class CreateOrdersTable extends Migration {
             $table->integer('delivery_boy_id')->nullable();
             $table->double('delivery_charge')->nullable();
             $table->string('courier_name')->nullable();
+            $table->string('refer_code')->nullable();
             $table->double('vat')->nullable();
             $table->double('cod')->default(0);
             $table->integer('order_status_id')->default(1);

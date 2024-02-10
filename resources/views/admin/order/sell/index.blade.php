@@ -83,44 +83,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>District</label>
-                                    <select name="district_id" id="district_id" class="select2 form-control @error('district_id') is-invalid @enderror">
-                                        <option value="">Please Select a District (Optional)</option>
-                                        @foreach (App\Models\District::get() as $district)
-                                            <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                        @endforeach
-
-                                    </select>
-                                    @error('district_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Area</label>
-                                    <select name="area_id" id="areas" class="select2 form-control @error('area_id') is-invalid @enderror">
-                                        <option value="">Please Select an Area (Optional)</option>
-
-
-                                    </select>
-                                    @error('area_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label style="color: #fff;">.</label>
-                                    <button type="submit" class="form-control btn  btn-primary">Search</button>
-                                </div>
-                            </div>
+                            
                         </div>
                     </form>
                 </div>
@@ -149,6 +112,7 @@
                                 <th>Source</th>
                                 <th>COD</th>
                                 <th>Date</th>
+                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -169,6 +133,8 @@
 
 @section('scripts')
     <script>
+        // $("#asd")
+
         $('#district_id').change(function() {
             var district_id = $(this).val();
             if (district_id == '') {
@@ -220,7 +186,11 @@
                         data: 'cod'
                     },
                     {
-                        data: 'date'
+                        title: 'Date',
+                        data: 'date',
+                    },
+                    {
+                        data: 'created_by',
                     },
                     {
                         data: 'action',
@@ -229,13 +199,10 @@
                     },
                 ],
             });
-
         });
 
-        // $(document).ready(function() {
-        //     var table = $('#example').DataTable();
-        //     var pageNo = 6
-        //     table.page(pageNo - 1).draw('page');
-        // });
+        $(document).ready(function() {
+            $('#data-table_filter').find("input").focus();
+        });
     </script>
 @endsection

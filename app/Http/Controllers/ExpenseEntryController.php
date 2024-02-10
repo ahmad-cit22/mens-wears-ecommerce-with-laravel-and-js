@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ExpenseEntry;
 use App\Models\BankTransaction;
 use App\Models\Bank;
+use App\Models\WorkTrackingEntry;
 use Illuminate\Http\Request;
 use Auth;
 use Alert;
@@ -54,6 +55,16 @@ class ExpenseEntryController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         $btn = '<a href="#editModal' . $row->id . '" class="btn btn-primary" data-toggle="modal" title="Edit Entry"><i class="fas fa-edit"></i></a>
                           <a href="#deleteModal' . $row->id . '" class="btn btn-danger" data-toggle="modal" title="Delete Entry"><i class="fas fa-trash"></i></a>';
@@ -121,6 +132,16 @@ class ExpenseEntryController extends Controller {
 
                         return $data;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
                         $btn = '<a href="#editModal' . $row->id . '" class="btn btn-primary" data-toggle="modal" title="Edit Entry"><i class="fas fa-edit"></i></a>
                           <a href="#deleteModal' . $row->id . '" class="btn btn-danger" data-toggle="modal" title="Delete Entry"><i class="fas fa-trash"></i></a>';
@@ -166,6 +187,12 @@ class ExpenseEntryController extends Controller {
             $expense->note = $request->note;
             $expense->save();
 
+            WorkTrackingEntry::create([
+                    'expense_entry_id' => $expense->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'expense_entry'
+            ]);
+
             if ($request->bank_id != '' && $request->bank_id > 0) {
                 $transaction = new BankTransaction;
                 $transaction->bank_id = $request->bank_id;
@@ -210,6 +237,13 @@ class ExpenseEntryController extends Controller {
                 $order = Order::find($request->order_id);
                 $order->add_loss = 1;
                 $order->save();
+
+                WorkTrackingEntry::create([
+                        'order_id' => $order->id,
+                        'expense_entry_id' => $expense->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'add_loss'
+                ]);
 
                 Alert::toast('Loss added', 'success');
             } else {
@@ -298,6 +332,14 @@ class ExpenseEntryController extends Controller {
             if (!is_null($expense)) {
                 if (BankTransaction::where('expense_id', $id)->exists()) {
                     BankTransaction::where('expense_id', $id)->delete();
+                }
+
+                if ($expense->expense_id == 2) {
+                    $order_id = WorkTrackingEntry::where('expense_entry_id', $expense->id)->where('work_name', 'add_loss')->first()->order_id;
+
+                    $order = Order::find($order_id);
+                    $order->add_loss = 0;
+                    $order->save();
                 }
 
                 $expense->delete();

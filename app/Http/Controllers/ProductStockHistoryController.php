@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\ProductStockHistory;
+use App\Models\WorkTrackingEntry;
 use Illuminate\Http\Request;
 use Auth;
 use PDF;
@@ -28,6 +29,18 @@ class ProductStockHistoryController extends Controller {
         } else {
             abort(403, 'Unauthorized action.');
         }
+    }
+
+    public function add_stock_barcode_scan(Request $request) {
+        $barcode = $request->barcode;
+        $stock_id = $barcode - 1000;
+        $stock = ProductStock::find($stock_id);
+        $size = ProductStock::find($stock_id)->size;
+        if (!is_null($stock)) {
+            $product = $stock->product;
+        }
+
+        return ['product' => $product, 'stock' => $stock, 'size' => $size];
     }
 
     public function current(Request $request) {
@@ -142,6 +155,16 @@ class ProductStockHistoryController extends Controller {
                             return $price . ' TK (' . $price_ppc . '/pc)';
                         }
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('date', function ($row) {
                         if ($row->product != null) {
                             $date = Carbon::parse($row->created_at)->format('d M, Y');
@@ -164,23 +187,39 @@ class ProductStockHistoryController extends Controller {
     public function store(Request $request) {
         if (auth()->user()->can('product.edit')) {
             $validatedData = $request->validate([
-                'product_id' => 'required|numeric',
-                'qty' => 'required|numeric',
+                'product_id' => 'required',
+                'qty' => 'required',
             ]);
 
             $product_id = $request->product_id;
             $size_id = $request->size_id;
             $qty = $request->qty;
-            $stock = ProductStock::where('product_id', $product_id)->where('size_id', $size_id)->first();
-            $stock->qty += $qty;
-            $stock->save();
+            $remarks = $request->remarks;
+            $reference_code = $request->reference_code;
 
-            $history = new ProductStockHistory;
-            $history->product_id = $product_id;
-            $history->size_id = $size_id;
-            $history->qty = $qty;
-            $history->note = "Stockin";
-            $history->save();
+            foreach ($request->product_id as $key => $product_id) {
+
+                $stock = ProductStock::where('product_id', $product_id)->where('size_id', $size_id[$key])->first();
+                $stock->qty += $qty[$key];
+                $stock->save();
+
+                $history = new ProductStockHistory;
+                $history->product_id = $product_id;
+                $history->size_id = $size_id[$key];
+                $history->qty = $qty[$key];
+                $history->reference_code = $reference_code;
+                $history->remarks = $remarks[$key];
+                $history->note = "Stockin";
+                $history->save();
+            }
+
+            WorkTrackingEntry::create([
+                        'product_id' => $product_id,
+                        'product_stock_history_id' => $history->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'add_stock'
+            ]);
+
             Alert::toast('Stock Updated', 'success');
             return back();
         } else {
