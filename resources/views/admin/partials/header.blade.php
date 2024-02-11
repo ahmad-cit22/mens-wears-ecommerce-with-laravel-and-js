@@ -78,6 +78,11 @@
             background: rgb(0, 41, 112) !important;
             color: #fff !important;
         }
+        
+        .badge-office-sell {
+            background: rgb(40, 0, 110) !important;
+            color: #fff !important;
+        }
     </style>
     @yield('style')
     <script src="https://cdn.tiny.cloud/1/yze2qblheth712tqw6y3f30283f8nch1bogp0jzpsm3rn79f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>

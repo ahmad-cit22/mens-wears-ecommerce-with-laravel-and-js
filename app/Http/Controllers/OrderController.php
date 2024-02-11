@@ -74,6 +74,8 @@ class OrderController extends Controller {
     public function sell_index(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
@@ -139,7 +141,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.index', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.index', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -171,12 +173,14 @@ class OrderController extends Controller {
     public function sell_export_excel2(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
             $categories = Category::all();
             
-            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -185,12 +189,14 @@ class OrderController extends Controller {
     public function wholesale_export_excel2(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', 'Wholesale')->with('created_by')->get();
             $categories = Category::all();
             
-            return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -270,6 +276,8 @@ class OrderController extends Controller {
     public function wholesale_index(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('wholesale.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('created_by')->get();
@@ -335,7 +343,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -561,6 +569,8 @@ class OrderController extends Controller {
     public function sell_search(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -602,6 +612,12 @@ class OrderController extends Controller {
             }
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
+            }
+            
+            if (!empty($request->courier_name)) {
+                $courier_name = $request->courier_name;
+
+                $orders = $orders->where('courier_name', $courier_name);
             }
 
             $orders = $orders->where('is_final', 1)->where('source', '!=', 'Wholesale');
@@ -661,7 +677,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.index', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.index', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -670,6 +686,8 @@ class OrderController extends Controller {
     public function sell_search_export(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -711,6 +729,12 @@ class OrderController extends Controller {
             }
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
+            }
+            
+            if (!empty($request->courier_name)) {
+                $courier_name = $request->courier_name;
+
+                $orders = $orders->where('courier_name', $courier_name);
             }
 
             $orders = $orders->where('is_final', 1)->where('source', '!=', 'Wholesale');
@@ -770,7 +794,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -779,6 +803,8 @@ class OrderController extends Controller {
     public function wholesale_search(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -821,6 +847,12 @@ class OrderController extends Controller {
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
             }
+            
+            if (!empty($request->courier_name)) {
+                $courier_name = $request->courier_name;
+
+                $orders = $orders->where('courier_name', $courier_name);
+            }
 
             $orders = $orders->where('is_final', 1);
 
@@ -879,7 +911,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -888,6 +920,8 @@ class OrderController extends Controller {
     public function wholesale_search_export(Request $request) {
         $date_from = '';
         $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
 
         if (auth()->user()->can('order.index')) {
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -930,6 +964,12 @@ class OrderController extends Controller {
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
             }
+            
+            if (!empty($request->courier_name)) {
+                $courier_name = $request->courier_name;
+
+                $orders = $orders->where('courier_name', $courier_name);
+            }
 
             $orders = $orders->where('is_final', 1);
 
@@ -988,7 +1028,7 @@ class OrderController extends Controller {
                     ->make(true);
             }
             $categories = Category::all();
-            return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to'));
+            return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }

@@ -30,6 +30,10 @@ class CreateProductsTable extends Migration {
             $table->integer('is_featured')->default(0);
             $table->integer('is_trending')->default(0);
             $table->integer('is_offer')->default(0);
+            $table->integer('is_hot_deal')->default(0);
+            $table->integer('priority_no_1')->nullable();
+            $table->integer('priority_no_2')->nullable();
+            $table->integer('priority_no_3')->nullable();
             $table->integer('is_active')->default(1);
             $table->integer('slod')->default(0);
             $table->longText('meta_description')->nullable();
