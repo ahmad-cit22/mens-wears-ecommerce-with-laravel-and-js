@@ -61,7 +61,6 @@
                                 <th>Stock</th>
                                 <th>Status</th>
                                 <th>Created By</th>
-                                <th>Meta Description</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -69,9 +68,12 @@
                             @foreach ($products as $product)
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
-                                    <td>
+                                    <td style="position: relative">
                                         <img src="{{ asset('images/product/' . $product->image) }}" width="100"><br>
                                         {{ $product->title }}
+                                        @if ($product->total_stock() < 1)
+                                            <span class="stock-out-tag">Stock Out</span>
+                                        @endif
 
                                     </td>
 
@@ -96,7 +98,6 @@
                                             --
                                         @endif
                                     </td>
-                                    <td>{{ $product->meta_description }}</td>
                                     <td>
                                         @can('product.edit')
                                             <a href="{{ route('product.edit', $product->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
@@ -140,7 +141,6 @@
                                 <th>Type</th>
                                 <th>Status</th>
                                 <th>Created By</th>
-                                <th>Meta Description</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -153,14 +153,13 @@
 
                     $from = ($currentPage - 1) * $perPage + 1;
                     $to = min($currentPage * $perPage, $total);
+
                 @endphp
 
                 <p class="ml-4">
                     Showing {{ $from }} to {{ $to }} of {{ $total }} entries
                 </p>
-                <div class="row justify-content-center">
-                    {{ $products->withQueryString()->links() }}
-                </div>
+                <div class="row justify-content-center">{{ $products->withQueryString()->links() }}</div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->

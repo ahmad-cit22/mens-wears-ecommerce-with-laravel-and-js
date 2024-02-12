@@ -210,7 +210,7 @@
                                                     @if (auth()->user()->can('order.change_all_status'))
                                                         <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
                                                     @else
-                                                        @if (in_array($status->priority_no, [1, 3, 10]) || $status->id == $order->order_status_id)
+                                                        @if (in_array($status->priority_no, [1, 3, 5, 10]) || $status->id == $order->order_status_id)
                                                             <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
                                                         @endif
                                                     @endif

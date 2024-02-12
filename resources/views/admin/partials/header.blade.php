@@ -78,9 +78,21 @@
             background: rgb(0, 41, 112) !important;
             color: #fff !important;
         }
-        
+
         .badge-office-sell {
             background: rgb(40, 0, 110) !important;
+            color: #fff !important;
+        }
+
+        .stock-out-tag {
+            position: absolute;
+            right: 5px;
+            top: 6px;
+            padding: 0px 8px;
+            background: #ff000098;
+            font-weight: 600;
+            border-radius: 4px;
+            font-size: 13px;
             color: #fff !important;
         }
     </style>
