@@ -263,7 +263,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Customer Name <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}" required>
+                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}" @if ($fos_order == null) required @endif>
                                                     </fieldset>
                                                     {{-- @error('name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -280,7 +280,7 @@
                                                 <div class="col-md-6">
                                                     <label class="text-body">Phone <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}" required>
+                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}" @if ($fos_order == null) required @endif>
                                                         {{-- @error('phone')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror --}}

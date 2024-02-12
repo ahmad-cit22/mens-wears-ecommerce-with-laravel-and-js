@@ -253,19 +253,19 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Priority No. (1)</label>
+                                                <label>Priority No. (Main)</label>
                                                 <input type="number" class="form-control @error('priority_no_1') is-invalid @enderror" name="priority_no_1">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Priority No. (2)</label>
+                                                <label>Priority No. (Dis.)</label>
                                                 <input type="number" class="form-control @error('priority_no_2') is-invalid @enderror" name="priority_no_2">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Priority No. (3)</label>
+                                                <label>Priority No. (Hot.)</label>
                                                 <input type="number" class="form-control @error('priority_no_3') is-invalid @enderror" name="priority_no_3">
                                             </div>
                                         </div>

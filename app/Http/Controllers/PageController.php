@@ -42,7 +42,7 @@ class PageController extends Controller {
         $sliders = Slider::all();
         $page = Page::find(1);
         $featured_categories = Category::where('is_featured', 1)->where('parent_id', 0)->where('is_active', 1)->orderBy('position', 'ASC')->limit(5)->get();
-        $featured_products = Product::where('is_featured', 1)->where('is_active', 1)->orderBy('id', 'DESC')->limit(8)->get();
+        $featured_products = Product::where('is_featured', 1)->where('is_active', 1)->orderBy('priority_no_1', 'DESC')->orderBy('id', 'DESC')->limit(8)->get();
         $trending = Trending::find(1);
         DB::statement("SET SQL_MODE=''"); //this is the trick use it just before your query
         $top_sales = Product::query()
@@ -51,6 +51,7 @@ class PageController extends Controller {
             ->selectRaw('products.*, SUM(order_products.qty) AS quantity_sold')
             ->groupBy(['products.id']) // should group by primary key
             ->orderByDesc('quantity_sold')
+            ->orderBy('priority_no_1', 'DESC')
             ->take(8) // 8 best-selling products
             ->get();
         // dd($top_sales);
