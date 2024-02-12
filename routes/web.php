@@ -26,6 +26,7 @@ Route::get('/', [App\Http\Controllers\PageController::class, 'index'])->name('in
 
 Route::get('/products', [App\Http\Controllers\PageController::class, 'products'])->name('products');
 Route::get('/offer-products', [App\Http\Controllers\PageController::class, 'offer_products'])->name('offer.products');
+Route::get('/hot-deals', [App\Http\Controllers\PageController::class, 'hot_deals'])->name('hot.deals');
 Route::get('/trending-products', [App\Http\Controllers\PageController::class, 'trending_products'])->name('trending.products');
 Route::get('/offer-products', [App\Http\Controllers\PageController::class, 'offer_products'])->name('offer.products');
 Route::get('/product/{id}/{slug}', [App\Http\Controllers\PageController::class, 'single_product'])->name('single.product');

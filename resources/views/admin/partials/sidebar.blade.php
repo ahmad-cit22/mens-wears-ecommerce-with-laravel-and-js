@@ -589,6 +589,23 @@
                         </li>
                     @endif
 
+                    @if (auth()->user()->can('setting.asset'))
+                        <li class="nav-item">
+                            <a href="{{ route('asset.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-truck-monster"></i>
+                                <p>Assets</p>
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->can('setting.accessory'))
+                        <li class="nav-item">
+                            <a href="{{ route('accessory.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <p>Accessories</p>
+                            </a>
+                        </li>
+                    @endif
+
                     @if (auth()->user()->can('setting.business_settings') ||
                             auth()->user()->can('setting.asset') ||
                             auth()->user()->can('setting.accessory') ||
@@ -608,22 +625,6 @@
                                         <a href="{{ route('setting.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Business Settings</p>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (auth()->user()->can('setting.asset'))
-                                    <li class="nav-item">
-                                        <a href="{{ route('asset.index') }}" class="nav-link">
-                                            <i class="fas fa-angle-right"></i>
-                                            <p>Assets</p>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (auth()->user()->can('setting.accessory'))
-                                    <li class="nav-item">
-                                        <a href="{{ route('accessory.index') }}" class="nav-link">
-                                            <i class="fas fa-angle-right"></i>
-                                            <p>Accessories</p>
                                         </a>
                                     </li>
                                 @endif

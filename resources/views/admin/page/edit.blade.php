@@ -40,7 +40,7 @@
     @endif -->
                 <div class="form-group">
                     <label><b>Description *</b></label>
-                    <textarea class="tinymce form-control @error('description') is-invalid @enderror" name="description">
+                    <textarea class="summernote form-control @error('description') is-invalid @enderror" name="description">
 					{{ $page->description }}
 				</textarea>
                     @error('description')

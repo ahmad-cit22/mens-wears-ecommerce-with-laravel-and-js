@@ -156,6 +156,9 @@ class ProductController extends Controller {
             $product->short_description = $request->short_description;
             $product->type = $request->type;
             $product->meta_description = $request->meta_description;
+            $product->priority_no_1 = $request->priority_no_1;
+            $product->priority_no_2 = $request->priority_no_2;
+            $product->priority_no_3 = $request->priority_no_3;
 
             if ($request->has('is_sale')) {
                 $product->is_sale = 1;
@@ -329,6 +332,9 @@ class ProductController extends Controller {
                 $product->short_description = $request->short_description;
                 $product->is_active = $request->is_active;
                 $product->meta_description = $request->meta_description;
+                $product->priority_no_1 = $request->priority_no_1;
+                $product->priority_no_2 = $request->priority_no_2;
+                $product->priority_no_3 = $request->priority_no_3;
 
                 // image save
                 if ($request->image) {
@@ -375,6 +381,12 @@ class ProductController extends Controller {
                     $product->is_offer = 1;
                 } else {
                     $product->is_offer = 0;
+                }
+                
+                if ($request->has('is_hot_deal')) {
+                    $product->is_hot_deal = 1;
+                } else {
+                    $product->is_hot_deal = 0;
                 }
 
                 $product->save();

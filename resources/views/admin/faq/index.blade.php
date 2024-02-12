@@ -39,7 +39,7 @@
                       </div>
                       <div class="form-group">
                         <label>FAQ Answer *</label>
-                        <textarea name="answer" class="tinymce form-control @error('answer') is-invalid @enderror">{{old('answer') }}</textarea>
+                        <textarea name="answer" class="summernote form-control @error('answer') is-invalid @enderror">{{old('answer') }}</textarea>
                         @error('answer')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="form-group">
                                   <label>FAQ Answer *</label>
-                                  <textarea name="answer" class="form-control @error('answer') is-invalid @enderror tinymce">{{ $faq->answer }}</textarea>
+                                  <textarea name="answer" class="form-control @error('answer') is-invalid @enderror summernote">{{ $faq->answer }}</textarea>
                                   @error('answer')
                                       <span class="invalid-feedback" role="alert">
                                           <strong>{{ $message }}</strong>

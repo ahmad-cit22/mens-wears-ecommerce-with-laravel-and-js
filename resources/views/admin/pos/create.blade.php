@@ -136,11 +136,11 @@
                             </div>
 
                         </div>
-                        @if (Session::has('wholesale_price'))
-                            <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.wholesale.index') }}">Wholesale List</a>
-                        @else
-                            <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.index') }}">Sell List</a>
-                        @endif
+                        {{-- @if (Session::has('wholesale_price')) --}}
+                        <a class="btn btn-success btn-icon btn-clean px-3 py-1 mr-2" href="{{ route('sell.wholesale.index') }}">Wholesale List</a>
+                        {{-- @else --}}
+                        <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.index') }}">Retail Sell List</a>
+                        {{-- @endif --}}
 
                         {{-- <div class="topbar-item folder-data">
                             <div class="btn btn-icon  w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#folderpop">
@@ -263,7 +263,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Customer Name <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
+                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}" required>
                                                     </fieldset>
                                                     {{-- @error('name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -280,7 +280,7 @@
                                                 <div class="col-md-6">
                                                     <label class="text-body">Phone <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
+                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}" required>
                                                         {{-- @error('phone')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror --}}
@@ -301,21 +301,24 @@
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between colorfull-select">
-                                        <div class="selectmain">
-                                            <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
-                                            <select name="district_id" class="select2 select-down" id="district_id">
-                                                <option value="">--- Select ---</option>
-                                                @foreach ($districts as $district)
-                                                    <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="d-flex flex-column selectmain">
-                                            <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
-                                            <select name="area_id" class="select2 select-down" id="areas">
-                                                <!-- <option value="">Please Select an Area</option> -->
-                                            </select>
-                                        </div>
+
+                                        @if (!Session::has('wholesale_price'))
+                                            <div class="selectmain">
+                                                <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
+                                                <select name="district_id" class="select2 select-down" id="district_id">
+                                                    <option value="">--- Select ---</option>
+                                                    @foreach ($districts as $district)
+                                                        <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="d-flex flex-column selectmain">
+                                                <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
+                                                <select name="area_id" class="select2 select-down" id="areas">
+                                                    <!-- <option value="">Please Select an Area</option> -->
+                                                </select>
+                                            </div>
+                                        @endif
                                         <div class="">
                                             <div class="selectmain">
                                                 <label class="text-dark d-flex">Courier Name <span class="text-danger">*</span></label>
@@ -734,8 +737,14 @@
 
             if (customer_id == '0') {
                 $('#new-customer-form').show();
+
+                $("#name").prop('required', true);
+                $("#phone").prop('required', true);
             } else {
                 $('#new-customer-form').hide();
+                
+                $("#name").prop('required', false);
+                $("#phone").prop('required', false);
             }
         });
 

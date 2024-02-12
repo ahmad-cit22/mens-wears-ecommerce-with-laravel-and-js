@@ -206,7 +206,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Customer Name</label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
+                                                        <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" id="name" value="{{ old('name') }}" required>
                                                     </fieldset>
                                                 </div>
                                             </div>
@@ -220,7 +220,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Phone</label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
+                                                        <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" id="phone" value="{{ old('phone') }}" required>
                                                     </fieldset>
                                                 </div>
                                             </div>
@@ -523,8 +523,14 @@
 
             if (customer_id == '0') {
                 $('#new-customer-form').show();
+
+                $("#name").prop('required', true);
+                $("#phone").prop('required', true);
             } else {
                 $('#new-customer-form').hide();
+                
+                $("#name").prop('required', false);
+                $("#phone").prop('required', false);
             }
         });
 
