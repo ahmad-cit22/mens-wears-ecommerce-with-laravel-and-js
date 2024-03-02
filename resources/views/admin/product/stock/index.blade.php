@@ -23,6 +23,66 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="m-0 mb-3">Product Stock History</h4>
+                    <button id="total-sold-amount" class="btn btn-info">Sold Products Cost</button>
+                    <button id="total-remaining-amount" class="btn btn-success ml-2">Remaining Products Cost</button>
+
+                    <form class="mt-4" action="{{ route('stock.history.search') }}" method="get">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Date From</label>
+                                    <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
+                                    @error('date_from')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Date To</label>
+                                    <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
+                                    @error('date_to')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Reason</label>
+                                    <select name="reason" class="select2 form-control @error('reason') is-invalid @enderror">
+                                        <option value="0">Please Select a Reason (Optional)</option>
+                                        <option value="Stockin" @if ($reason == 'Stockin') selected @endif>Stockin</option>
+                                        <option value="Opening Stock" @if ($reason == 'Opening Stock') selected @endif>Opening Stock</option>
+                                        <option value="Damage" @if ($reason == 'Damage') selected @endif>Damage</option>
+                                        <option value="Sell (Online)" @if ($reason == 'Sell (Website)') selected @endif>Sell (Online)</option>
+                                        <option value="Sell (Offline)" @if ($reason == 'Sell (Offline)') selected @endif>Sell (Offline)</option>
+                                        <option value="Sell (Wholesale)" @if ($reason == 'Sell (Wholesale)') selected @endif>Sell (Wholesale)</option>
+                                        <option value="Order Cancel" @if ($reason == 'Order Cancel') selected @endif>Order Cancel</option>
+                                        <option value="Order Return" @if ($reason == 'Order Return') selected @endif>Order Return</option>
+                                        <option value="Reject Product" @if ($reason == 'Reject Product') selected @endif>Reject Product</option>
+                                        <option value="Display Center" @if ($reason == 'Display Center') selected @endif>Display Center</option>
+                                    </select>
+                                    @error('order_status_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label style="color: #fff;">.</label>
+                                    <button type="submit" class="form-control btn btn-primary">Search</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
@@ -43,25 +103,6 @@
                                 <th>Date</th>
                             </tr>
                         </thead>
-                        {{-- <tbody>
-                            @php
-                                $sl = 1;
-                            @endphp
-                            @foreach ($stocks as $key => $stock)
-                                @if ($stock->product)
-                                    <tr>
-                                        <td>{{ $sl }}</td>
-                                        <td>{{ $stock->product->title }}</td>
-                                        <td>{{ $stock->size->title }}</td>
-                                        <td>{{ $stock->qty }}</td>
-                                        <td>{{ $stock->note }}</td>
-                                    </tr>
-                                    @php
-                                        $sl++;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        </tbody> --}}
                         <tbody>
 
                         </tbody>
@@ -72,6 +113,40 @@
             <!-- /.card -->
 
 
+        </div>
+
+        <!-- total sold amount Modal -->
+        <div class="modal fade" id="total-sold-amount-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Total Sold Amount</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- total remaining amount Modal -->
+        <div class="modal fade" id="total-remaining-amount-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Total Remaining Amount</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 @endsection
@@ -98,6 +173,34 @@
     </script>
 
     <script>
+        $("#total-sold-amount").click(function() {
+
+            url = "{{ route('stock.total.sold.amount') }}";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function(response) {
+                    $('#total-sold-amount-modal').modal('show');
+                    $('#total-sold-amount-modal .modal-body').html(response);
+                }
+            });
+        });
+
+        $("#total-remaining-amount").click(function() {
+
+            url = "{{ route('stock.total.remaining.amount') }}";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function(response) {
+                    $('#total-remaining-amount-modal').modal('show');
+                    $('#total-remaining-amount-modal .modal-body').html(response);
+                }
+            });
+        });
+    </script>
+
+    <script>
         // $(function () {
         //   $("#example1").DataTable({
         //     "responsive": true, "lengthChange": false, "autoWidth": false,
@@ -119,52 +222,40 @@
 
             var table = $('#data-table').DataTable({
                 processing: true,
-                serverSide: false,
-                ajax: "{{ route('stock.index') }}",
+                serverSide: true,
                 columns: [{
                         data: 'id',
-                        name: 'id'
                     },
                     {
                         data: 'reference_code',
-                        name: 'reference_code'
                     },
                     {
                         data: 'product',
-                        name: 'product'
                     },
                     {
                         data: 'size_id',
-                        name: 'size_id'
                     },
                     {
                         data: 'qty',
-                        name: 'qty'
                     },
                     {
                         data: 'production_cost',
-                        name: 'production_cost'
                     },
                     {
                         data: 'price',
-                        name: 'price'
                     },
                     {
                         data: 'note',
-                        name: 'note'
                     },
                     {
                         data: 'remarks',
-                        name: 'remarks'
                     },
                     {
                         data: 'created_by',
-                        name: 'created_by'
                     },
                     {
                         data: 'date',
-                        name: 'date',
-                        orderable: true,
+                        orderable: false,
                         searchable: true,
                     },
                 ],

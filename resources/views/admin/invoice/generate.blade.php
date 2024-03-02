@@ -125,7 +125,11 @@
                                 @if ($order->source == 'Wholesale')
                                     {{ $product->product->variation->wholesale_price * $product->qty }}/-
                                 @else
-                                    {{ $product->product->variation->price * $product->qty }}/-
+                                    @if ($product->product->variation->discount_price != null && $order->source == 'Website')
+                                        <small>(Discounted)</small> {{ $product->product->variation->discount_price * $product->qty }}/-
+                                    @else
+                                        {{ $product->product->variation->price * $product->qty }}/-
+                                    @endif
                                 @endif
                             </span>
                         </td>

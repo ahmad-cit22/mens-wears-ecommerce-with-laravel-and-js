@@ -95,6 +95,32 @@
             font-size: 13px;
             color: #fff !important;
         }
+
+        .categoryCardBox {
+            gap: 20px
+        }
+
+        .categoryCard1 {
+            padding: 15px 15px 0px;
+            padding-left: 22px;
+            border-radius: 14px;
+            background: rgba(235, 98, 0, 0.888);
+            color: white;
+            display: inline-block;
+            max-width: 22% !important;
+            box-shadow: 0px 4px 12px 1px rgba(124, 48, 0, 0.665);
+        }
+
+        .categoryCard2 {
+            padding: 15px 15px 0px;
+            padding-left: 22px;
+            border-radius: 14px;
+            background: rgba(238, 99, 0, 0.773);
+            color: white;
+            display: inline-block;
+            max-width: 22% !important;
+            box-shadow: 0px 4px 14px 2px rgba(124, 48, 0, 0.665);
+        }
     </style>
     @yield('style')
     <script src="https://cdn.tiny.cloud/1/yze2qblheth712tqw6y3f30283f8nch1bogp0jzpsm3rn79f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>

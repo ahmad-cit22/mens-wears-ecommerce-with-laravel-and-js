@@ -305,7 +305,7 @@
                                         @if (!Session::has('wholesale_price'))
                                             <div class="selectmain">
                                                 <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
-                                                <select name="district_id" class="select2 select-down" id="district_id">
+                                                <select name="district_id" class="select2 select-down" id="district_id" @if (!Session::has('wholesale_price')) required @endif>
                                                     <option value="">--- Select ---</option>
                                                     @foreach ($districts as $district)
                                                         <option value="{{ $district->id }}">{{ $district->name }}</option>
@@ -314,7 +314,7 @@
                                             </div>
                                             <div class="d-flex flex-column selectmain">
                                                 <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
-                                                <select name="area_id" class="select2 select-down" id="areas">
+                                                <select name="area_id" class="select2 select-down" id="areas" @if (!Session::has('wholesale_price')) required @endif>
                                                     <!-- <option value="">Please Select an Area</option> -->
                                                 </select>
                                             </div>

@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\ProductStock;
 use App\Models\WorkTrackingEntry;
 use App\Models\OrderProduct;
+use App\Models\ProductStockHistory;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -78,9 +79,9 @@ class OrderController extends Controller {
         $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('status', 'created_by')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
+                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('status', 'created_by')->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -177,7 +178,7 @@ class OrderController extends Controller {
         $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('created_by')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('status', 'created_by')->get();
             $categories = Category::all();
             
             return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
@@ -193,7 +194,7 @@ class OrderController extends Controller {
         $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', 'Wholesale')->with('created_by')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', 'Wholesale')->with('status', 'created_by')->get();
             $categories = Category::all();
             
             return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
@@ -280,9 +281,9 @@ class OrderController extends Controller {
         $courier_name = '';
 
         if (auth()->user()->can('wholesale.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('created_by')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('status', 'created_by')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('created_by')->get();
+                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('status', 'created_by')->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -579,7 +580,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -588,19 +589,19 @@ class OrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
 
             // 2nd step filter
@@ -696,7 +697,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -705,19 +706,19 @@ class OrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
 
             // 2nd step filter
@@ -813,7 +814,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -822,19 +823,19 @@ class OrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
 
             // 2nd step filter
@@ -930,7 +931,7 @@ class OrderController extends Controller {
                 $order_status_id = $request->order_status_id;
 
                 $orders = Order::where('source', 'Wholesale')->where('order_status_id', $order_status_id)
-                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('created_by')->get();
+                    ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -945,13 +946,13 @@ class OrderController extends Controller {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::whereBetween('created_at', [$start_date, $end_date])->where('source', 'Wholesale')->orderBy('id', 'DESC')->with('status', 'created_by')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->with('created_by')->get();
+                $orders = Order::where('source', 'Wholesale')->orderBy('id', 'DESC')->with('status', 'created_by')->get();
             }
 
             // 2nd step filter
@@ -1139,6 +1140,14 @@ class OrderController extends Controller {
                             $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
                             $stock->qty += $product->qty;
                             $stock->save();
+
+                            $history = new ProductStockHistory;
+                            $history->product_id = $product->product_id;
+                            $history->size_id = $product->size_id;
+                            $history->qty = $product->qty;
+                            $history->remarks = 'Order Code - ' . $order->code;
+                            $history->note = "Order Cancel";
+                            $history->save();
                         }
                         $order->is_final = 0;
                     }
@@ -1262,7 +1271,23 @@ class OrderController extends Controller {
                     $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
                     $stock->qty -= $product->qty;
                     $stock->save();
+
+                    $history = new ProductStockHistory;
+                    $history->product_id = $product->product_id;
+                    $history->size_id = $product->size_id;
+                    $history->qty = $product->qty;
+                    $history->remarks = 'Order Code - ' . $order->code;
+                    if ($order->source == 'Offline') {
+                        $history->note = "Sell (Offline)";
+                    } else if ($order->source == 'Wholesale') {
+                        $history->note = "Sell (Wholesale)";
+                    } else {
+                        $history->note = "Sell (Website)";
+                    }
+                    
+                    $history->save();
                 }
+                $order->order_status_id = 2;
                 $order->is_final = 1;
                 $order->save();
 

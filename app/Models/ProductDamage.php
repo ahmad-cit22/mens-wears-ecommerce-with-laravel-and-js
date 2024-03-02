@@ -18,4 +18,8 @@ class ProductDamage extends Model
     {
     	return $this->belongsTo(Size::class);
     }
+
+    public function created_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'damaged_product_id', 'id')->where('work_name', 'damage_product')->latest()->with('adder');
+    }
 }

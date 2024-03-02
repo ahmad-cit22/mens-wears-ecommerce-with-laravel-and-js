@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBkashRecordsTable extends Migration
+class CreateRejectedProductSellsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,13 @@ class CreateBkashRecordsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bkash_records', function (Blueprint $table) {
+        Schema::create('rejected_product_sells', function (Blueprint $table) {
             $table->id();
+            $table->integer('product_id');
+            $table->integer('size_id');
+            $table->double('qty');
+            $table->double('price')->nullable();
+            $table->longText('note')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ class CreateBkashRecordsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bkash_records');
+        Schema::dropIfExists('rejected_product_sells');
     }
 }

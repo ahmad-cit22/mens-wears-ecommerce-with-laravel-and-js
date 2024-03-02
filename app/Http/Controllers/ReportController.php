@@ -119,9 +119,9 @@ class ReportController extends Controller {
             $accessories = Accessory::orderBY('id', 'DESC')->get();
             $assets = Asset::orderBy('id', 'DESC')->get();
             $suppliers = Supplier::orderBy('name', 'ASC')->get();
-            $partners = Partner::orderBy('id', 'DESC')->get();
+            $partners = Partner::orderBy('id', 'DESC')->with('transactions')->get();
 
-            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->get();
+            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->with('order_product')->get();
             $production_cost = 0;
             $other_income = BankTransaction::where('other_income', 1)->get();
             $expenses = ExpenseEntry::orderBy('id', 'DESC')->get();
@@ -144,9 +144,9 @@ class ReportController extends Controller {
             $accessories = Accessory::orderBY('id', 'DESC')->get();
             $assets = Asset::orderBy('id', 'DESC')->get();
             $suppliers = Supplier::orderBy('name', 'ASC')->get();
-            $partners = Partner::orderBy('id', 'DESC')->get();
+            $partners = Partner::orderBy('id', 'DESC')->with('transactions')->get();
 
-            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->get();
+            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->with('order_product')->get();
             $production_cost = 0;
             $other_income = BankTransaction::where('other_income', 1)->get();
             $expenses = ExpenseEntry::orderBy('id', 'DESC')->get();

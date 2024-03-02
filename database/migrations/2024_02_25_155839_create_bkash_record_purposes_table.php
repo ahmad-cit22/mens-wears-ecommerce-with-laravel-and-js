@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRejectedProductsTable extends Migration
+class CreateBkashRecordPurposesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateRejectedProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rejected_products', function (Blueprint $table) {
+        Schema::create('bkash_record_purposes', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('color')->nullable();
+            $table->integer('is_active')->default(1);
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateRejectedProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rejected_products');
+        Schema::dropIfExists('bkash_record_purposes');
     }
 }

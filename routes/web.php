@@ -204,13 +204,28 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/add-stock-barcode-scan', [App\Http\Controllers\ProductStockHistoryController::class, 'add_stock_barcode_scan'])->name('add.barcode.scan');
 		Route::get('/current-stock', [App\Http\Controllers\ProductStockHistoryController::class, 'current'])->name('current');
 		Route::get('/history', [App\Http\Controllers\ProductStockHistoryController::class, 'index'])->name('index');
+		Route::get('/history-search', [App\Http\Controllers\ProductStockHistoryController::class, 'stock_history_search'])->name('history.search');
+		Route::get('/total-sold-amount', [App\Http\Controllers\ProductStockHistoryController::class, 'total_sold_amount'])->name('total.sold.amount');
+		Route::get('/total-remaining-amount', [App\Http\Controllers\ProductStockHistoryController::class, 'total_remaining_amount'])->name('total.remaining.amount');
 		Route::post('/stote', [App\Http\Controllers\ProductStockHistoryController::class, 'store'])->name('store');
 	});
 
 	// Product Damage Routes
 	Route::group(['prefix' => 'damage', 'as' => 'damage.'], function () {
 		Route::get('/', [App\Http\Controllers\ProductDamageController::class, 'index'])->name('index');
-		Route::post('/stote', [App\Http\Controllers\ProductDamageController::class, 'store'])->name('store');
+		Route::post('/store', [App\Http\Controllers\ProductDamageController::class, 'store'])->name('store');
+		Route::post('/product-barcode-scan', [App\Http\Controllers\ProductDamageController::class, 'product_barcode_scan'])->name('product.barcode.scan');
+	});
+	
+	// Reject Product Routes
+	Route::group(['prefix' => 'reject', 'as' => 'reject.'], function () {
+		Route::get('/', [App\Http\Controllers\RejectedProductController::class, 'index'])->name('index');
+		Route::get('/add-view', [App\Http\Controllers\RejectedProductController::class, 'add_view'])->name('add.view');
+		Route::post('/store', [App\Http\Controllers\RejectedProductController::class, 'store'])->name('store');
+		Route::get('/stock', [App\Http\Controllers\RejectedProductController::class, 'stock'])->name('stock');
+		Route::get('/product-out-form', [App\Http\Controllers\RejectedProductController::class, 'product_out_form'])->name('product.out.form');
+		Route::post('/product-out-store', [App\Http\Controllers\RejectedProductController::class, 'product_out_store'])->name('product.out.store');
+		Route::get('/product-out-list', [App\Http\Controllers\RejectedProductController::class, 'product_out_list'])->name('product.out.list');
 	});
 
 	// Order Routes
@@ -351,6 +366,21 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/store', [App\Http\Controllers\BkashNumberController::class, 'store'])->name('store');
 		Route::post('/update/{id}', [App\Http\Controllers\BkashNumberController::class, 'update'])->name('update');
 		Route::post('/destroy/{id}', [App\Http\Controllers\BkashNumberController::class, 'destroy'])->name('destroy');
+	});
+
+	
+	// bkash panel Routes
+	Route::group(['prefix' => 'bkash-panel', 'as' => 'bkash_panel.'], function () {
+		Route::get('/', [App\Http\Controllers\BkashRecordController::class, 'index'])->name('index');
+		Route::get('/search', [App\Http\Controllers\BkashRecordController::class, 'transactions_search'])->name('search');
+		Route::get('/create', [App\Http\Controllers\BkashRecordController::class, 'create'])->name('create');
+		Route::post('/store', [App\Http\Controllers\BkashRecordController::class, 'store'])->name('store');
+
+		// tr-purposes routes
+		Route::get('/tr-purposes', [App\Http\Controllers\BkashRecordPurposeController::class, 'tr_purposes'])->name('tr_purposes');
+		Route::post('/tr-purposes/store', [App\Http\Controllers\BkashRecordPurposeController::class, 'store'])->name('tr_purposes.store');
+		Route::post('/tr-purposes/update/{id}', [App\Http\Controllers\BkashRecordPurposeController::class, 'update'])->name('tr_purposes.update');
+		Route::post('/tr-purposes/destroy/{id}', [App\Http\Controllers\BkashRecordPurposeController::class, 'destroy'])->name('tr_purposes.destroy');
 	});
 
 	// Slider Routes

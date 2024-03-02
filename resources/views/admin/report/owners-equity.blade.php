@@ -26,7 +26,7 @@
     <div class="card">
               <div class="card-header">
                 <h3 class="text-center">GO BY FABRIFEST</h3><hr>
-                <h3 class="text-center">OWNERS EQUITY FOR  {{ date('M') }}, {{ date('Y') }}</h3>
+                <h3 class="text-center">OWNERS EQUITY FOR {{ date('M') }}, {{ date('Y') }}</h3>
                 
               </div>
               <!-- /.card-header -->

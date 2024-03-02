@@ -30,6 +30,10 @@ class FacebookOrder extends Model {
         return $this->hasMany(FacebookOrderProduct::class, 'order_id');
     }
 
+    public function bkash_record() {
+        return $this->hasOne(BkashRecord::class, 'order_sheet_id');
+    }
+
     public function customer() {
         return $this->belongsTo(User::class, 'customer_id');
     }

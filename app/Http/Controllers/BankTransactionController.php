@@ -31,7 +31,11 @@ class BankTransactionController extends Controller
          
                                $data = optional($row->bank)->name;
         
-                                return $data;
+                                if ($row->other_income) {
+                                    return $data . '<span class="ml-3 badge badge-success">Others Income</span>';
+                                } else {
+                                    return $data;
+                                }
                         })
                         ->addColumn('transaction_date', function($row){
          

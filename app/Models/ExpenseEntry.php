@@ -23,7 +23,8 @@ class ExpenseEntry extends Model
         // return $this->hasOne(WorkTrackingEntry::class, 'expense_entry_id', 'id')->where('work_name', 'expense_entry')->orWhere('work_name', 'add_loss')->latest()->with('adder');
         return $this->hasOne(WorkTrackingEntry::class, 'expense_entry_id', 'id')->where(function ($query) {
             $query->where('work_name', 'expense_entry')
-                ->orWhere('work_name', 'add_loss');
+                ->orWhere('work_name', 'add_loss')
+                ->orWhere('work_name', 'reject_product');
         })->latest()->with('adder');
     }
 }
