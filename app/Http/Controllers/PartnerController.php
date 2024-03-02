@@ -31,15 +31,16 @@ class PartnerController extends Controller
     public function index()
     {
         if (auth()->user()->can('setting.index')) {
-            $partners = Partner::orderBy('name', 'ASC')->get();
-            $orders = Order::where('is_final', 1)->get();
-            $order_amount = 0;
+            $partners = Partner::orderBy('name', 'ASC')->with('transactions')->get();
+            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->with('order_product')->get();
+            $order_amount = $orders->sum('price');
             $production_cost = 0;
             $other_income = BankTransaction::where('other_income', 1)->get();
             $expenses = ExpenseEntry::orderBy('id', 'DESC')->get();
             foreach ($orders as $order) {
-                $order_amount += $order->order_product->sum('price');
-                $production_cost += $order->order_product->sum('production_cost');
+                $production_cost += $order->order_product->sum(function ($t) {
+                    return $t->production_cost * $t->qty;
+                });
             }
             return view('admin.partner.index', compact('partners', 'order_amount', 'production_cost', 'other_income', 'expenses'));
         }

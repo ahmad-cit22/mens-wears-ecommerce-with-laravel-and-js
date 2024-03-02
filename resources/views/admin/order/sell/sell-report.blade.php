@@ -1,35 +1,5 @@
   @extends('admin.layouts.master')
 
-  @section('style')
-      <style>
-          .categoryCardBox {
-              gap: 20px
-          }
-
-          .categoryCard1 {
-              padding: 15px 15px 0px;
-              padding-left: 22px;
-              border-radius: 14px;
-              background: rgba(235, 98, 0, 0.888);
-              color: white;
-              display: inline-block;
-              max-width: 22% !important;
-              box-shadow: 0px 4px 12px 1px rgba(124, 48, 0, 0.665);
-          }
-
-          .categoryCard2 {
-              padding: 15px 15px 0px;
-              padding-left: 22px;
-              border-radius: 14px;
-              background: rgba(238, 99, 0, 0.773);
-              color: white;
-              display: inline-block;
-              max-width: 22% !important;
-              box-shadow: 0px 4px 14px 2px rgba(124, 48, 0, 0.665);
-          }
-      </style>
-  @endsection
-
   @section('content')
       <!-- Content Header (Page header) -->
       <div class="content-header">
@@ -162,7 +132,6 @@
                           @endphp
                           @if ($category->parent_id == 0)
                               @foreach ($orders as $item)
-                                  {{-- update needed --}}
                                   @if ($item->order_status_id != 5 && $item->is_return != 1)
                                       @foreach ($item->order_product as $order_product)
                                           @if ($order_product->product->category_id == $category->id)

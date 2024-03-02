@@ -53,12 +53,14 @@ class AccessoryController extends Controller
 
             $accessory = new Accessory;
             $accessory->name = $request->name;
+            $accessory->min_quantity = $request->min_quantity;
             $accessory->save();
 
             $stock = new AccessoryAmount;
             $stock->accessory_id = $accessory->id;
+            $stock->bank_id = $request->bank_id;
             $stock->credit = $request->opening_amount;
-            $stock->note = 'Opening Balance';
+            $stock->note = $request->note;
             $stock->save();
             Alert::toast('Accessory has been saved.', 'success');
             return back();
@@ -108,6 +110,7 @@ class AccessoryController extends Controller
                 ]);
 
                 $accessory->name = $request->name;
+                $accessory->min_quantity = $request->min_quantity;
                 $accessory->save();
                 Alert::toast('Accessory Updated', 'success');
                 return back();
@@ -130,8 +133,23 @@ class AccessoryController extends Controller
      * @param  \App\Models\Accessory  $accessory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Accessory $accessory)
-    {
-        //
+    public function destroy($id) {
+        if (auth()->user()->can('setting.accessory')) {
+            $accessory = Accessory::find($id);
+            if (!is_null($accessory)) {
+                foreach ($accessory->stock as $stock) {
+                    $stock->delete();
+                }
+                
+                $accessory->delete();
+                Alert::toast('Accessory Item deleted successfully!', 'success');
+                return redirect()->route('accessory.index');
+            } else {
+                Alert::toast('Something went wrong !', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

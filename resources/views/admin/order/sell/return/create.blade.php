@@ -318,20 +318,24 @@
                         $('#return_qty-' + order_product_id).show();
                         $('#barcode-' + order_product_id).val('');
 
-                        Swal.fire(
-                            'Done',
-                            "Product Matched Successfully!",
-                            'success',
-                        );
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Product Matched Successfully!",
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
                     } else {
                         $('#return_qty-' + order_product_id).hide();
                         $('#barcode-' + order_product_id).val('');
 
-                        Swal.fire(
-                            'Sorry',
-                            "Product Not Matched!",
-                            'error',
-                        );
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "error",
+                            title: "Product Not Matched! Try Again.",
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
                     }
                 }
             }

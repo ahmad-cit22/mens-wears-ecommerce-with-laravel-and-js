@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\ProductStockHistory;
@@ -35,12 +36,17 @@ class ProductStockHistoryController extends Controller {
         $barcode = $request->barcode;
         $stock_id = $barcode - 1000;
         $stock = ProductStock::find($stock_id);
-        $size = ProductStock::find($stock_id)->size;
-        if (!is_null($stock)) {
-            $product = $stock->product;
-        }
 
-        return ['product' => $product, 'stock' => $stock, 'size' => $size];
+        if ($stock) {
+            $size = ProductStock::find($stock_id)->size;
+            if (!is_null($stock)) {
+                $product = $stock->product;
+            }
+
+            return ['product' => $product, 'stock' => $stock, 'size' => $size];
+        } else {
+            return ['product' => null, 'stock' => null, 'size' => null];
+        }
     }
 
     public function current(Request $request) {
@@ -120,9 +126,14 @@ class ProductStockHistoryController extends Controller {
     }
 
     public function index(Request $request) {
+
+        $date_from = '';
+        $date_to = '';
+        $reason = '';
+
         if (auth()->user()->can('stock.history')) {
             if ($request->ajax()) {
-                $stocks = ProductStockHistory::orderBy('created_at', 'desc')->get();
+                $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
                 return Datatables::of($stocks)
                     ->addIndexColumn()
                     ->addColumn('product', function ($row) {
@@ -155,6 +166,12 @@ class ProductStockHistoryController extends Controller {
                             return $price . ' TK (' . $price_ppc . '/pc)';
                         }
                     })
+                    ->addColumn('note', function ($row) {
+
+                           $data = '<b>' . $row->note . '</b>';
+
+                        return $data;
+                    })
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
@@ -164,7 +181,110 @@ class ProductStockHistoryController extends Controller {
                         }
 
                         return $data;
-                    })->escapeColumns('created_by')
+                    })->escapeColumns('created_by', 'note')
+                    ->addColumn('date', function ($row) {
+                        if ($row->product != null) {
+                            $date = Carbon::parse($row->created_at)->format('d M, Y g:iA');
+                            return $date;
+                        }
+                    })
+                    ->rawColumns(['product'])
+                    ->make(true);
+            }
+            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+
+            return view('admin.product.stock.index', compact('stocks', 'date_from', 'date_to', 'reason'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function stock_history_search(Request $request) {
+
+        $date_from = '';
+        $date_to = '';
+        $reason = '';
+
+        if (!empty($request->reason) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $reason = $request->reason;
+
+                $stocks = ProductStockHistory::where('note', $reason)
+                ->whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+            if ((!empty($request->reason) && empty($request->date_from) && empty($request->date_to)) || (!empty($request->reason) && !empty($request->date_from) && empty($request->date_to)) || (!empty($request->reason) && empty($request->date_from) && !empty($request->date_to))) {
+
+                $reason = $request->reason;
+
+                $stocks = ProductStockHistory::where('note', $reason)->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+            }
+            if (empty($request->reason) && !empty($request->date_from) && !empty($request->date_to)) {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                $reason = $request->reason;
+                $stocks = ProductStockHistory::whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+
+                $date_from = $request->date_from;
+                $date_to = $request->date_to;
+            }
+            if (empty($request->reason) && (empty($request->date_from) || empty($request->date_to))) {
+                $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+            }
+
+        if (auth()->user()->can('stock.history')) {
+            if ($request->ajax()) {
+                return Datatables::of($stocks)
+                    ->addIndexColumn()
+                    ->addColumn('product', function ($row) {
+                        if ($row->product != null) {
+                            $title = $row->product->title;
+                            if ($row->product->is_active) {
+                                return $title . '<span class="ml-3 badge badge-success">Active</span>';
+                            } else {
+                                return $title . '<span class="ml-3 badge badge-danger">Inactive</span>';
+                            }
+                        }
+                    })
+                    ->addColumn('size_id', function ($row) {
+                        if ($row->product != null) {
+                            $size = $row->size->title;
+                            return $size;
+                        }
+                    })
+                    ->addColumn('production_cost', function ($row) {
+                        if ($row->product != null) {
+                            $production_cost_ppc = $row->product->variation->production_cost;
+                            $production_cost = $row->product->variation->production_cost * $row->qty;
+                            return $production_cost . ' TK (' . $production_cost_ppc . '/pc)';
+                        }
+                    })
+                    ->addColumn('price', function ($row) {
+                        if ($row->product != null) {
+                            $price_ppc = $row->product->variation->price;
+                            $price = $row->product->variation->price * $row->qty;
+                            return $price . ' TK (' . $price_ppc . '/pc)';
+                        }
+                    })
+                    ->addColumn('note', function ($row) {
+
+                           $data = '<b>' . $row->note . '</b>';
+
+                        return $data;
+                    })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by', 'note')
                     ->addColumn('date', function ($row) {
                         if ($row->product != null) {
                             $date = Carbon::parse($row->created_at)->format('d M, Y');
@@ -174,11 +294,36 @@ class ProductStockHistoryController extends Controller {
                     ->rawColumns(['product'])
                     ->make(true);
             }
-            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->get();
+            // $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
 
-            return view('admin.product.stock.index', [
-                'stocks' => $stocks,
-            ]);
+            return view('admin.product.stock.index', compact('stocks', 'date_from', 'date_to', 'reason'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function total_sold_amount(Request $request) {
+        if (auth()->user()->can('stock.history')) {
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
+
+            return view('admin.product.stock.modals.total-sold-amount', [
+                            'orders' => $orders,
+                    ]);
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function total_remaining_amount(Request $request) {
+        if (auth()->user()->can('stock.history')) {
+            $current_remaining_stock = ProductStock::where('qty', '>', 0)->get();
+            $cost_remaining = $current_remaining_stock->sum(function ($data) {
+                                    return $data->production_cost * $data->qty;
+                              });
+
+            return view('admin.product.stock.modals.total-remaining-amount', [
+                            'cost_remaining' => $cost_remaining,
+                    ]);
         } else {
             abort(403, 'Unauthorized action.');
         }

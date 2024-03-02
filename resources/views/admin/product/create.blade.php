@@ -236,8 +236,9 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Meta Description</label>
                                         <textarea name="meta_description" class="form-control @error('meta_description') is-invalid @enderror" placeholder="Add Meta Description Here" rows="5"></textarea>
@@ -246,6 +247,28 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Priority No. (Main)</label>
+                                                <input type="number" class="form-control @error('priority_no_1') is-invalid @enderror" name="priority_no_1">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Priority No. (Dis.)</label>
+                                                <input type="number" class="form-control @error('priority_no_2') is-invalid @enderror" name="priority_no_2">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Priority No. (Hot.)</label>
+                                                <input type="number" class="form-control @error('priority_no_3') is-invalid @enderror" name="priority_no_3">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

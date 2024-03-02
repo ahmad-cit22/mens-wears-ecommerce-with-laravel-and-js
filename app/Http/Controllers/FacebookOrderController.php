@@ -25,6 +25,8 @@ use App\Models\FacebookOrder;
 use App\Models\FacebookOrderProduct;
 use App\Models\FacebookOrderStatus;
 use App\Models\OrderSpecialStatus;
+use App\Models\BkashRecord;
+use App\Models\BkashRecordPurpose;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Session;
@@ -310,10 +312,11 @@ class FacebookOrderController extends Controller {
             $statuses = FacebookOrderStatus::where('is_active', 1)->get();
             $special_statuses = OrderSpecialStatus::where('is_active', 1)->get();
             $bkash_nums = BkashNumber::all();
+            $bkash_purposes = BkashRecordPurpose::all();
             $sizes = Size::all();
 
             if (!is_null($order)) {
-                return view('admin.order.order_sheet.edit', compact('order', 'products', 'sizes', 'couriers', 'statuses', 'special_statuses', 'bkash_nums'));
+                return view('admin.order.order_sheet.edit', compact('order', 'products', 'sizes', 'couriers', 'statuses', 'special_statuses', 'bkash_nums', 'bkash_purposes'));
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -361,8 +364,42 @@ class FacebookOrderController extends Controller {
                 $order->advance = $request->advance;
                 $order->discount_amount = $request->discount_amount;
                 $order->save();
+                
+                if (BkashRecord::where('order_sheet_id', $order->id)->exists()) {
+                    $bkash_record = BkashRecord::where('order_sheet_id', $order->id)->first();
+                    $bkash_record->bkash_business_id = $request->bkash_business_id;
+                    $bkash_record->amount = $request->bkash_amount;
+                    $bkash_record->tr_purpose_id = $request->bkash_purpose_id;
+                    $bkash_record->comments = $request->bkash_note;
+                    $bkash_record->last_digit = substr($request->bkash_num, -4);
+                    $bkash_record->save();
 
-                Alert::toast('Order Info Updated!', 'success');
+                    $tracking = WorkTrackingEntry::where('bkash_record_id', $bkash_record->id)->first();
+
+                    $tracking->update([
+                        'user_id' => Auth::id(),
+                    ]);
+
+                } else {
+                    $bkash_record = new BkashRecord;
+                    $bkash_record->bkash_business_id = $request->bkash_business_id;
+                    $bkash_record->amount = $request->bkash_amount;
+                    $bkash_record->tr_type = 'CASH IN';
+                    $bkash_record->tr_purpose_id = $request->bkash_purpose_id;
+                    $bkash_record->comments = $request->bkash_note;
+                    $bkash_record->order_sheet_id = $order->id;
+                    $bkash_record->last_digit = substr($request->bkash_num, -4);
+                    $bkash_record->save();
+
+                    WorkTrackingEntry::create([
+                        'bkash_record_id' => $bkash_record->id,
+                        'order_sheet_id' => $order->id,
+                        'user_id' => Auth::id(),
+                        'work_name' => 'bkash_record'
+                    ]);
+                }
+                
+                Alert::toast('Order Sheet Info Updated!', 'success');
                 return back();
             } else {
                 Alert::toast('Something went wrong !', 'error');

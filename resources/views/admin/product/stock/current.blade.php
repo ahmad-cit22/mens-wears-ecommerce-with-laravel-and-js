@@ -22,10 +22,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row fs-5 justify-content-start">
-                        <h5 class="ml-lg-2 mr-5"><b class="mr-1"> Overall Production Cost:</b> {{ $total_production_cost }} TK</h5>
-                        <h5 class="mr-4"><b class="mr-1"> Overall Price:</b> {{ $total_price }} TK</h5>
+                        <h5 class="ml-lg-2 mr-5"><b class="mr-1"> Overall Production Cost: <b class="text-info">{{ $total_production_cost }} TK</b></h5>
+                        <h5 class="mr-4"><b class="mr-1"> Overall Price: <b class="text-success">{{ $total_price }} TK</b></h5>
                     </div>
-                    <div class="row fs-5 mt-3">
+                    <div class="row fs-5 mt-3 categoryCardBox">
                         @foreach ($categories as $key => $category)
                             @php
                                 $production_cost_sum = 0;
@@ -40,7 +40,7 @@
                                 @endif
                             @endforeach
                             @if ($category->parent_id == 0)
-                                <div class="col-3 gap-3 mb-3 mt-2">
+                                <div class="col-3 gap-3 mb-3 mt-2 categoryCard1">
                                     <h5><b>{{ $category->title }}</b></h5>
                                     <span>Total Production Cost: <span class="ml-1">{{ $production_cost_sum }} TK</span></span>
                                     <p>Total Price: <span class="ml-1">{{ $price_sum }} TK</span></p>

@@ -82,6 +82,18 @@
  ============================================ -->
 
     @include('pages.partials.style')
+    <style>
+        .stock-out-tag {
+            position: absolute;
+            right: 5px;
+            top: 6px;
+            padding: 0px 8px;
+            background: #ff000098;
+            font-weight: 600;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+    </style>
     @yield('style')
 
 </head>

@@ -118,7 +118,7 @@
                                     <select name="order_status_id" class="select2 form-control @error('order_status_id') is-invalid @enderror">
                                         <option value="">Please Select a Status (Optional)</option>
                                         @foreach (App\Models\OrderStatus::where('is_active', 1)->get() as $status)
-                                            <option value="{{ $status->id }}">{{ $status->title }}</option>
+                                            <option value="{{ $status->id }}" @if ($order_status_id != '' && $order_status_id == $status->id) selected @endif>{{ $status->title }}</option>
                                         @endforeach
 
                                     </select>
@@ -129,7 +129,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>District</label>
                                     <select name="district_id" id="district_id" class="select2 form-control @error('district_id') is-invalid @enderror">
@@ -146,12 +146,11 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Area</label>
                                     <select name="area_id" id="areas" class="select2 form-control @error('area_id') is-invalid @enderror">
                                         <option value="">Please Select an Area (Optional)</option>
-
 
                                     </select>
                                     @error('area_id')
@@ -161,10 +160,27 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Courier Name</label>
+                                    <select name="courier_name" id="areas" class="select2 form-control @error('courier_name') is-invalid @enderror">
+                                        <option value="0">Please Select a Courier Name (Optional)</option>
+                                        @foreach (App\Models\CourierName::get() as $courier)
+                                            <option value="{{ $courier->name }}" @if ($courier_name != '' && $courier_name == $courier->name) selected @endif>{{ $courier->name }}</option>
+                                        @endforeach
+
+                                    </select>
+                                    @error('courier_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label style="color: #fff;">.</label>
-                                    <button type="submit" class="form-control btn  btn-primary">Search</button>
+                                    <button type="submit" class="form-control btn btn-primary">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -186,6 +202,7 @@
                                 <th>Customer Name</th>
                                 <th width="9%">Phone</th>
                                 <th>Order Info</th>
+                                <th width="13%">Courier Info</th>
                                 <th>Status</th>
                                 <th width="13%">Note</th>
                                 <th>Source</th>
@@ -214,6 +231,10 @@
                                             <p class="m-0"><b>COD: {{ $item->cod }}/- </b></p>
                                         @endif
                                         <p class="m-0"><b>Total Payable: {{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                    </td>
+                                    <td>
+                                        <p class="m-0">Courier: <b>{{ $item->courier_name }} </b></p>
+                                        <p class="m-0">Refer Code: <b>{{ $item->refer_code ?? 'N/A' }} </b></p>
                                     </td>
                                     <td>
                                         @if ($item->is_return == 1)

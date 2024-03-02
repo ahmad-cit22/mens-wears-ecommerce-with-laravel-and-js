@@ -66,6 +66,7 @@ class HomeController extends Controller {
         //     'create_product',
         //     'reject_product',
         //     'damage_product',
+        //     'bkash_record',
         // ];
 
         // foreach ($tasks as $key => $task) {

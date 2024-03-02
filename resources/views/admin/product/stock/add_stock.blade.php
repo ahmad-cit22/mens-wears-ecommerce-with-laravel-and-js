@@ -247,88 +247,107 @@
                             _token: '{{ csrf_token() }}',
                         },
                         success: function(response) {
-                            console.log(response);
-
-                            let html = `
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Product*</label>
-                                        <select class="select2 form-control" name="product_id[]" id="product_id` + rowIdx + `" required>
-                                            <option value="">---- Select ----</option>
-                                                <option value="` + response.product.id + `" selected>` + response.product.title + `</option>
-                                        </select>
-                                        @error('product_id')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Size*</label>
-                                        <select class="select2 form-control" name="size_id[]" id="size_id` + rowIdx + `" required>
-                                            <option value="` + response.size.id + `">` + response.size.title + `</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Qty*</label>
-                                        <input type="number" name="qty[]" class="form-control" placeholder="Add Quantity" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-5">
-                                    <div class="row align-items-end">
-                                        <div class="col-md-9">
-                                            <div class="form-group">
-                                                <label>Remarks</label>
-                                                <input type="text" name="remarks[]" class="form-control" placeholder="Add Remarks">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <button type="button" class="btn btn-primary f-14 addNewRow"><i class="fa fa-plus"></i></button>
-                                                <button type="button" class="btn btn-danger f-14 remove" name="button"><i class="fa fa-minus"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-
-                            $('.addNewRow').first().closest('div[class=row]').before(html);
-
-                            $('.select2').select2();
-
-                            rowIdx++;
-
-                            for (let i = 1; i < rowIdx + 1; i++) {
-                                $('#product_id' + i).change(function() {
-                                    var product_id = $(this).val();
-                                    if (product_id == '') {
-                                        product_id = -1;
-                                    }
-                                    var option = "";
-                                    var url = "{{ url('/') }}";
-
-                                    $.get(url + "/get-size/" + product_id, function(data) {
-                                        data = JSON.parse(data);
-                                        data.forEach(function(element) {
-                                            option += "<option value='" + element.id + "'>" + element.title + "</option>";
-                                        });
-                                        $('#size_id' + i).html(option);
-                                    });
+                            // console.log(response);
+                            if (response.product != null) {
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "Product Scanned Successfully!",
+                                    showConfirmButton: false,
+                                    timer: 1200
                                 });
+
+                                let html = `
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Product*</label>
+                                            <select class="select2 form-control" name="product_id[]" id="product_id` + rowIdx + `" required>
+                                                <option value="">---- Select ----</option>
+                                                    <option value="` + response.product.id + `" selected>` + response.product.title + `</option>
+                                            </select>
+                                            @error('product_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Size*</label>
+                                            <select class="select2 form-control" name="size_id[]" id="size_id` + rowIdx + `" required>
+                                                <option value="` + response.size.id + `">` + response.size.title + `</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Qty*</label>
+                                            <input type="number" name="qty[]" class="form-control" placeholder="Add Quantity" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="row align-items-end">
+                                            <div class="col-md-9">
+                                                <div class="form-group">
+                                                    <label>Remarks</label>
+                                                    <input type="text" name="remarks[]" class="form-control" placeholder="Add Remarks">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-primary f-14 addNewRow"><i class="fa fa-plus"></i></button>
+                                                    <button type="button" class="btn btn-danger f-14 remove" name="button"><i class="fa fa-minus"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+
+                                $('.addNewRow').first().closest('div[class=row]').before(html);
+
+                                $('.select2').select2();
+
+                                rowIdx++;
+
+                                for (let i = 1; i < rowIdx + 1; i++) {
+                                    $('#product_id' + i).change(function() {
+                                        var product_id = $(this).val();
+                                        if (product_id == '') {
+                                            product_id = -1;
+                                        }
+                                        var option = "";
+                                        var url = "{{ url('/') }}";
+
+                                        $.get(url + "/get-size/" + product_id, function(data) {
+                                            data = JSON.parse(data);
+                                            data.forEach(function(element) {
+                                                option += "<option value='" + element.id + "'>" + element.title + "</option>";
+                                            });
+                                            $('#size_id' + i).html(option);
+                                        });
+                                    });
+                                }
+
+                                $("#barcode").val('');
+
+                                checkReq = false;
+                            } else {
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "error",
+                                    title: "Product Not Found! Try Again.",
+                                    showConfirmButton: false,
+                                    timer: 1200
+                                });
+                                $("#barcode").val('');
+                                checkReq = false;
                             }
-
-                            $("#barcode").val('');
-
-                            checkReq = false;
                         }
                     });
                 }

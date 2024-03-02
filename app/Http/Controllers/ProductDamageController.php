@@ -6,6 +6,8 @@ use App\Models\ProductDamage;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\ProductStockHistory;
+use App\Models\WorkTrackingEntry;
 use Auth;
 use PDF;
 use Session;
@@ -32,6 +34,16 @@ class ProductDamageController extends Controller {
                         $title = optional($row->size)->title;
                         return $title;
                     })
+                    ->addColumn('created_by', function ($row) {
+
+                        if ($row->created_by) {
+                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                        } else {
+                            $data = '--';
+                        }
+
+                        return $data;
+                    })->escapeColumns('created_by')
                     ->addColumn('date', function ($row) {
                         if ($row->product != null) {
                             $date = Carbon::parse($row->created_at)->format('d M, Y');
@@ -50,6 +62,24 @@ class ProductDamageController extends Controller {
         }
     }
 
+    public function product_barcode_scan(Request $request) {
+        $barcode = $request->barcode;
+        $stock_id = $barcode - 1000;
+        $stock = ProductStock::find($stock_id);
+
+        if ($stock) {
+            $size = ProductStock::find($stock_id)->size;
+            if (!is_null($stock)) {
+                $product = $stock->product;
+            }
+    
+            return ['product' => $product, 'stock' => $stock, 'size' => $size];
+        } else {
+            return ['product' => null, 'stock' => null, 'size' => null];
+        }
+        
+    }
+
     public function store(Request $request) {
         if (auth()->user()->can('damage.store')) {
             $validatedData = $request->validate([
@@ -64,14 +94,31 @@ class ProductDamageController extends Controller {
             $stock->qty -= $qty;
             $stock->save();
 
-            $history = new ProductDamage;
+            $damage = new ProductDamage;
+            $damage->product_id = $product_id;
+            $damage->size_id = $size_id;
+            $damage->qty = $qty;
+            $damage->production_cost = $stock->production_cost;
+            $damage->code = $stock->code;
+            $damage->note = $request->note;
+            $damage->save();
+
+            $history = new ProductStockHistory;
             $history->product_id = $product_id;
             $history->size_id = $size_id;
             $history->qty = $qty;
-            $history->production_cost = $stock->production_cost;
-            $history->code = $stock->code;
-            $history->note = $request->note;
+            $history->remarks = $request->note;
+            $history->note = "Damage";
             $history->save();
+            
+            WorkTrackingEntry::create([
+                'product_id' => $product_id,
+                'product_stock_history_id' => $history->id,
+                'damaged_product_id' => $damage->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'damage_product'
+            ]);
+
             Alert::toast('Stock Updated', 'success');
             return back();
         } else {

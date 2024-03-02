@@ -138,7 +138,7 @@
                    <div class="col-md-12">
                      <div class="form-group">
                        <label>Footer text*</label>
-                       <textarea name="combine_address" class="tinymce form-control @error('combine_address') is-invalid @enderror">{!! $setting->combine_address !!}</textarea>
+                       <textarea name="combine_address" class="summernote form-control @error('combine_address') is-invalid @enderror">{!! $setting->combine_address !!}</textarea>
                        @error('combine_address')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>

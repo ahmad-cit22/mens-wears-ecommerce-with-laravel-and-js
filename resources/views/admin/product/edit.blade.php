@@ -193,9 +193,21 @@
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label><input type="checkbox" name="is_offer" class="@error('is_offer') is-invalid @enderror" value="{{ $product->is_offer }}" {{ $product->is_offer == 1 ? 'checked' : '' }}> Mark as offer product</label>
+                                <label><input type="checkbox" name="is_offer" class="@error('is_offer') is-invalid @enderror" value="{{ $product->is_offer }}" {{ $product->is_offer == 1 ? 'checked' : '' }}> Mark as Offer Product</label>
 
                                 @error('is_offer')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label><input type="checkbox" name="is_hot_deal" class="@error('is_hot_deal') is-invalid @enderror" value="{{ $product->is_hot_deal }}" {{ $product->is_hot_deal == 1 ? 'checked' : '' }}> Mark as Hot Deal</label>
+
+                                @error('is_hot_deal')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -206,7 +218,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label"><b>Short Description</b></label>
                             <div class="col-sm-10">
-                                <textarea class="tinymce form-control @error('short_description') is-invalid @enderror" name="short_description">{{ $product->short_description }}</textarea>
+                                <textarea class="summernote form-control @error('short_description') is-invalid @enderror" name="short_description">{{ $product->short_description }}</textarea>
                                 @error('short_description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -218,7 +230,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label"><b>Description *</b></label>
                             <div class="col-sm-10">
-                                <textarea class="tinymce form-control @error('description') is-invalid @enderror" name="description">{{ $product->description }}</textarea>
+                                <textarea class="summernote form-control @error('description') is-invalid @enderror" name="description">{{ $product->description }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -402,15 +414,37 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Meta Description</label>
-                                    <textarea name="meta_description" class="form-control @error('meta_description') is-invalid @enderror" placeholder="Add Meta Description Here" rows="5">{{ $product->meta_description }}</textarea>
+                                    <textarea name="meta_description" class="form-control @error('meta_description') is-invalid @enderror" placeholder="Add Meta Description Here" rows="5"></textarea>
                                     @error('meta_description')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Priority No. (Main)</label>
+                                            <input type="number" class="form-control @error('priority_no_1') is-invalid @enderror" name="priority_no_1" value="{{ $product->priority_no_1 }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Priority No. (Dis.)</label>
+                                            <input type="number" class="form-control @error('priority_no_2') is-invalid @enderror" name="priority_no_2" value="{{ $product->priority_no_2 }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Priority No. (Hot.)</label>
+                                            <input type="number" class="form-control @error('priority_no_3') is-invalid @enderror" name="priority_no_3" value="{{ $product->priority_no_3 }}">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

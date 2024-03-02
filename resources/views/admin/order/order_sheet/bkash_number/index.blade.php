@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">FOS Bkash Number List</h1>
+                    <h1 class="m-0">Bkash Number List</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <a href="#addModal" class="btn btn-primary" data-toggle="modal"><i class="fas fa-plus"></i> Create Bkash Number</a>
+                    <a href="#addModal" class="btn btn-primary" data-toggle="modal"><i class="fas fa-plus mr-2"></i> Create Bkash Number</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">
@@ -31,6 +31,8 @@
                                 <th>S.N</th>
                                 <th>Name</th>
                                 <th>Number</th>
+                                <th>Op. Balance</th>
+                                <th>Cr. Balance</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -40,9 +42,15 @@
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ $number->name }}</td>
                                     <td>{{ $number->number }}</td>
+                                    <td>&#2547; {{ $number->opening_balance ?? '--' }}</td>
+                                    <td>&#2547; {{ $number->current_balance() ?? '--' }}</td>
                                     <td>
-                                        <a href="#editModal{{ $number->id }}" class="btn btn-primary" data-toggle="modal" number="Edit"><i class="fas fa-edit"></i></a>
-                                        <a href="#deleteModal{{ $number->id }}" class="btn btn-danger" data-toggle="modal" number="Delete"><i class="fas fa-trash"></i></a>
+                                        @if (auth()->user()->can('report.income'))
+                                            <a href="#editModal{{ $number->id }}" class="btn btn-primary" data-toggle="modal" number="Edit"><i class="fas fa-edit"></i></a>
+                                            <a href="#deleteModal{{ $number->id }}" class="btn btn-danger" data-toggle="modal" number="Delete"><i class="fas fa-trash"></i></a>
+                                        @else
+                                            <i class="fas fa-trash"></i>
+                                        @endif
                                     </td>
                                 </tr>
 
@@ -76,6 +84,15 @@
                                                                 <label>Number * </label>
                                                                 <input type="number" name="number" class="form-control @error('number') is-invalid @enderror" placeholder="Enter Bkash Number " value="{{ $number->number }}" required>
                                                                 @error('number')
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Opening Balance * </label>
+                                                                <input type="number" step="any" name="opening_balance" class="form-control @error('opening_balance') is-invalid @enderror" placeholder="Enter Opening Balance " value="{{ $number->opening_balance ?? '0' }}" required>
+                                                                @error('opening_balance')
                                                                     <span class="invalid-feedback" role="alert">
                                                                         <strong>{{ $message }}</strong>
                                                                     </span>
@@ -124,6 +141,8 @@
                         <th>S.N</th>
                         <th>Name</th>
                         <th>Number</th>
+                        <th>Op. Balance</th>
+                        <th>Cr. Balance</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -162,6 +181,15 @@
                                         <label>Number * </label>
                                         <input type="number" name="number" class="form-control @error('number') is-invalid @enderror" placeholder="Enter Bkash Number " value="{{ old('number') }}" required>
                                         @error('number')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Opening Balance * </label>
+                                        <input type="number" name="opening_balance" class="form-control @error('opening_balance') is-invalid @enderror" placeholder="Enter Opening Balance " value="{{ old('opening_balance') ?? '0' }}" required>
+                                        @error('opening_balance')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

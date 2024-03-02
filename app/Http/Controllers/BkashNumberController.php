@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Alert;
 use App\Models\BkashNumber;
+use App\Models\BkashRecord;
 use Image;
 use File;
 
@@ -38,6 +39,8 @@ class BkashNumberController extends Controller {
             $number = new BkashNumber;
             $number->name = $request->name;
             $number->number = $request->number;
+            $number->opening_balance = $request->opening_balance;
+            // $number->current_balance = $request->opening_balance;
 
             $number->save();
             Alert::toast('New Bkash Number Added !', 'success');
@@ -65,6 +68,8 @@ class BkashNumberController extends Controller {
             if (!is_null($number)) {
                 $number->name = $request->name;
                 $number->number = $request->number;
+                $number->opening_balance = $request->opening_balance;
+                // $number->current_balance = $request->current_balance;
 
                 $number->save();
                 Alert::toast('Bkash Number has been updated !', 'success');
@@ -89,6 +94,12 @@ class BkashNumberController extends Controller {
             $number = BkashNumber::find($id);
 
             if (!is_null($number)) {
+
+                if (BkashRecord::where('bkash_business_id', $id)->exists()) {
+                    Alert::toast("Number can't be deleted because there is bkash records under this number!", 'warning');
+                    return redirect()->route('fos.bkash_number.index');
+                };
+
                 $number->delete();
                 Alert::toast('Bkash Number has been deleted !', 'success');
                 return redirect()->route('fos.bkash_number.index');

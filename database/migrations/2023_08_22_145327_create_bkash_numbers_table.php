@@ -15,6 +15,7 @@ class CreateBkashNumbersTable extends Migration {
             $table->id();
             $table->string('name')->nullable();
             $table->string('number');
+            $table->float('opening_balance')->default(0);
             $table->timestamps();
         });
     }

@@ -36,6 +36,17 @@ class Product extends Model
     {
         return $this->hasMany(ProductStock:: class);
     }
+   
+    public function total_stock()
+    {
+        $stock = 0;
+        
+        foreach ($this->variations as $item) {
+            $stock += $item->qty;
+        }
+
+        return $stock;
+    }
 
     public function variation()
     {

@@ -16,6 +16,7 @@ class CreateAccessoriesTable extends Migration
         Schema::create('accessories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('min_quantity')->nullable();
             $table->timestamps();
         });
     }

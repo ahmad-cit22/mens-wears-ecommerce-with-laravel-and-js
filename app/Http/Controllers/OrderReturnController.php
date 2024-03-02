@@ -6,6 +6,7 @@ use App\Models\OrderReturn;
 use App\Models\Order;
 use App\Models\ProductStock;
 use App\Models\WorkTrackingEntry;
+use App\Models\ProductStockHistory;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -89,14 +90,6 @@ class OrderReturnController extends Controller {
                 $sell_return->price = $request->price[$i];
                 $sell_return->save();
 
-                // worktrack
-
-                WorkTrackingEntry::create([
-                        'order_id' => $request->order_id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'order_return'
-                ]);
-
                 $returned_price += $request->qty[$i] * $request->price[$i];
 
                 // adjust the order products
@@ -109,6 +102,20 @@ class OrderReturnController extends Controller {
                 $stock = ProductStock::where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
                 $stock->qty += $request->qty[$i];
                 $stock->save();
+
+                $history = new ProductStockHistory;
+                $history->product_id = $request->product_id[$i];
+                $history->size_id = $request->size_id[$i];
+                $history->qty = $request->qty[$i];
+                $history->remarks = 'Order Code - ' . $request->order_code;
+                $history->note = "Order Return";
+                $history->save();
+
+                WorkTrackingEntry::create([
+                    'order_id' => $request->order_id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'order_return'
+                ]);
             }
         }
 

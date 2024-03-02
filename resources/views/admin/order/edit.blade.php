@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
 
 
                     <!-- Main content -->
@@ -50,10 +50,15 @@
                                 </div>
                                 <div class="col-1">
                                     @if ($order->source == 'Wholesale')
-                                        <a href="{{ route('sell.wholesale.index') }}" class="btn btn-info bg-primary float-right">Sell List</a>
+                                        <a href="{{ route('sell.wholesale.index') }}" class="btn btn-info bg-primary float-right mb-2">Wholesale List</a> <br>
                                     @else
-                                        <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary float-right">Sell List</a>
+                                        <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
                                     @endif
+
+                                    <div class="ml-4">
+                                        <a href="{{ route('order.invoice.generate', $order->id) }}" class="btn btn-secondary btn-sm" title="Download Invoice"><i class="fas fa-download"></i></a>
+                                        <a href="{{ route('order.invoice.pos.generate', $order->id) }}" class="btn btn-success btn-sm" title="Print POS Invoice"><i class="fas fa-print"></i></a>
+                                    </div>
                                 </div>
                                 <br>
 
@@ -171,7 +176,7 @@
                                         <div class="form-group">
                                             <label>Payment Status</label>
                                             <select name="payment_status" class="form-control select2">
-                                                @if (auth()->user()->hasRole('ADMIN') || 1 == $order->payment_status)
+                                                @if (auth()->user()->can('order.paid') || 1 == $order->payment_status)
                                                     <option value="1" {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid</option>
                                                 @endif
                                                 <option value="0" {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid</option>
@@ -207,10 +212,10 @@
                                             <label>Order Status</label>
                                             <select name="order_status_id" class="form-control select2">
                                                 @foreach (App\Models\OrderStatus::where('is_active', 1)->orderBy('priority_no', 'ASC')->get() as $status)
-                                                    @if (auth()->user()->hasRole('ADMIN'))
+                                                    @if (auth()->user()->can('order.change_all_status'))
                                                         <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
                                                     @else
-                                                        @if (in_array($status->priority_no, [1, 3, 10]) || $status->id == $order->order_status_id)
+                                                        @if (in_array($status->priority_no, [1, 3, 7, 10]) || $status->id == $order->order_status_id)
                                                             <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
                                                         @endif
                                                     @endif
@@ -324,7 +329,12 @@
                                                         @if ($order->source == 'Wholesale')
                                                             &#2547; {{ $product->product->variation->wholesale_price }}
                                                         @else
-                                                            &#2547; {{ $product->product->variation->price }}
+                                                            @if ($product->product->variation->discount_price != null && $order->source == 'Website')
+                                                                <s class="text-muted">&#2547; {{ $product->product->variation->price }}</s>
+                                                                &#2547; {{ $product->product->variation->discount_price }}
+                                                            @else
+                                                                &#2547; {{ $product->product->variation->price }}
+                                                            @endif
                                                         @endif
                                                     </td>
                                                     <td>{{ $product->qty }}</td>
@@ -332,7 +342,11 @@
                                                         @if ($order->source == 'Wholesale')
                                                             &#2547; {{ $product->product->variation->wholesale_price * $product->qty }}
                                                         @else
-                                                            &#2547; {{ $product->product->variation->price * $product->qty }}
+                                                            @if ($product->product->variation->discount_price != null && $order->source == 'Website')
+                                                                &#2547; {{ $product->product->variation->discount_price * $product->qty }}
+                                                            @else
+                                                                &#2547; {{ $product->product->variation->price * $product->qty }}
+                                                            @endif
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -394,11 +408,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                    <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->

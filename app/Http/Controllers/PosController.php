@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\District;
 use App\Models\Area;
 use App\Models\WorkTrackingEntry;
+use App\Models\ProductStockHistory;
 
 use Illuminate\Http\Request;
 use Auth;
@@ -207,6 +208,19 @@ class PosController extends Controller {
                 $stock = ProductStock::where('product_id', $order_product->product_id)->where('size_id', $order_product->size_id)->first();
                 $stock->qty -= $order_product->qty;
                 $stock->save();
+
+                $history = new ProductStockHistory;
+                $history->product_id = $order_product->product_id;
+                $history->size_id = $order_product->size_id;
+                $history->qty = $order_product->qty;
+                $history->remarks = 'Order Code - ' . $order->code;
+                if (Session::has('wholesale_price')) {
+                    $history->note = "Sell (Wholesale)";
+                } else {
+                    $history->note = "Sell (Offline)";
+                }
+                
+                $history->save();
 
                 Cart::remove($cart->rowId);
             }

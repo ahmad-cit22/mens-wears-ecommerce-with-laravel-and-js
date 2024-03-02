@@ -44,8 +44,7 @@
                     </a>
                 </li>
                 @if (Auth::user()->type == 1)
-                    @if (auth()->user()->can('supplier.index') ||
-                            auth()->user()->can('customer.list'))
+                    @if (auth()->user()->can('supplier.index') || auth()->user()->can('customer.list'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-user"></i>
@@ -125,13 +124,7 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('product.index') ||
-                            auth()->user()->can('product.create') ||
-                            auth()->user()->can('category.index') ||
-                            auth()->user()->can('brand.index') ||
-                            auth()->user()->can('size.index') ||
-                            auth()->user()->can('production.index') ||
-                            auth()->user()->can('product.print_label'))
+                    @if (auth()->user()->can('product.index') || auth()->user()->can('product.create') || auth()->user()->can('category.index') || auth()->user()->can('brand.index') || auth()->user()->can('size.index') || auth()->user()->can('production.index') || auth()->user()->can('product.print_label'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
@@ -203,11 +196,7 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('order_sheet.create') ||
-                            auth()->user()->can('order_sheet.index') ||
-                            auth()->user()->can('order_sheet_status.index') ||
-                            auth()->user()->can('courier_name.index') ||
-                            auth()->user()->can('business_bkash_number.index'))
+                    @if (auth()->user()->can('order_sheet.create') || auth()->user()->can('order_sheet.index') || auth()->user()->can('order_sheet_status.index') || auth()->user()->can('courier_name.index') || auth()->user()->can('business_bkash_number.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
@@ -255,20 +244,49 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if (auth()->user()->can('business_bkash_number.index'))
-                                    <li class="nav-item">
-                                        <a href="{{ route('fos.bkash_number.index') }}" class="nav-link">
-                                            <i class="fas fa-angle-right"></i>
-                                            <p>Bkash Numbers</p>
-                                        </a>
-                                    </li>
-                                @endif
                             </ul>
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('order.index') ||
-                            auth()->user()->can('order.view'))
+                    @if (auth()->user()->can('business_bkash_number.index'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-money-bill-alt"></i>
+                                <p>
+                                    Bkash Panel
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('fos.bkash_number.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Bkash Numbers</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('bkash_panel.tr_purposes') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Bkash TR Purposes</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('bkash_panel.create') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Add Transaction Record</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('bkash_panel.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Bkash Transactions</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->can('order.index') || auth()->user()->can('order.view'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-plus-square"></i>
@@ -306,11 +324,7 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('pos.create') ||
-                            auth()->user()->can('wholesale.create') ||
-                            auth()->user()->can('sell.index') ||
-                            auth()->user()->can('order.return') ||
-                            auth()->user()->can('wholesale.index'))
+                    @if (auth()->user()->can('pos.create') || auth()->user()->can('wholesale.create') || auth()->user()->can('sell.index') || auth()->user()->can('order.return') || auth()->user()->can('wholesale.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-arrow-circle-up"></i>
@@ -388,11 +402,8 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('add.stock') ||
-                            auth()->user()->can('current.stock.view') ||
-                            auth()->user()->can('stock.history') ||
-                            auth()->user()->can('damage.view'))
-                        <li class="nav-item">
+                    @if (auth()->user()->can('add.stock') || auth()->user()->can('current.stock.view') || auth()->user()->can('stock.history') || auth()->user()->can('damage.view'))
+                        <l i class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-warehouse"></i>
                                 <p>
@@ -436,12 +447,54 @@
                                     </li>
                                 @endif
 
+                                @if (auth()->user()->can('damage.view'))
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-times-circle"></i>
+                                            <p>
+                                                Reject Panel
+                                                <i class="fas fa-angle-right right"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('reject.add.view') }}" class="nav-link">
+                                                    <i class="fas fa-angle-right"></i>
+                                                    <p>Transfer to Reject List</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="{{ route('reject.index') }}" class="nav-link">
+                                                    <i class="fas fa-angle-right"></i>
+                                                    <p>Reject Products History</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="{{ route('reject.stock') }}" class="nav-link">
+                                                    <i class="fas fa-angle-right"></i>
+                                                    <p>Reject Products Stock</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="{{ route('reject.product.out.form') }}" class="nav-link">
+                                                    <i class="fas fa-angle-right"></i>
+                                                    <p>Reject Product Out</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="{{ route('reject.product.out.list') }}" class="nav-link">
+                                                    <i class="fas fa-angle-right"></i>
+                                                    <p>Reject Product Out List</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                @endif
                             </ul>
-                        </li>
+                        </l>
                     @endif
 
-                    @if (auth()->user()->can('expense.index') ||
-                            auth()->user()->can('expense.view'))
+                    @if (auth()->user()->can('expense.index') || auth()->user()->can('expense.view'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-minus-circle"></i>
@@ -536,9 +589,7 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('report.income') ||
-                            auth()->user()->can('report.balance_sheet') ||
-                            auth()->user()->can('report.owners'))
+                    @if (auth()->user()->can('report.income') || auth()->user()->can('report.balance_sheet') || auth()->user()->can('report.owners'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-bar"></i>
@@ -589,10 +640,24 @@
                         </li>
                     @endif
 
-                    @if (auth()->user()->can('setting.business_settings') ||
-                            auth()->user()->can('setting.asset') ||
-                            auth()->user()->can('setting.accessory') ||
-                            auth()->user()->can('page.index'))
+                    @if (auth()->user()->can('setting.asset'))
+                        <li class="nav-item">
+                            <a href="{{ route('asset.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-truck-monster"></i>
+                                <p>Assets</p>
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->can('setting.accessory'))
+                        <li class="nav-item">
+                            <a href="{{ route('accessory.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <p>Accessories</p>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->can('setting.business_settings') || auth()->user()->can('setting.asset') || auth()->user()->can('setting.accessory') || auth()->user()->can('page.index'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -608,22 +673,6 @@
                                         <a href="{{ route('setting.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Business Settings</p>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (auth()->user()->can('setting.asset'))
-                                    <li class="nav-item">
-                                        <a href="{{ route('asset.index') }}" class="nav-link">
-                                            <i class="fas fa-angle-right"></i>
-                                            <p>Assets</p>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (auth()->user()->can('setting.accessory'))
-                                    <li class="nav-item">
-                                        <a href="{{ route('accessory.index') }}" class="nav-link">
-                                            <i class="fas fa-angle-right"></i>
-                                            <p>Accessories</p>
                                         </a>
                                     </li>
                                 @endif
