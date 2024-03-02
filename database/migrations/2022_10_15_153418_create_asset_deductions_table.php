@@ -15,7 +15,7 @@ class CreateAssetDeductionsTable extends Migration
     {
         Schema::create('asset_deductions', function (Blueprint $table) {
             $table->id();
-            $table->integer('asset_id')->nullable();
+            $table->foreignId('asset_id')->constrained();
             $table->double('amount')->nullable();
             $table->timestamps();
         });
