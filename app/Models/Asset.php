@@ -14,7 +14,7 @@ class Asset extends Model
     	return $this->belongsTo(Bank::class);
     }
 
-    public function depreciations()
+    public function deductions()
     {
     	return $this->hasMany(AssetDeduction::class);
     }

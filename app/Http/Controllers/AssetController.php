@@ -6,6 +6,7 @@ use App\Models\Asset;
 use App\Models\AssetDeduction;
 use App\Models\Bank;
 use App\Models\BankTransaction;
+use App\Models\ExpenseEntry;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Alert;
@@ -166,7 +167,7 @@ class AssetController extends Controller
                 return redirect()->route('asset.index');
             }
             else {
-                Alert::toast('Asset Not Found', 'success');
+                Alert::toast('Asset Not Found', 'error');
                 return back();
             }
         }
@@ -187,28 +188,52 @@ class AssetController extends Controller
         //
     }
 
-    public function deduct()
+    public function deduct_now(Request $request, $id)
     {
-        $assets = Asset::orderBy('id', 'DESC')->get();
-        foreach ($assets as $asset) {
-            if ($asset->disposal_amount == null) {
-                $month = AssetDeduction::where('asset_id', $asset->id)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->first();
-                $total_depreciated = $asset->deductions->sum('amount');
-                $net_value = $asset->amount - $total_depreciated;
+        if (auth()->user()->can('setting.asset')) {
+            $asset = Asset::find($id);
+            $total_depreciated = $asset->deductions->sum('amount');
+            $net_value = $asset->amount - $total_depreciated;
 
-                if (is_null($month) && $net_value > 0) {
-                    $deduct = new AssetDeduction;
-                    $deduct->asset_id = $asset->id;
+            if ($request->depreciation_value > $net_value) {
+                Alert::toast('Depreciation value can not be greater than net asset value!', 'error');
+                return back();
+            }
 
-                    if ($asset->depreciation_value <= $net_value) {
-                        $deduct->amount = $asset->depreciation_value;
+            $deduct = new AssetDeduction;
+            $deduct->asset_id = $asset->id;
+
+            $expense = new ExpenseEntry;
+            $expense->expense_id = 13;
+            $expense->bank_id = $asset->bank_id;
+            $expense->date = Carbon::today();
+            $expense->note = 'Depreciation of ' . $asset->name;
+
+            if ($request->depreciation_value != '') {
+                $deduct->amount = $request->depreciation_value;
+
+                $expense->amount = $request->depreciation_value;
+            } else {
+                if ($asset->depreciation_value <= $net_value) {
+                    $deduct->amount = $asset->depreciation_value;
+
+                    $expense->amount = $asset->depreciation_value;
                     } else {
                         $deduct->amount = $net_value;
+
+                        $expense->amount = $net_value;
                     }
-                    $deduct->save();
-                }
             }
             
+            $expense->save();
+            $deduct->save();
+
+            Alert::toast('Depreciated Successfully!', 'success');
+            return back();
+        }
+        else
+        {
+            abort(403, 'Unauthorized action.');
         }
     }
 }

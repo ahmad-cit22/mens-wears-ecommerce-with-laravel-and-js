@@ -527,7 +527,9 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/edit/{id}', [App\Http\Controllers\AssetController::class, 'edit'])->name('edit');
 		Route::post('/update/{id}', [App\Http\Controllers\AssetController::class, 'update'])->name('update');
 		Route::post('/destroy/{id}', [App\Http\Controllers\AssetController::class, 'destroy'])->name('destroy');
-		Route::get('/deduct', [App\Http\Controllers\AssetController::class, 'deduct'])->name('deduct');
+		Route::post('/deduct-now/{id}', [App\Http\Controllers\AssetController::class, 'deduct_now'])->name('deduct.now');
+		// Route::get('/deduct', [App\Http\Controllers\AssetController::class, 'deduct'])->name('deduct');
+		Route::post('/dispose/{id}', [App\Http\Controllers\AssetController::class, 'dispose'])->name('dispose');
 	});
 
 	// Report Routes

@@ -42,7 +42,7 @@
                                 <th>Disposal</th>
                                 <th>Gain/Loss</th>
                                 <th>Purchase Date</th>
-                                <th>Date</th>
+                                <th>Last Depre.</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -54,6 +54,8 @@
 
                                     $passing_months = $toDate->diffInMonths($fromDate);
                                     $net_value = $asset->amount - optional($asset->deductions)->sum('amount');
+
+                                    $month = $asset->deductions->first() ? Carbon\Carbon::parse($asset->deductions->first()->created_at)->format('M Y') : '--';
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
@@ -80,11 +82,52 @@
                                         @endif
                                     </td>
                                     <td>{{ Carbon\Carbon::parse($asset->purchase_date)->format('d M Y, g:iA') }}</td>
-                                    <td>{{ Carbon\Carbon::parse($asset->created_at)->format('d M Y, g:iA') }}</td>
+                                    <td>{{ $month }}</td>
                                     <td>
-                                        <a href="{{ route('asset.edit', $asset->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <div class="row">
+                                            <a href="{{ route('asset.edit', $asset->id) }}" class="btn btn-primary btn-sm" title="Edit"><i class="fas fa-edit"></i></a>
+                                            @if ($net_value > 0)
+                                                <a href="#deduct-now{{ $asset->id }}" class="ml-1 btn btn-info btn-sm" data-toggle="modal" title="Depreciate Now"><i class="fas fa-arrow-down"></i></a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
+
+                                @if ($net_value > 0)
+                                    <!-- deduct_now Modal -->
+                                    <div class="modal fade" id="deduct-now{{ $asset->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Depreciate Now - {{ $asset->name }} ({{ date('M Y') }})</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('asset.deduct.now', $asset->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label>Depreciation Value</label>
+                                                                    <input type="number" name="depreciation_value" class="form-control @error('depreciation_value') is-invalid @enderror" value="{{ $asset->depreciation_value }}" max="{{ $net_value }}">
+                                                                    @error('depreciation_value')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -103,7 +146,7 @@
                                 <th>Disposal</th>
                                 <th>Gain/Loss</th>
                                 <th>Purchase Date</th>
-                                <th>Date</th>
+                                <th>Last Depre.</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
