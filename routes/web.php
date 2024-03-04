@@ -69,7 +69,7 @@ Route::get('/remove-coupon', [App\Http\Controllers\CartController::class, 'remov
 Route::post('/wallet-use', [App\Http\Controllers\CartController::class, 'wallet_use'])->name('wallet.use');
 Route::get('/remove-wallet', [App\Http\Controllers\CartController::class, 'remove_wallet'])->name('wallet.remove');
 
-// Order routes 
+// Order routes
 Route::post('/order-create', [App\Http\Controllers\PageController::class, 'order_create'])->name('order.create');
 Route::get('/order-complete/{id}', [App\Http\Controllers\PageController::class, 'order_complete'])->name('order.complete');
 Route::get('/track-order', [App\Http\Controllers\PageController::class, 'order_track'])->name('order.track');
@@ -216,7 +216,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/store', [App\Http\Controllers\ProductDamageController::class, 'store'])->name('store');
 		Route::post('/product-barcode-scan', [App\Http\Controllers\ProductDamageController::class, 'product_barcode_scan'])->name('product.barcode.scan');
 	});
-	
+
 	// Reject Product Routes
 	Route::group(['prefix' => 'reject', 'as' => 'reject.'], function () {
 		Route::get('/', [App\Http\Controllers\RejectedProductController::class, 'index'])->name('index');
@@ -255,7 +255,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/product-barcode-check-confirm/{id}', [App\Http\Controllers\OrderController::class, 'product_barcode_check_confirm'])->name('barcode.check.confirm');
 		Route::get('/order-packet-done/{id}', [App\Http\Controllers\OrderController::class, 'packet_done'])->name('packet_done');
 		Route::post('/refer-code-store/{id}', [App\Http\Controllers\OrderController::class, 'refer_code_store'])->name('refer_code.store');
-		
+
 		// Report routes
 		Route::get('/all', [App\Http\Controllers\OrderController::class, 'all_orders'])->name('all');
 		Route::get('/current-year', [App\Http\Controllers\OrderController::class, 'current_year'])->name('current.year');
@@ -368,7 +368,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/destroy/{id}', [App\Http\Controllers\BkashNumberController::class, 'destroy'])->name('destroy');
 	});
 
-	
+
 	// bkash panel Routes
 	Route::group(['prefix' => 'bkash-panel', 'as' => 'bkash_panel.'], function () {
 		Route::get('/', [App\Http\Controllers\BkashRecordController::class, 'index'])->name('index');

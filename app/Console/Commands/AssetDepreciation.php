@@ -48,7 +48,7 @@ class AssetDepreciation extends Command
                 $total_depreciated = $asset->deductions->sum('amount');
                 $net_value = $asset->amount - $total_depreciated;
 
-                if (is_null($month) && $net_value > 0) {
+                if (is_null($month) && $net_value > 0 && !$asset->disposal_amount) {
                     if ($asset->depreciation_date == Carbon::today()->format('d')) {
                         $deduct = new AssetDeduction;
                         $deduct->asset_id = $asset->id;
@@ -73,7 +73,7 @@ class AssetDepreciation extends Command
                     }
                 }
             }
-            
+
         }
         return 0;
     }

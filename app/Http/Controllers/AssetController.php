@@ -9,26 +9,21 @@ use App\Models\BankTransaction;
 use App\Models\ExpenseEntry;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Alert;
-use Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
-class AssetController extends Controller
-{
+class AssetController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('setting.asset')) {
             $banks = Bank::orderBy('name', 'ASC')->get();
             $assets = Asset::orderBy('id', 'DESC')->get();
             // $asset_deductions = AssetDeduction::orderBy('id', 'DESC')->get();
             return view('admin.asset.index', compact('banks', 'assets'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -38,14 +33,11 @@ class AssetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         if (auth()->user()->can('setting.asset')) {
             $banks = Bank::orderBy('name', 'ASC')->get();
             return view('admin.asset.create', compact('banks'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -56,8 +48,7 @@ class AssetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (auth()->user()->can('setting.asset')) {
             $validatedData = $request->validate([
                 'name' => 'required|string',
@@ -90,9 +81,7 @@ class AssetController extends Controller
 
             Alert::toast('Asset created!', 'success');
             return redirect()->route('asset.index');
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -103,8 +92,7 @@ class AssetController extends Controller
      * @param  \App\Models\Asset  $asset
      * @return \Illuminate\Http\Response
      */
-    public function show(Asset $asset)
-    {
+    public function show(Asset $asset) {
         //
     }
 
@@ -114,21 +102,17 @@ class AssetController extends Controller
      * @param  \App\Models\Asset  $asset
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         if (auth()->user()->can('setting.asset')) {
             $asset = Asset::find($id);
             if (!is_null($asset)) {
                 $banks = Bank::orderBy('name', 'ASC')->get();
                 return view('admin.asset.edit', compact('banks', 'asset'));
-            }
-            else {
+            } else {
                 Alert::toast('Asset Not Found', 'success');
                 return back();
             }
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -140,8 +124,7 @@ class AssetController extends Controller
      * @param  \App\Models\Asset  $asset
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         if (auth()->user()->can('setting.asset')) {
             $asset = Asset::find($id);
             if (!is_null($asset)) {
@@ -165,14 +148,11 @@ class AssetController extends Controller
 
                 Alert::toast('Asset Updated', 'success');
                 return redirect()->route('asset.index');
-            }
-            else {
+            } else {
                 Alert::toast('Asset Not Found', 'error');
                 return back();
             }
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -183,14 +163,16 @@ class AssetController extends Controller
      * @param  \App\Models\Asset  $asset
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Asset $asset)
-    {
+    public function destroy(Asset $asset) {
         //
     }
 
-    public function deduct_now(Request $request, $id)
-    {
+    public function deduct_now(Request $request, $id) {
         if (auth()->user()->can('setting.asset')) {
+            $validatedData = $request->validate([
+                'depreciation_value' => 'required',
+            ]);
+
             $asset = Asset::find($id);
             $total_depreciated = $asset->deductions->sum('amount');
             $net_value = $asset->amount - $total_depreciated;
@@ -218,21 +200,44 @@ class AssetController extends Controller
                     $deduct->amount = $asset->depreciation_value;
 
                     $expense->amount = $asset->depreciation_value;
-                    } else {
-                        $deduct->amount = $net_value;
+                } else {
+                    $deduct->amount = $net_value;
 
-                        $expense->amount = $net_value;
-                    }
+                    $expense->amount = $net_value;
+                }
             }
-            
+
             $expense->save();
             $deduct->save();
 
             Alert::toast('Depreciated Successfully!', 'success');
             return back();
+        } else {
+            abort(403, 'Unauthorized action.');
         }
-        else
-        {
+    }
+
+    public function dispose(Request $request, $id) {
+        if (auth()->user()->can('setting.asset')) {
+            $validatedData = $request->validate([
+                'disposal_amount' => 'required',
+                'bank_id' => 'required|integer',
+            ]);
+
+            $asset = Asset::find($id);
+            $asset->disposal_amount = $request->disposal_amount;
+
+            $asset->save();
+
+            $transaction = new BankTransaction;
+            $transaction->bank_id = $request->bank_id;
+            $transaction->credit = $request->disposal_amount;
+            $transaction->note = $request->note;
+            $transaction->save();
+
+            Alert::toast('Asset Disposal Successfully Done!', 'success');
+            return back();
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
