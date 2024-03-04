@@ -151,27 +151,28 @@
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>S.N</th>
+                                {{-- <th>S.N</th> --}}
                                 <th>Code</th>
                                 <th>Customer Name</th>
-                                <th width="9%">Phone</th>
-                                <th width="13%">Order Info</th>
-                                <th width="13%">Courier Info</th>
-                                <th>Status</th>
-                                <th width="13%">Note</th>
+                                <th width="6%">Phone</th>
+                                <th width="14%">Order Info</th>
+                                <th width="11%">Order Products</th>
+                                <th width="10%">Courier Info</th>
+                                <th width="6%">Status</th>
+                                <th width="10%">Note</th>
                                 <th>Source</th>
-                                <th width="9%">Date</th>
-                                <th>COD</th>
+                                <th width="8%">Date</th>
+                                <th>VAT</th>
                                 <th>Created By</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $item)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
                                     <td><b>{{ $item->code }}</b></td>
                                     <td><b>{{ $item->name }}</b></td>
-                                    <td width="9%"><b>{{ $item->phone }}</b></td>
+                                    <td width="6%" style="font-size: 12px !important;"><b>{{ $item->phone }}</b></td>
                                     <td>
                                         <p class="m-0">Sub Total: <b>{{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></p>
                                         <p class="m-0">Delivery Charge: <b>{{ $item->delivery_charge }}/- </b></p>
@@ -185,6 +186,11 @@
                                             <p class="m-0">COD: <b>{{ $item->cod }}/- </b></p>
                                         @endif
                                         <p class="m-0">Total Payable: <b>{{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                    </td>
+                                    <td>
+                                        @foreach ($item->order_product as $key => $order_product)
+                                            <p>{{ $key + 1 }}. {{ $order_product->product->title }} x {{ $order_product->qty }}</p>
+                                        @endforeach
                                     </td>
                                     <td>
                                         <p class="m-0">Courier: <b>{{ $item->courier_name }} </b></p>
@@ -201,10 +207,12 @@
                                             <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
                                         @endif
                                     </td>
-                                    <td width="13%">{{ $item->note }}</td>
+                                    <td width="10%">{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
-                                    <td>{{ $item->cod }}</td>
+                                    <td>
+                                        <a href="{{ route('sell.vat.calculate', $item->id) }}" class="ml-1 btn btn-info btn-sm mt-2" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
+                                    </td>
                                     <td>
                                         @if ($item->created_by)
                                             <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>
@@ -297,7 +305,30 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "buttons": [
+
+                    {
+                        extend: 'excel',
+                        footer: 'true',
+                        text: 'Excel',
+                    },
+
+                    {
+                        extend: 'pdf',
+                        footer: 'true',
+                        text: 'PDF',
+                        orientation: 'landscape',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6],
+                            // rows:
+                        },
+                        // customize: function(doc) {
+                        //     doc.defaultStyle.font = "nikosh";
+                        // }
+                    },
+
+                    'print',
+                ]
             }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
 
         });

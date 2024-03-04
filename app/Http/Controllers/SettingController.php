@@ -10,21 +10,17 @@ use Alert;
 use Image;
 use File;
 
-class SettingController extends Controller
-{
+class SettingController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         if (auth()->user()->can('setting.business_settings')) {
             $setting = Setting::orderBy('id', 'DESC')->first();
             return view('admin.setting.index', compact('setting'));
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -34,8 +30,7 @@ class SettingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -45,8 +40,7 @@ class SettingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         //
     }
 
@@ -56,8 +50,7 @@ class SettingController extends Controller
      * @param  \App\Models\Setting  $setting
      * @return \Illuminate\Http\Response
      */
-    public function show(Setting $setting)
-    {
+    public function show(Setting $setting) {
         //
     }
 
@@ -67,8 +60,7 @@ class SettingController extends Controller
      * @param  \App\Models\Setting  $setting
      * @return \Illuminate\Http\Response
      */
-    public function edit(Setting $setting)
-    {
+    public function edit(Setting $setting) {
         //
     }
 
@@ -79,21 +71,20 @@ class SettingController extends Controller
      * @param  \App\Models\Setting  $setting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         if (auth()->user()->can('setting.edit')) {
             $this->validate($request, [
                 'name' => 'required',
                 'phone' => 'required',
                 'email' => 'required|email',
-                'logo'=> 'nullable',
-                'favicon'=> 'nullable',
+                'logo' => 'nullable',
+                'favicon' => 'nullable',
                 'address' => 'required',
                 'slider_option' => 'required',
             ]);
 
             $setting = Setting::find($id);
-            
+
             $setting->name = $request->name;
             $setting->phone = $request->phone;
             $setting->additional_phone = $request->additional_phone;
@@ -104,6 +95,8 @@ class SettingController extends Controller
             $setting->shipping_charge = $request->shipping_charge;
             $setting->shipping_charge_dhaka_metro = $request->shipping_charge_dhaka_metro;
             $setting->shipping_charge_dhaka = $request->shipping_charge_dhaka;
+            $setting->vat = $request->vat;
+            $setting->bin_no = $request->bin_no;
 
             $setting->facebook = $request->facebook;
             $setting->instagram = $request->instagram;
@@ -112,37 +105,37 @@ class SettingController extends Controller
             $setting->linkedin = $request->linkedin;
 
             // logo save
-            if ($request->logo){
-                if (File::exists('images/website/'.$setting->logo)){
-                    File::delete('images/website/'.$setting->logo);
+            if ($request->logo) {
+                if (File::exists('images/website/' . $setting->logo)) {
+                    File::delete('images/website/' . $setting->logo);
                 }
                 $image = $request->file('logo');
                 $img = time() . '.' . $image->getClientOriginalExtension();
-                $location = public_path('images/website/'. $img);
+                $location = public_path('images/website/' . $img);
                 Image::make($image)->save($location);
                 $setting->logo = $img;
             }
 
             // footer_logo save
-            if ($request->footer_logo){
-                if (File::exists('images/website/'.$setting->footer_logo)){
-                    File::delete('images/website/'.$setting->footer_logo);
+            if ($request->footer_logo) {
+                if (File::exists('images/website/' . $setting->footer_logo)) {
+                    File::delete('images/website/' . $setting->footer_logo);
                 }
                 $image = $request->file('footer_logo');
-                $img = 'footer_'.time() . '.' . $image->getClientOriginalExtension();
-                $location = public_path('images/website/'. $img);
+                $img = 'footer_' . time() . '.' . $image->getClientOriginalExtension();
+                $location = public_path('images/website/' . $img);
                 Image::make($image)->save($location);
                 $setting->footer_logo = $img;
             }
 
             // favicon save
-            if ($request->favicon){
-                if (File::exists('images/website/'.$setting->favicon)){
-                    File::delete('images/website/'.$setting->favicon);
+            if ($request->favicon) {
+                if (File::exists('images/website/' . $setting->favicon)) {
+                    File::delete('images/website/' . $setting->favicon);
                 }
                 $image = $request->file('favicon');
-                $img = 'favicon_'.time() . '.' . $image->getClientOriginalExtension();
-                $location = public_path('images/website/'. $img);
+                $img = 'favicon_' . time() . '.' . $image->getClientOriginalExtension();
+                $location = public_path('images/website/' . $img);
                 Image::make($image)->save($location);
                 $setting->favicon = $img;
             }
@@ -150,9 +143,7 @@ class SettingController extends Controller
             $setting->save();
             Alert::toast('Settings has been updated !', 'success');
             return back();
-        }
-        else
-        {
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -163,8 +154,7 @@ class SettingController extends Controller
      * @param  \App\Models\Setting  $setting
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Setting $setting)
-    {
+    public function destroy(Setting $setting) {
         //
     }
 }

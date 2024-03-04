@@ -280,6 +280,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::get('/wholesale-search-export', [App\Http\Controllers\OrderController::class, 'wholesale_search_export'])->name('wholesale.search.export');
 		Route::get('/sell-export', [App\Http\Controllers\OrderController::class, 'sell_export_excel'])->name('sell.export');
 		Route::get('/wholesale-export', [App\Http\Controllers\OrderController::class, 'wholesale_export_excel'])->name('wholesale.export');
+        Route::get('/vat-calculate/{id}', [App\Http\Controllers\OrderController::class, 'vat_calculate'])->name('vat.calculate');
 	});
 
 	// Sell Return Routes

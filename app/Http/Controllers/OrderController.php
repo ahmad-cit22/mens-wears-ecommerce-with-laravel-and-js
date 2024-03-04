@@ -117,7 +117,7 @@ class OrderController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -148,17 +148,15 @@ class OrderController extends Controller {
         }
     }
 
-    public function sell_export_excel()
-    {
+    public function sell_export_excel() {
         return Excel::download(new SellListExport, 'sell_list.xlsx');
     }
 
-    public function wholesale_export_excel()
-    {
+    public function wholesale_export_excel() {
         return Excel::download(new WholeSaleListExport, 'wholesale_list.xlsx');
     }
 
-    
+
     public function order_export_excel2(Request $request) {
         $date_from = '';
         $date_to = '';
@@ -170,23 +168,22 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function sell_export_excel2(Request $request) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
         $courier_name = '';
-
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('status', 'created_by')->get();
+            $orders = Order::where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by')->latest()->get();
             $categories = Category::all();
-            
+
             return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
-   
+
     public function wholesale_export_excel2(Request $request) {
         $date_from = '';
         $date_to = '';
@@ -196,7 +193,7 @@ class OrderController extends Controller {
         if (auth()->user()->can('sell.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', 'Wholesale')->with('status', 'created_by')->get();
             $categories = Category::all();
-            
+
             return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -319,7 +316,7 @@ class OrderController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -614,7 +611,7 @@ class OrderController extends Controller {
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
             }
-            
+
             if (!empty($request->courier_name)) {
                 $courier_name = $request->courier_name;
 
@@ -653,7 +650,7 @@ class OrderController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -731,7 +728,7 @@ class OrderController extends Controller {
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
             }
-            
+
             if (!empty($request->courier_name)) {
                 $courier_name = $request->courier_name;
 
@@ -770,7 +767,7 @@ class OrderController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -848,7 +845,7 @@ class OrderController extends Controller {
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
             }
-            
+
             if (!empty($request->courier_name)) {
                 $courier_name = $request->courier_name;
 
@@ -887,7 +884,7 @@ class OrderController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -965,7 +962,7 @@ class OrderController extends Controller {
             if (!empty($request->district_id) && empty($request->area_id)) {
                 $orders = $orders->where('district_id', $request->district_id);
             }
-            
+
             if (!empty($request->courier_name)) {
                 $courier_name = $request->courier_name;
 
@@ -1004,7 +1001,7 @@ class OrderController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -1075,6 +1072,20 @@ class OrderController extends Controller {
             $order = Order::find($id);
             if (!is_null($order)) {
                 return view('admin.order.edit', compact('order'));
+            } else {
+                Alert::toast('Order Not Found', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function vat_calculate($id) {
+        if (auth()->user()->can('order.edit')) {
+            $order = Order::find($id);
+            if (!is_null($order)) {
+                return $order;
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -1184,10 +1195,10 @@ class OrderController extends Controller {
                 $order->save();
 
                 WorkTrackingEntry::create([
-                        'order_id' => $order->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'packaging'
-                    ]); 
+                    'order_id' => $order->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'packaging'
+                ]);
 
                 Alert::toast('Status Updated!', 'success');
                 return back();
@@ -1209,15 +1220,15 @@ class OrderController extends Controller {
                 if ($request->refer_code) {
                     $order->order_status_id = 8;
                     $order->save();
-    
+
                     Alert::toast('Courier Reference Code Saved', 'success');
                 } else {
                     $order->order_status_id = 7;
                     $order->save();
-    
+
                     Alert::toast('Courier Reference Code Removed', 'success');
                 }
-                
+
                 return back();
             } else {
                 Alert::toast('Something went wrong !', 'error');
@@ -1233,7 +1244,7 @@ class OrderController extends Controller {
             $order = Order::find($id);
             if (!is_null($order)) {
                 $order->payment_status = $request->payment_status;
-                
+
                 if ($request->payment_status) {
                     $order->order_status_id = 9;
 
@@ -1246,10 +1257,10 @@ class OrderController extends Controller {
                     ]);
                 } else {
                     $order->order_status_id = 8;
-                    
+
                     WorkTrackingEntry::where('order_id', $order->id)->where('user_id', Auth::id())->where('work_name', 'order_paid')->delete();
                 }
-                
+
                 $order->save();
                 Alert::toast('Status Updated!', 'success');
                 return back();
@@ -1284,7 +1295,7 @@ class OrderController extends Controller {
                     } else {
                         $history->note = "Sell (Website)";
                     }
-                    
+
                     $history->save();
                 }
                 $order->order_status_id = 2;
@@ -1501,7 +1512,7 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function packaging($id) {
         if (auth()->user()->can('order.edit') || auth()->user()->can('add.loss')) {
             $order = Order::find($id);
@@ -1512,7 +1523,7 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function product_barcode_check(Request $request) {
         if (auth()->user()->can('order.edit') || auth()->user()->can('add.loss')) {
             $order_product_id = $request->order_product_id;
@@ -1524,36 +1535,36 @@ class OrderController extends Controller {
             if ($scanned_product) {
                 if ($barcode == $stock_id + 1000) {
                     $is_matched == 1;
-                        return view('admin.order.modals.check-product', [
-                            'status' => 'success',
-                            'scanned_product' => $scanned_product,
-                            'barcode' => $barcode,
-                            'order_product_id' => $order_product_id,
-                        ]);
+                    return view('admin.order.modals.check-product', [
+                        'status' => 'success',
+                        'scanned_product' => $scanned_product,
+                        'barcode' => $barcode,
+                        'order_product_id' => $order_product_id,
+                    ]);
                 } else {
                     return view('admin.order.modals.check-product', [
-                            'status' => 'not_matched',
-                            'scanned_product' => $scanned_product,
-                            'barcode' => $barcode,
-                        ]);
+                        'status' => 'not_matched',
+                        'scanned_product' => $scanned_product,
+                        'barcode' => $barcode,
+                    ]);
                 }
             } else {
                 return view('admin.order.modals.check-product', [
-                            'status' => 'not_found',
-                            'scanned_product' => null,
-                            'barcode' => $barcode
-                        ]);
+                    'status' => 'not_found',
+                    'scanned_product' => null,
+                    'barcode' => $barcode
+                ]);
             }
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function product_barcode_check_confirm($id) {
         if (auth()->user()->can('order.edit')) {
             $order_product = OrderProduct::find($id);
             $order_product->is_checked = 1;
-            
+
             $order_product->save();
 
             Alert::toast('Checking Status Updated!', 'success');
@@ -1563,5 +1574,4 @@ class OrderController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-
 }
