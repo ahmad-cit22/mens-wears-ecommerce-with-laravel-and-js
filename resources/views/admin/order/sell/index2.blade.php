@@ -151,7 +151,7 @@
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                {{-- <th>S.N</th> --}}
+                                <th>S.N</th>
                                 <th>Code</th>
                                 <th>Customer Name</th>
                                 <th width="6%">Phone</th>
@@ -162,14 +162,16 @@
                                 <th width="10%">Note</th>
                                 <th>Source</th>
                                 <th width="8%">Date</th>
-                                <th>VAT</th>
+                                @if (auth()->user()->can('vat.calculate'))
+                                    <th>VAT</th>
+                                @endif
                                 <th>Created By</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $item)
                                 <tr>
-                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    <td>{{ $loop->iteration }}</td>
                                     <td><b>{{ $item->code }}</b></td>
                                     <td><b>{{ $item->name }}</b></td>
                                     <td width="6%" style="font-size: 12px !important;"><b>{{ $item->phone }}</b></td>
@@ -210,9 +212,19 @@
                                     <td width="10%">{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
-                                    <td>
-                                        <a href="{{ route('sell.vat.calculate', $item->id) }}" class="ml-1 btn btn-info btn-sm mt-2" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
-                                    </td>
+                                    @if (auth()->user()->can('vat.calculate'))
+                                        <td>
+                                            @if ($item->is_return != 1 && !$item->vat_entry)
+                                                <a href="{{ route('sell.vat.calculate', $item->id) }}" class="ml-1 btn btn-info btn-sm mt-2" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
+                                            @else
+                                                @if (!$item->vat_entry)
+                                                    --
+                                                @else
+                                                    <button class="ml-1 btn btn-success btn-sm mt-2" title="VAT Calculation Done" disabled><i class="fas fa-check"></i></button>
+                                                @endif
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>
                                         @if ($item->created_by)
                                             <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>

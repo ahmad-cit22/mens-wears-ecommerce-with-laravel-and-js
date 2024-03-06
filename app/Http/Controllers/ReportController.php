@@ -42,15 +42,18 @@ class ReportController extends Controller {
             foreach ($orders as $order) {
                 if ($order->source != 'Wholesale') {
                     $retail_production_cost += $order->order_product->sum(function ($t) {
-                        return $t->production_cost * $t->qty;
+                        $qty = $t->qty - $t->return_qty;
+                        return $t->production_cost * $qty;
                     });
                 } else {
                     $wholesale_production_cost += $order->order_product->sum(function ($t) {
-                        return $t->production_cost * $t->qty;
+                        $qty = $t->qty - $t->return_qty;
+                        return $t->production_cost * $qty;
                     });
                 }
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
+                    $qty = $t->qty - $t->return_qty;
+                    return $t->production_cost * $qty;
                 });
             }
             // $production_cost = $retail_production_cost + $wholesale_production_cost;
@@ -93,15 +96,18 @@ class ReportController extends Controller {
             foreach ($orders as $order) {
                 if ($order->source != 'Wholesale') {
                     $retail_production_cost += $order->order_product->sum(function ($t) {
-                        return $t->production_cost * $t->qty;
+                        $qty = $t->qty - $t->return_qty;
+                        return $t->production_cost * $qty;
                     });
                 } else {
                     $wholesale_production_cost += $order->order_product->sum(function ($t) {
-                        return $t->production_cost * $t->qty;
+                        $qty = $t->qty - $t->return_qty;
+                        return $t->production_cost * $qty;
                     });
                 }
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
+                    $qty = $t->qty - $t->return_qty;
+                    return $t->production_cost * $qty;
                 });
             }
             // $production_cost = $retail_production_cost + $wholesale_production_cost;
@@ -128,7 +134,8 @@ class ReportController extends Controller {
             $order_amount = $orders->sum('price');
             foreach ($orders as $order) {
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
+                    $qty = $t->qty - $t->return_qty;
+                    return $t->production_cost * $qty;
                 });
             }
 
@@ -153,7 +160,8 @@ class ReportController extends Controller {
             $order_amount = $orders->sum('price');
             foreach ($orders as $order) {
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
+                    $qty = $t->qty - $t->return_qty;
+                    return $t->production_cost * $qty;
                 });
             }
 

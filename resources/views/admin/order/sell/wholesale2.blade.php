@@ -207,7 +207,9 @@
                                 <th width="13%">Note</th>
                                 <th>Source</th>
                                 <th>Date</th>
-                                <th>COD</th>
+                                @if (auth()->user()->can('vat.calculate'))
+                                    <th>VAT</th>
+                                @endif
                                 <th>Created By</th>
                             </tr>
                         </thead>
@@ -250,7 +252,19 @@
                                     <td width="13%">{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
-                                    <td>{{ $item->cod }}</td>
+                                    @if (auth()->user()->can('vat.calculate'))
+                                        <td>
+                                            @if ($item->is_return != 1 && !$item->vat_entry)
+                                                <a href="{{ route('sell.vat.calculate', $item->id) }}" class="ml-1 btn btn-info btn-sm mt-2" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
+                                            @else
+                                                @if (!$item->vat_entry)
+                                                    --
+                                                @else
+                                                    <button class="ml-1 btn btn-success btn-sm mt-2" title="VAT Calculation Done" disabled><i class="fas fa-check"></i></button>
+                                                @endif
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>
                                         @if ($item->created_by)
                                             <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>

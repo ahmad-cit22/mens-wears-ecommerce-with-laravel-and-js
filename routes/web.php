@@ -314,6 +314,16 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 		Route::post('/apply-discount', [App\Http\Controllers\PosController::class, 'apply_discount'])->name('apply.discount');
 	});
 
+    // vat entry routes
+    Route::group(['prefix' => 'vat-entry', 'as' => 'vat_entry.'], function () {
+        Route::get('/', [App\Http\Controllers\VatEntryController::class, 'index'])->name('index');
+        // Route::get('/create/{id}', [App\Http\Controllers\VatEntryController::class, 'create'])->name('create');
+        // Route::post('/store', [App\Http\Controllers\VatEntryController::class, 'store'])->name('store');
+        // Route::get('/edit/{id}', [App\Http\Controllers\VatEntryController::class, 'edit'])->name('edit');
+        // Route::post('/update/{id}', [App\Http\Controllers\VatEntryController::class, 'update'])->name('update');
+        // Route::post('/destroy/{id}', [App\Http\Controllers\VatEntryController::class, 'destroy'])->name('destroy');
+    });
+
 	// Order Sheet (FOS) Routes
 	Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {
 		Route::get('/', [App\Http\Controllers\FacebookOrderController::class, 'index'])->name('index');

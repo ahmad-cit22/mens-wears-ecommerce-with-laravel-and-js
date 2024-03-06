@@ -39,7 +39,8 @@ class PartnerController extends Controller
             $expenses = ExpenseEntry::orderBy('id', 'DESC')->get();
             foreach ($orders as $order) {
                 $production_cost += $order->order_product->sum(function ($t) {
-                    return $t->production_cost * $t->qty;
+                    $qty = $t->qty - $t->return_qty;
+                    return $t->production_cost * $qty;
                 });
             }
             return view('admin.partner.index', compact('partners', 'order_amount', 'production_cost', 'other_income', 'expenses'));
