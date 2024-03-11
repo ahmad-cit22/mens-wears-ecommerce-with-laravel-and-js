@@ -107,7 +107,15 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $total_qty = 0;
+                @endphp
                 @foreach ($order->order_product as $product)
+                    @php
+                        if ($order->source == 'Wholesale') {
+                            $total_qty += $product->qty;
+                        }
+                    @endphp
                     <tr style="text-align: right;">
                         <!-- <th scope="row" style="text-align: center;">{{ $loop->index + 1 }}</th> -->
                         <td width="350px" style="text-align: left;">{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
@@ -135,6 +143,13 @@
                         </td>
                     </tr>
                 @endforeach
+                @if ($order->source == 'Wholesale')
+                    <tr>
+                        <td align="right">Total Qty:</td>
+                        <td align="center">{{ $total_qty }}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>

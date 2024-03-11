@@ -161,7 +161,7 @@
                             </div>
                             <div class="col-md-1">
                                 <label style="color: #fff;">.</label>
-                                <a type="submit" href="{{ route('bkash_panel.index') }}" class="form-control btn btn-primary">Clear Filter</a>
+                                <a href="{{ route('bkash_panel.index') }}" class="form-control btn btn-primary">Clear Filter</a>
                             </div>
 
                         </div>

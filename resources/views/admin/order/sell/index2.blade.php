@@ -6,7 +6,10 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Sells</h1>
+                    <h1 class="m-0">Sells<a href="{{ route('sell.export.excel', 1) }}" class="ml-3 btn btn-primary btn-sm" style="">View All</a></h1>
+                    {{-- <div class="row justify-content-end"> --}}
+
+                    {{-- </div> --}}
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -41,7 +44,7 @@
                         </div>
                     </div>
                     <hr>
-                    <form action="{{ route('sell.search.export') }}" method="get">
+                    <form action="{{ route('sell.search.export', 0) }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -191,7 +194,7 @@
                                     </td>
                                     <td>
                                         @foreach ($item->order_product as $key => $order_product)
-                                            <p>{{ $key + 1 }}. {{ $order_product->product->title }} x {{ $order_product->qty }}</p>
+                                            <p><b>{{ $key + 1 }}. {{ $order_product->product->title }}</b> x {{ $order_product->qty }}</p>
                                         @endforeach
                                     </td>
                                     <td>
@@ -209,13 +212,13 @@
                                             <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
                                         @endif
                                     </td>
-                                    <td width="10%">{{ $item->note }}</td>
+                                    <td>{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
                                     @if (auth()->user()->can('vat.calculate'))
                                         <td>
                                             @if ($item->is_return != 1 && !$item->vat_entry)
-                                                <a href="{{ route('sell.vat.calculate', $item->id) }}" class="ml-1 btn btn-info btn-sm mt-2" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
+                                                <a href="#vat-entry{{ $item->id }}" class="ml-1 btn btn-info btn-sm mt-2" data-toggle="modal" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
                                             @else
                                                 @if (!$item->vat_entry)
                                                     --
@@ -233,6 +236,30 @@
                                         @endif
                                     </td>
                                 </tr>
+                                @if ($item->is_return != 1 && !$item->vat_entry)
+                                    <!-- vat_entry_confirm Modal -->
+                                    <div class="modal fade" id="vat-entry{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm VAT Entry - {{ $item->code }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('sell.vat.calculate', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="row justify-content-end">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary ml-1 mr-2">Confirm</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endforeach
                         </tbody>
 

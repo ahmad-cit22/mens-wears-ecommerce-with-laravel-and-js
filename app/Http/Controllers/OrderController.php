@@ -171,13 +171,18 @@ class OrderController extends Controller {
         }
     }
 
-    public function sell_export_excel2(Request $request) {
+    public function sell_export_excel2(Request $request, $all) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
         $courier_name = '';
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(500)->get();
+            if ($all != 0) {
+                $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->get();
+            } else {
+                $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(500)->get();
+            }
+
             $categories = Category::all();
 
             return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
@@ -186,20 +191,30 @@ class OrderController extends Controller {
         }
     }
 
-    public function wholesale_export_excel2(Request $request) {
+    public function wholesale_export_excel2(Request $request, $all) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
         $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', 'Wholesale')->with(
-                'order_product',
-                'order_product.product',
-                'status',
-                'created_by',
-                'vat_entry'
-            )->latest()->take(500)->get();
+            if ($all != 0) {
+                $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', 'Wholesale')->with(
+                    'order_product',
+                    'order_product.product',
+                    'status',
+                    'created_by',
+                    'vat_entry'
+                )->latest()->get();
+            } else {
+                $orders = Order::where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', 'Wholesale')->with(
+                    'order_product',
+                    'order_product.product',
+                    'status',
+                    'created_by',
+                    'vat_entry'
+                )->latest()->take(500)->get();
+            }
             $categories = Category::all();
 
             return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
@@ -218,7 +233,7 @@ class OrderController extends Controller {
     public function vat_calculate($id) {
         if (auth()->user()->can('order.edit')) {
             $order = Order::with('order_product')->find($id);
-            return $sold_amount = $order->sold_amount();
+            $sold_amount = $order->sold_amount();
             $vat = Setting::first()->vat;
             $vat_amount = ($sold_amount * $vat) / 100;
 
@@ -690,7 +705,7 @@ class OrderController extends Controller {
         }
     }
 
-    public function sell_search_export(Request $request) {
+    public function sell_search_export(Request $request, $all) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
@@ -744,7 +759,11 @@ class OrderController extends Controller {
                 $orders = $orders->where('courier_name', $courier_name);
             }
 
-            $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->take(500);
+            if ($all != 0) {
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale');
+            } else {
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->take(500);
+            }
 
             $categories = Category::all();
             return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
@@ -870,7 +889,7 @@ class OrderController extends Controller {
         }
     }
 
-    public function wholesale_search_export(Request $request) {
+    public function wholesale_search_export(Request $request, $all) {
         $date_from = '';
         $date_to = '';
         $order_status_id = '';
@@ -924,62 +943,12 @@ class OrderController extends Controller {
                 $orders = $orders->where('courier_name', $courier_name);
             }
 
-            $orders = $orders->where('is_final', 1);
-
-            if ($request->ajax()) {
-                return Datatables::of($orders)
-                    // ->addIndexColumn()
-                    ->addColumn('code', function ($row) {
-
-                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
-
-                        return $code;
-                    })
-                    ->addColumn('status', function ($row) {
-
-                        if ($row->is_return == 1) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned</span>';
-                        } elseif ($row->is_return == 2) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned Partially</span>';
-                        } else {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
-                        }
-
-                        return $data;
-                    })
-                    ->addColumn('date', function ($row) {
-
-                        $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
-
-                        return $data;
-                    })
-                    ->addColumn('created_by', function ($row) {
-
-                        if ($row->created_by) {
-                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
-                        } else {
-                            $data = '--';
-                        }
-
-                        return $data;
-                    })->escapeColumns('created_by')
-                    ->addColumn('action', function ($row) {
-                        if ($row->price > 0) {
-                            $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
-                        } else {
-                            $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
-                        }
-
-                        return $btn;
-                    })
-                    ->rawColumns(['code', 'status', 'date', 'action'])
-                    ->make(true);
+            if ($all != 0) {
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5);
+            } else {
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->take(500);
             }
+
             $categories = Category::all();
             return view('admin.order.sell.wholesale2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
         } else {

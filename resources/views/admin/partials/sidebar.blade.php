@@ -367,7 +367,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ route('sell.export.excel') }}" class="nav-link">
+                                        <a href="{{ route('sell.export.excel', 0) }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Export to Excel (Retail)</p>
                                         </a>
@@ -391,13 +391,33 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ route('sell.wholesale.export.excel') }}" class="nav-link">
+                                        <a href="{{ route('sell.wholesale.export.excel', 0) }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Export to Excel (Wholesale)</p>
                                         </a>
                                     </li>
                                 @endif
 
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->can('vat.calculate'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-money-bill-alt"></i>
+                                <p>
+                                    VAT Management
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('vat_entry.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>VAT Entries</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     @endif

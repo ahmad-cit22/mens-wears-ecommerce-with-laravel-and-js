@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
 
 
                     <!-- Main content -->
@@ -283,6 +283,8 @@
                                             @php
                                                 $checkedElement = null;
                                                 $all_checked = null;
+                                                $total_qty = 0;
+                                                $cat_text = '';
                                             @endphp
                                             @foreach ($order->order_product as $key => $product)
                                                 @if (!$product->is_checked)
@@ -292,6 +294,12 @@
                                                         }
                                                     @endphp
                                                 @endif
+                                                @php
+                                                    if ($order->source == 'Wholesale') {
+                                                        $total_qty += $product->qty;
+                                                    }
+                                                    // $cat_text .= $product->product->category->title . ': ' . $product->qty . ', ';
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
@@ -351,6 +359,13 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
+                                            @if ($order->source == 'Wholesale')
+                                                <tr>
+                                                    <td colspan="5" align="right">Total Qty:</td>
+                                                    <td colspan=""> {{ $total_qty }}</td>
+                                                    <td colspan=""></td>
+                                                </tr>
+                                            @endif
                                             <tr>
                                                 <td colspan="6" align="right">Delivery Charge:</td>
                                                 <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
@@ -408,11 +423,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
