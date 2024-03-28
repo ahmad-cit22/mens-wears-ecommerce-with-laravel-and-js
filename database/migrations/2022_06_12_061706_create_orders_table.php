@@ -43,6 +43,9 @@ class CreateOrdersTable extends Migration {
             $table->integer('is_return')->default(0);
             $table->integer('is_final')->default(0);
             $table->integer('add_loss')->default(0);
+            $table->integer('points_used')->nullable();
+            $table->integer('discount_rate')->nullable();
+            $table->double('membership_discount')->default(0);
             $table->timestamps();
         });
     }

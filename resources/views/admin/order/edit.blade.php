@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
 
 
                     <!-- Main content -->
@@ -78,6 +78,24 @@
                                         Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
                                         @if ($order->courier_name)
                                             Courier Name: {{ $order->courier_name }}<br>
+                                        @else
+                                            <form action="{{ route('order.courier_name.store', $order->id) }}" method="POST" style="width: 60%">
+                                                @csrf
+                                                <div class="form-froup">
+                                                    <label>Courier Name</label>
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="courier_name">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-primary bg-purple" type="submit">Save</button>
+                                                        </div>
+                                                    </div>
+                                                    @error('courier_name')
+                                                        <span class="invalid-feedback" role="alert" style="display: block;">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </form>
                                         @endif
                                         @if ($order->status->priority_no > 3)
                                             <form action="{{ route('order.refer_code.store', $order->id) }}" method="POST" style="width: 60%">
@@ -264,170 +282,240 @@
                                 </div>
                             </div>
 
-                            <!-- Table row -->
-                            <div class="row mt-3">
-                                <div class="col-12 table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>S.N</th>
-                                                <th>Product</th>
-                                                <th>Barcode Checking</th>
-                                                <th>Checking Status</th>
-                                                <th>Price</th>
-                                                <th>Qty</th>
-                                                <th>Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @php
-                                                $checkedElement = null;
-                                                $all_checked = null;
-                                                $total_qty = 0;
-                                                $cat_text = '';
-                                            @endphp
-                                            @foreach ($order->order_product as $key => $product)
-                                                @if (!$product->is_checked)
-                                                    @php
-                                                        if ($checkedElement == null) {
-                                                            $checkedElement = $key + 1;
-                                                        }
-                                                    @endphp
-                                                @endif
+                            <form action="{{ route('order.order_products.update', $order->id) }}" method="POST">
+                                @csrf
+                                <!-- Table row -->
+                                <div class="row mt-3">
+                                    <div class="col-12 table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>S.N</th>
+                                                    <th>Product</th>
+                                                    <th>Barcode Checking</th>
+                                                    <th>Checking Status</th>
+                                                    <th>Price</th>
+                                                    <th>Qty</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
                                                 @php
-                                                    if ($order->source == 'Wholesale') {
-                                                        $total_qty += $product->qty;
-                                                    }
-                                                    // $cat_text .= $product->product->category->title . ': ' . $product->qty . ', ';
+                                                    $checkedElement = null;
+                                                    $all_checked = null;
+                                                    $total_qty = 0;
+                                                    $cat_text = '';
                                                 @endphp
-                                                <tr>
-                                                    <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
-                                                        @if ($product->return_qty != null)
-                                                            <span class="text-danger ml-2">({{ $product->return_qty }} Product(s) Returned)</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($checkedElement == $key + 1)
-                                                            <input id="order_product_id" type="text" name="order_product_id" value="{{ $product->id }}" hidden readonly>
-                                                            <input id="stock_id" type="text" name="stock_id" value="{{ $product->stock()->id }}" hidden readonly>
+                                                @php
+                                                    $k = 0;
+                                                @endphp
+                                                @foreach ($order->order_product as $key => $order_product)
+                                                    @php
+                                                        $k += $key;
+                                                    @endphp
+                                                    @if (!$order_product->is_checked)
+                                                        @php
+                                                            if ($checkedElement == null) {
+                                                                $checkedElement = $key + 1;
+                                                            }
+                                                        @endphp
+                                                    @endif
+                                                    @php
+                                                        if ($order->source == 'Wholesale') {
+                                                            $total_qty += $order_product->qty;
+                                                        }
+                                                        // $cat_text .= $order_product->product->category->title . ': ' . $order_product->qty . ', ';
+                                                    @endphp
+                                                    <tr>
+                                                        <td>{{ $loop->index + 1 }}</td>
+                                                        <td>
+                                                            @if (auth()->user()->can('update.products') && $order->is_return == 0)
+                                                                <div class="selectmain">
+                                                                    <select name="product[]" class="select2 select-down" id="" style="width: 90% !important;">
+                                                                        @foreach ($products as $product)
+                                                                            @if (!is_null($product) && $product->product->is_active)
+                                                                                <option value="{{ $product->id }}" {{ $product->product->id == $order_product->product->id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            @else
+                                                                {{ $order_product->product->title }}{{ isset($order_product->size_id) ? ' - ' . $order_product->size->title : '' }}
+                                                            @endif
 
-                                                            <input id="barcode" class="form-control" type="text" name="barcode" placeholder="Add Barcode Here" style="width: 55%">
-                                                        @else
-                                                            @if ($checkedElement == null)
-                                                                Checking Done
-                                                                @php
-                                                                    if ($key + 1 == $order->order_product->count()) {
-                                                                        $all_checked = 1;
-                                                                    }
-                                                                @endphp
-                                                            @else
-                                                                Pending to be checked
+                                                            @if ($order_product->return_qty != null)
+                                                                <span class="text-danger ml-2">({{ $order_product->return_qty }} Product(s) Returned)</span>
                                                             @endif
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($product->is_checked)
-                                                            <i class="fas fa-check-circle text-success"></i>
-                                                        @else
-                                                            <i class="fas fa-times-circle text-danger"></i>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($order->source == 'Wholesale')
-                                                            &#2547; {{ $product->product->variation->wholesale_price }}
-                                                        @else
-                                                            @if ($product->product->variation->discount_price != null && $order->source == 'Website')
-                                                                <s class="text-muted">&#2547; {{ $product->product->variation->price }}</s>
-                                                                &#2547; {{ $product->product->variation->discount_price }}
+                                                        </td>
+                                                        <td>
+                                                            @if ($checkedElement == $key + 1)
+                                                                <input id="order_product_id" type="text" name="order_product_id" value="{{ $order_product->id }}" hidden readonly>
+                                                                <input id="stock_id" type="text" name="stock_id" value="{{ $order_product->stock()->id }}" hidden readonly>
+
+                                                                <input id="barcode" class="form-control" type="text" name="barcode" placeholder="Add Barcode Here" style="width: 55%">
                                                             @else
-                                                                &#2547; {{ $product->product->variation->price }}
+                                                                @if ($checkedElement == null)
+                                                                    Checking Done
+                                                                    @php
+                                                                        if ($key + 1 == $order->order_product->count()) {
+                                                                            $all_checked = 1;
+                                                                        }
+                                                                    @endphp
+                                                                @else
+                                                                    Pending to be checked
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $product->qty }}</td>
-                                                    <td>
-                                                        @if ($order->source == 'Wholesale')
-                                                            &#2547; {{ $product->product->variation->wholesale_price * $product->qty }}
-                                                        @else
-                                                            @if ($product->product->variation->discount_price != null && $order->source == 'Website')
-                                                                &#2547; {{ $product->product->variation->discount_price * $product->qty }}
+                                                        </td>
+                                                        <td>
+                                                            @if ($order_product->is_checked)
+                                                                <i class="fas fa-check-circle text-success"></i>
                                                             @else
-                                                                &#2547; {{ $product->product->variation->price * $product->qty }}
+                                                                <i class="fas fa-times-circle text-danger"></i>
                                                             @endif
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                            @if ($order->source == 'Wholesale')
+                                                        </td>
+                                                        <td>
+                                                            @if ($order->source == 'Wholesale')
+                                                                &#2547; {{ $order_product->product->variation->wholesale_price }}
+                                                            @else
+                                                                @if ($order_product->product->variation->discount_price != null && $order->source == 'Website')
+                                                                    <s class="text-muted">&#2547; {{ $order_product->product->variation->price }}</s>
+                                                                    &#2547; {{ $order_product->product->variation->discount_price }}
+                                                                @else
+                                                                    &#2547; {{ $order_product->product->variation->price }}
+                                                                @endif
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if (auth()->user()->can('update.products') && $order->is_return == 0)
+                                                                <fieldset class="form-group mb-3">
+                                                                    <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="{{ $order_product->qty }}" style="width: 60% !important;">
+                                                                    @if (session('qtyError' . $key))
+                                                                        <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                            <strong>{{ session('qtyError' . $key) }}</strong>
+                                                                        </span>
+                                                                    @endif
+                                                                </fieldset>
+                                                            @else
+                                                                {{ $order_product->qty }}
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($order->source == 'Wholesale')
+                                                                &#2547; {{ $order_product->product->variation->wholesale_price * $order_product->qty }}
+                                                            @else
+                                                                @if ($order_product->product->variation->discount_price != null && $order->source == 'Website')
+                                                                    &#2547; {{ $order_product->product->variation->discount_price * $order_product->qty }}
+                                                                @else
+                                                                    &#2547; {{ $order_product->product->variation->price * $order_product->qty }}
+                                                                @endif
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                @if (auth()->user()->can('update.products') && $order->is_return == 0)
+                                                    <tr>
+                                                        <td>{{ $k + 2 }}</td>
+                                                        <td>
+                                                            <div class="selectmain">
+                                                                <select name="product[]" class="select2 select-down" id="" style="width: 90% !important;">
+                                                                    <option value="0"> -- Add another product -- </option>
+                                                                    @foreach ($products as $product)
+                                                                        @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
+                                                                            <option value="{{ $product->id }}">{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <fieldset class="form-group mb-3">
+                                                                <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="" style="width: 60% !important;">
+                                                            </fieldset>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endif
+                                                @if ($order->source == 'Wholesale')
+                                                    <tr>
+                                                        <td colspan="5" align="right">Total Qty:</td>
+                                                        <td colspan=""> {{ $total_qty }}</td>
+                                                        <td colspan=""></td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
-                                                    <td colspan="5" align="right">Total Qty:</td>
-                                                    <td colspan=""> {{ $total_qty }}</td>
-                                                    <td colspan=""></td>
+                                                    <td colspan="6" align="right">Delivery Charge:</td>
+                                                    <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
                                                 </tr>
-                                            @endif
-                                            <tr>
-                                                <td colspan="6" align="right">Delivery Charge:</td>
-                                                <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="6" align="right">Discount (-):</td>
-                                                <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
-                                            </tr>
-                                            @if ($order->cod != 0)
                                                 <tr>
-                                                    <td colspan="6" align="right">COD (-):</td>
-                                                    <td>{{ env('CURRENCY') }}{{ $order->cod }}</td>
+                                                    <td colspan="6" align="right">Discount (-):</td>
+                                                    <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
                                                 </tr>
-                                            @endif
-                                            @if ($order->wallet_amount != null)
+                                                @if ($order->cod != 0)
+                                                    <tr>
+                                                        <td colspan="6" align="right">COD (-):</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->cod }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if ($order->wallet_amount != null)
+                                                    <tr>
+                                                        <td colspan="6" align="right">Wallet Use:</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->wallet_amount }}</td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
-                                                    <td colspan="6" align="right">Wallet Use:</td>
-                                                    <td>{{ env('CURRENCY') }}{{ $order->wallet_amount }}</td>
+                                                    <td colspan="6" align="right">Total:</td>
+                                                    <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}</td>
                                                 </tr>
-                                            @endif
-                                            <tr>
-                                                <td colspan="6" align="right">Total:</td>
-                                                <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}</td>
-                                            </tr>
-                                            @if ($order->advance)
+                                                @if ($order->advance)
+                                                    <tr>
+                                                        <td colspan="6" align="right">Advanced (-):</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->advance }}</td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
-                                                    <td colspan="6" align="right">Advanced (-):</td>
-                                                    <td>{{ env('CURRENCY') }}{{ $order->advance }}</td>
+                                                    <td colspan="6" align="right">Total Payable:</td>
+                                                    <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
                                                 </tr>
-                                            @endif
-                                            <tr>
-                                                <td colspan="6" align="right">Total Payable:</td>
-                                                <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    @if ($all_checked == 1)
-                                        @if ($order->status->priority_no < 4)
-                                            <div class="row justify-content-center mb-2">
-                                                <a href="{{ route('order.packet_done', $order->id) }}" class="btn btn-primary btn-sm">Packet Done</a>
-                                            </div>
-                                        @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- /.col -->
+                                </div>
+                                <div class="row justify-content-end">
+                                    @if (auth()->user()->can('update.products') && $order->is_return == 0)
+                                        <button type="submit" class="mr-4 my-3 btn btn-primary">Update Products </button>
                                     @else
-                                        <div class="row justify-content-center mb-2">
-                                            <button class="btn btn-primary btn-sm" disabled>Packet Done</button>
-                                        </div>
+                                        <button disabled type="submit" class="mr-4 my-3 btn btn-primary">Update Products </button>
                                     @endif
                                 </div>
-                                <!-- /.col -->
-                            </div>
+                            </form>
 
                             <!-- /.row -->
 
+                            @if ($all_checked == 1)
+                                @if ($order->status->priority_no < 4)
+                                    <div class="row justify-content-center mb-2">
+                                        <a href="{{ route('order.packet_done', $order->id) }}" class="btn btn-primary btn-sm">Packet Done</a>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="row justify-content-center mb-2">
+                                    <button class="btn btn-primary btn-sm" disabled>Packet Done</button>
+                                </div>
+                            @endif
 
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
@@ -569,11 +657,11 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('.table-striped').find("input").focus();
+            $('.table-striped').find("input[id=barcode]").focus();
         });
 
         $('#check-product').on("hidden.bs.modal", function() {
-            $('.table-striped').find("input").focus();
+            $('.table-striped').find("input[id=barcode]").focus();
         })
     </script>
 

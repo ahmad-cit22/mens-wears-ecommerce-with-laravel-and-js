@@ -422,8 +422,46 @@
                         </li>
                     @endif
 
+                    @if (auth()->user()->can('vat.calculate'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fa fa-address-card"></i>
+                                <p>
+                                    Membership Panel
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('membership.cards') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Membership Cards</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('membership.create') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Membership Registration</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('membership.index') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Members</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('membership.purchases') }}" class="nav-link">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>Member Purchases</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
                     @if (auth()->user()->can('add.stock') || auth()->user()->can('current.stock.view') || auth()->user()->can('stock.history') || auth()->user()->can('damage.view'))
-                        <l i class="nav-item">
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-warehouse"></i>
                                 <p>
@@ -511,7 +549,7 @@
                                     </li>
                                 @endif
                             </ul>
-                        </l>
+                        </li>
                     @endif
 
                     @if (auth()->user()->can('expense.index') || auth()->user()->can('expense.view'))

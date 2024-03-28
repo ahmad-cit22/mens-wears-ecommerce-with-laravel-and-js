@@ -130,10 +130,10 @@ class ProductStockHistoryController extends Controller {
         $date_from = '';
         $date_to = '';
         $reason = '';
+        $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
 
         if (auth()->user()->can('stock.history')) {
             if ($request->ajax()) {
-                $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
                 return Datatables::of($stocks)
                     ->addIndexColumn()
                     ->addColumn('product', function ($row) {
@@ -191,7 +191,6 @@ class ProductStockHistoryController extends Controller {
                     ->rawColumns(['product'])
                     ->make(true);
             }
-            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
 
             return view('admin.product.stock.index', compact('stocks', 'date_from', 'date_to', 'reason'));
         } else {
@@ -211,7 +210,7 @@ class ProductStockHistoryController extends Controller {
                 $reason = $request->reason;
 
                 $stocks = ProductStockHistory::where('note', $reason)
-                ->whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+                ->whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
@@ -220,19 +219,19 @@ class ProductStockHistoryController extends Controller {
 
                 $reason = $request->reason;
 
-                $stocks = ProductStockHistory::where('note', $reason)->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+                $stocks = ProductStockHistory::where('note', $reason)->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
             }
             if (empty($request->reason) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $reason = $request->reason;
-                $stocks = ProductStockHistory::whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+                $stocks = ProductStockHistory::whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->reason) && (empty($request->date_from) || empty($request->date_to))) {
-                $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by')->get();
+                $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
             }
 
         if (auth()->user()->can('stock.history')) {
@@ -304,7 +303,7 @@ class ProductStockHistoryController extends Controller {
 
     public function total_sold_amount(Request $request) {
         if (auth()->user()->can('stock.history')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
+            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'order_product.product.variation')->get();
 
             return view('admin.product.stock.modals.total-sold-amount', [
                             'orders' => $orders,
@@ -359,10 +358,10 @@ class ProductStockHistoryController extends Controller {
             }
 
             WorkTrackingEntry::create([
-                        'product_id' => $product_id,
-                        'product_stock_history_id' => $history->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'add_stock'
+                'product_id' => $product_id,
+                'product_stock_history_id' => $history->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'add_stock'
             ]);
 
             Alert::toast('Stock Updated', 'success');

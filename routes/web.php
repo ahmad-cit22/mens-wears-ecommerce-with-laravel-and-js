@@ -255,6 +255,8 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/product-barcode-check-confirm/{id}', [App\Http\Controllers\OrderController::class, 'product_barcode_check_confirm'])->name('barcode.check.confirm');
         Route::get('/order-packet-done/{id}', [App\Http\Controllers\OrderController::class, 'packet_done'])->name('packet_done');
         Route::post('/refer-code-store/{id}', [App\Http\Controllers\OrderController::class, 'refer_code_store'])->name('refer_code.store');
+        Route::post('/courier-name-store/{id}', [App\Http\Controllers\OrderController::class, 'courier_name_store'])->name('courier_name.store');
+        Route::post('/order-products-update/{id}', [App\Http\Controllers\OrderController::class, 'order_products_update'])->name('order_products.update');
 
         // Report routes
         Route::get('/all', [App\Http\Controllers\OrderController::class, 'all_orders'])->name('all');
@@ -325,6 +327,23 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         // Route::get('/edit/{id}', [App\Http\Controllers\VatEntryController::class, 'edit'])->name('edit');
         // Route::post('/update/{id}', [App\Http\Controllers\VatEntryController::class, 'update'])->name('update');
     });
+
+    // member routes
+    Route::group(['prefix' => 'membership', 'as' => 'membership.'], function () {
+        // routes for membershipcard
+        Route::get('/cards', [App\Http\Controllers\MembershipCardController::class, 'cards'])->name('cards');
+        Route::post('/card/update/{id}', [App\Http\Controllers\MembershipCardController::class, 'card_update'])->name('card.update');
+
+        // routes for membership
+        Route::get('/', [App\Http\Controllers\MemberController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\MemberController::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\MemberController::class, 'store'])->name('store');
+        Route::post('/destroy/{id}', [App\Http\Controllers\MemberController::class, 'destroy'])->name('destroy');
+        Route::get('/view-card-details/{id}', [App\Http\Controllers\MemberController::class, 'edit'])->name('edit');
+        Route::get('/purchases', [App\Http\Controllers\MemberController::class, 'purchases'])->name('purchases');
+        Route::get('/get-member', [App\Http\Controllers\MemberController::class, 'get_member'])->name('get.member');
+    });
+
 
     // Order Sheet (FOS) Routes
     Route::group(['prefix' => 'fos', 'as' => 'fos.'], function () {

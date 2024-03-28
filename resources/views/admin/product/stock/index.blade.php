@@ -64,6 +64,8 @@
                                         <option value="Sell (Wholesale)" @if ($reason == 'Sell (Wholesale)') selected @endif>Sell (Wholesale)</option>
                                         <option value="Order Cancel" @if ($reason == 'Order Cancel') selected @endif>Order Cancel</option>
                                         <option value="Order Return" @if ($reason == 'Order Return') selected @endif>Order Return</option>
+                                        <option value="Order Products Change" @if ($reason == 'Order Products Change') selected @endif>Order Products Change</option>
+                                        <option value="Order Products Added" @if ($reason == 'Order Products Added') selected @endif>Order Products Added</option>
                                         <option value="Reject Product" @if ($reason == 'Reject Product') selected @endif>Reject Product</option>
                                         <option value="Display Center" @if ($reason == 'Display Center') selected @endif>Display Center</option>
                                     </select>

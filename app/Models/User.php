@@ -12,49 +12,61 @@ use Spatie\Permission\Traits\HasRoles;
 use DB;
 
 class User extends Authenticatable {
-  use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'name',
-    'email',
-    'phone',
-    'password',
-  ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+    ];
 
-  /**
-   * The attributes that should be hidden for serialization.
-   *
-   * @var array<int, string>
-   */
-  protected $hidden = [
-    'password',
-    'remember_token',
-  ];
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array<string, string>
-   */
-  protected $casts = [
-    'email_verified_at' => 'datetime',
-  ];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
-  public static function getPermissionGroups() {
-    $permissionGroups = DB::table('permissions')->select('group_name')->groupBy('group_name')->get();
-    return $permissionGroups;
-  }
-  public static function permissionsByGroupName($groupname) {
-    $permissions = DB::table('permissions')->where('group_name', $groupname)->get();
-    return $permissions;
-  }
+    public static function getPermissionGroups() {
+        $permissionGroups = DB::table('permissions')->select('group_name')->groupBy('group_name')->get();
+        return $permissionGroups;
+    }
+    public static function permissionsByGroupName($groupname) {
+        $permissions = DB::table('permissions')->where('group_name', $groupname)->get();
+        return $permissions;
+    }
 
-  public function orders() {
-    return $this->hasMany(Order::class, 'customer_id');
-  }
+    public function orders() {
+        return $this->hasMany(Order::class, 'customer_id')->with('customer', 'customer.member', 'customer.member.card', 'area', 'district');
+    }
+
+    public function is_customer() {
+        return $this->orders == null ? false : true;
+    }
+
+    public function member() {
+        return $this->hasOne(Member::class, 'user_id');
+    }
+
+    public function district() {
+        return $this->belongsTo(District::class, 'city');
+    }
 }

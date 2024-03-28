@@ -219,7 +219,7 @@ class PosController extends Controller {
                 } else {
                     $history->note = "Sell (Offline)";
                 }
-                
+
                 $history->save();
 
                 Cart::remove($cart->rowId);
@@ -229,9 +229,6 @@ class PosController extends Controller {
             //     Mail::send(new OrderMail($order));
             // }
 
-            Session::forget('coupon_discount');
-            Session::forget('wholesale_price');
-            
             WorkTrackingEntry::create([
                 'order_id' => $order->id,
                 'user_id' => Auth::id(),
@@ -241,8 +238,12 @@ class PosController extends Controller {
             Alert::toast('One Sell Added', 'success');
 
             if (Session::has('wholesale_price')) {
-                return redirect()->route('wholesale.create', 'none');
+                Session::forget('coupon_discount');
+                Session::forget('wholesale_price');
+                return redirect()->route('pos.wholesale.create', 'none');
             } else {
+                Session::forget('coupon_discount');
+                Session::forget('wholesale_price');
                 return redirect()->route('pos.create', 'none');
             }
         } else {

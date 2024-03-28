@@ -70,7 +70,7 @@ class CourierNameController extends Controller {
                 $courier->charge_two = $request->charge_two;
 
                 $courier->save();
-                
+
                 Alert::toast('Courier Info has been updated !', 'success');
                 return redirect()->route('fos.courier_name.index');
             } else {

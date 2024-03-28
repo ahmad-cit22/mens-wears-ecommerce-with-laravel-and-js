@@ -44,7 +44,7 @@ class FacebookOrderController extends Controller {
 
         if (auth()->user()->can('order_sheet.index')) {
             $orders = FacebookOrder::orderBy('id', 'DESC')->with('status', 'special_status', 'courier', 'bkash_business', 'customer', 'created_by')->paginate(10);
-// return $orders->first();
+            // return $orders->first();
             return view('admin.order.order_sheet.index', compact('orders', 'date_from', 'date_to', 'order_status_id', 'special_status_id'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -306,8 +306,8 @@ class FacebookOrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
-            $products = ProductStock::orderBy('id', 'DESC')->get();
-            $order = FacebookOrder::find($id);
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $order = FacebookOrder::where('id', $id)->with('status', 'special_status', 'order_product', 'order_product.product', 'courier', 'bkash_business', 'bkash_record', 'customer', 'created_by')->first();
             $couriers = CourierName::all();
             $statuses = FacebookOrderStatus::where('is_active', 1)->get();
             $special_statuses = OrderSpecialStatus::where('is_active', 1)->get();
@@ -364,7 +364,7 @@ class FacebookOrderController extends Controller {
                 $order->advance = $request->advance;
                 $order->discount_amount = $request->discount_amount;
                 $order->save();
-                
+
                 if (BkashRecord::where('order_sheet_id', $order->id)->exists()) {
                     $bkash_record = BkashRecord::where('order_sheet_id', $order->id)->first();
                     $bkash_record->bkash_business_id = $request->bkash_business_id;
@@ -379,7 +379,6 @@ class FacebookOrderController extends Controller {
                     $tracking->update([
                         'user_id' => Auth::id(),
                     ]);
-
                 } else {
                     $bkash_record = new BkashRecord;
                     $bkash_record->bkash_business_id = $request->bkash_business_id;
@@ -398,7 +397,7 @@ class FacebookOrderController extends Controller {
                         'work_name' => 'bkash_record'
                     ]);
                 }
-                
+
                 Alert::toast('Order Sheet Info Updated!', 'success');
                 return back();
             } else {
@@ -411,6 +410,8 @@ class FacebookOrderController extends Controller {
     }
 
     public function order_products_update(Request $request, $id) {
+
+        $order = FacebookOrder::find($id);
 
         for ($i = 0; $i < count($request->qty) - 1; $i++) {
 
@@ -437,12 +438,21 @@ class FacebookOrderController extends Controller {
                 $order_product->order_id = $id;
                 $order_product->product_id = $product_stock->product->id;
                 $order_product->size_id = $product_stock->size_id;
-                $order_product->price = $product_stock->price;
+                if ($order->source == 'Wholesale') {
+                    $order_product->price = $product_stock->wholesale_price;
+                } else {
+                    $order_product->price = $product_stock->price;
+                }
+
                 $order_product->production_cost = $product_stock->production_cost;
                 $order_product->qty = $request->qty[$i];
                 $order_product->save();
 
-                $new_total += $order_product->qty * $order_product->price;
+                if ($order->source == 'Wholesale') {
+                    $new_total += $order_product->qty * $order_product->wholesale_price;
+                } else {
+                    $new_total += $order_product->qty * $order_product->price;
+                }
             }
         }
 

@@ -83,7 +83,7 @@ class OrderController extends Controller {
         if (auth()->user()->can('sell.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $data = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(1000)->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -335,7 +335,7 @@ class OrderController extends Controller {
         if (auth()->user()->can('wholesale.index')) {
             $orders = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             if ($request->ajax()) {
-                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $data = Order::orderBy('id', 'DESC')->where('source', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(1000)->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -993,9 +993,10 @@ class OrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $order = Order::find($id);
             if (!is_null($order)) {
-                return view('admin.order.edit', compact('order'));
+                return view('admin.order.edit', compact('order', 'products'));
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -1163,6 +1164,28 @@ class OrderController extends Controller {
         }
     }
 
+    public function courier_name_store(Request $request, $id) {
+        if (auth()->user()->can('order.edit')) {
+            $order = Order::find($id);
+            if (!is_null($order)) {
+
+                if ($request->courier_name) {
+                    $order->courier_name = $request->courier_name;
+                    $order->save();
+
+                    Alert::toast('Courier Name Saved', 'success');
+                }
+
+                return back();
+            } else {
+                Alert::toast('Something went wrong!', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function change_payment_status(Request $request, $id) {
         if (auth()->user()->can('order.edit')) {
             $order = Order::find($id);
@@ -1195,6 +1218,108 @@ class OrderController extends Controller {
         } else {
             abort(403, 'Unauthorized action.');
         }
+    }
+
+    /**
+     * A PHP function that updates order products based on the given request and order ID.
+     *
+     * @param Request $request The request containing the product quantities and details
+     * @param int $id The ID of the order to update
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
+    public function order_products_update(Request $request, $id) {
+
+        $order = Order::find($id);
+        $discount = $order->discount_amount ?? 0;
+        $new_total = 0;
+
+        $i = 0;
+
+        for ($i = 0; $i < count($request->qty); $i++) {
+
+            if ($i < count($request->qty) - 1 && $request->qty[$i] == null) {
+                return back()->with('qtyError' . $i, 'Quantity is required!');
+            }
+
+            $product_stock = ProductStock::find($request->product[$i]);
+
+            if ($request->qty[$i] > 0) {
+                if ($order->source == 'Wholesale') {
+                    $new_total += $request->qty[$i] * $product_stock->wholesale_price;
+                } else {
+                    $new_total += $request->qty[$i] * $product_stock->price;
+                }
+            }
+        }
+
+        // delete the old order products
+        $old_order_products = OrderProduct::where('order_id', $id);
+        foreach ($old_order_products->get() as $product) {
+            $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
+            $stock->qty += $product->qty;
+            $stock->save();
+
+            $history = new ProductStockHistory;
+            $history->product_id = $product->product_id;
+            $history->size_id = $product->size_id;
+            $history->qty = $product->qty;
+            $history->remarks = 'Order Code - ' . $order->code;
+            $history->note = "Order Products Change";
+            $history->save();
+        }
+
+        $old_order_products->delete();
+
+        // for ($i = 0; $i < count($request->qty); $i++) {
+        //     $product_stock = ProductStock::find($request->product[$i]);
+
+        //     if ($request->qty[$i] > 0) {
+        //         if ($order->source == 'Wholesale') {
+        //             $new_total += $request->qty[$i] * $product_stock->wholesale_price;
+        //         } else {
+        //             $new_total += $request->qty[$i] * $product_stock->price;
+        //         }
+        //     }
+        // }
+
+        $order->price = $new_total - $discount;
+        $order->save();
+        $percentage = ($discount / $new_total) * 100;
+
+        for ($i = 0; $i < count($request->qty); $i++) {
+            $product_stock = ProductStock::find($request->product[$i]);
+
+            if ($request->qty[$i] > 0) {
+                $order_product = new OrderProduct;
+                $order_product->order_id = $id;
+                $order_product->product_id = $product_stock->product->id;
+                $order_product->size_id = $product_stock->size_id;
+                if ($order->source == 'Wholesale') {
+                    $order_product->price = round($product_stock->wholesale_price - ($product_stock->wholesale_price * ($percentage / 100)));
+                } else {
+                    $order_product->price = round($product_stock->price - ($product_stock->price * ($percentage / 100)));
+                }
+                $order_product->production_cost = $product_stock->production_cost;
+                $order_product->qty = $request->qty[$i];
+                $order_product->save();
+
+                $product_stock->qty -= $order_product->qty;
+                $product_stock->save();
+
+                $history = new ProductStockHistory;
+                $history->product_id = $order_product->product_id;
+                $history->size_id = $order_product->size_id;
+                $history->qty = $order_product->qty;
+                $history->remarks = 'Order Code - ' . $order->code;
+                $history->note = "Order Products Added";
+
+                $history->save();
+            }
+        }
+
+        Alert::toast('Order Products Updated.', 'success');
+        return back();
     }
 
     public function convert_sell($id) {
