@@ -12,7 +12,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>POS | {{ $business->name }}</title>
+    <title> Wholesale POS | {{ $business->name }}</title>
     <meta name="description" content="Updates and statistics" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -54,7 +54,7 @@
                         <h3 class="card-label mb-0 font-weight-bold text-primary">WELCOME
                         </h3>
                         <h3 class="card-label mb-0 ">
-                            {{ $business->name }}
+                            {{ $business->name }} - Wholesale POS
                         </h3>
                     </div>
 
@@ -136,55 +136,8 @@
                             </div>
 
                         </div>
-                        {{-- @if (Session::has('wholesale_price')) --}}
                         <a class="btn btn-success btn-icon btn-clean px-3 py-1 mr-2" href="{{ route('sell.wholesale.index') }}">Wholesale List</a>
-                        {{-- @else --}}
                         <a class="btn btn-success btn-icon btn-clean px-3 py-1" href="{{ route('sell.index') }}">Retail Sell List</a>
-                        {{-- @endif --}}
-
-                        {{-- <div class="topbar-item folder-data">
-                            <div class="btn btn-icon  w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#folderpop">
-                                <span class="badge badge-pill badge-primary">5</span>
-                                <span class="symbol symbol-35  symbol-light-success">
-                                    <span class="symbol-label bg-warning font-size-h5 ">
-                                        <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" fill="#ffff" viewBox="0 0 16 16">
-                                            <path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"></path>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </div>
-
-                        </div>
-
-                        <div class="dropdown">
-                            <div class="topbar-item" data-toggle="dropdown" data-display="static">
-                                <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0">
-
-                                    <span class="symbol symbol-35 symbol-light-success">
-                                        <span class="symbol-label font-size-h5 ">
-                                            <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-                                            </svg>
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="dropdown-menu dropdown-menu-right" style="min-width: 150px;">
-
-
-                                <a href="#" class="dropdown-item">
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary mr-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-power">
-                                            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                                            <line x1="12" y1="2" x2="12" y2="12"></line>
-                                        </svg>
-                                    </span>
-                                    Logout
-                                </a>
-                            </div>
-
-                        </div> --}}
                     </div>
 
                 </div>
@@ -193,14 +146,12 @@
     </header>
     <div class="contentPOS">
         <div class="container-fluid">
-            @if (Session::has('wholesale_price'))
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="text-center alert alert-success">Wholesale</h3>
-                    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="text-center alert alert-success">Wholesale</h3>
                 </div>
-            @endif
-            <form action="{{ route('pos.store') }}" method="POST">
+            </div>
+            <form action="{{ route('pos.wholesale.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-xl-4 order-xl-first order-last">
@@ -237,7 +188,23 @@
                             <div class="product-items">
                                 <div class="row" id="product_filtered">
                                     @foreach ($products as $product)
-                                        @include('admin.pos.partials.product')
+                                        @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
+                                            <div class="col-xl-4 col-lg-2 col-md-3 col-sm-4 col-6">
+                                                <div class="productCard">
+                                                    <a onclick="add_cart({{ $product->id }})" style="cursor: pointer;">
+                                                        <div class="productThumb">
+                                                            <img class="img-fluid" src="{{ asset('images/product/pos_images/' . $product->product->image) }}" alt="{{ $product->product->title }}">
+                                                        </div>
+
+                                                        <div class="productContent">
+
+                                                            {{ $product->product->title }}{{ is_null($product->size) ? '' : ' - ' . optional($product->size)->title }} ({{ $product->qty }})
+
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -301,24 +268,6 @@
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between colorfull-select">
-
-                                        @if (!Session::has('wholesale_price'))
-                                            <div class="selectmain">
-                                                <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
-                                                <select name="district_id" class="select2 select-down" id="district_id" @if (!Session::has('wholesale_price')) required @endif>
-                                                    <option value="">--- Select ---</option>
-                                                    @foreach ($districts as $district)
-                                                        <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="d-flex flex-column selectmain">
-                                                <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
-                                                <select name="area_id" class="select2 select-down" id="areas" @if (!Session::has('wholesale_price')) required @endif>
-                                                    <!-- <option value="">Please Select an Area</option> -->
-                                                </select>
-                                            </div>
-                                        @endif
                                         <div class="">
                                             <div class="selectmain">
                                                 <label class="text-dark d-flex">Courier Name <span class="text-danger">*</span></label>
@@ -350,13 +299,6 @@
                                         </div>
 
                                     </div>
-                                    {{-- <div class="mt-2">
-                                        <label class="text-body">Payment Method</label>
-                                        <select class="mb-3 select2 select-down arabic-select2" style="width: 100%;" name="payment_method" id="payment_method">
-                                            <option value="1">Online</option>
-                                            <option value="2">Offline</option>
-                                        </select>
-                                    </div> --}}
                                     <div class="mt-2">
                                         <label class="text-body">Add Note</label>
                                         <fieldset class="form-group">
@@ -425,17 +367,10 @@
                                             <p class="adddress">
                                                 {{ $business->address }}
                                             </p>
-                                            <!-- <p class="countryname">USA</p> -->
                                         </div>
                                     </div>
                                 </div>
                                 <div class="resulttable-pos">
-                                    <!-- <div class="input-group mb-3">
-         <input type="number" class="form-control" placeholder="Discount Amount">
-         <div class="input-group-append">
-         <button class="btn btn-outline-secondary" type="button" style="padding: 0.375rem 0.75rem">Apply</button>
-         </div>
-         </div> -->
                                     <div class="input-group">
                                         <input type="number" class="form-control" placeholder="Discount Amount" id="discount_amount" value="{{ $fos_order != null ? $fos_order->discount_amount : old('discount_amount') }}" onblur="apply_discount()">
                                     </div>
@@ -529,42 +464,6 @@
                                     </svg>
                                 </button>
                             </div>
-                            {{-- <div class="modal-body">
-
-                                <div class="form-group row">
-
-                                    <div class="col-md-12">
-                                        <label class="text-body">Customer Name</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="text" name="name" class="form-control" placeholder="Enter Customer Name">
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label class="text-body">Email</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="email" name="email" class="form-control" placeholder="Enter E-mail">
-                                        </fieldset>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-body">Phone</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number">
-                                        </fieldset>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row ">
-                                    <div class="col-md-12">
-                                        <label class="text-body">Address</label>
-                                        <fieldset class="form-group mb-3">
-                                            <input type="text" name="text" class="form-control " placeholder="Enter Address" name="shipping_address">
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-primary float-right" data-dismiss="modal">Ok</button>
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -678,10 +577,6 @@
     @endif
 
     <script>
-        // $("#product_name").keyup(function() {
-        //     load_product();
-        // });
-
         jQuery(function() {
             jQuery('#category_id').multipleSelect({
                 filter: true,
@@ -699,14 +594,6 @@
                 // load_product();
             })
         });
-
-        // $('#category_id').change(function(){
-        //        load_product();
-        //    });
-
-        //    $('#brand_id').change(function(){
-        //        load_product();
-        //    });
 
         function load_product() {
             var product_name = $('#product_name').val();
@@ -760,8 +647,7 @@
                 data.forEach(function(element) {
                     option += "<option value='" + element.id + "'>" + element.name + "</option>";
                 });
-                //console.log(option);
-                $('#areas').html(option);.
+                $('#areas').html(option);
             });
         });
 
@@ -776,25 +662,9 @@
             var discount = $('#discount').val();
             var charge_advanced = $('#advanced_charge').val();
 
-            @if (Session::has('wholesale_price'))
-                $('#shipping_charge_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(discount) - parseInt(charge_advanced));
-                $('#shipping_charge').val(0);
-            @else
-                $.ajax({
-                    url: url + "/get-shipping-charge",
-                    type: "POST",
-                    data: {
-                        area_id: area_id,
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(response) {
-                        $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount));
-                        $('#shipping_charge').val(response);
-                    }
-                });
-            @endif
+            $('#shipping_charge_label').html(0);
+            $('#total_amount').html(parseInt(subtotal) - parseInt(discount) - parseInt(charge_advanced));
+            $('#shipping_charge').val(0);
 
         });
 
@@ -860,17 +730,8 @@
             }
         })
 
-
-        // $('#remove_shipping_charge_label').click(function() {
-        //     // if () {
-        //         alert(document.getElementById('remove_shipping_charge').checked);
-        //     // }
-        // })
-
-
-
         function add_cart(stock_id) {
-            url = "{{ route('pos.cart.add') }}";
+            url = "{{ route('pos.cart.add.wholesale') }}";
             var stock_id = stock_id;
 
             $.ajax({
@@ -924,7 +785,7 @@
                 if (barcode.length == 4 && !checkReq) {
                     checkReq = true;
                     //alert(barcode);
-                    url = "{{ route('pos.barcode.cart.add') }}";
+                    url = "{{ route('pos.barcode.cart.add.wholesale') }}";
                     $.ajax({
                         url: url,
                         type: "POST",
@@ -1024,6 +885,5 @@
     </script>
 
 </body>
-<!--end::Body-->
 
 </html>

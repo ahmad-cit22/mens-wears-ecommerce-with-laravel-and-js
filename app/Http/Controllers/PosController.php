@@ -22,7 +22,7 @@ use Mail;
 use App\Mail\OrderMail;
 use App\Models\CourierName;
 use App\Models\FacebookOrder;
-use Cart;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Session;
 use DNS1D;
 use DNS2D;
@@ -34,13 +34,31 @@ class PosController extends Controller {
 
     public function create(Request $request, $id) {
         if (auth()->user()->can('pos.create')) {
-            if (Session::has('wholesale_price')) {
-                Session::forget('wholesale_price');
-            }
             $fos_order = null;
 
+            $carts = Cart::content();
+            foreach ($carts as $cart) {
+                Cart::remove($cart->rowId);
+            }
+
             if (FacebookOrder::where('id', $id)->exists()) {
-                $fos_order = FacebookOrder::find($id);
+                $fos_order = FacebookOrder::with('order_product', 'order_product.product')->where('id', $id)->get()->first();
+
+                foreach ($fos_order->order_product as $product) {
+                    Cart::add([
+                        'id' => $product->product->id,
+                        'qty' => 1,
+                        'price' => $product->stock()->price,
+                        'name' => $product->product->title,
+                        'weight' => 500,
+                        'options' => [
+                            'production_cost' => $product->stock()->production_cost,
+                            'image' => $product->product->image,
+                            'size_id' => $product->stock()->size_id,
+                            'size_name' => optional($product->stock()->size)->title,
+                        ],
+                    ]);
+                }
             }
 
             $couriers = CourierName::all();
@@ -49,7 +67,7 @@ class PosController extends Controller {
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
             $districts = District::orderBy('name', 'ASC')->get();
-            $carts = Cart::content();
+
             // return DNS1D::getBarcodeSVG('1005', 'C39');
             return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
         } else {
@@ -57,19 +75,42 @@ class PosController extends Controller {
         }
     }
 
-    public function wholesale_create(Request $request) {
+    public function wholesale_create(Request $request, $id) {
 
         $fos_order = null;
         if (auth()->user()->can('wholesale.create')) {
-            session(['wholesale_price' => 1]);
+            $carts = Cart::content();
+            foreach ($carts as $cart) {
+                Cart::remove($cart->rowId);
+            }
+
+            if (FacebookOrder::where('id', $id)->exists()) {
+                $fos_order = FacebookOrder::with('order_product', 'order_product.product')->where('id', $id)->get()->first();
+
+                foreach ($fos_order->order_product as $product) {
+                    Cart::add([
+                        'id' => $product->product->id,
+                        'qty' => 1,
+                        'price' => $product->stock()->wholesale_price,
+                        'name' => $product->product->title,
+                        'weight' => 500,
+                        'options' => [
+                            'production_cost' => $product->stock()->production_cost,
+                            'image' => $product->product->image,
+                            'size_id' => $product->stock()->size_id,
+                            'size_name' => optional($product->stock()->size)->title,
+                        ],
+                    ]);
+                }
+            }
             $couriers = CourierName::all();
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
             $districts = District::orderBy('name', 'ASC')->get();
-            $carts = Cart::content();
-            return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
+
+            return view('admin.pos.create-wholesale', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -177,11 +218,7 @@ class PosController extends Controller {
                 $order->advance = $request->advanced_charge;
             }
 
-            if (Session::has('wholesale_price')) {
-                $order->source = 'Wholesale';
-            } else {
-                $order->source = 'Offline';
-            }
+            $order->source = 'Offline';
 
             $order->order_status_id = 2;
             $order->is_final = 1;
@@ -214,11 +251,7 @@ class PosController extends Controller {
                 $history->size_id = $order_product->size_id;
                 $history->qty = $order_product->qty;
                 $history->remarks = 'Order Code - ' . $order->code;
-                if (Session::has('wholesale_price')) {
-                    $history->note = "Sell (Wholesale)";
-                } else {
-                    $history->note = "Sell (Offline)";
-                }
+                $history->note = "Sell (Offline)";
 
                 $history->save();
 
@@ -237,15 +270,140 @@ class PosController extends Controller {
 
             Alert::toast('One Sell Added', 'success');
 
-            if (Session::has('wholesale_price')) {
-                Session::forget('coupon_discount');
-                Session::forget('wholesale_price');
-                return redirect()->route('pos.wholesale.create', 'none');
+            Session::forget('coupon_discount');
+            return redirect()->route('pos.create', 'none');
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function wholesale_store(Request $request) {
+        if (Cart::content()->count() <= 0) {
+            return back()->with('errMsg', 'Please select products correctly!');
+        } elseif ($request->courier_id == 0) {
+            return back()->with('errMsg', 'Please select a valid courier name!');
+        }
+
+        $order = new Order;
+
+        if ($request->customer_id == 0) {
+            if (!User::where('phone', $request->phone)->exists()) {
+                if ($request->name == null || $request->phone == null) {
+                    return back()->with('errMsg', 'You must add customer name & phone number!');
+                }
+
+                $user = new User;
+                $user->name       = $request->name;
+                $user->email      = $request->email;
+                $user->phone      = $request->phone;
+                $user->city       = $request->district_id;
+                $user->address    = $request->shipping_address;
+                $user->password   = Hash::make(12345678);
+                $user->save();
+
+                $order->customer_id = $user->id;
+                $order->name = $user->name;
+                $order->email = $user->email;
+                $order->phone = $user->phone;
             } else {
-                Session::forget('coupon_discount');
-                Session::forget('wholesale_price');
-                return redirect()->route('pos.create', 'none');
+                $user = User::where('phone', $request->phone)->first();
+                $order->customer_id = $user->id;
+                $order->name = $user->name;
+                $order->email = $user->email;
+                $order->phone = $user->phone;
             }
+        } else {
+            $user = User::find($request->customer_id);
+            $order->customer_id = $user->id;
+            $order->name = $user->name;
+            $order->email = $user->email;
+            $order->phone = $user->phone;
+        }
+
+        if (auth()->user()->can('order.create')) {
+            $carts = Cart::content();
+
+            // return Cart::content();
+
+            $order->code = $this->generateUniqueCode();
+
+            $discount = 0;
+            if (Session::has('coupon_discount')) {
+                $discount = Session::get('coupon_discount');
+                $order->discount_amount = $discount;
+            }
+
+            $order->price = Cart::subtotal() - $discount;
+
+            $order->shipping_address = $request->shipping_address;
+            $order->district_id = $request->district_id;
+            $order->area_id = $request->area_id;
+            $order->courier_name = CourierName::find($request->courier_id)->name;
+
+            if ($request->has('remove_shipping_charge')) {
+                $order->delivery_charge = 0;
+            } else {
+                $order->delivery_charge = $request->shipping_charge;
+            }
+
+            if ($request->advanced_charge != 0) {
+                $order->advance = $request->advanced_charge;
+            }
+
+            $order->source = 'Wholesale';
+
+            $order->order_status_id = 2;
+            $order->is_final = 1;
+            $order->note = $request->note;
+
+            $order->save();
+
+            // Calculate discount percentage
+
+            $percentage = ($discount / Cart::subtotal()) * 100;
+
+            foreach ($carts as $cart) {
+
+                $order_product = new OrderProduct;
+
+                $order_product->order_id = $order->id;
+                $order_product->product_id = $cart->id;
+                $order_product->size_id = $cart->options->size_id;
+                $order_product->price = round($cart->price - ($cart->price * ($percentage / 100)));
+                $order_product->production_cost = $cart->options->production_cost;
+                $order_product->qty = $cart->qty;
+                $order_product->save();
+
+                $stock = ProductStock::where('product_id', $order_product->product_id)->where('size_id', $order_product->size_id)->first();
+                $stock->qty -= $order_product->qty;
+                $stock->save();
+
+                $history = new ProductStockHistory;
+                $history->product_id = $order_product->product_id;
+                $history->size_id = $order_product->size_id;
+                $history->qty = $order_product->qty;
+                $history->remarks = 'Order Code - ' . $order->code;
+                $history->note = "Sell (Wholesale)";
+
+                $history->save();
+
+                Cart::remove($cart->rowId);
+            }
+
+            // if ($request->email != '') {
+            //     Mail::send(new OrderMail($order));
+            // }
+
+            WorkTrackingEntry::create([
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'create_order'
+            ]);
+
+            Alert::toast('One Sell Added', 'success');
+
+            Session::forget('coupon_discount');
+            return redirect()->route('pos.wholesale.create', 'none');
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -296,7 +454,32 @@ class PosController extends Controller {
             Cart::add([
                 'id' => $product->id,
                 'qty' => 1,
-                'price' => Session::has('wholesale_price') ? $stock->wholesale_price : $stock->price,
+                'price' => $stock->price,
+                'name' => $product->title,
+                'weight' => 500,
+                'options' => [
+                    'production_cost' => $stock->production_cost,
+                    'image' => $product->image,
+                    'size_id' => $stock->size_id,
+                    'size_name' => optional($stock->size)->title,
+                ],
+            ]);
+        }
+
+        $cart_table = $this->generate_cart();
+
+        return ['total_count' => Cart::count(), 'total_amount' => Cart::subtotal(), 'cart_table' => $cart_table];
+    }
+
+    public function add_cart_wholesale(Request $request) {
+        $stock_id = $request->stock_id;
+        $stock = ProductStock::find($stock_id);
+        if (!is_null($stock)) {
+            $product = $stock->product;
+            Cart::add([
+                'id' => $product->id,
+                'qty' => 1,
+                'price' => $stock->wholesale_price,
                 'name' => $product->title,
                 'weight' => 500,
                 'options' => [
@@ -322,7 +505,33 @@ class PosController extends Controller {
             Cart::add([
                 'id' => $product->id,
                 'qty' => 1,
-                'price' => Session::has('wholesale_price') ? $stock->wholesale_price : $stock->price,
+                'price' => $stock->price,
+                'name' => $product->title,
+                'weight' => 500,
+                'options' => [
+                    'production_cost' => $stock->production_cost,
+                    'image' => $product->image,
+                    'size_id' => $stock->size_id,
+                    'size_name' => optional($stock->size)->title,
+                ],
+            ]);
+        }
+
+        $cart_table = $this->generate_cart();
+
+        return ['total_count' => Cart::count(), 'total_amount' => Cart::subtotal(), 'cart_table' => $cart_table];
+    }
+
+    public function barcode_add_cart_wholesale(Request $request) {
+        $barcode = $request->barcode;
+        $stock_id = $barcode - 1000;
+        $stock = ProductStock::find($stock_id);
+        if (!is_null($stock)) {
+            $product = $stock->product;
+            Cart::add([
+                'id' => $product->id,
+                'qty' => 1,
+                'price' => $stock->wholesale_price,
                 'name' => $product->title,
                 'weight' => 500,
                 'options' => [

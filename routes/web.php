@@ -306,11 +306,14 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'pos', 'as' => 'pos.'], function () {
         Route::get('/', [App\Http\Controllers\PosController::class, 'index'])->name('index');
         Route::get('/create/{id}', [App\Http\Controllers\PosController::class, 'create'])->name('create');
-        Route::get('/wholesale-create', [App\Http\Controllers\PosController::class, 'wholesale_create'])->name('wholesale.create');
+        Route::get('/wholesale-create/{id}', [App\Http\Controllers\PosController::class, 'wholesale_create'])->name('wholesale.create');
         Route::post('/store', [App\Http\Controllers\PosController::class, 'store'])->name('store');
+        Route::post('/wholesale-store', [App\Http\Controllers\PosController::class, 'wholesale_store'])->name('wholesale.store');
         Route::post('/filter-product', [App\Http\Controllers\PosController::class, 'product_filter'])->name('product.filter');
         Route::post('/add-to-cart', [App\Http\Controllers\PosController::class, 'add_cart'])->name('cart.add');
+        Route::post('/add-to-cart-wholesale', [App\Http\Controllers\PosController::class, 'add_cart_wholesale'])->name('cart.add.wholesale');
         Route::post('/barcode-add-to-cart', [App\Http\Controllers\PosController::class, 'barcode_add_cart'])->name('barcode.cart.add');
+        Route::post('/barcode-add-to-cart-wholesale', [App\Http\Controllers\PosController::class, 'barcode_add_cart_wholesale'])->name('barcode.cart.add.wholesale');
         Route::post('/update-cart', [App\Http\Controllers\PosController::class, 'update_cart'])->name('cart.update');
         Route::post('/remove-from-cart', [App\Http\Controllers\PosController::class, 'remove_cart'])->name('cart.remove');
         Route::post('/apply-discount', [App\Http\Controllers\PosController::class, 'apply_discount'])->name('apply.discount');
@@ -352,9 +355,12 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/create', [App\Http\Controllers\FacebookOrderController::class, 'create'])->name('create');
         Route::get('/wholesale-create', [App\Http\Controllers\FacebookOrderController::class, 'wholesale_create'])->name('wholesale.create');
         Route::post('/store', [App\Http\Controllers\FacebookOrderController::class, 'store'])->name('store');
+        Route::post('/wholesale-store', [App\Http\Controllers\FacebookOrderController::class, 'wholesale_store'])->name('wholesale.store');
         Route::post('/filter-product', [App\Http\Controllers\FacebookOrderController::class, 'product_filter'])->name('product.filter');
         Route::post('/add-to-cart', [App\Http\Controllers\FacebookOrderController::class, 'add_cart'])->name('cart.add');
         Route::post('/barcode-add-to-cart', [App\Http\Controllers\FacebookOrderController::class, 'barcode_add_cart'])->name('barcode.cart.add');
+        Route::post('/add-to-cart-wholesale', [App\Http\Controllers\FacebookOrderController::class, 'add_cart_wholesale'])->name('cart.add.wholesale');
+        Route::post('/barcode-add-to-cart-wholesale', [App\Http\Controllers\FacebookOrderController::class, 'barcode_add_cart_wholesale'])->name('barcode.cart.add.wholesale');
         Route::post('/update-cart', [App\Http\Controllers\FacebookOrderController::class, 'update_cart'])->name('cart.update');
         Route::post('/remove-from-cart', [App\Http\Controllers\FacebookOrderController::class, 'remove_cart'])->name('cart.remove');
         Route::post('/apply-discount', [App\Http\Controllers\FacebookOrderController::class, 'apply_discount'])->name('apply.discount');

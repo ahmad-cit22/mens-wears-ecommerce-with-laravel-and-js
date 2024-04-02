@@ -210,7 +210,13 @@
                                     <li class="nav-item">
                                         <a href="{{ route('fos.create') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
-                                            <p>New Order</p>
+                                            <p>New Order (Retail)</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('fos.wholesale.create') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>New Order (Wholesale)</p>
                                         </a>
                                     </li>
                                 @endif
@@ -346,7 +352,7 @@
 
                                 @if (auth()->user()->can('wholesale.create'))
                                     <li class="nav-item">
-                                        <a href="{{ route('pos.wholesale.create') }}" class="nav-link">
+                                        <a href="{{ route('pos.wholesale.create', 'none') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
                                             <p>Wholesale(POS)</p>
                                         </a>

@@ -994,7 +994,7 @@ class OrderController extends Controller {
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
-            $order = Order::find($id);
+            $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
             if (!is_null($order)) {
                 return view('admin.order.edit', compact('order', 'products'));
             } else {
@@ -1248,7 +1248,11 @@ class OrderController extends Controller {
                 if ($order->source == 'Wholesale') {
                     $new_total += $request->qty[$i] * $product_stock->wholesale_price;
                 } else {
-                    $new_total += $request->qty[$i] * $product_stock->price;
+                    if ($product_stock->discount_price != null && $order->source == 'Website') {
+                        $new_total += $request->qty[$i] * $product_stock->discount_price;
+                    } else {
+                        $new_total += $request->qty[$i] * $product_stock->price;
+                    }
                 }
             }
         }
@@ -1271,18 +1275,6 @@ class OrderController extends Controller {
 
         $old_order_products->delete();
 
-        // for ($i = 0; $i < count($request->qty); $i++) {
-        //     $product_stock = ProductStock::find($request->product[$i]);
-
-        //     if ($request->qty[$i] > 0) {
-        //         if ($order->source == 'Wholesale') {
-        //             $new_total += $request->qty[$i] * $product_stock->wholesale_price;
-        //         } else {
-        //             $new_total += $request->qty[$i] * $product_stock->price;
-        //         }
-        //     }
-        // }
-
         $order->price = $new_total - $discount;
         $order->save();
         $percentage = ($discount / $new_total) * 100;
@@ -1298,7 +1290,11 @@ class OrderController extends Controller {
                 if ($order->source == 'Wholesale') {
                     $order_product->price = round($product_stock->wholesale_price - ($product_stock->wholesale_price * ($percentage / 100)));
                 } else {
-                    $order_product->price = round($product_stock->price - ($product_stock->price * ($percentage / 100)));
+                    if ($product_stock->discount_price != null && $order->source == 'Website') {
+                        $order_product->price = round($product_stock->discount_price);
+                    } else {
+                        $order_product->price = round($product_stock->price - ($product_stock->price * ($percentage / 100)));
+                    }
                 }
                 $order_product->production_cost = $product_stock->production_cost;
                 $order_product->qty = $request->qty[$i];
