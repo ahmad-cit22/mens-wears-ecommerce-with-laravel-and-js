@@ -254,8 +254,8 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::post('/product-barcode-check', [App\Http\Controllers\OrderController::class, 'product_barcode_check'])->name('barcode.check');
         Route::get('/product-barcode-check-confirm/{id}', [App\Http\Controllers\OrderController::class, 'product_barcode_check_confirm'])->name('barcode.check.confirm');
         Route::get('/order-packet-done/{id}', [App\Http\Controllers\OrderController::class, 'packet_done'])->name('packet_done');
-        Route::post('/refer-code-store/{id}', [App\Http\Controllers\OrderController::class, 'refer_code_store'])->name('refer_code.store');
-        Route::post('/courier-name-store/{id}', [App\Http\Controllers\OrderController::class, 'courier_name_store'])->name('courier_name.store');
+        Route::post('/courier-info-store/{id}', [App\Http\Controllers\OrderController::class, 'courier_info_store'])->name('courier_info.store');
+        Route::post('/discount-amount-update/{id}', [App\Http\Controllers\OrderController::class, 'discount_amount_update'])->name('discount_amount.update');
         Route::post('/order-products-update/{id}', [App\Http\Controllers\OrderController::class, 'order_products_update'])->name('order_products.update');
 
         // Report routes

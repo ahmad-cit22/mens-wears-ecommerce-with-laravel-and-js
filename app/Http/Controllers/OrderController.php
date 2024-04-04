@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use DataTables;
 use App\Exports\SellListExport;
 use App\Exports\WholeSaleListExport;
+use App\Models\CourierName;
 use App\Models\Setting;
 use App\Models\VatEntry;
 use Maatwebsite\Excel\Facades\Excel;
@@ -995,8 +996,10 @@ class OrderController extends Controller {
         if (auth()->user()->can('order.edit')) {
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
+            $couriers = CourierName::all();
+
             if (!is_null($order)) {
-                return view('admin.order.edit', compact('order', 'products'));
+                return view('admin.order.edit', compact('order', 'couriers', 'products'));
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -1136,22 +1139,23 @@ class OrderController extends Controller {
         }
     }
 
-    public function refer_code_store(Request $request, $id) {
+    public function courier_info_store(Request $request, $id) {
         if (auth()->user()->can('order.edit')) {
             $order = Order::find($id);
             if (!is_null($order)) {
 
+                $order->courier_name = $request->courier_name;
                 $order->refer_code = $request->refer_code;
                 if ($request->refer_code) {
                     $order->order_status_id = 8;
                     $order->save();
 
-                    Alert::toast('Courier Reference Code Saved', 'success');
+                    Alert::toast('Courier Info Saved', 'success');
                 } else {
                     $order->order_status_id = 7;
                     $order->save();
 
-                    Alert::toast('Courier Reference Code Removed', 'success');
+                    Alert::toast('Courier Info Saved', 'success');
                 }
 
                 return back();
@@ -1164,21 +1168,38 @@ class OrderController extends Controller {
         }
     }
 
-    public function courier_name_store(Request $request, $id) {
+    public function discount_amount_update(Request $request, $id) {
         if (auth()->user()->can('order.edit')) {
-            $order = Order::find($id);
+            $order = Order::with('order_product')->find($id);
             if (!is_null($order)) {
+                $total_price = $order->price + $order->discount_amount ?? 0;
 
-                if ($request->courier_name) {
-                    $order->courier_name = $request->courier_name;
-                    $order->save();
+                $order->discount_amount = $request->discount_amount;
+                $order->price = $total_price - $request->discount_amount;
+                $order->save();
 
-                    Alert::toast('Courier Name Saved', 'success');
+                $percentage = ($request->discount_amount / $total_price) * 100;
+
+                foreach ($order->order_product as $product) {
+                    if ($product->qty > 0) {
+                        if ($order->source == 'Wholesale') {
+                            $product->price = round($product->stock()->wholesale_price - ($product->stock()->wholesale_price * ($percentage / 100)));
+                        } else {
+                            if ($product->stock()->discount_price != null && $order->source == 'Website') {
+                                $product->price = round($product->stock()->discount_price);
+                            } else {
+                                $product->price = round($product->stock()->price - ($product->stock()->price * ($percentage / 100)));
+                            }
+                        }
+                        $product->save();
+                    }
                 }
+
+                Alert::toast('Discount Amount Updated!', 'success');
 
                 return back();
             } else {
-                Alert::toast('Something went wrong!', 'error');
+                Alert::toast('Something Went Wrong!', 'error');
                 return back();
             }
         } else {

@@ -25,9 +25,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
 
 
                     <!-- Main content -->
@@ -78,43 +78,6 @@
                                         Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
                                         @if ($order->courier_name)
                                             Courier Name: {{ $order->courier_name }}<br>
-                                        @else
-                                            <form action="{{ route('order.courier_name.store', $order->id) }}" method="POST" style="width: 60%">
-                                                @csrf
-                                                <div class="form-froup">
-                                                    <label>Courier Name</label>
-                                                    <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" name="courier_name">
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-primary bg-purple" type="submit">Save</button>
-                                                        </div>
-                                                    </div>
-                                                    @error('courier_name')
-                                                        <span class="invalid-feedback" role="alert" style="display: block;">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </form>
-                                        @endif
-                                        @if ($order->status->priority_no > 3)
-                                            <form action="{{ route('order.refer_code.store', $order->id) }}" method="POST" style="width: 60%">
-                                                @csrf
-                                                <div class="form-froup">
-                                                    <label>Reference Code</label>
-                                                    <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" name="refer_code" value="{{ $order->refer_code }}">
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-primary bg-purple" type="submit">Save Code</button>
-                                                        </div>
-                                                    </div>
-                                                    @error('refer_code')
-                                                        <span class="invalid-feedback" role="alert" style="display: block;">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </form>
                                         @endif
                                     </address>
                                 </div>
@@ -186,7 +149,57 @@
                                 </div>
                             </div>
                             <!-- /.row -->
-
+                            <div class="row mt-3">
+                                <div class="col-md-6 border-right">
+                                    <form action="{{ route('order.courier_info.store', $order->id) }}" method="POST">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label>Courier Name</label>
+                                            <select name="courier_name" class="form-control select2 select-down" id="courier_name">
+                                                <option value="0"> -- Select Courier Name -- </option>
+                                                @foreach ($couriers as $courier)
+                                                    <option value="{{ $courier->name }}" {{ $order->courier_name == $courier->name ? 'selected' : '' }}>{{ $courier->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @if ($order->status->priority_no > 3)
+                                            <div class="form-group">
+                                                <label>Reference Code</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" name="refer_code" value="{{ $order->refer_code }}">
+                                                </div>
+                                                @error('refer_code')
+                                                    <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        @endif
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-6 border-right align-content-end">
+                                    <form action="{{ route('order.discount_amount.update', $order->id) }}" method="POST">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label>Discount Amount</label>
+                                            <div class="input-group mb-3">
+                                                <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount ?? 0 }}">
+                                            </div>
+                                            @error('discount_amount')
+                                                <span class="invalid-feedback" role="alert" style="display: block;">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             <div class="row mt-3">
                                 <div class="col-md-6 border-right">
                                     <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
@@ -511,11 +524,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
