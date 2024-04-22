@@ -187,6 +187,20 @@
                     </tr>
                 @endif
 
+                @if ($order->points_redeemed > 0)
+                    <tr style="text-align: right;">
+                        <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Points Redeemed(-):</b></td>
+                        <td style="text-align: right;">{{ $order->points_redeemed }}</td>
+                    </tr>
+                @endif
+
+                @if ($order->membership_discount > 0)
+                    <tr style="text-align: right;">
+                        <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Membership Discount(-):</b></td>
+                        <td style="text-align: right;">({{ $order->discount_rate }}%) {{ $order->membership_discount }}/-</td>
+                    </tr>
+                @endif
+
                 <tr style="text-align: right;">
                     <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Total</b></td>
                     <td style="text-align: right;">{{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}/-</td>

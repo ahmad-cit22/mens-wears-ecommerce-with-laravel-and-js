@@ -30,9 +30,9 @@
                     <strong>{{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</strong>
                 </li>
                 <!-- <li>
-                        <label>Total</label>
-                        <strong>450</strong>
-                    </li> -->
+                                <label>Total</label>
+                                <strong>450</strong>
+                            </li> -->
                 <li>
                     <label>Payment Method</label>
                     <strong>{{ $order->payment_method }}</strong>
@@ -83,9 +83,21 @@
                                         <td>{{ env('CURRENCY') }}{{ $order->discount_amount }}</td>
                                     </tr>
                                 @endif
+                                @if ($order->points_redeemed)
+                                    <tr>
+                                        <td colspan="2" align="right"><b>Points Redeemed (-)</b></td>
+                                        <td>{{ $order->points_redeemed }}</td>
+                                    </tr>
+                                @endif
+                                @if ($order->membership_discount)
+                                    <tr>
+                                        <td colspan="2" align="right"><b>Membership Discount (-)</b></td>
+                                        <td>{{ env('CURRENCY') }}{{ $order->membership_discount }} ({{ $order->discount_rate }}%)</td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <td colspan="2" align="right"><b>Total</b></td>
-                                    <td>{{ env('CURRENCY') }}{{ $total - $order->discount_amount + $order->delivery_charge }}</td>
+                                    <td>{{ env('CURRENCY') }}{{ $order->price + $order->delivery_charge }}</td>
                                 </tr>
                             </tbody>
                         </table>

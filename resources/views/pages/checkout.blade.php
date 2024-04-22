@@ -160,9 +160,44 @@
                                                     <li>Discount(-) <span>{{ env('CURRENCY') }}{{ $discount }} </span></li>
                                                 </ul>
                                             </div>
+                                            @php
+                                                $member = Auth::user()->member;
+                                            @endphp
+                                            @if ($member)
+                                                @php
+                                                    $card = $member->card;
+                                                    $membership_discount = (Cart::subTotal() * $card->discount_rate) / 100;
+                                                    $current_points = $member->current_points;
+                                                @endphp
+
+                                                <input type="hidden" name="member_discount_rate" id="member_discount_rate" value="{{ $card->discount_rate }}">
+                                                <input type="hidden" name="member_discount_amount" id="member_discount_amount" value="{{ $membership_discount }}">
+                                                <input type="hidden" name="redeem_points_amount" id="redeem_points_amount" value="0">
+
+                                                <div class="your-order-info order-subtotal">
+                                                    <ul>
+                                                        <li>Membership Discount(-) <span>({{ $card->discount_rate }}%) {{ env('CURRENCY') }}{{ $membership_discount }} </span></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="your-order-info order-subtotal" style="padding-bottom: 15px">
+                                                    <ul>
+                                                        <li>Points Remaining <span> {{ $current_points }} </span></li>
+                                                        <li>
+                                                            <input type="number" class="form-control" placeholder="Redeem Points" id="redeem_points" value="{{ old('redeem_points') }}" @if ($card->min_point > $current_points) disabled @endif>
+                                                            @if ($card->min_point > $current_points)
+                                                                <span class="text-danger" style="font-size: 12px">Point Not Sufficient to Redeem!</span>
+                                                            @endif
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            @endif
                                             <div class="your-order-info order-total">
                                                 <ul>
-                                                    <li>Total <span>{{ env('CURRENCY') }}<b id="total"> {{ Cart::subTotal() - $discount }}</b> </span></li>
+                                                    @if ($member)
+                                                        <li>Total <span>{{ env('CURRENCY') }}<b id="total"> {{ Cart::subTotal() - $discount - $membership_discount }}</b> </span></li>
+                                                    @else
+                                                        <li>Total <span>{{ env('CURRENCY') }}<b id="total"> {{ Cart::subTotal() - $discount }}</b> </span></li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
@@ -219,6 +254,22 @@
 
 @section('scripts')
     <script>
+        $("#redeem_points").keyup(function() {
+            let redeem_points = $(this).val();
+            $('#redeem_points_amount').val(redeem_points);
+            var subtotal = $('#subtotal').val();
+            let membership_discount = $('#member_discount_amount').val();
+            var shipping_charge = $('#shipping_charge').val();
+            var discount = $('#discount').val();
+
+            if (redeem_points > 0) {
+                $('#total').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(membership_discount) - parseInt(redeem_points));
+            } else {
+                $('#total').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(membership_discount));
+            }
+        });
+    </script>
+    <script>
         $('#checkout-form').submit(function() {
             $('#checkout-submit').prop('disabled', true);
             $('#checkout-submit').text('Processing...');
@@ -263,8 +314,11 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    let redeem_points = $('#redeem_points_amount').val();
+                    let membership_discount = $('#member_discount_amount').val();
+
                     $('#shipping_charge_label').html(response);
-                    $('#total').html(parseInt(subtotal) + parseInt(response));
+                    $('#total').html(parseInt(subtotal) + parseInt(response) - parseInt(membership_discount) - parseInt(redeem_points));
                     $('#shipping_charge').val(response);
                 }
             });

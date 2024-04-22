@@ -62,7 +62,7 @@
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ordering: false,
+                ordering: true,
                 columns: [{
                         data: 'id'
                     },
@@ -91,7 +91,7 @@
                         data: 'discount_amount'
                     },
                     {
-                        data: 'points_used'
+                        data: 'points_redeemed'
                     },
                 ],
             });

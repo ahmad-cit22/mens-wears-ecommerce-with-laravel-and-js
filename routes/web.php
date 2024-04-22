@@ -317,6 +317,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::post('/update-cart', [App\Http\Controllers\PosController::class, 'update_cart'])->name('cart.update');
         Route::post('/remove-from-cart', [App\Http\Controllers\PosController::class, 'remove_cart'])->name('cart.remove');
         Route::post('/apply-discount', [App\Http\Controllers\PosController::class, 'apply_discount'])->name('apply.discount');
+        Route::post('/check-membership', [App\Http\Controllers\PosController::class, 'check_membership'])->name('check.membership');
     });
 
     // vat entry routes

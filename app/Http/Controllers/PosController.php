@@ -60,6 +60,7 @@ class PosController extends Controller {
                     ]);
                 }
             }
+            $carts = Cart::content();
 
             $couriers = CourierName::all();
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
@@ -103,6 +104,7 @@ class PosController extends Controller {
                     ]);
                 }
             }
+            $carts = Cart::content();
             $couriers = CourierName::all();
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
@@ -200,8 +202,20 @@ class PosController extends Controller {
                 $discount = Session::get('coupon_discount');
                 $order->discount_amount = $discount;
             }
+            $member_discount_rate = $request->member_discount_rate;
+            $member_discount_amount = $request->member_discount_amount;
+            $redeem_points_amount = $request->redeem_points_amount;
 
-            $order->price = Cart::subtotal() - $discount;
+            $order->price = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount;
+
+            $order->points_redeemed = $redeem_points_amount;
+            $user->member->current_points -= $redeem_points_amount;
+            $user->member->save();
+            
+            if ($member_discount_rate) {
+                $order->discount_rate = $member_discount_rate;
+            }
+            $order->membership_discount = $member_discount_amount;
 
             $order->shipping_address = $request->shipping_address;
             $order->district_id = $request->district_id;
@@ -583,5 +597,17 @@ class PosController extends Controller {
         $amount = $request->amount;
         session(['coupon_discount' => $amount]);
         return $amount;
+    }
+
+    public function check_membership(Request $request) {
+        $customer = User::with('member', 'member.card')->find($request->customer_id);
+        if ($customer->member) {
+            $member = $customer->member;
+            $card = $customer->member->card;
+            $card_number = $customer->member->card_number;
+            return response()->json(['status' => 'success', 'card' => $card, 'card_number' => $card_number, 'member' => $member]);
+        } else {
+            return response()->json(['card' => 'Not Found']);
+        }
     }
 }

@@ -635,6 +635,15 @@
             }
         });
 
+        $('#phone').keyup(function() {
+            var phone = $(this).val();
+            if (phone.length == 11) {
+                $(this).removeClass("is-invalid");
+            } else {
+                $(this).addClass("is-invalid");
+            }
+        });
+
         $('#district_id').change(function() {
             var district_id = $(this).val();
             if (district_id == '') {

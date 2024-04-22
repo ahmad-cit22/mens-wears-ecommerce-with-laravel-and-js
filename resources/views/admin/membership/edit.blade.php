@@ -153,8 +153,8 @@
                             <tr class="text-center font-weight-bold" style="font-size: 18px !important">
                                 <td class="text-success">{{ $member->customer->orders->count() }}</td>
                                 <td class="text-success">&#2547; {{ $member->customer->orders->sum('price') }}</td>
-                                <td class="text-primary">{{ $member->customer->orders->where('points_used', '!=', null)->count() }}</td>
-                                <td class="text-primary">{{ $member->customer->orders->where('points_used', '!=', null)->sum('points_used') }}</td>
+                                <td class="text-primary">{{ $member->customer->orders->where('points_redeemed', '!=', null)->count() }}</td>
+                                <td class="text-primary">{{ $member->customer->orders->where('points_redeemed', '!=', null)->sum('points_redeemed') }}</td>
                                 <td class="text-primary">{{ $member->current_points }}</td>
                                 <td class="text-secondary">{{ $member->card->discount_rate }}%</td>
                             </tr>
@@ -190,7 +190,7 @@
                                     <td>&#2547; {{ $purchase->price }}</td>
                                     <td>{{ $purchase->discount_rate }}%</td>
                                     <td>&#2547; {{ $purchase->membership_discount }}</td>
-                                    <td>{{ $purchase->points_used ?? '--' }}</td>
+                                    <td>{{ $purchase->points_redeemed ?? '--' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

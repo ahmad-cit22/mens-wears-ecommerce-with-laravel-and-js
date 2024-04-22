@@ -245,6 +245,29 @@
                             </td>
                         </tr>
                     @endif
+                    @if ($order->points_redeemed)
+                        <tr class="tabletitle">
+
+                            <td class="Rate" colspan="2" style="text-align: center;">
+                                <h2>Points Redeemed (-)</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ $order->points_redeemed }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+                    @if ($order->membership_discount)
+                        <tr class="tabletitle">
+
+                            <td class="Rate" colspan="2" style="text-align: center;">
+                                <h2>Membership Discount (-)</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>&#2547; {{ $order->membership_discount }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+
                     <tr class="tabletitle">
                         <td class="Rate" colspan="2" style="text-align: center;">
                             <h2>Total Payable</h2>

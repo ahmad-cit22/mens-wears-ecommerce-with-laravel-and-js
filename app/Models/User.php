@@ -55,7 +55,7 @@ class User extends Authenticatable {
     }
 
     public function orders() {
-        return $this->hasMany(Order::class, 'customer_id')->with('customer', 'customer.member', 'customer.member.card', 'area', 'district');
+        return $this->hasMany(Order::class, 'customer_id')->with('customer', 'customer.member', 'customer.member.card', 'area', 'district')->orderBy('created_at', 'desc');
     }
 
     public function is_customer() {

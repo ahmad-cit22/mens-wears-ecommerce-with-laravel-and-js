@@ -540,6 +540,15 @@
             }
         });
 
+        $('#phone').keyup(function() {
+            var phone = $(this).val();
+            if (phone.length == 11) {
+                $(this).removeClass("is-invalid");
+            } else {
+                $(this).addClass("is-invalid");
+            }
+        });
+
         function add_cart(stock_id) {
             url = "{{ route('fos.cart.add.wholesale') }}";
             var stock_id = stock_id;

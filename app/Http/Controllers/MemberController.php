@@ -259,11 +259,13 @@ class MemberController extends Controller {
         foreach ($members as $key => $member) {
             // dd($member->customer->orders);
             if ($member->customer->orders->count() > 0) {
-                $sl++;
                 $orders = $member->customer->orders->toArray();
-                array_push($orders, ['key' => $sl]);
-
-                $data[] = collect($orders);
+                foreach ($orders as $key => $order) {
+                    $sl++;
+                    // array_push($order, $sl);
+                    $order['key'] = $sl;
+                    $data[] = collect($order);
+                }
             }
         }
         $data = array_reverse($data);
@@ -277,63 +279,63 @@ class MemberController extends Controller {
                     // ->addIndexColumn()
                     ->addColumn('id', function ($row) {
 
-                        $data = $row->last()['key'];
+                        $data = $row['key'];
 
                         return $data;
                     })
                     ->addColumn('date', function ($row) {
 
-                        $data = Carbon::parse($row->first()['created_at'])->format('d M, Y');
+                        $data = Carbon::parse($row['created_at'])->format('d M, Y');
 
                         return $data;
                     })
                     ->addColumn('card_number', function ($row) {
 
-                        $data = '<a class="" href="' . route('membership.edit',  $row->first()['customer']['member']['id']) . '">' .
-                            $row->first()['customer']['member']['card_number'] . '</a>';
+                        $data = '<a class="" href="' . route('membership.edit',  $row['customer']['member']['id']) . '">' .
+                            $row['customer']['member']['card_number'] . '</a>';
 
                         return $data;
                     })
                     ->addColumn('name', function ($row) {
 
-                        $data = $row->first()['customer']['name'];
+                        $data = $row['customer']['name'];
 
                         return $data;
                     })
                     ->addColumn('phone', function ($row) {
 
-                        $data = $row->first()['customer']['phone'];
+                        $data = $row['customer']['phone'];
 
                         return $data;
                     })
                     ->addColumn('memo_number', function ($row) {
 
-                        $data = '<a class="" href="' . route('order.edit',  $row->first()['id']) . '">' .
-                            $row->first()['code'] . '</a>';
+                        $data = '<a class="" href="' . route('order.edit',  $row['id']) . '">' .
+                            $row['code'] . '</a>';
 
                         return $data;
                     })
                     ->addColumn('purchase_amount', function ($row) {
 
-                        $data = '&#2547; ' .  $row->first()['price'];
+                        $data = '&#2547; ' .  $row['price'];
 
                         return $data;
                     })
                     ->addColumn('discount_rate', function ($row) {
 
-                        $data = $row->first()['discount_rate'] . '%';
+                        $data = $row['discount_rate'] . '%';
 
                         return $data;
                     })
                     ->addColumn('discount_amount', function ($row) {
 
-                        $data = '&#2547; ' .  $row->first()['membership_discount'];
+                        $data = '&#2547; ' .  $row['membership_discount'];
 
                         return $data;
                     })
-                    ->addColumn('points_used', function ($row) {
+                    ->addColumn('points_redeemed', function ($row) {
 
-                        $data = $row->first()['points_used'];
+                        $data = $row['points_redeemed'];
 
                         return $data;
                     })

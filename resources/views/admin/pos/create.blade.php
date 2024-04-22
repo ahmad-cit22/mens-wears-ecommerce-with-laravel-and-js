@@ -251,35 +251,29 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mt-3">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <label class="text-body">Address <span class="text-danger">*</span></label>
                                                 <fieldset class="form-group mb-3">
                                                     <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ $fos_order != null ? $fos_order->shipping_address : old('shipping_address') }}" required>
                                                 </fieldset>
-                                                {{-- @error('address')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror --}}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="text-body">Membership Card No.</label>
+                                                <fieldset class="form-group mb-3">
+                                                    <input type="text" class="form-control" placeholder="Enter Membership Card No." id="card_no" name="card_no" value="{{ old('card_no') }}">
+                                                </fieldset>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between colorfull-select">
+                                    <div class="row colorfull-select">
 
-                                        <div class="selectmain">
-                                            <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
-                                            <select name="district_id" class="select2 select-down" id="district_id" required>
-                                                <option value="">--- Select ---</option>
-                                                @foreach ($districts as $district)
-                                                    <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="col-md-6">
+                                            <label class="text-body">Membership Status</label>
+                                            <fieldset class="form-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Membership Status" id="card_status" name="card_status" readonly>
+                                            </fieldset>
                                         </div>
-                                        <div class="d-flex flex-column selectmain">
-                                            <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
-                                            <select name="area_id" class="select2 select-down" id="areas" required>
-                                                <!-- <option value="">Please Select an Area</option> -->
-                                            </select>
-                                        </div>
-                                        <div class="">
+                                        <div class="col-md-6">
                                             <div class="selectmain">
                                                 <label class="text-dark d-flex">Courier Name <span class="text-danger">*</span></label>
                                                 <select name="courier_id" class="select2 select-down" id="courier_id">
@@ -291,6 +285,23 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row colorfull-select">
+                                        <div class="selectmain col-md-6">
+                                            <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
+                                            <select name="district_id" class="select2 select-down" id="district_id" required>
+                                                <option value="">--- Select ---</option>
+                                                @foreach ($districts as $district)
+                                                    <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="selectmain col-md-6">
+                                            <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
+                                            <select name="area_id" class="select2 select-down" id="areas" required>
+                                                <!-- <option value="">Please Select an Area</option> -->
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="mt-4">
                                         <label id="remove_shipping_charge_label" class="ms-2 d-inline-block"><input class="mr-1" type="checkbox" id="remove_shipping_charge" name="remove_shipping_charge" value="1">Free Shipping</label>
 
@@ -299,9 +310,9 @@
 
                                         <div class="form-group row justify-content-start">
                                             <div class="col-md-6">
-                                                <label id="advance_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="advance_shipping_charge" name="advance_shipping_charge" value="1" {{ $fos_order != null ? 'checked' : '' }}> Shipping Charge Advanced</label>
+                                                <label id="advance_shipping_charge_label" class="ms-2 d-inline-block"><input type="checkbox" id="advance_shipping_charge" name="advance_shipping_charge" value="1"> Shipping Charge Advanced</label>
                                             </div>
-                                            <div class="col-md-6 text-start" id="showChargeBox" style="{{ $fos_order != null ? '' : 'display: none' }}">
+                                            <div class="col-md-6 text-start" id="showChargeBox" style="display: none">
                                                 <label class="text-body">Enter Charge Amount</label>
                                                 <fieldset class="form-group mb-3">
                                                     <input type="number" name="advanced_charge" id="advanced_charge" class="form-control" placeholder="Advanced Delivery Charge Amount" value="{{ $fos_order != null ? $fos_order->advance : 0 }}">
@@ -437,11 +448,40 @@
                                                 </th>
                                                 <td class="border-0 justify-content-end d-flex text-dark font-size-base">
                                                     {{ env('CURRENCY') }}<span id="discount_amount_label">{{ $discount }}</span>
-
                                                 </td>
-
+                                            </tr>
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th id="member_discount_label" class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="display: none">
+                                                    Membership Discount
+                                                </th>
+                                                <td class="border-0 justify-content-end d-flex text-dark font-size-base">
+                                                    <span id="membership_discount" class="text-success"></span>
+                                                </td>
                                             </tr>
                                             <input type="hidden" name="discount" id="discount" value="{{ $discount }}">
+                                            <input type="hidden" name="member_discount_rate" id="member_discount_rate" value="0">
+                                            <input type="hidden" name="member_discount_amount" id="member_discount_amount" value="0">
+                                            <input type="hidden" name="redeem_points_amount" id="redeem_points_amount" value="0">
+
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th id="point_row" class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="display: none">
+                                                    Member Points Remaining
+                                                </th>
+                                                <td class="border-0 justify-content-end d-flex text-dark font-size-base">
+                                                    <span id="point_label" class="text-success"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th id="point_input_label" class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="display: none">
+                                                    Redeem Points
+                                                </th>
+                                                <td>
+                                                    <div id="point_input" class="input-group" style="display: none">
+                                                        <input type="number" class="form-control" placeholder="Redeem Points" id="redeem_points" value="{{ old('redeem_points') }}">
+                                                    </div>
+                                                    <span id="point_error" class="text-danger font-weight-bold fs-6"></span>
+                                                </td>
+                                            </tr>
 
                                             <tr class="d-flex align-items-center justify-content-between item-price">
                                                 <th class="border-0 font-size-h5 mb-0 font-size-bold text-primary">
@@ -449,7 +489,6 @@
                                                     TOTAL
                                                 </th>
                                                 <td class="border-0 justify-content-end d-flex text-primary font-size-base">{{ env('CURRENCY') }}<span id="total_amount">{{ Cart::subtotal() - $discount }}</span></td>
-
                                             </tr>
 
                                         </tbody>
@@ -534,6 +573,67 @@
     @if ($fos_order != null)
         <script>
             $('#new-customer-form').hide();
+
+            var url = "{{ route('pos.check.membership') }}";
+            // alert(url);
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    customer_id: {{ $fos_order->customer_id }},
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    if (response.status) {
+                        $('#card_status').val(response.card.card_status);
+                        $('#card_no').val(response.card_number);
+                        $('#point_row').show();
+                        $('#point_label').html(response.member.current_points);
+                        $('#point_input').show();
+                        $('#point_input_label').show();
+                        $('#member_discount_label').show();
+                        if (response.card.min_point > response.member.current_points) {
+                            $('#redeem_points').prop('disabled', true);
+                            $('#point_error').html('Point Not Sufficient to Redeem!');
+                        } else {
+                            $('#redeem_points').prop('disabled', false);
+                            $('#point_error').html('');
+                        }
+                        Swal.fire(
+                            'Done!',
+                            "Member Found",
+                            'success'
+                        );
+
+                        var subtotal = $('#subtotal_amount').val();
+                        $('#member_discount_rate').val(response.card.discount_rate);
+
+                        let membership_discount = Math.round(subtotal * (response.card.discount_rate / 100));
+                        $('#member_discount').show();
+                        $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                        $('#member_discount_amount').val(membership_discount);
+                        var shipping_charge = $('#shipping_charge').val();
+                        var advanced_charge = $('#advanced_charge').val();
+                        var discount = $('#discount').val();
+
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount));
+                    } else {
+                        $('#card_status').val('');
+                        $('#card_no').val('');
+                        $('#point_row').hide();
+                        $('#point_label').html('');
+                        $('#point_input').hide();
+                        $('#member_discount').hide();
+                        $('#point_input_label').hide();
+                        $('#member_discount_label').hide();
+                        $('#membership_discount').html('');
+                        $('#member_discount_amount').val('');
+                        $('#member_discount_rate').val('');
+                        $('#card_status').val(response.card);
+                    }
+                    console.log(response);
+                }
+            });
         </script>
 
         <script>
@@ -541,9 +641,13 @@
             var discount = $('#discount').val();
             var shipping_charge = $('#shipping_charge').val();
             var charge_advanced = $('#advanced_charge').val();
+
+            let membership_discount = $('#member_discount_amount').val();
+            var redeem_points = $('#redeem_points_amount').val();
+
             if (charge_advanced > 0) {
                 $('#charge_advanced_label').html(charge_advanced);
-                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount));
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
             }
         </script>
 
@@ -563,15 +667,25 @@
                         },
                         success: function(response) {
                             var shipping_charge = $('#shipping_charge').val();
+                            var advanced_charge = $('#advanced_charge').val();
+
+                            let membership_discount = $('#member_discount_amount').val();
+                            var redeem_points = $('#redeem_points_amount').val();
+
                             $('#discount_amount_label').html(response);
-                            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
+                            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(response) - parseInt(membership_discount) - parseInt(redeem_points));
                             $('#discount').val(response);
                         }
                     });
                 } else {
                     var shipping_charge = $('#shipping_charge').val();
+                    var advanced_charge = $('#advanced_charge').val();
+
+                    let membership_discount = $('#member_discount_amount').val();
+                    var redeem_points = $('#redeem_points_amount').val();
+
                     $('#discount_amount_label').html(0);
-                    $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(0));
+                    $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(0) - parseInt(membership_discount) - parseInt(redeem_points));
                     $('#discount').val(0);
                 }
             </script>
@@ -582,13 +696,17 @@
             var subtotal = $('#subtotal_amount').val();
             var shipping_charge = $('#shipping_charge').val();
             var discount = $('#discount').val();
+            var advanced_charge = $('#advanced_charge').val();
             $('#discount_amount_label').html(discount);
-            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+
+            let membership_discount = $('#member_discount_amount').val();
+            var redeem_points = $('#redeem_points_amount').val();
+
+            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
         </script>
     @endif
 
     <script>
-
         jQuery(function() {
             jQuery('#category_id').multipleSelect({
                 filter: true,
@@ -639,11 +757,100 @@
 
                 $("#name").prop('required', true);
                 $("#phone").prop('required', true);
+
             } else {
                 $('#new-customer-form').hide();
 
                 $("#name").prop('required', false);
                 $("#phone").prop('required', false);
+
+                var url = "{{ route('pos.check.membership') }}";
+                // alert(url);
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        customer_id: customer_id,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            $('#card_status').val(response.card.card_status);
+                            $('#card_no').val(response.card_number);
+                            $('#point_row').show();
+                            $('#point_label').html(response.member.current_points);
+                            $('#point_input').show();
+                            $('#point_input_label').show();
+                            $('#member_discount_label').show();
+                            if (response.card.min_point > response.member.current_points) {
+                                $('#redeem_points').prop('disabled', true);
+                                $('#point_error').html('Point Not Sufficient to Redeem!');
+                            } else {
+                                $('#redeem_points').prop('disabled', false);
+                                $('#point_error').html('');
+                            }
+                            Swal.fire(
+                                'Done!',
+                                "Member Found",
+                                'success'
+                            );
+
+                            var subtotal = $('#subtotal_amount').val();
+                            $('#member_discount_rate').val(response.card.discount_rate);
+
+                            let membership_discount = Math.round(subtotal * (response.card.discount_rate / 100));
+                            $('#member_discount').show();
+                            $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                            $('#member_discount_amount').val(membership_discount);
+                            var shipping_charge = $('#shipping_charge').val();
+                            var advanced_charge = $('#advanced_charge').val();
+                            var discount = $('#discount').val();
+
+                            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount));
+                        } else {
+                            $('#card_status').val('');
+                            $('#card_no').val('');
+                            $('#point_row').hide();
+                            $('#point_label').html('');
+                            $('#point_input').hide();
+                            $('#member_discount').hide();
+                            $('#point_input_label').hide();
+                            $('#member_discount_label').hide();
+                            $('#membership_discount').html('');
+                            $('#member_discount_amount').val('');
+                            $('#member_discount_rate').val('');
+                            $('#card_status').val(response.card);
+                        }
+                        console.log(response);
+                    }
+                });
+            }
+
+        });
+
+        $("#redeem_points").keyup(function() {
+            let redeem_points = $(this).val();
+            $('#redeem_points_amount').val(redeem_points);
+            var subtotal = $('#subtotal_amount').val();
+            let membership_discount = $('#member_discount_amount').val();
+            var shipping_charge = $('#shipping_charge').val();
+            var advanced_charge = $('#advanced_charge').val();
+            var discount = $('#discount').val();
+
+            if (redeem_points > 0) {
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
+            } else {
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(0));
+
+            }
+        });
+
+        $('#phone').keyup(function() {
+            var phone = $(this).val();
+            if (phone.length == 11) {
+                $(this).removeClass("is-invalid");
+            } else {
+                $(this).addClass("is-invalid");
             }
         });
 
@@ -682,8 +889,11 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    let membership_discount = $('#member_discount_amount').val();
+                    var redeem_points = $('#redeem_points_amount').val();
+
                     $('#shipping_charge_label').html(response);
-                    $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount));
+                    $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                     $('#shipping_charge').val(response);
                 }
             });
@@ -694,11 +904,15 @@
             var subtotal = $('#subtotal_amount').val();
             var discount = $('#discount').val();
             var charge_advanced = $('#advanced_charge').val();
+            let membership_discount = $('#member_discount_amount').val();
+            var redeem_points = $('#redeem_points_amount').val();
 
             if ($("#remove_shipping_charge").is(':checked')) {
+
                 $('#shipping_charge_label').html(0);
-                $('#total_amount').html(parseInt(subtotal) - parseInt(charge_advanced) - parseInt(discount));
+                $('#total_amount').html(parseInt(subtotal) - parseInt(charge_advanced) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                 $('#shipping_charge').val(0);
+
             } else {
                 var area_id = $('#areas').val();
                 if (area_id == '') {
@@ -717,7 +931,7 @@
                     },
                     success: function(response) {
                         $('#shipping_charge_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(response) - parseInt(charge_advanced) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                         $('#shipping_charge').val(response);
                     }
                 });
@@ -728,6 +942,9 @@
             var subtotal = $('#subtotal_amount').val();
             var discount = $('#discount').val();
             var shipping_charge = $('#shipping_charge').val();
+            let membership_discount = $('#member_discount_amount').val();
+            var redeem_points = $('#redeem_points_amount').val();
+
             if ($("#advance_shipping_charge").is(':checked')) {
                 $('#showChargeBox').show();
                 // $('#total_amount').html(parseInt(subtotal) - parseInt(discount));
@@ -735,7 +952,7 @@
                     let charge_advanced = $(this).val();
                     if (charge_advanced > 0) {
                         $('#charge_advanced_label').html(charge_advanced);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(charge_advanced) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                     }
                 });
 
@@ -748,7 +965,7 @@
                 var subtotal = $('#subtotal_amount').val();
                 var discount = $('#discount').val();
 
-                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(discount));
+                $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
             }
         })
 
@@ -768,10 +985,22 @@
                     var advanced_charge = $('#advanced_charge').val();
                     var discount = $('#discount').val();
 
+                    var member_discount_rate = $('#member_discount_rate').val();
+                    var subtotal = response.total_amount;
+
+                    let membership_discount = Math.round(subtotal * (member_discount_rate / 100));
+
+                    if (membership_discount > 0) {
+                        $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                        $('#member_discount_amount').val(membership_discount);
+                    }
+
+                    var redeem_points = $('#redeem_points_amount').val();
+
                     $('#total_count').html(response.total_count);
-                    $('#subtotal').html(response.total_amount);
-                    $('#subtotal_amount').val(response.total_amount);
-                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount));
+                    $('#subtotal').html(subtotal);
+                    $('#subtotal_amount').val(subtotal);
+                    $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                     $('#cart_table').html(response.cart_table);
                 }
             });
@@ -788,12 +1017,24 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
-                    $('#total_count').html(response.total_count);
-                    $('#subtotal').html(response.total_amount);
-                    $('#subtotal_amount').val(response.total_amount);
                     var shipping_charge = $('#shipping_charge').val();
+                    var advanced_charge = $('#advanced_charge').val();
                     var discount = $('#discount').val();
-                    $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+
+                    var member_discount_rate = $('#member_discount_rate').val();
+                    var subtotal = response.total_amount;
+
+                    let membership_discount = Math.round(subtotal * (member_discount_rate / 100));
+
+                    $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                    $('#member_discount_amount').val(membership_discount);
+
+                    var redeem_points = $('#redeem_points_amount').val();
+
+                    $('#total_count').html(response.total_count);
+                    $('#subtotal').html(subtotal);
+                    $('#subtotal_amount').val(subtotal);
+                    $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                     $('#cart_table').html(response.cart_table);
                 }
             });
@@ -816,12 +1057,26 @@
                             _token: '{{ csrf_token() }}',
                         },
                         success: function(response) {
-                            $('#total_count').html(response.total_count);
-                            $('#subtotal').html(response.total_amount);
-                            $('#subtotal_amount').val(response.total_amount);
                             var shipping_charge = $('#shipping_charge').val();
+                            var advanced_charge = $('#advanced_charge').val();
                             var discount = $('#discount').val();
-                            $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+
+                            var member_discount_rate = $('#member_discount_rate').val();
+                            var subtotal = response.total_amount;
+
+                            let membership_discount = Math.round(subtotal * (member_discount_rate / 100));
+
+                            if (membership_discount > 0) {
+                                $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                                $('#member_discount_amount').val(membership_discount);
+                            }
+
+                            var redeem_points = $('#redeem_points_amount').val();
+
+                            $('#total_count').html(response.total_count);
+                            $('#subtotal').html(subtotal);
+                            $('#subtotal_amount').val(subtotal);
+                            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                             $('#cart_table').html(response.cart_table);
                             $("#barcode").val('');
                             checkReq = false;
@@ -847,12 +1102,24 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        $('#total_count').html(response.total_count);
-                        $('#subtotal').html(response.total_amount);
-                        $('#subtotal_amount').val(response.total_amount);
                         var shipping_charge = $('#shipping_charge').val();
+                        var advanced_charge = $('#advanced_charge').val();
                         var discount = $('#discount').val();
-                        $('#total_amount').html(parseInt(response.total_amount) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(discount));
+
+                        var member_discount_rate = $('#member_discount_rate').val();
+                        var subtotal = response.total_amount;
+
+                        let membership_discount = Math.round(subtotal * (member_discount_rate / 100));
+
+                        $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                        $('#member_discount_amount').val(membership_discount);
+
+                        var redeem_points = $('#redeem_points_amount').val();
+
+                        $('#total_count').html(response.total_count);
+                        $('#subtotal').html(subtotal);
+                        $('#subtotal_amount').val(subtotal);
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount) - parseInt(redeem_points));
                         $('#cart_table').html(response.cart_table);
                     }
                 });
@@ -873,9 +1140,15 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
+
                         var shipping_charge = $('#shipping_charge').val();
+                        var advanced_charge = $('#advanced_charge').val();
+
+                        let membership_discount = $('#member_discount_amount').val();
+                        var redeem_points = $('#redeem_points_amount').val();
+
                         $('#discount_amount_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(response) - parseInt(membership_discount) - parseInt(redeem_points));
                         $('#discount').val(response);
                     }
                 });
@@ -891,8 +1164,13 @@
                     },
                     success: function(response) {
                         var shipping_charge = $('#shipping_charge').val();
+                        var advanced_charge = $('#advanced_charge').val();
+
+                        let membership_discount = $('#member_discount_amount').val();
+                        var redeem_points = $('#redeem_points_amount').val();
+
                         $('#discount_amount_label').html(response);
-                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt($('#advanced_charge').val()) - parseInt(response));
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(response) - parseInt(membership_discount) - parseInt(redeem_points));
                         $('#discount').val(response);
                     }
                 });
