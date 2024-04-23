@@ -410,12 +410,14 @@ class PageController extends Controller {
         $member_discount_amount = $request->member_discount_amount;
         $redeem_points_amount = $request->redeem_points_amount;
 
-        if (Auth::user()->member) {
+        $member = Auth::user()->member;
+        if ($member) {
             $order->membership_discount = $member_discount_amount;
 
             $order->points_redeemed = $redeem_points_amount;
-            Auth::user()->member->current_points -= $redeem_points_amount;
-            Auth::user()->member->save();
+            $member->current_points -= $redeem_points_amount;
+            $member->current_points += round(Cart::subtotal() * ($member->card->point_percentage / 100));
+            $member->save();
 
             if ($member_discount_rate) {
                 $order->discount_rate = $member_discount_rate;
