@@ -243,6 +243,7 @@
                                                     <label class="text-body">Phone <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}" @if ($fos_order == null) required @endif>
+                                                        <span id="err-phone" class="invalid-feedback"></span>
                                                         {{-- @error('phone')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror --}}
@@ -849,8 +850,10 @@
             var phone = $(this).val();
             if (phone.length == 11) {
                 $(this).removeClass("is-invalid");
+                $('#err-phone').html("");
             } else {
                 $(this).addClass("is-invalid");
+                $('#err-phone').html("Phone Number must be 11 digits long.");
             }
         });
 

@@ -70,7 +70,8 @@ class PosController extends Controller {
             $districts = District::orderBy('name', 'ASC')->get();
 
             // return DNS1D::getBarcodeSVG('1005', 'C39');
-            return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
+            // return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
+            return view('admin.pos.create-vendor', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -211,7 +212,6 @@ class PosController extends Controller {
             $order->points_redeemed = $redeem_points_amount;
             $user->member->current_points -= $redeem_points_amount;
             $user->member->current_points += round(Cart::subtotal() * ($user->member->card->point_percentage / 100));
-            //test
             $user->member->save();
 
             if ($member_discount_rate) {

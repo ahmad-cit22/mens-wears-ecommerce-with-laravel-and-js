@@ -66,6 +66,10 @@ class User extends Authenticatable {
         return $this->hasOne(Member::class, 'user_id');
     }
 
+    public function vendor() {
+        return $this->hasOne(Vendor::class, 'user_id');
+    }
+
     public function district() {
         return $this->belongsTo(District::class, 'city');
     }
