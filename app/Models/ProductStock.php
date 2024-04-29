@@ -17,4 +17,8 @@ class ProductStock extends Model
     {
     	return $this->belongsTo(Size::class);
     }
+
+    public function vendor() {
+        return $this->belongsTo(Vendor::class);
+    }
 }

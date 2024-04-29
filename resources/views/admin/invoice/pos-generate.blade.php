@@ -108,6 +108,28 @@
         #legalcopy {
             margin-top: 5mm;
         }
+
+        /* @page {
+            size: 6in 9in;
+        } */
+
+        /* @page {
+            size: 10in 9in;
+        }
+        @media print {
+
+
+
+            html,
+            body {
+                width: 10in !important;
+                height: 9in !important;
+            }
+
+            .info {
+                color: rgb(52, 1, 153) !important;
+            }
+        } */
     </style>
 </head>
 

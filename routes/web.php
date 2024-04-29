@@ -285,6 +285,39 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::post('/vat-calculate/{id}', [App\Http\Controllers\OrderController::class, 'vat_calculate'])->name('vat.calculate');
     });
 
+    // Vendor Sell Routes
+    Route::group(['prefix' => 'vendor-sell', 'as' => 'vendor_sell.'], function () {
+        Route::get('/', [App\Http\Controllers\VendorOrderController::class, 'sell_index'])->name('index');
+        Route::get('/export-excel/{all}', [App\Http\Controllers\VendorOrderController::class, 'sell_export_excel2'])->name('export.excel');
+        Route::get('/report', [App\Http\Controllers\VendorOrderController::class, 'sell_report'])->name('report');
+        Route::get('/search', [App\Http\Controllers\VendorOrderController::class, 'sell_search'])->name('search');
+        Route::get('/search-export/{all}', [App\Http\Controllers\VendorOrderController::class, 'sell_search_export'])->name('search.export');
+        Route::get('/report_search', [App\Http\Controllers\VendorOrderController::class, 'report_search'])->name('report_search');
+        Route::get('/sell-export', [App\Http\Controllers\VendorOrderController::class, 'sell_export_excel'])->name('sell.export');
+        Route::post('/vat-calculate/{id}', [App\Http\Controllers\VendorOrderController::class, 'vat_calculate'])->name('vat.calculate');
+
+
+        Route::get('/status/{id}', [App\Http\Controllers\VendorOrderController::class, 'orders_by_status'])->name('status.filter');
+        Route::get('/edit/{id}', [App\Http\Controllers\VendorOrderController::class, 'edit'])->name('edit');
+        Route::post('/destroy/{id}', [App\Http\Controllers\VendorOrderController::class, 'destroy'])->name('destroy');
+        Route::post('/change-status/{id}', [App\Http\Controllers\VendorOrderController::class, 'change_status'])->name('status.change');
+        Route::post('/change-payment-status/{id}', [App\Http\Controllers\VendorOrderController::class, 'change_payment_status'])->name('payment.status.change');
+        Route::get('/return/{id}', [App\Http\Controllers\VendorOrderController::class, 'return'])->name('return');
+        Route::post('/apply-cod/{id}', [App\Http\Controllers\VendorOrderController::class, 'apply_cod'])->name('apply.cod');
+        Route::get('/remove-discount/{id}', [App\Http\Controllers\VendorOrderController::class, 'remove_discount'])->name('remove.discount');
+        Route::get('/remove-loss/{id}', [App\Http\Controllers\VendorOrderController::class, 'remove_loss'])->name('remove.loss');
+        // Invoice route
+        Route::get('/generate-invoice/{id}', [App\Http\Controllers\VendorOrderController::class, 'generate_invoice'])->name('invoice.generate');
+        Route::get('/generate-pos-invoice/{id}', [App\Http\Controllers\VendorOrderController::class, 'generate_pos_invoice'])->name('invoice.pos.generate');
+        Route::post('/discount-amount-update/{id}', [App\Http\Controllers\VendorOrderController::class, 'discount_amount_update'])->name('discount_amount.update');
+        Route::post('/order-products-update/{id}', [App\Http\Controllers\VendorOrderController::class, 'order_products_update'])->name('order_products.update');
+        Route::get('/all', [App\Http\Controllers\VendorOrderController::class, 'all_orders'])->name('all');
+        Route::get('/current-year', [App\Http\Controllers\VendorOrderController::class, 'current_year'])->name('current.year');
+        Route::get('/current-month', [App\Http\Controllers\VendorOrderController::class, 'current_month'])->name('current.month');
+        Route::get('/today', [App\Http\Controllers\VendorOrderController::class, 'today'])->name('today');
+        Route::get('/customer-orders/{id}', [App\Http\Controllers\VendorOrderController::class, 'customer_orders'])->name('customer.orders');
+    });
+
     // Sell Return Routes
     Route::group(['prefix' => 'sell-return', 'as' => 'sellreturn.'], function () {
         Route::get('/', [App\Http\Controllers\OrderReturnController::class, 'index'])->name('index');
@@ -592,5 +625,16 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/', [App\Http\Controllers\PartnerTransactionController::class, 'index'])->name('index');
         Route::post('/store', [App\Http\Controllers\PartnerTransactionController::class, 'store'])->name('store');
         Route::get('/search', [App\Http\Controllers\PartnerTransactionController::class, 'search'])->name('search');
+    });
+
+    // Vendor Routes
+    Route::group(['prefix' => 'vendor', 'as' => 'vendor.'], function () {
+        Route::get('/', [App\Http\Controllers\VendorController::class, 'index'])->name('index');
+        Route::post('/store', [App\Http\Controllers\VendorController::class, 'store'])->name('store');
+        Route::post('/update/{id}', [App\Http\Controllers\VendorController::class, 'update'])->name('update');
+        Route::post('/destroy/{id}', [App\Http\Controllers\VendorController::class, 'destroy'])->name('destroy');
+        Route::post('/destroy/{id}', [App\Http\Controllers\VendorController::class, 'destroy'])->name('destroy');
+        Route::get('/transfer-products', [App\Http\Controllers\VendorController::class, 'transfer_products'])->name('transfer_products');
+        Route::post('/transfer-products-store', [App\Http\Controllers\VendorController::class, 'transfer_products_store'])->name('transfer_products.store');
     });
 });

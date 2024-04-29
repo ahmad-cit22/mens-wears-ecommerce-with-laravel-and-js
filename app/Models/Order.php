@@ -67,4 +67,8 @@ class Order extends Model {
     public function apply_cod_by() {
         return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'apply_cod')->latest()->with('adder');
     }
+
+    public function vendor() {
+        return $this->belongsTo(Vendor::class, 'vendor_id');
+    }
 }

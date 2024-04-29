@@ -585,6 +585,11 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    var subtotal = $('#subtotal_amount').val();
+                    var shipping_charge = $('#shipping_charge').val();
+                    var advanced_charge = $('#advanced_charge').val();
+                    var discount = $('#discount').val();
+
                     if (response.status) {
                         $('#card_status').val(response.card.card_status);
                         $('#card_no').val(response.card_number);
@@ -606,16 +611,12 @@
                             'success'
                         );
 
-                        var subtotal = $('#subtotal_amount').val();
                         $('#member_discount_rate').val(response.card.discount_rate);
 
                         let membership_discount = Math.round(subtotal * (response.card.discount_rate / 100));
                         $('#member_discount').show();
                         $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
                         $('#member_discount_amount').val(membership_discount);
-                        var shipping_charge = $('#shipping_charge').val();
-                        var advanced_charge = $('#advanced_charge').val();
-                        var discount = $('#discount').val();
 
                         $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount));
                     } else {
@@ -628,9 +629,11 @@
                         $('#point_input_label').hide();
                         $('#member_discount_label').hide();
                         $('#membership_discount').html('');
-                        $('#member_discount_amount').val('');
-                        $('#member_discount_rate').val('');
+                        $('#member_discount_amount').val(0);
+                        $('#member_discount_rate').val(0);
+                        $('#redeem_points_amount').val(0);
                         $('#card_status').val(response.card);
+                        $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount));
                     }
                     console.log(response);
                 }
@@ -738,6 +741,7 @@
                 url: url,
                 type: "POST",
                 data: {
+                    is_vendor: null,
                     category_id: category_id,
                     brand_id: brand_id,
                     product_name: product_name,
@@ -775,6 +779,11 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
+                        var subtotal = $('#subtotal_amount').val();
+                        var shipping_charge = $('#shipping_charge').val();
+                        var advanced_charge = $('#advanced_charge').val();
+                        var discount = $('#discount').val();
+
                         if (response.status) {
                             $('#card_status').val(response.card.card_status);
                             $('#card_no').val(response.card_number);
@@ -796,16 +805,12 @@
                                 'success'
                             );
 
-                            var subtotal = $('#subtotal_amount').val();
                             $('#member_discount_rate').val(response.card.discount_rate);
 
                             let membership_discount = Math.round(subtotal * (response.card.discount_rate / 100));
                             $('#member_discount').show();
                             $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
                             $('#member_discount_amount').val(membership_discount);
-                            var shipping_charge = $('#shipping_charge').val();
-                            var advanced_charge = $('#advanced_charge').val();
-                            var discount = $('#discount').val();
 
                             $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount) - parseInt(membership_discount));
                         } else {
@@ -818,9 +823,11 @@
                             $('#point_input_label').hide();
                             $('#member_discount_label').hide();
                             $('#membership_discount').html('');
-                            $('#member_discount_amount').val('');
-                            $('#member_discount_rate').val('');
+                            $('#member_discount_amount').val(0);
+                            $('#member_discount_rate').val(0);
+                            $('#redeem_points_amount').val(0);
                             $('#card_status').val(response.card);
+                            $('#total_amount').html(parseInt(subtotal) + parseInt(shipping_charge) - parseInt(advanced_charge) - parseInt(discount));
                         }
                         console.log(response);
                     }
@@ -1029,8 +1036,10 @@
 
                     let membership_discount = Math.round(subtotal * (member_discount_rate / 100));
 
-                    $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
-                    $('#member_discount_amount').val(membership_discount);
+                    if (membership_discount > 0) {
+                        $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                        $('#member_discount_amount').val(membership_discount);
+                    }
 
                     var redeem_points = $('#redeem_points_amount').val();
 
@@ -1114,8 +1123,10 @@
 
                         let membership_discount = Math.round(subtotal * (member_discount_rate / 100));
 
-                        $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
-                        $('#member_discount_amount').val(membership_discount);
+                        if (membership_discount > 0) {
+                            $('#membership_discount').html("{{ env('CURRENCY') }}" + membership_discount);
+                            $('#member_discount_amount').val(membership_discount);
+                        }
 
                         var redeem_points = $('#redeem_points_amount').val();
 

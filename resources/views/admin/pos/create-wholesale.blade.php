@@ -608,6 +608,7 @@
                 url: url,
                 type: "POST",
                 data: {
+                    is_vendor: null,
                     category_id: category_id,
                     brand_id: brand_id,
                     product_name: product_name,

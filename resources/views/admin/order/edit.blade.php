@@ -13,7 +13,11 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Order</li>
+                        @if ($order->vendor_id)
+                            <li class="breadcrumb-item active">vendor-order</li>
+                        @else
+                            <li class="breadcrumb-item active">order</li>
+                        @endif
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -25,9 +29,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
 
 
                     <!-- Main content -->
@@ -52,7 +56,11 @@
                                     @if ($order->source == 'Wholesale')
                                         <a href="{{ route('sell.wholesale.index') }}" class="btn btn-info bg-primary float-right mb-2">Wholesale List</a> <br>
                                     @else
-                                        <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
+                                        @if ($order->vendor_id)
+                                            <a href="{{ route('vendor_sell.index') }}" class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
+                                        @else
+                                            <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
+                                        @endif
                                     @endif
 
                                     <div class="ml-4">
@@ -78,9 +86,14 @@
                                         @if ($order->email != null)
                                             Email: {{ $order->email }}<br>
                                         @endif
-                                        Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
-                                        @if ($order->courier_name)
-                                            Courier Name: {{ $order->courier_name }}<br>
+                                        @if ($order->other_info != null)
+                                            Other Info: {{ $order->other_info }}<br>
+                                        @endif
+                                        @if (!$order->vendor_id)
+                                            Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
+                                            @if ($order->courier_name)
+                                                Courier Name: {{ $order->courier_name }}<br>
+                                            @endif
                                         @endif
                                     </address>
                                 </div>
@@ -113,7 +126,9 @@
                                                 Amount: <strong>{{ env('CURRENCY') }} {{ $order->sender_amount }}</strong><br>
                                             @endif
                                         @endif
-                                        Order Source: {{ $order->source }}
+                                        Order Source: {{ $order->source }} @if ($order->vendor_id)
+                                            <b>({{ $order->vendor->name }})</b>
+                                        @endif
                                     </address>
                                 </div>
                                 <!-- /.col -->
@@ -152,151 +167,255 @@
                                 </div>
                             </div>
                             <!-- /.row -->
-                            <div class="row mt-3">
-                                <div class="col-md-6 border-right">
-                                    <form action="{{ route('order.courier_info.store', $order->id) }}" method="POST">
-                                        @csrf
-                                        <div class="form-group">
-                                            <label>Courier Name</label>
-                                            <select name="courier_name" class="form-control select2 select-down" id="courier_name">
-                                                <option value="0"> -- Select Courier Name -- </option>
-                                                @foreach ($couriers as $courier)
-                                                    <option value="{{ $courier->name }}" {{ $order->courier_name == $courier->name ? 'selected' : '' }}>{{ $courier->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        @if ($order->status->priority_no > 3)
+                            @if ($order->vendor_id)
+                                <div class="row mt-3">
+                                    <div class="col-md-6 border-right align-content-end">
+                                        <form action="{{ route('order.discount_amount.update', $order->id) }}" method="POST">
+                                            @csrf
                                             <div class="form-group">
-                                                <label>Reference Code</label>
+                                                <label>Discount Amount</label>
                                                 <div class="input-group mb-3">
-                                                    <input type="text" class="form-control" name="refer_code" value="{{ $order->refer_code }}">
+                                                    <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount ?? 0 }}">
                                                 </div>
-                                                @error('refer_code')
+                                                @error('discount_amount')
                                                     <span class="invalid-feedback" role="alert" style="display: block;">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
-                                        @endif
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-md-6 border-right align-content-end">
-                                    <form action="{{ route('order.discount_amount.update', $order->id) }}" method="POST">
-                                        @csrf
-                                        <div class="form-group">
-                                            <label>Discount Amount</label>
-                                            <div class="input-group mb-3">
-                                                <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount ?? 0 }}">
-                                            </div>
-                                            @error('discount_amount')
-                                                <span class="invalid-feedback" role="alert" style="display: block;">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6 border-right">
-                                    <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
-                                        @csrf
-                                        <div class="form-group">
-                                            <label>Payment Status</label>
-                                            <select name="payment_status" class="form-control select2">
-                                                @if (auth()->user()->can('order.paid') || 1 == $order->payment_status)
-                                                    <option value="1" {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid</option>
-                                                @endif
-                                                <option value="0" {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </div>
-                                    </form>
-
-                                    <form action="{{ route('order.advance.payment', $order->id) }}" method="POST">
-                                        @csrf
-                                        <div class="form-froup">
-                                            <label>Advance Amount</label>
-                                            <div class="input-group mb-3">
-                                                <input type="number" class="form-control" name="amount" value="{{ $order->advance }}">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-primary bg-purple" type="submit">Save payment</button>
+                                            <div class="form-group">
+                                                <label>Extra Charge ({{ $order->extra_charge_type }})</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="number" class="form-control" name="extra_charge" value="{{ $order->extra_charge ?? 0 }}">
                                                 </div>
+                                                @error('extra_charge')
+                                                    <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </div>
-                                            @error('amount')
-                                                <span class="invalid-feedback" role="alert" style="display: block;">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-md-6">
-                                    <form action="{{ route('order.status.change', $order->id) }}" method="POST">
-                                        @csrf
-                                        <div class="form-group">
-                                            <label>Order Status</label>
-                                            <select name="order_status_id" class="form-control select2">
-                                                @foreach (App\Models\OrderStatus::where('is_active', 1)->orderBy('priority_no', 'ASC')->get() as $status)
-                                                    @if (auth()->user()->can('order.change_all_status'))
-                                                        <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
-                                                    @else
-                                                        @if (in_array($status->priority_no, [1, 3, 7, 10]) || $status->id == $order->order_status_id)
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                        <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>Payment Status</label>
+                                                <select name="payment_status" class="form-control select2">
+                                                    @if (auth()->user()->can('order.paid') || 1 == $order->payment_status)
+                                                        <option value="1" {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid</option>
+                                                    @endif
+                                                    <option value="0" {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6 border-right">
+                                        <form action="{{ route('order.status.change', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>Order Status</label>
+                                                <select name="order_status_id" class="form-control select2">
+                                                    @foreach (App\Models\OrderStatus::where('is_active', 1)->orderBy('priority_no', 'ASC')->get() as $status)
+                                                        @if (in_array($status->id, [1, 2, 4, 5]))
                                                             <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
                                                         @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Reason</label>
+                                                <input type="text" name="note" value="{{ $order->note }}" class="form-control">
+                                                @error('note')
+                                                    <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="row justify-content-start">
+                                                <div class="col-4">
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-8 text-right">
+                                                    @if (1)
+                                                        <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                                    @else
+                                                        <a href="{{ route('order.remove.loss', $order->id) }}" class="btn btn-primary bg-info">Removed Loss</a>
                                                     @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Reason</label>
-                                            <input type="text" name="note" value="{{ $order->note }}" class="form-control">
-                                            @error('note')
-                                                <span class="invalid-feedback" role="alert" style="display: block;">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="row justify-content-start">
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    @if ($order->price > 0)
+                                                        <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                    @endif
+                                                    @if ($order->discount_amount != null)
+                                                        <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
+                                                    @endif
                                                 </div>
                                             </div>
-                                            <div class="col-8 text-right">
-                                                @if (1)
-                                                    <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
-                                                @else
-                                                    <a href="{{ route('order.remove.loss', $order->id) }}" class="btn btn-primary bg-info">Removed Loss</a>
-                                                @endif
-                                                @if ($order->price > 0)
-                                                    <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
-                                                @endif
-                                                @if ($order->discount_amount != null)
-                                                    <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
-                                                @endif
+                                        </form>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <form action="{{ route('order.apply.cod', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group" align="right">
+                                                <button type="submit" class="btn btn-secondary" name="submit" value="remove">Remove COD</button>
+                                                <button type="submit" class="btn btn-danger" name="submit" value="apply">Apply 1% COD</button>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <form action="{{ route('order.apply.cod', $order->id) }}" method="POST">
-                                        @csrf
-                                        <div class="form-group" align="right">
-                                            <button type="submit" class="btn btn-secondary" name="submit" value="remove">Remove COD</button>
-                                            <button type="submit" class="btn btn-danger" name="submit" value="apply">Apply 1% COD</button>
-                                        </div>
-                                    </form>
+                            @else
+                                <div class="row mt-3">
+                                    <div class="col-md-6 border-right">
+                                        <form action="{{ route('order.courier_info.store', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>Courier Name</label>
+                                                <select name="courier_name" class="form-control select2 select-down" id="courier_name">
+                                                    <option value="0"> -- Select Courier Name -- </option>
+                                                    @foreach ($couriers as $courier)
+                                                        <option value="{{ $courier->name }}" {{ $order->courier_name == $courier->name ? 'selected' : '' }}>{{ $courier->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @if ($order->status->priority_no > 3)
+                                                <div class="form-group">
+                                                    <label>Reference Code</label>
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="refer_code" value="{{ $order->refer_code }}">
+                                                    </div>
+                                                    @error('refer_code')
+                                                        <span class="invalid-feedback" role="alert" style="display: block;">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            @endif
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6 border-right align-content-end">
+                                        <form action="{{ route('order.discount_amount.update', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>Discount Amount</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount ?? 0 }}">
+                                                </div>
+                                                @error('discount_amount')
+                                                    <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 border-right">
+                                        <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>Payment Status</label>
+                                                <select name="payment_status" class="form-control select2">
+                                                    @if (auth()->user()->can('order.paid') || 1 == $order->payment_status)
+                                                        <option value="1" {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid</option>
+                                                    @endif
+                                                    <option value="0" {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+
+                                        <form action="{{ route('order.advance.payment', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-froup">
+                                                <label>Advance Amount</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="number" class="form-control" name="amount" value="{{ $order->advance }}">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-primary bg-purple" type="submit">Save payment</button>
+                                                    </div>
+                                                </div>
+                                                @error('amount')
+                                                    <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <form action="{{ route('order.status.change', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>Order Status</label>
+                                                <select name="order_status_id" class="form-control select2">
+                                                    @foreach (App\Models\OrderStatus::where('is_active', 1)->orderBy('priority_no', 'ASC')->get() as $status)
+                                                        @if (auth()->user()->can('order.change_all_status'))
+                                                            <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                        @else
+                                                            @if (in_array($status->priority_no, [1, 3, 7, 10]) || $status->id == $order->order_status_id)
+                                                                <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                            @endif
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Reason</label>
+                                                <input type="text" name="note" value="{{ $order->note }}" class="form-control">
+                                                @error('note')
+                                                    <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="row justify-content-start">
+                                                <div class="col-4">
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-8 text-right">
+                                                    @if (1)
+                                                        <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                                    @else
+                                                        <a href="{{ route('order.remove.loss', $order->id) }}" class="btn btn-primary bg-info">Removed Loss</a>
+                                                    @endif
+                                                    @if ($order->price > 0)
+                                                        <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                    @endif
+                                                    @if ($order->discount_amount != null)
+                                                        <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <form action="{{ route('order.apply.cod', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="form-group" align="right">
+                                                <button type="submit" class="btn btn-secondary" name="submit" value="remove">Remove COD</button>
+                                                <button type="submit" class="btn btn-danger" name="submit" value="apply">Apply 1% COD</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
+
 
                             <form id="update-products-form" action="{{ route('order.order_products.update', $order->id) }}" method="POST">
                                 @csrf
@@ -308,8 +427,10 @@
                                                 <tr>
                                                     <th>S.N</th>
                                                     <th>Product</th>
-                                                    <th>Barcode Checking</th>
-                                                    <th>Checking Status</th>
+                                                    @if (!$order->vendor_id)
+                                                        <th>Barcode Checking</th>
+                                                        <th>Checking Status</th>
+                                                    @endif
                                                     <th>Price</th>
                                                     <th>Qty</th>
                                                     <th>Subtotal</th>
@@ -363,32 +484,34 @@
                                                                 <span class="text-danger ml-2">({{ $order_product->return_qty }} Product(s) Returned)</span>
                                                             @endif
                                                         </td>
-                                                        <td>
-                                                            @if ($checkedElement == $key + 1)
-                                                                <input id="order_product_id" type="text" name="order_product_id" value="{{ $order_product->id }}" hidden readonly>
-                                                                <input id="stock_id" type="text" name="stock_id" value="{{ $order_product->stock()->id }}" hidden readonly>
+                                                        @if (!$order->vendor_id)
+                                                            <td>
+                                                                @if ($checkedElement == $key + 1)
+                                                                    <input id="order_product_id" type="text" name="order_product_id" value="{{ $order_product->id }}" hidden readonly>
+                                                                    <input id="stock_id" type="text" name="stock_id" value="{{ $order_product->stock()->id }}" hidden readonly>
 
-                                                                <input id="barcode" class="form-control" type="text" name="barcode" placeholder="Add Barcode Here" style="width: 55%">
-                                                            @else
-                                                                @if ($checkedElement == null)
-                                                                    Checking Done
-                                                                    @php
-                                                                        if ($key + 1 == $order->order_product->count()) {
-                                                                            $all_checked = 1;
-                                                                        }
-                                                                    @endphp
+                                                                    <input id="barcode" class="form-control" type="text" name="barcode" placeholder="Add Barcode Here" style="width: 55%">
                                                                 @else
-                                                                    Pending to be checked
+                                                                    @if ($checkedElement == null)
+                                                                        Checking Done
+                                                                        @php
+                                                                            if ($key + 1 == $order->order_product->count()) {
+                                                                                $all_checked = 1;
+                                                                            }
+                                                                        @endphp
+                                                                    @else
+                                                                        Pending to be checked
+                                                                    @endif
                                                                 @endif
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if ($order_product->is_checked)
-                                                                <i class="fas fa-check-circle text-success"></i>
-                                                            @else
-                                                                <i class="fas fa-times-circle text-danger"></i>
-                                                            @endif
-                                                        </td>
+                                                            </td>
+                                                            <td>
+                                                                @if ($order_product->is_checked)
+                                                                    <i class="fas fa-check-circle text-success"></i>
+                                                                @else
+                                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                                @endif
+                                                            </td>
+                                                        @endif
                                                         <td>
                                                             @if ($order->source == 'Wholesale')
                                                                 &#2547; {{ $order_product->product->variation->wholesale_price }}
@@ -443,8 +566,10 @@
                                                                 </select>
                                                             </div>
                                                         </td>
+@if (!$order->vendor_id)
                                                         <td></td>
                                                         <td></td>
+@endif
                                                         <td></td>
                                                         <td>
                                                             <fieldset class="form-group mb-3">
@@ -456,56 +581,64 @@
                                                 @endif
                                                 @if ($order->source == 'Wholesale')
                                                     <tr>
-                                                        <td colspan="5" align="right">Total Qty:</td>
+                                                        <td @if (!$order->vendor_id) colspan="5" @else colspan="3" @endif align="right">Total Qty:</td>
                                                         <td colspan=""> {{ $total_qty }}</td>
                                                         <td colspan=""></td>
                                                     </tr>
                                                 @endif
+                                                @if ($order->extra_charge)
+                                                    <tr>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Extra Charge:</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->extra_charge }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if ($order->delivery_charge)
+                                                    <tr>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Delivery Charge:</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
+                                                    </tr>
+                                                @endif
                                                 <tr>
-                                                    <td colspan="6" align="right">Delivery Charge:</td>
-                                                    <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="6" align="right">Discount (-):</td>
+                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Discount (-):</td>
                                                     <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
                                                 </tr>
                                                 @if ($order->cod != 0)
                                                     <tr>
-                                                        <td colspan="6" align="right">COD (-):</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">COD (-):</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->cod }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->wallet_amount != null)
                                                     <tr>
-                                                        <td colspan="6" align="right">Wallet Use:</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Wallet Use:</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->wallet_amount }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->points_redeemed)
                                                     <tr>
-                                                        <td colspan="6" align="right">Points Redeemed (-):</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Points Redeemed (-):</td>
                                                         <td>{{ $order->points_redeemed }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->membership_discount)
                                                     <tr>
-                                                        <td colspan="6" align="right">Membership Discount (-):</td>
-                                                        <td>({{ $order->discount_rate }}%) {{ env('CURRENCY') }}{{ $order->membership_discount }} </td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Membership Discount (-):</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->membership_discount }} ({{ $order->discount_rate }}%) </td>
                                                     </tr>
                                                 @endif
                                                 <tr>
-                                                    <td colspan="6" align="right">Total:</td>
-                                                    <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount) }}</td>
+                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Total:</td>
+                                                    <td>&#2547; {{ round($order->price + $order->extra_charge + $order->delivery_charge - $order->wallet_amount) }}</td>
                                                 </tr>
                                                 @if ($order->advance)
                                                     <tr>
-                                                        <td colspan="6" align="right">Advanced (-):</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Advanced (-):</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->advance }}</td>
                                                     </tr>
                                                 @endif
                                                 <tr>
-                                                    <td colspan="6" align="right">Total Payable:</td>
-                                                    <td>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
+                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Total Payable:</td>
+                                                    <td>&#2547; {{ round($order->price + $order->extra_charge + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -539,11 +672,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->

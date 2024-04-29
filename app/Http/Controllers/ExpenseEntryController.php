@@ -9,6 +9,7 @@ use App\Models\WorkTrackingEntry;
 use Illuminate\Http\Request;
 use Auth;
 use Alert;
+use App\Models\Expense;
 use App\Models\Order;
 use Carbon\Carbon;
 use DataTables;
@@ -26,8 +27,10 @@ class ExpenseEntryController extends Controller {
         // return ExpenseEntry::orderBy('created_at', 'desc')->get();
 
         if (auth()->user()->can('expense.view')) {
-            $data = ExpenseEntry::orderBy('date', 'desc')->get();
-            $banks = Bank::all();
+            $data = ExpenseEntry::orderBy('date', 'desc')->with('expense', 'bank', 'created_by', 'created_by.adder')->get();
+            $banks = Bank::orderBy('name', 'ASC')->get();
+            $expense_types = Expense::orderBy('type', 'ASC')->get();
+
             if ($request->ajax()) {
                 return Datatables::of($data)
                     // ->addIndexColumn()
@@ -58,7 +61,7 @@ class ExpenseEntryController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -74,7 +77,7 @@ class ExpenseEntryController extends Controller {
                     ->rawColumns(['expense_type', 'bank', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.expense.entry', compact('data', 'banks', 'date_from', 'date_to'));
+            return view('admin.expense.entry', compact('data', 'banks', 'date_from', 'date_to', 'expense_types'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -135,7 +138,7 @@ class ExpenseEntryController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -188,9 +191,9 @@ class ExpenseEntryController extends Controller {
             $expense->save();
 
             WorkTrackingEntry::create([
-                    'expense_entry_id' => $expense->id,
-                    'user_id' => Auth::id(),
-                    'work_name' => 'expense_entry'
+                'expense_entry_id' => $expense->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'expense_entry'
             ]);
 
             if ($request->bank_id != '' && $request->bank_id > 0) {
@@ -239,10 +242,10 @@ class ExpenseEntryController extends Controller {
                 $order->save();
 
                 WorkTrackingEntry::create([
-                        'order_id' => $order->id,
-                        'expense_entry_id' => $expense->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'add_loss'
+                    'order_id' => $order->id,
+                    'expense_entry_id' => $expense->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'add_loss'
                 ]);
 
                 Alert::toast('Loss added', 'success');

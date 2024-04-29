@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration {
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->string('other_info')->nullable();
             $table->string('city')->nullable();
             $table->integer('district_id')->nullable();
             $table->integer('area_id')->nullable();
@@ -37,6 +38,8 @@ class CreateOrdersTable extends Migration {
             $table->string('sender_amount')->nullable();
             $table->string('note')->nullable();
             $table->double('discount_amount')->nullable();
+            $table->double('extra_charge')->nullable();
+            $table->string('extra_charge_type')->nullable();
             $table->double('wallet_amount')->nullable();
             $table->double('advance')->default(0);
             $table->string('source')->nullable();
@@ -46,6 +49,7 @@ class CreateOrdersTable extends Migration {
             $table->integer('points_redeemed')->default(0);
             $table->integer('discount_rate')->nullable();
             $table->double('membership_discount')->default(0);
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

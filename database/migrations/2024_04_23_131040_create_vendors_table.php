@@ -18,7 +18,7 @@ class CreateVendorsTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->integer('invested_amount')->nullable();
-            $table->integer('balance')->nullable();
+            $table->integer('opening_balance')->nullable();
             $table->integer('profit_percentage')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();

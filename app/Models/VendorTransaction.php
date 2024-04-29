@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VendorProduct extends Model
+class VendorTransaction extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
 
     public function vendor() {
         return $this->belongsTo(Vendor::class);
     }
 
-    public function product() {
-        return $this->belongsTo(Product::class);
-    }   
+    public function bank() {
+        return $this->belongsTo(Bank::class);
+    }
 }

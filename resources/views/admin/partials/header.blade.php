@@ -154,7 +154,7 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
 
-                @if (auth()->user()->can('order_sheet.create'))
+                @if (auth()->user()->can('order_sheet.create') && !auth()->user()->vendor)
                     <li class="nav-item mr-2">
                         <a class="nav-link btn btn-primary bg-blue" href="{{ route('fos.create') }}">
                             <i class="far fa-file-alt mr-2"></i>Order Sheet

@@ -339,6 +339,51 @@
                                     <i class="fas fa-angle-right right"></i>
                                 </p>
                             </a>
+                            @if (auth()->user()->vendor)
+                            <ul class="nav nav-treeview">
+
+                                @if (auth()->user()->can('pos.create'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('pos.create', 'none') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>POS</p>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (auth()->user()->can('sell.index'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('vendor_sell.report') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Sells Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('vendor_sell.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Sell List</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('vendor_sell.export.excel', 0) }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Export to Excel (Retail)</p>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- @if (auth()->user()->can('order.return'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('sellreturn.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Sell Return</p>
+                                        </a>
+                                    </li>
+                                @endif --}}
+
+                            </ul>
+
+                            @else
                             <ul class="nav nav-treeview">
 
                                 @if (auth()->user()->can('pos.create'))
@@ -405,6 +450,8 @@
                                 @endif
 
                             </ul>
+
+                            @endif
                         </li>
                     @endif
 
@@ -701,6 +748,36 @@
                                     Owners
                                 </p>
                             </a>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->can('report.owners'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Vendors
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('vendor.index') }}" class="nav-link">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            Vendor List
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('vendor.transfer_products') }}" class="nav-link">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            Transfer Products
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
 
