@@ -121,7 +121,8 @@
                                         <div class="form-group">
                                             <label>Expense Type*</label>
                                             <select class="form-control @error('expense_id') is-invalid @enderror" name="expense_id" required>
-                                                @foreach (App\Models\Expense::orderBy('type', 'ASC')->get() as $expense)
+                                                <option value="">Please select expense type</option>
+                                                @foreach ($expense_types as $expense)
                                                     <option value="{{ $expense->id }}">{{ $expense->type }}</option>
                                                 @endforeach
                                             </select>
@@ -137,7 +138,7 @@
                                             <label>Bank*</label>
                                             <select class="form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
                                                 <option value="">Please select relevant bank</option>
-                                                @foreach (App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
+                                                @foreach ($banks as $bank)
                                                     <option value="{{ $bank->id }}">{{ $bank->name }}</option>
                                                 @endforeach
                                             </select>
@@ -211,7 +212,7 @@
                                             <div class="form-group">
                                                 <label>Expense Type*</label>
                                                 <select class="form-control @error('expense_id') is-invalid @enderror" name="expense_id" required>
-                                                    @foreach (App\Models\Expense::orderBy('type', 'ASC')->get() as $expense)
+                                                    @foreach ($expense_types as $expense)
                                                         <option value="{{ $expense->id }}" {{ $expense->id == $entry->expense_id ? 'selected' : '' }}>{{ $expense->type }}</option>
                                                     @endforeach
                                                 </select>
@@ -227,7 +228,7 @@
                                                 <label>Bank*</label>
                                                 <select class="form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
                                                     <option value="">Please select relevant bank</option>
-                                                    @foreach (App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
+                                                    @foreach ($banks as $bank)
                                                         <option value="{{ $bank->id }}" {{ $bank->id == $entry->bank_id ? 'selected' : '' }}>{{ $bank->name }}</option>
                                                     @endforeach
                                                 </select>

@@ -108,6 +108,30 @@
         #legalcopy {
             margin-top: 5mm;
         }
+
+        /* @page {
+            size: 6in 9in;
+        } */
+
+        /* @page {
+            size: 10in 9in;
+        }*/
+        /* @page {
+            size: 70px;
+        }
+        @media print {
+
+
+
+            body {
+                width: 70px !important;
+                height: 80px !important;
+            }
+
+            .info {
+                color: rgb(52, 1, 153) !important;
+            }
+        } */
     </style>
 </head>
 
@@ -129,11 +153,11 @@
         <div id="mid">
             <div class="info">
                 <p>
-                    Order ID : <b>{{ $order->code }}</b></br>
+                    Order ID : <b>{{ $order->code }}</b><br>
                     Name : {{ $order->name }}</br>
-                    Phone : <b>{{ $order->phone }}</b></br>
+                    Phone : <b>{{ $order->phone }}</b><br>
                     @if ($order->email)
-                        Email : {{ $order->email }}</br>
+                        Email : {{ $order->email }} <br>
                     @endif
                     Address : {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}</br>
                     @if ($order->courier_name)
@@ -162,7 +186,15 @@
                         </td>
                     </tr>
 
+                    @php
+                        $total_qty = 0;
+                    @endphp
                     @foreach ($order->order_product as $product)
+                        @php
+                            if ($order->source == 'Wholesale') {
+                                $total_qty += $product->qty;
+                            }
+                        @endphp
                         <tr class="service">
                             <td class="tableitem">
                                 <p class="itemtext">{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}</p>
@@ -176,15 +208,22 @@
                                         &#2547; {{ $product->product->variation->wholesale_price }}
                                     @else
                                         @if ($product->product->variation->discount_price != null && $order->source == 'Website')
-                                        &#2547; {{ $product->product->variation->discount_price * $product->qty }} <small>(Discounted)</small> 
+                                            &#2547; {{ $product->product->variation->discount_price * $product->qty }} <small>(Discounted)</small>
                                         @else
-                                        &#2547; {{ $product->product->variation->price * $product->qty }}
-                                    @endif
+                                            &#2547; {{ $product->product->variation->price * $product->qty }}
+                                        @endif
                                     @endif
                                 </p>
                             </td>
                         </tr>
                     @endforeach
+                    @if ($order->source == 'Wholesale')
+                        <tr class="tabletitle">
+                            <td align="right">Total Qty:</td>
+                            <td>{{ $total_qty }}</td>
+                            <td></td>
+                        </tr>
+                    @endif
 
 
 
@@ -230,6 +269,29 @@
                             </td>
                         </tr>
                     @endif
+                    @if ($order->points_redeemed)
+                        <tr class="tabletitle">
+
+                            <td class="Rate" colspan="2" style="text-align: center;">
+                                <h2>Points Redeemed (-)</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ $order->points_redeemed }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+                    @if ($order->membership_discount)
+                        <tr class="tabletitle">
+
+                            <td class="Rate" colspan="2" style="text-align: center;">
+                                <h2>Membership Discount (-)</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>&#2547; {{ $order->membership_discount }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+
                     <tr class="tabletitle">
                         <td class="Rate" colspan="2" style="text-align: center;">
                             <h2>Total Payable</h2>

@@ -6,12 +6,20 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Sells</h1>
+                    @if (Auth::user()->vendor)
+                        <h1 class="m-0">{{ Auth::user()->vendor->name }} Sells</h1>
+                    @else
+                        <h1 class="m-0">Sells</h1>
+                    @endif
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">sell</li>
+                        @if (Auth::user()->vendor)
+                            <li class="breadcrumb-item active">vendor-sells</li>
+                        @else
+                            <li class="breadcrumb-item active">sells</li>
+                        @endif
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -41,7 +49,7 @@
                         </div>
                     </div>
                     <hr>
-                    <form action="{{ route('sell.search') }}" method="get">
+                    <form action="{{ Auth::user()->vendor ? route('vendor_sell.search') : route('sell.search') }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -83,54 +91,56 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>District</label>
-                                    <select name="district_id" id="district_id" class="select2 form-control @error('district_id') is-invalid @enderror">
-                                        <option value="">Please Select a District (Optional)</option>
-                                        @foreach (App\Models\District::get() as $district)
-                                            <option value="{{ $district->id }}">{{ $district->name }}</option>
-                                        @endforeach
+                            @if (!Auth::user()->vendor)
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>District</label>
+                                        <select name="district_id" id="district_id" class="select2 form-control @error('district_id') is-invalid @enderror">
+                                            <option value="">Please Select a District (Optional)</option>
+                                            @foreach (App\Models\District::get() as $district)
+                                                <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                            @endforeach
 
-                                    </select>
-                                    @error('district_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                        </select>
+                                        @error('district_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Area</label>
-                                    <select name="area_id" id="areas" class="select2 form-control @error('area_id') is-invalid @enderror">
-                                        <option value="">Please Select an Area (Optional)</option>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Area</label>
+                                        <select name="area_id" id="areas" class="select2 form-control @error('area_id') is-invalid @enderror">
+                                            <option value="">Please Select an Area (Optional)</option>
 
-                                    </select>
-                                    @error('area_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                        </select>
+                                        @error('area_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Courier Name</label>
-                                    <select name="courier_name" id="areas" class="select2 form-control @error('courier_name') is-invalid @enderror">
-                                        <option value="0">Please Select a Courier Name (Optional)</option>
-                                        @foreach (App\Models\CourierName::get() as $courier)
-                                            <option value="{{ $courier->name }}" @if ($courier_name != '' && $courier_name == $courier->name) selected @endif>{{ $courier->name }}</option>
-                                        @endforeach
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Courier Name</label>
+                                        <select name="courier_name" id="areas" class="select2 form-control @error('courier_name') is-invalid @enderror">
+                                            <option value="0">Please Select a Courier Name (Optional)</option>
+                                            @foreach (App\Models\CourierName::get() as $courier)
+                                                <option value="{{ $courier->name }}" @if ($courier_name != '' && $courier_name == $courier->name) selected @endif>{{ $courier->name }}</option>
+                                            @endforeach
 
-                                    </select>
-                                    @error('courier_name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                        </select>
+                                        @error('courier_name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label style="color: #fff;">.</label>
@@ -149,7 +159,7 @@
                             'orders' => $orders,
                         ]);
                     @endphp --}}
-                    <a href="{{ route('sell.sell.export') }}">
+                    <a href="{{ route('vendor_sell.sell.export') }}">
                         <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
                     </a>
                 </p>
@@ -215,7 +225,7 @@
             var table = $('#data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                // ordering: false,
+                ordering: false,
                 columns: [{
                         data: 'id'
                     },

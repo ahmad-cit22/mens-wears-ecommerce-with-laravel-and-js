@@ -121,6 +121,10 @@
             max-width: 22% !important;
             box-shadow: 0px 4px 14px 2px rgba(124, 48, 0, 0.665);
         }
+
+        .text-unpaid {
+            color: rgb(201, 144, 0) !important;
+        }
     </style>
     @yield('style')
     <script src="https://cdn.tiny.cloud/1/yze2qblheth712tqw6y3f30283f8nch1bogp0jzpsm3rn79f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
@@ -150,7 +154,7 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
 
-                @if (auth()->user()->can('order_sheet.create'))
+                @if (auth()->user()->can('order_sheet.create') && !auth()->user()->vendor)
                     <li class="nav-item mr-2">
                         <a class="nav-link btn btn-primary bg-blue" href="{{ route('fos.create') }}">
                             <i class="far fa-file-alt mr-2"></i>Order Sheet

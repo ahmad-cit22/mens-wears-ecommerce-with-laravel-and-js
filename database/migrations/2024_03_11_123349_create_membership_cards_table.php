@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAssetDeductionsTable extends Migration
+class CreateMembershipCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateAssetDeductionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('asset_deductions', function (Blueprint $table) {
+        Schema::create('membership_cards', function (Blueprint $table) {
             $table->id();
-            $table->integer('asset_id')->nullable();
-            $table->double('amount')->nullable();
+            $table->string('card_status');
+            $table->float('discount_rate');
+            $table->double('min_purchase')->nullable();
+            $table->float('point_percentage')->default(1);
+            $table->integer('min_point')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateAssetDeductionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asset_deductions');
+        Schema::dropIfExists('membership_cards');
     }
 }

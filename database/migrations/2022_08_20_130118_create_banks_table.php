@@ -18,6 +18,7 @@ class CreateBanksTable extends Migration
             $table->string('name');
             $table->string('account_number');
             $table->text('description')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

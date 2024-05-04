@@ -12,103 +12,110 @@ use Auth;
 use Carbon\Carbon;
 use DataTables;
 
-class BankContraController extends Controller
-{
+class BankContraController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         if (auth()->user()->can('bank.index')) {
-            $banks = Bank::all();
-            if ($request->ajax()) {
-                $data = BankContra::orderBy('id', 'DESC')->get();
-                return Datatables::of($data)
-                        // ->addIndexColumn()
-                        ->addColumn('from', function($row){
-         
-                               $data = optional($row->from)->name;
-        
-                                return $data;
-                        })
-                        ->addColumn('to', function($row){
-         
-                               $data = optional($row->to)->name;
-        
-                                return $data;
-                        })
-                        ->addColumn('transaction_date', function($row){
-         
-                               $data = Carbon::parse($row->date)->format('d M, Y');
-        
-                                return $data;
-                        })
-                        ->addColumn('date', function($row){
-         
-                               $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
-        
-                                return $data;
-                        })
-                        ->rawColumns(['from','to','date'])
-                        ->make(true);
+            if (!Auth::user()->vendor) {
+                $banks = Bank::where('vendor_id', null)->get();
+                $data = BankContra::where('vendor_id', null)->orderBy('id', 'DESC')->get();
+            } else {
+                $banks = Bank::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+                $data = BankContra::orderBy('id', 'DESC')->where('vendor_id', Auth::user()->vendor->id)->get();
             }
-            return view('admin.bank.contra.index', compact('banks')); 
-        }
-        else
-        {
+            if ($request->ajax()) {
+                return Datatables::of($data)
+                    // ->addIndexColumn()
+                    ->addColumn('from', function ($row) {
+
+                        $data = optional($row->from)->name;
+
+                        return $data;
+                    })
+                    ->addColumn('to', function ($row) {
+
+                        $data = optional($row->to)->name;
+
+                        return $data;
+                    })
+                    ->addColumn('transaction_date', function ($row) {
+
+                        $data = Carbon::parse($row->date)->format('d M, Y');
+
+                        return $data;
+                    })
+                    ->addColumn('date', function ($row) {
+
+                        $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
+
+                        return $data;
+                    })
+                    ->rawColumns(['from', 'to', 'date'])
+                    ->make(true);
+            }
+            return view('admin.bank.contra.index', compact('banks'));
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
 
-    public function search(Request $request)
-    {
+    public function search(Request $request) {
         if (auth()->user()->can('bank.index')) {
-            $banks = Bank::all();
+            if (!Auth::user()->vendor) {
+                $banks = Bank::where('vendor_id', null)->get();
+            } else {
+                $banks = Bank::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+            }
             if ($request->ajax()) {
                 if (!empty($request->date_from) && !empty($request->date_to)) {
-                    $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from.' 00:00:00');
-                    $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to.' 23:59:59');
-                    $data = BankContra::whereBetween('created_at', [$start_date,$end_date])->orderBy('id', 'DESC')->get();
-                }
-                else {
+                    $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
+                    $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
+                    $data = BankContra::whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                } else {
                     $data = BankContra::orderBy('id', 'DESC')->get();
                 }
-                
+
+                if (Auth::user()->vendor) {
+                    $data = $data->where('vendor_id', Auth::user()->vendor->id);
+                } else {
+                    $data = $data->where('vendor_id', null);
+                }
+
                 return Datatables::of($data)
-                        // ->addIndexColumn()
-                        ->addColumn('from', function($row){
-         
-                               $data = optional($row->from)->name;
-        
-                                return $data;
-                        })
-                        ->addColumn('to', function($row){
-         
-                               $data = optional($row->to)->name;
-        
-                                return $data;
-                        })
-                        ->addColumn('transaction_date', function($row){
-         
-                               $data = Carbon::parse($row->date)->format('d M, Y');
-        
-                                return $data;
-                        })
-                        ->addColumn('date', function($row){
-         
-                               $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
-        
-                                return $data;
-                        })
-                        ->rawColumns(['from','to','date'])
-                        ->make(true);
+                    // ->addIndexColumn()
+                    ->addColumn('from', function ($row) {
+
+                        $data = optional($row->from)->name;
+
+                        return $data;
+                    })
+                    ->addColumn('to', function ($row) {
+
+                        $data = optional($row->to)->name;
+
+                        return $data;
+                    })
+                    ->addColumn('transaction_date', function ($row) {
+
+                        $data = Carbon::parse($row->date)->format('d M, Y');
+
+                        return $data;
+                    })
+                    ->addColumn('date', function ($row) {
+
+                        $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
+
+                        return $data;
+                    })
+                    ->rawColumns(['from', 'to', 'date'])
+                    ->make(true);
             }
-            return view('admin.bank.contra.index', compact('banks')); 
-        }
-        else
-        {
+            return view('admin.bank.contra.index', compact('banks'));
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -118,8 +125,7 @@ class BankContraController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -129,8 +135,7 @@ class BankContraController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         if (auth()->user()->can('bank.create')) {
             $validatedData = $request->validate([
                 'from_id' => 'required',
@@ -145,6 +150,9 @@ class BankContraController extends Controller
                 $contra->amount = $request->amount;
                 $contra->date = $request->date;
                 $contra->note = $request->note;
+                if (Auth::user()->vendor) {
+                    $contra->vendor_id = Auth::user()->vendor->id;
+                }
                 $contra->save();
                 // credit transaction
                 $transaction = new BankTransaction;
@@ -152,6 +160,9 @@ class BankContraController extends Controller
                 $transaction->note = $request->note;
                 $transaction->credit = $request->amount;
                 $transaction->date = $request->date;
+                if (Auth::user()->vendor) {
+                    $transaction->vendor_id = Auth::user()->vendor->id;
+                }
                 $transaction->save();
                 // debit transaction
                 $transaction = new BankTransaction;
@@ -159,18 +170,18 @@ class BankContraController extends Controller
                 $transaction->note = $request->note;
                 $transaction->debit = $request->amount;
                 $transaction->date = $request->date;
+                if (Auth::user()->vendor) {
+                    $transaction->vendor_id = Auth::user()->vendor->id;
+                }
                 $transaction->save();
 
                 Alert::toast('New cash flow created', 'success');
                 return back();
-            }
-            else {
+            } else {
                 Alert::toast('Both sender and receiver can not be same', 'warning');
                 return back();
-            } 
-        }
-        else
-        {
+            }
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -181,8 +192,7 @@ class BankContraController extends Controller
      * @param  \App\Models\BankContra  $bankContra
      * @return \Illuminate\Http\Response
      */
-    public function show(BankContra $bankContra)
-    {
+    public function show(BankContra $bankContra) {
         //
     }
 
@@ -192,8 +202,7 @@ class BankContraController extends Controller
      * @param  \App\Models\BankContra  $bankContra
      * @return \Illuminate\Http\Response
      */
-    public function edit(BankContra $bankContra)
-    {
+    public function edit(BankContra $bankContra) {
         //
     }
 
@@ -204,8 +213,7 @@ class BankContraController extends Controller
      * @param  \App\Models\BankContra  $bankContra
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BankContra $bankContra)
-    {
+    public function update(Request $request, BankContra $bankContra) {
         //
     }
 
@@ -215,8 +223,7 @@ class BankContraController extends Controller
      * @param  \App\Models\BankContra  $bankContra
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BankContra $bankContra)
-    {
+    public function destroy(BankContra $bankContra) {
         //
     }
 }

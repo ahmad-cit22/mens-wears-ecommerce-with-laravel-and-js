@@ -107,7 +107,15 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $total_qty = 0;
+                @endphp
                 @foreach ($order->order_product as $product)
+                    @php
+                        if ($order->source == 'Wholesale') {
+                            $total_qty += $product->qty;
+                        }
+                    @endphp
                     <tr style="text-align: right;">
                         <!-- <th scope="row" style="text-align: center;">{{ $loop->index + 1 }}</th> -->
                         <td width="350px" style="text-align: left;">{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
@@ -135,6 +143,13 @@
                         </td>
                     </tr>
                 @endforeach
+                @if ($order->source == 'Wholesale')
+                    <tr>
+                        <td align="right">Total Qty:</td>
+                        <td align="center">{{ $total_qty }}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>
@@ -169,6 +184,20 @@
                     <tr style="text-align: right;">
                         <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Discount(-):</b></td>
                         <td style="text-align: right;">{{ $order->discount_amount }}/-</td>
+                    </tr>
+                @endif
+
+                @if ($order->points_redeemed > 0)
+                    <tr style="text-align: right;">
+                        <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Points Redeemed(-):</b></td>
+                        <td style="text-align: right;">{{ $order->points_redeemed }}</td>
+                    </tr>
+                @endif
+
+                @if ($order->membership_discount > 0)
+                    <tr style="text-align: right;">
+                        <td style="border-bottom: 1px solid white; border-left: 1px solid white; border-top: 1px solid white; text-align: right;"><b>Membership Discount(-):</b></td>
+                        <td style="text-align: right;">({{ $order->discount_rate }}%) {{ $order->membership_discount }}/-</td>
                     </tr>
                 @endif
 

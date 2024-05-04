@@ -29,6 +29,7 @@ class CreateProductStocksTable extends Migration
             $table->string('unit')->nullable();
             $table->string('image')->nullable();
             $table->integer('is_active')->default(1);
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

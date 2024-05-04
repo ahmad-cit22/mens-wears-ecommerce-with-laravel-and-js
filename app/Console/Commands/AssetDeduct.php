@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Asset;
 use App\Models\AssetDeduction;
+use App\Models\ExpenseEntry;
 use Carbon\Carbon;
 
 class AssetDeduct extends Command

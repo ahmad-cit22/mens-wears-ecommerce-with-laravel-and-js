@@ -119,7 +119,7 @@ class PageController extends Controller {
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                                 <div class="product-details-content">
-                                    
+
                                     <h2 class="uppercase">' . $product->title . '</h2>
                                     <h3>';
         if ($product->type == 'single') {
@@ -171,7 +171,7 @@ class PageController extends Controller {
             $product_details .= '
                                         <div class="product-details-meta">
                                             <span>Categories: <a href="' . route('category.products', [$product->category->id, Str::slug($product->category->title)]) . '">' . optional($product->category)->title . '</a></span>
-                                            
+
                                         </div>
                                         ';
         }
@@ -406,7 +406,25 @@ class PageController extends Controller {
             $discount = Session::get('coupon_discount');
         }
 
-        $order->price = Cart::subtotal() - $discount;
+        $member_discount_rate = $request->member_discount_rate;
+        $member_discount_amount = $request->member_discount_amount;
+        $redeem_points_amount = $request->redeem_points_amount;
+
+        $member = Auth::user()->member;
+        if ($member) {
+            $order->membership_discount = $member_discount_amount;
+
+            $order->points_redeemed = $redeem_points_amount;
+            $member->current_points -= $redeem_points_amount;
+            $member->current_points += round(Cart::subtotal() * ($member->card->point_percentage / 100));
+            $member->save();
+
+            if ($member_discount_rate) {
+                $order->discount_rate = $member_discount_rate;
+            }
+        }
+
+        $order->price = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount;
         $order->name = $request->name;
         $order->email = $request->email;
         $order->phone = $request->phone;

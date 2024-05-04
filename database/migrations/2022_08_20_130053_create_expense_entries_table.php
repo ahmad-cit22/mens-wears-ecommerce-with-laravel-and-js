@@ -20,6 +20,7 @@ class CreateExpenseEntriesTable extends Migration
             $table->integer('bank_id')->nullable();
             $table->text('note')->nullable();
             $table->date('date')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

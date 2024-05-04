@@ -21,7 +21,7 @@
 	<div class="container-fluid">
 		<div class="card">
               <div class="card-header">
-                
+
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive">
@@ -134,7 +134,7 @@
                         @enderror
                      </div>
                    </div>
-                   
+
                    <div class="col-md-12">
                      <div class="form-group">
                        <label>Footer text*</label>
@@ -146,7 +146,7 @@
                         @enderror
                      </div>
                    </div>
-                   
+
                    <div class="col-md-4">
                      <div class="form-group">
                        <label>Shipping Charge(Inside Dhaka)*</label>
@@ -170,12 +170,36 @@
                         @enderror
                      </div>
                    </div>
-                   
+
                    <div class="col-md-4">
                      <div class="form-group">
                        <label>Shipping Charge(Outside Dhaka)*</label>
                        <input type="text" name="shipping_charge" value="{{ $setting->shipping_charge }}" class="form-control @error('shipping_charge') is-invalid @enderror">
                        @error('shipping_charge')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                     </div>
+                   </div>
+
+                   <div class="col-md-6">
+                     <div class="form-group">
+                       <label>VAT (%)</label>
+                       <input type="number" name="vat" value="{{ $setting->vat }}" class="form-control @error('vat') is-invalid @enderror" placeholder="Enter VAT Percentage">
+                       @error('vat')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                     </div>
+                   </div>
+
+                   <div class="col-md-6">
+                     <div class="form-group">
+                       <label>BIN No.</label>
+                       <input type="text" name="bin_no" value="{{ $setting->bin_no }}" class="form-control @error('bin_no') is-invalid @enderror" placeholder="Enter BIN No.">
+                       @error('bin_no')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -227,7 +251,7 @@
                         @enderror
                      </div>
                    </div>
-                   <div class="col-md-4">
+                   <div class="col-md-8">
                      <div class="form-group">
                        <label>Linkedin</label>
                        <input type="text" name="linkedin" value="{{ $setting->linkedin }}" class="form-control @error('linkedin') is-invalid @enderror">
@@ -261,7 +285,7 @@
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    
+
   });
 </script>
 @endsection

@@ -68,7 +68,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Product*</label>
-                                        <select class="select2 form-control @error('product_id') is-invalid @enderror" name="product_id[]" id="product_id1" required>
+                                        <select class="select2 form-control @error('product_id') is-invalid @enderror" name="product_id[]" id="product_id1">
                                             <option value="">---- Select ----</option>
                                             @foreach ($products as $product)
                                                 <option value="{{ $product->id }}">{{ $product->title }} - ({{ $product->is_active == 1 ? 'Active' : 'Inactive' }})</option>
@@ -80,7 +80,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Size*</label>
-                                        <select class="select2 form-control" name="size_id[]" id="size_id1" required>
+                                        <select class="select2 form-control" name="size_id[]" id="size_id1">
 
                                         </select>
                                     </div>
@@ -89,7 +89,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Qty*</label>
-                                        <input type="number" name="qty[]" class="form-control  @error('qty') is-invalid @enderror" placeholder="Add Quantity" required>
+                                        <input type="number" name="qty[]" class="form-control @error('qty') is-invalid @enderror" placeholder="Add Quantity">
                                     </div>
                                 </div>
 
@@ -98,7 +98,7 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label>Remarks</label>
-                                                <input type="text" name="remarks[]" class="form-control  @error('remarks') is-invalid @enderror" placeholder="Add Remarks">
+                                                <input type="text" name="remarks[]" class="form-control @error('remarks') is-invalid @enderror" placeholder="Add Remarks">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -155,7 +155,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Product*</label>
-                                        <select class="select2 form-control" name="product_id[]" id="product_id` + rowIdx + `" required>
+                                        <select class="select2 form-control" name="product_id[]" id="product_id` + rowIdx + `">
                                             <option value="">---- Select ----</option>
                                             @foreach ($products as $product)
                                                 <option value="{{ $product->id }}">{{ $product->title }} - ({{ $product->is_active == 1 ? 'Active' : 'Inactive' }})</option>
@@ -167,7 +167,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Size*</label>
-                                        <select class="select2 form-control" name="size_id[]" id="size_id` + rowIdx + `" required>
+                                        <select class="select2 form-control" name="size_id[]" id="size_id` + rowIdx + `">
 
                                         </select>
                                     </div>
@@ -176,7 +176,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Qty*</label>
-                                        <input type="number" name="qty[]" class="form-control" placeholder="Add Quantity" required>
+                                        <input type="number" name="qty[]" class="form-control" placeholder="Add Quantity">
                                     </div>
                                 </div>
 
@@ -262,7 +262,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Product*</label>
-                                            <select class="select2 form-control" name="product_id[]" id="product_id` + rowIdx + `" required>
+                                            <select class="select2 form-control" name="product_id[]" id="product_id` + rowIdx + `">
                                                 <option value="">---- Select ----</option>
                                                     <option value="` + response.product.id + `" selected>` + response.product.title + `</option>
                                             </select>
@@ -277,7 +277,7 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label>Size*</label>
-                                            <select class="select2 form-control" name="size_id[]" id="size_id` + rowIdx + `" required>
+                                            <select class="select2 form-control" name="size_id[]" id="size_id` + rowIdx + `">
                                                 <option value="` + response.size.id + `">` + response.size.title + `</option>
                                             </select>
                                         </div>
@@ -286,7 +286,7 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label>Qty*</label>
-                                            <input type="number" name="qty[]" class="form-control" placeholder="Add Quantity" required>
+                                            <input type="number" name="qty[]" class="form-control" placeholder="Add Quantity">
                                         </div>
                                     </div>
 

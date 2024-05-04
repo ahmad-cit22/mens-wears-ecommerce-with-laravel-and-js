@@ -21,6 +21,7 @@ class CreateProductStockHistoriesTable extends Migration
             $table->string('note')->nullable();
             $table->string('reference_code')->nullable();
             $table->longText('remarks')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

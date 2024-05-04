@@ -1,6 +1,6 @@
 @php
     $business = App\Models\Setting::find(1);
-    
+
     $discount = 0;
     if (Session::has('coupon_discount')) {
         $discount = Session::get('coupon_discount');
@@ -12,7 +12,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Order Sheet | {{ $business->name }}</title>
+    <title> Retail Order Sheet | {{ $business->name }}</title>
     <meta name="description" content="Updates and statistics" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -47,13 +47,13 @@
     <!-- pos header -->
 
     <header class="pos-header bg-white">
-        <h1 class="mt-2 mb-4 text-center text-success font-weight-bold">Order Sheet</h1>
+        <h1 class="mt-2 mb-4 text-center text-success font-weight-bold">Order Sheet - Retail</h1>
         <div class="container-fluid py-3 text-white" style="background: rgba(0, 128, 0, 0.387)">
             <div class="row align-items-center">
                 <div class="col-lg-4 col-md-12">
                     <div class="greeting-text">
                         <h3 class="card-label mb-0 text-white">
-                            {{ $business->name }}
+                            {{ $business->name }} - Retail
                         </h3>
                     </div>
 
@@ -135,13 +135,6 @@
     </header>
     <div class="contentPOS">
         <div class="container-fluid">
-            @if (Session::has('wholesale_price'))
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="text-center alert alert-success">Wholesale</h3>
-                    </div>
-                </div>
-            @endif
             <form action="{{ route('fos.store') }}" method="POST">
                 @csrf
                 <div class="row">
@@ -179,7 +172,23 @@
                             <div class="product-items">
                                 <div class="row" id="product_filtered" style="background: rgba(255, 140, 0, 0.156)">
                                     @foreach ($products as $product)
-                                        @include('admin.fos.partials.product')
+                                        @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
+                                            <div class="col-xl-4 col-lg-2 col-md-3 col-sm-4 col-6">
+                                                <div class="productCard">
+                                                    <a onclick="add_cart({{ $product->id }})" style="cursor: pointer;">
+                                                        <div class="productThumb">
+                                                            <img class="img-fluid" src="{{ asset('images/product/pos_images/' . $product->product->image) }}" alt="{{ $product->product->title }}">
+                                                        </div>
+
+                                                        <div class="productContent">
+
+                                                            {{ $product->product->title }}{{ is_null($product->size) ? '' : ' - ' . optional($product->size)->title }} ({{ $product->qty }})
+
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -221,6 +230,7 @@
                                                     <label class="text-body">Phone</label>
                                                     <fieldset class="form-group mb-3">
                                                         <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" id="phone" value="{{ old('phone') }}" required>
+                                                        <span id="err-phone" class="invalid-feedback"></span>
                                                     </fieldset>
                                                 </div>
                                             </div>
@@ -506,6 +516,7 @@
                 url: url,
                 type: "POST",
                 data: {
+                    is_vendor: null,
                     category_id: category_id,
                     brand_id: brand_id,
                     product_name: product_name,
@@ -528,9 +539,20 @@
                 $("#phone").prop('required', true);
             } else {
                 $('#new-customer-form').hide();
-                
+
                 $("#name").prop('required', false);
                 $("#phone").prop('required', false);
+            }
+        });
+
+        $('#phone').keyup(function() {
+            var phone = $(this).val();
+            if (phone.length == 11) {
+                $(this).removeClass("is-invalid");
+                $('#err-phone').html("");
+            } else {
+                $(this).addClass("is-invalid");
+                $('#err-phone').html("Phone Number must be 11 digits long.");
             }
         });
 

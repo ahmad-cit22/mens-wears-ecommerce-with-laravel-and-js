@@ -19,7 +19,7 @@ class ProductDamageController extends Controller {
     public function index(Request $request) {
         if (auth()->user()->can('damage.view')) {
             if ($request->ajax()) {
-                $stocks = ProductDamage::orderBy('created_at', 'desc')->get();
+                $stocks = ProductDamage::orderBy('created_at', 'desc')->with('product', 'created_by', 'created_by.adder', 'size')->get();
                 return Datatables::of($stocks)
                     // ->addIndexColumn()
                     ->addColumn('product', function ($row) {
@@ -37,7 +37,7 @@ class ProductDamageController extends Controller {
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -72,12 +72,11 @@ class ProductDamageController extends Controller {
             if (!is_null($stock)) {
                 $product = $stock->product;
             }
-    
+
             return ['product' => $product, 'stock' => $stock, 'size' => $size];
         } else {
             return ['product' => null, 'stock' => null, 'size' => null];
         }
-        
     }
 
     public function store(Request $request) {
@@ -110,7 +109,7 @@ class ProductDamageController extends Controller {
             $history->remarks = $request->note;
             $history->note = "Damage";
             $history->save();
-            
+
             WorkTrackingEntry::create([
                 'product_id' => $product_id,
                 'product_stock_history_id' => $history->id,

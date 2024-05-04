@@ -22,7 +22,9 @@
             <div class="card">
                 <div class="card-header">
                     @can('product.create')
-                        <a href="{{ route('product.create') }}" class="btn btn-primary"><i class="fas fa-plus mr-2"></i>Add Product</a>
+                        @if (!Auth::user()->vendor)
+                            <a href="{{ route('product.create') }}" class="btn btn-primary"><i class="fas fa-plus mr-2"></i>Add Product</a>
+                        @endif
                     @endcan
                 </div>
                 <!-- /.card-header -->
@@ -59,9 +61,9 @@
                                 <th>Brand</th>
                                 <th>Type</th>
                                 <th>Stock</th>
-                                <th>Status</th>
+                                {{-- <th>Status</th>
                                 <th>Created By</th>
-                                <th>Action</th>
+                                <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -90,7 +92,7 @@
                                             @endforeach
                                         @endif
                                     </td>
-                                    <td><span class="badge badge-{{ $product->is_active == 1 ? 'success' : 'danger' }}">{{ $product->is_active == 1 ? 'Active' : 'Inactive' }}</span></td>
+                                    {{-- <td><span class="badge badge-{{ $product->is_active == 1 ? 'success' : 'danger' }}">{{ $product->is_active == 1 ? 'Active' : 'Inactive' }}</span></td>
                                     <td>
                                         @if ($product->created_by)
                                             <a href="{{ route('user.edit', $product->created_by->user_id) }}">{{ $product->created_by->adder->name }}</a>
@@ -105,7 +107,7 @@
                                         @can('product.delete')
                                             <a href="#deleteModal{{ $product->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
                                         @endcan
-                                    </td>
+                                    </td> --}}
                                 </tr>
                                 <!-- Delete product Modal -->
                                 <div class="modal fade" id="deleteModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -139,9 +141,9 @@
                                 <th>Category</th>
                                 <th>Brand</th>
                                 <th>Type</th>
-                                <th>Status</th>
+                                {{-- <th>Status</th>
                                 <th>Created By</th>
-                                <th>Action</th>
+                                <th>Action</th> --}}
                             </tr>
                         </tfoot>
                     </table>

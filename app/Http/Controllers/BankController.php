@@ -18,8 +18,12 @@ class BankController extends Controller
     public function index()
     {
         if (auth()->user()->can('bank.index')) {
-           $banks = Bank::orderBy('id', 'DESC')->get();
-           return view('admin.bank.index', compact('banks')); 
+            if (!Auth::user()->vendor) {
+                $banks = Bank::where('vendor_id', null)->orderBy('id', 'DESC')->get();
+            } else {
+                $banks = Bank::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+            }
+           return view('admin.bank.index', compact('banks'));
         }
         else
         {
@@ -55,15 +59,21 @@ class BankController extends Controller
             $bank = new Bank;
             $bank->name = $request->name;
             $bank->account_number = $request->account_number;
+            if (Auth::user()->vendor) {
+                $bank->vendor_id = Auth::user()->vendor->id;
+            }
             $bank->save();
 
             $transaction = new BankTransaction;
             $transaction->bank_id = $bank->id;
             $transaction->credit = $request->opening_balance;
             $transaction->note = 'Opening Balance';
+            if (Auth::user()->vendor) {
+                $transaction->vendor_id = Auth::user()->vendor->id;
+            }
             $transaction->save();
             Alert::toast('New Bank created', 'success');
-            return back(); 
+            return back();
         }
         else
         {

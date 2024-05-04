@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Wholesale Sells</h1>
+                    <h1 class="m-0">Wholesale Sells<a href="{{ route('sell.wholesale.export.excel', 1) }}" class="ml-3 btn btn-primary btn-sm" style="">View All</a></h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -38,56 +38,9 @@
                         </div>
                     </div>
                     <div class="row mt-5 categoryCardBox">
-                        @foreach ($categories as $key => $category)
-                            @php
-                                $sells_cat = 0;
-                                $sells_amount_cat = 0;
-                            @endphp
-                            @if ($category->parent_id == 0)
-                                @foreach ($orders as $item)
-                                    @if ($item->order_status_id != 5 && $item->is_return == 0)
-                                        @foreach ($item->order_product as $order_product)
-                                            @if ($order_product->product->category_id == $category->id)
-                                                @php
-                                                    $sells_cat += $order_product->qty;
-                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
-                                                @endphp
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                                @if ($sells_cat > 0)
-                                    <div class="col-3 gap-3 mb-2 categoryCard1">
-                                        <h4 class=""><b>{{ $category->title }}</b></h4>
-                                        <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
-                                        <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
-                                    </div>
-                                @endif
-                            @else
-                                @foreach ($orders as $item)
-                                    @if ($item->order_status_id != 5 && $item->is_return == 0)
-                                        @foreach ($item->order_product as $order_product)
-                                            @if ($order_product->product->sub_category_id == $category->id)
-                                                @php
-                                                    $sells_cat += $order_product->qty;
-                                                    $sells_amount_cat += $order_product->price * $order_product->qty;
-                                                @endphp
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                                @if ($sells_cat > 0)
-                                    <div class="col-3 gap-3 mb-2 categoryCard2">
-                                        <h5><b>{{ $category->parent->title . ' - ' . $category->title }}</b></h5>
-                                        <span>Total Sold: <span class="ml-1">{{ $sells_cat }} pc</span></span>
-                                        <p>Total Sold Amount: <span class="ml-1">{{ round($sells_amount_cat) }} TK</span></p>
-                                    </div>
-                                @endif
-                            @endif
-                        @endforeach
                     </div>
                     <hr>
-                    <form action="{{ route('sell.wholesale.search.export') }}" method="get">
+                    <form action="{{ route('sell.wholesale.search.export', 0) }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -200,14 +153,17 @@
                                 <th>S.N</th>
                                 <th>Code</th>
                                 <th>Customer Name</th>
-                                <th width="9%">Phone</th>
-                                <th>Order Info</th>
-                                <th width="13%">Courier Info</th>
-                                <th>Status</th>
-                                <th width="13%">Note</th>
+                                <th width="6%">Phone</th>
+                                <th width="14%">Order Info</th>
+                                <th width="11%">Order Products</th>
+                                <th width="10%">Courier Info</th>
+                                <th width="6%">Status</th>
+                                <th width="10%">Note</th>
                                 <th>Source</th>
-                                <th>Date</th>
-                                <th>COD</th>
+                                <th width="8%">Date</th>
+                                @if (auth()->user()->can('vat.calculate'))
+                                    <th>VAT</th>
+                                @endif
                                 <th>Created By</th>
                             </tr>
                         </thead>
@@ -217,7 +173,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->code }}</td>
                                     <td>{{ $item->name }}</td>
-                                    <td width="9%">{{ $item->phone }}</td>
+                                    <td>{{ $item->phone }}</td>
                                     <td>
                                         <p class="m-0"><b>Sub Total: {{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></p>
                                         <p class="m-0"><b>Delivery Charge: {{ $item->delivery_charge }}/- </b></p>
@@ -231,6 +187,11 @@
                                             <p class="m-0"><b>COD: {{ $item->cod }}/- </b></p>
                                         @endif
                                         <p class="m-0"><b>Total Payable: {{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                    </td>
+                                    <td>
+                                        @foreach ($item->order_product as $key => $order_product)
+                                            <p><b>{{ $key + 1 }}. {{ $order_product->product ? $order_product->product->title : 'N/A' }}</b> x {{ $order_product->qty }}</p>
+                                        @endforeach
                                     </td>
                                     <td>
                                         <p class="m-0">Courier: <b>{{ $item->courier_name }} </b></p>
@@ -247,10 +208,22 @@
                                             <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
                                         @endif
                                     </td>
-                                    <td width="13%">{{ $item->note }}</td>
+                                    <td>{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
-                                    <td>{{ $item->cod }}</td>
+                                    @if (auth()->user()->can('vat.calculate'))
+                                        <td>
+                                            @if ($item->is_return != 1 && !$item->vat_entry)
+                                                <a href="#vat-entry{{ $item->id }}" class="ml-1 btn btn-info btn-sm mt-2" data-toggle="modal" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
+                                            @else
+                                                @if (!$item->vat_entry)
+                                                    --
+                                                @else
+                                                    <button class="ml-1 btn btn-success btn-sm mt-2" title="VAT Calculation Done" disabled><i class="fas fa-check"></i></button>
+                                                @endif
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>
                                         @if ($item->created_by)
                                             <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>
@@ -259,6 +232,31 @@
                                         @endif
                                     </td>
                                 </tr>
+
+                                @if ($item->is_return != 1 && !$item->vat_entry)
+                                    <!-- vat_entry_confirm Modal -->
+                                    <div class="modal fade" id="vat-entry{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm VAT Entry - {{ $item->code }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('sell.vat.calculate', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="row justify-content-end">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary ml-1 mr-2">Confirm</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endforeach
                         </tbody>
 

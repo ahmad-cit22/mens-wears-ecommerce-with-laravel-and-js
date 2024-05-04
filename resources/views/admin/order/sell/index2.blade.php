@@ -6,7 +6,10 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Sells</h1>
+                    <h1 class="m-0">Sells<a href="{{ route('sell.export.excel', 1) }}" class="ml-3 btn btn-primary btn-sm" style="">View All</a></h1>
+                    {{-- <div class="row justify-content-end"> --}}
+
+                    {{-- </div> --}}
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -41,7 +44,7 @@
                         </div>
                     </div>
                     <hr>
-                    <form action="{{ route('sell.search.export') }}" method="get">
+                    <form action="{{ route('sell.search.export', 0) }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
@@ -154,14 +157,17 @@
                                 <th>S.N</th>
                                 <th>Code</th>
                                 <th>Customer Name</th>
-                                <th width="9%">Phone</th>
-                                <th width="13%">Order Info</th>
-                                <th width="13%">Courier Info</th>
-                                <th>Status</th>
-                                <th width="13%">Note</th>
+                                <th width="6%">Phone</th>
+                                <th width="14%">Order Info</th>
+                                <th width="11%">Order Products</th>
+                                <th width="10%">Courier Info</th>
+                                <th width="6%">Status</th>
+                                <th width="10%">Note</th>
                                 <th>Source</th>
-                                <th width="9%">Date</th>
-                                <th>COD</th>
+                                <th width="8%">Date</th>
+                                @if (auth()->user()->can('vat.calculate'))
+                                    <th>VAT</th>
+                                @endif
                                 <th>Created By</th>
                             </tr>
                         </thead>
@@ -169,22 +175,29 @@
                             @foreach ($orders as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td><b>{{ $item->code }}</b></td>
+                                    <td><b>
+                                            <a class="" href="{{ route('order.edit', $item->id) }}"><span class="bigFont badge badge-info">{{ $item->code }}</span></a>
+                                        </b></td>
                                     <td><b>{{ $item->name }}</b></td>
-                                    <td width="9%"><b>{{ $item->phone }}</b></td>
+                                    <td width="6%" style="font-size: 12px !important;"><b>{{ $item->phone }}</b></td>
                                     <td>
-                                        <p class="m-0">Sub Total: <b>{{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></p>
-                                        <p class="m-0">Delivery Charge: <b>{{ $item->delivery_charge }}/- </b></p>
+                                        <span class="m-0">Sub Total: <b>{{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></span> <br>
+                                        <span class="m-0">Delivery Charge: <b>{{ $item->delivery_charge }}/- </b></span><br>
                                         @if ($item->discount_amount)
-                                            <p class="m-0">Discount: <b>{{ $item->discount_amount }}/- </b></p>
+                                            <span class="m-0">Discount: <b>{{ $item->discount_amount }}/- </b></span><br>
                                         @endif
                                         @if ($item->advance)
-                                            <p class="m-0">Advance: <b>{{ $item->advance }}/- </b></p>
+                                            <span class="m-0">Advance: <b>{{ $item->advance }}/- </b></span><br>
                                         @endif
                                         @if ($item->cod)
-                                            <p class="m-0">COD: <b>{{ $item->cod }}/- </b></p>
+                                            <span class="m-0">COD: <b>{{ $item->cod }}/- </b></span><br>
                                         @endif
-                                        <p class="m-0">Total Payable: <b>{{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                        <span class="m-0">Total Payable: <b>{{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></span>
+                                    </td>
+                                    <td>
+                                        @foreach ($item->order_product as $key => $order_product)
+                                            <p><b>{{ $key + 1 }}. {{ $order_product->product->title }}</b> x {{ $order_product->qty }}</p>
+                                        @endforeach
                                     </td>
                                     <td>
                                         <p class="m-0">Courier: <b>{{ $item->courier_name }} </b></p>
@@ -201,10 +214,22 @@
                                             <span class="badge badge-{{ $item->status->color }}">{{ $item->status->title }}</span>
                                         @endif
                                     </td>
-                                    <td width="13%">{{ $item->note }}</td>
+                                    <td>{{ $item->note }}</td>
                                     <td>{{ $item->source }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->created_at)->format('d M, Y g:iA') }}</td>
-                                    <td>{{ $item->cod }}</td>
+                                    @if (auth()->user()->can('vat.calculate'))
+                                        <td>
+                                            @if ($item->is_return != 1 && !$item->vat_entry)
+                                                <a href="#vat-entry{{ $item->id }}" class="ml-1 btn btn-info btn-sm mt-2" data-toggle="modal" title="Calculate VAT"><i class="fas fa-dollar-sign"></i></a>
+                                            @else
+                                                @if (!$item->vat_entry)
+                                                    --
+                                                @else
+                                                    <button class="ml-1 btn btn-success btn-sm mt-2" title="VAT Calculation Done" disabled><i class="fas fa-check"></i></button>
+                                                @endif
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>
                                         @if ($item->created_by)
                                             <a href="{{ route('user.edit', $item->created_by->user_id) }}">{{ $item->created_by->adder->name }}</a>
@@ -213,6 +238,30 @@
                                         @endif
                                     </td>
                                 </tr>
+                                @if ($item->is_return != 1 && !$item->vat_entry)
+                                    <!-- vat_entry_confirm Modal -->
+                                    <div class="modal fade" id="vat-entry{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm VAT Entry - {{ $item->code }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('sell.vat.calculate', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="row justify-content-end">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary ml-1 mr-2">Confirm</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endforeach
                         </tbody>
 
@@ -297,7 +346,30 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "buttons": [
+
+                    {
+                        extend: 'excel',
+                        footer: 'true',
+                        text: 'Excel',
+                    },
+
+                    {
+                        extend: 'pdf',
+                        footer: 'true',
+                        text: 'PDF',
+                        orientation: 'landscape',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6],
+                            // rows:
+                        },
+                        // customize: function(doc) {
+                        //     doc.defaultStyle.font = "nikosh";
+                        // }
+                    },
+
+                    'print',
+                ]
             }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
 
         });

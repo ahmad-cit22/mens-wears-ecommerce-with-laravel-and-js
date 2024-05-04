@@ -4,15 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSettingsTable extends Migration
-{
+class CreateSettingsTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
@@ -24,7 +22,8 @@ class CreateSettingsTable extends Migration
             $table->string('additional_phone')->nullable();
             $table->text('address')->nullable();
             $table->text('combine_address')->nullable();
-            $table->string('vat')->default(0);
+            $table->float('vat')->default(0);
+            $table->string('bin_no')->nullable();
             $table->double('shipping_charge')->default(0);
             $table->double('shipping_charge_dhaka')->default(0);
             $table->double('shipping_charge_dhaka_metro')->default(0);
@@ -50,8 +49,7 @@ class CreateSettingsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('settings');
     }
 }

@@ -15,7 +15,11 @@ class ExpenseController extends Controller {
      */
     public function index() {
         if (auth()->user()->can('expense_type.index')) {
-            $expenses = Expense::all();
+            if (!Auth::user()->vendor) {
+                $expenses = Expense::where('vendor_id', null)->orderBy('type', 'ASC')->get();
+            } else {
+                $expenses = Expense::orderBy('type', 'ASC')->where('vendor_id', Auth::user()->vendor->id)->get();
+            }
             return view('admin.expense.index', compact('expenses'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -44,6 +48,9 @@ class ExpenseController extends Controller {
             ]);
             $expense = new Expense;
             $expense->type = $request->type;
+            if (Auth::user()->vendor) {
+                $expense->vendor_id = Auth::user()->vendor->id;
+            }
             $expense->save();
             Alert::toast('New Expense Type Added !', 'success');
             return redirect()->route('expense.index');
