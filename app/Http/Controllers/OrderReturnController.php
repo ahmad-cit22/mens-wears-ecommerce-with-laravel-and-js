@@ -127,6 +127,7 @@ class OrderReturnController extends Controller {
                 $order->is_return = 2;
             } else {
                 $order->is_return = 1;
+                $order->order_status_id = 4;
             }
             $order->save();
 
@@ -255,11 +256,11 @@ class OrderReturnController extends Controller {
 //         $i = 0;
 //         $code = $this->generateUniqueCode();
 //         $returned_price = 0;
-        
+
 //         for ($i = 0; $i < count($request->qty); $i++) {
 //             if ($request->qty[$i] != NULL && $request->qty[$i] > 0) {
 //                 $change += 1;
-                
+
 //                 // save the returned item
 //                 $sell_return = new OrderReturn;
 //                 $sell_return->order_id = $request->order_id;
@@ -270,22 +271,22 @@ class OrderReturnController extends Controller {
 //                 $sell_return->qty = $request->qty[$i];
 //                 $sell_return->price = $request->price[$i];
 //                 $sell_return->save();
-                
+
 //                 $returned_price += $request->qty[$i] * $request->price[$i];
-                
+
 //                 // adjust the order products
 //                 $order_product = OrderProduct::where('order_id', $request->order_id)->where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
 //                 $order_product->qty = $order_product->qty - $request->qty[$i];
 //                 $order_product->return_qty = $order_product->return_qty != null ? $order_product->return_qty + $request->qty[$i] : $request->qty[$i];
 //                 $order_product->save();
-                
+
 //                 // adjust the stock value
 //                 $stock = ProductStock::where('product_id', $request->product_id[$i])->where('size_id', $request->size_id[$i])->first();
 //                 $stock->qty += $request->qty[$i];
 //                 $stock->save();
 //             }
 //         }
-        
+
 //         $order = Order::find($request->order_id);
 //         $discount = $order->discount_amount;
 //         $order_products = $order->order_product;
@@ -296,18 +297,18 @@ class OrderReturnController extends Controller {
 //             foreach ($order_products as $key => $product) {
 //                 $subtotal += $product->qty * $product->product->variation->price;
 //             }
-    
+
 //             $percentage = ($discount / $subtotal) * 100;
 
-            
+
 //             foreach ($order_products as $key => $product) {
 //                 $product->price = round($product->product->variation->price - ($product->product->variation->price * ($percentage / 100)));
 //                 $product->save();
-                
+
 //                 $new_total += $product->price * $product->qty;
 //             }
 //         }
-        
+
 //         if ($change > 0) {
 //             if ($new_total > 0) {
 //                 $order->price = $new_total;

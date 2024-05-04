@@ -28,12 +28,21 @@ class HomeController extends Controller {
      */
     public function index() {
         if (Auth::user()->type == 1) {
-            $orders = Order::where('is_final', 1)->get();
-            $orders_not_final = Order::all();
-            $yearly_orders = Order::where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->get();
-            $monthly_orders = Order::where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
-                ->get(); 
-            $daily_orders = Order::where('is_final', 1)->whereDate('created_at', Carbon::today())->get();
+            if (!Auth::user()->vendor) {
+                $orders = Order::where('vendor_id', null)->where('is_final', 1)->get();
+                $orders_not_final = Order::where('vendor_id', null)->all();
+                $yearly_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->get();
+                $monthly_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
+                    ->get();
+                $daily_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereDate('created_at', Carbon::today())->get();
+            } else {
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->get();
+                $orders_not_final = Order::where('vendor_id', Auth::user()->vendor->id)->get();
+                $yearly_orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->get();
+                $monthly_orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
+                    ->get();
+                $daily_orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->whereDate('created_at', Carbon::today())->get();
+            }
             return view('admin.index', compact('orders', 'orders_not_final', 'yearly_orders', 'monthly_orders', 'daily_orders'));
         } else if (Auth::user()->type == 2) {
             return redirect()->route('customer.account');
@@ -80,7 +89,7 @@ class HomeController extends Controller {
     public function sitemap_generate() {
         $path = public_path('sitemap.xml');
         SitemapGenerator::create('https://gobyfabrifest.com')->writeToFile($path);
-        
+
         Alert::toast('Sitemap generated!', 'success');
         return back();
     }

@@ -30,7 +30,12 @@ class ProductController extends Controller {
      */
     public function index() {
         if (auth()->user()->can('product.index')) {
-            $products = Product::orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            if (!Auth::user()->vendor) {
+                $products = Product::orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            } else {
+                $vendor_products = Auth::user()->vendor->vendor_products->pluck('product_id')->toArray();
+                $products = Product::whereIn('id', $vendor_products)->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            }
             // return $products;
             return view('admin.product.index', compact('products'));
         } else {
@@ -43,7 +48,13 @@ class ProductController extends Controller {
         $search = $request->search;
 
         if (auth()->user()->can('product.index')) {
-            $products = Product::where('title', 'like', '%' . $search . '%')->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            if (!Auth::user()->vendor) {
+                $products = Product::where('title', 'like', '%' . $search . '%')->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            } else {
+                $vendor_products = Auth::user()->vendor->vendor_products->pluck('product_id')->toArray();
+                $products = Product::whereIn('id', $vendor_products)->where('title', 'like', '%' . $search . '%')->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+            }
+
             if (count($products) > 0) {
                 return view('admin.product.index', compact('products'));
             }
@@ -86,10 +97,10 @@ class ProductController extends Controller {
             $size_id = $request->size_id;
             $qty = $request->qty;
             $stock = ProductStock::where('product_id', $product_id)->where('size_id', $size_id)->first();
-            
+
             $stock->barcode = $stock->id + 1000;
             $stock->save();
-            
+
             return view('admin.product.print-label-result', compact('stock', 'qty'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -260,16 +271,16 @@ class ProductController extends Controller {
             }
 
             WorkTrackingEntry::create([
-                        'product_id' => $product->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'create_product'
+                'product_id' => $product->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'create_product'
             ]);
 
             WorkTrackingEntry::create([
-                        'product_id' => $product->id,
-                        'product_stock_history_id' => $stock_history->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'add_stock'
+                'product_id' => $product->id,
+                'product_stock_history_id' => $stock_history->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'add_stock'
             ]);
 
             Alert::toast('Product Added!', 'success');
@@ -382,7 +393,7 @@ class ProductController extends Controller {
                 } else {
                     $product->is_offer = 0;
                 }
-                
+
                 if ($request->has('is_hot_deal')) {
                     $product->is_hot_deal = 1;
                 } else {
@@ -466,7 +477,7 @@ class ProductController extends Controller {
             $product = Product::find($id);
             if (!is_null($product)) {
                 if (!OrderProduct::where('product_id', $id)->exists()) {
-    
+
                     if (File::exists('images/product/' . $product->image)) {
                         File::delete('images/product/' . $product->image);
                     }
@@ -509,7 +520,6 @@ class ProductController extends Controller {
                     Alert::toast('Sorry! There is orders containing this product.', 'warning');
                     return back();
                 }
-
             } else {
                 Alert::toast('Product Not Found!', 'warning');
                 return back();

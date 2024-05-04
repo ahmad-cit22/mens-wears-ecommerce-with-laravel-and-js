@@ -52,8 +52,35 @@ class ProductStockHistoryController extends Controller {
 
     public function current(Request $request) {
         if (auth()->user()->can('current.stock.view')) {
+            if (!Auth::user()->vendor) {
+                $stocks = ProductStock::where('is_active', 1)->orderBy('id', 'DESC')->where('vendor_id', null)->with('product', 'size')->get();
+                $categories = Category::all();
+                $p_stocks = ProductStock::where('is_active', 1)->where('vendor_id', null)->orderBy('id', 'DESC')->with('product', 'size')->get();
+                $total_production_cost = ProductStock::where('is_active', 1)->where('vendor_id', null)->get()->sum(function ($t) {
+                    return $t->production_cost * $t->qty;
+                });
+
+                $price = ProductStock::where('is_active', 1)->where('vendor_id', null)->get()->sum(function ($t) {
+                    return $t->price * $t->qty;
+                });
+            } else {
+                $stocks = ProductStock::where('is_active', 1)->orderBy('id', 'DESC')->where('vendor_id', Auth::user()->vendor->id)->with('product', 'size')->get();
+
+                $p_stocks = ProductStock::where('is_active', 1)->where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->with('product', 'size')->get();
+                $total_production_cost = ProductStock::where('is_active', 1)->where('vendor_id', Auth::user()->vendor->id)->get()->sum(function ($t) {
+                    return $t->production_cost * $t->qty;
+                });
+
+                $price = ProductStock::where('is_active', 1)->where('vendor_id', Auth::user()->vendor->id)->get()->sum(function ($t) {
+                    return $t->price * $t->qty;
+                });
+                $vendor_products = Auth::user()->vendor->vendor_products->pluck('product_id')->toArray();
+                $product_categories = Product::whereIn('id', $vendor_products)->orderBy('id', 'DESC')->with('category')->get()->pluck('category_id')->toArray();
+                $categories = Category::whereIn('id', $product_categories)->get();
+            }
+
             if ($request->ajax()) {
-                $stocks = ProductStock::orderBy('id', 'DESC')->where('vendor_id', null)->with('product', 'size')->get();
+
                 return Datatables::of($stocks)
                     ->addIndexColumn()
                     ->addColumn('product', function ($row) {
@@ -103,19 +130,10 @@ class ProductStockHistoryController extends Controller {
                     ->rawColumns(['product'])
                     ->make(true);
             }
-            $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->get();
-            $categories = Category::all();
-            $p_stocks = ProductStock::where('is_active', 1)->where('vendor_id', null)->orderBy('id', 'DESC')->with('product', 'size')->get();
-            $total_production_cost = ProductStock::where('is_active', 1)->where('vendor_id', null)->get()->sum(function ($t) {
-                return $t->production_cost * $t->qty;
-            });
 
-            $price = ProductStock::where('is_active', 1)->where('vendor_id', null)->get()->sum(function ($t) {
-                return $t->price * $t->qty;
-            });
 
             return view('admin.product.stock.current', [
-                'products' => $products,
+                // 'products' => $products,
                 'total_production_cost' => $total_production_cost,
                 'total_price' => $price,
                 'categories' => $categories,
@@ -131,7 +149,12 @@ class ProductStockHistoryController extends Controller {
         $date_from = '';
         $date_to = '';
         $reason = '';
-        $stocks = ProductStockHistory::orderBy('created_at', 'desc')->where('vendor_id', null)->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+        if (!Auth::user()->vendor) {
+            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->where('vendor_id', null)->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+        } else {
+            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->where('vendor_id', Auth::user()->vendor->id)->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+        }
+
 
         if (auth()->user()->can('stock.history')) {
             if ($request->ajax()) {
@@ -210,7 +233,7 @@ class ProductStockHistoryController extends Controller {
             $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
             $reason = $request->reason;
 
-            $stocks = ProductStockHistory::where('note', $reason)->where('vendor_id', null)
+            $stocks = ProductStockHistory::where('note', $reason)
                 ->whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
 
             $date_from = $request->date_from;
@@ -220,19 +243,25 @@ class ProductStockHistoryController extends Controller {
 
             $reason = $request->reason;
 
-            $stocks = ProductStockHistory::where('note', $reason)->where('vendor_id', null)->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+            $stocks = ProductStockHistory::where('note', $reason)->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
         }
         if (empty($request->reason) && !empty($request->date_from) && !empty($request->date_to)) {
             $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
             $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
             $reason = $request->reason;
-            $stocks = ProductStockHistory::whereBetween('created_at', [$start_date, $end_date])->where('vendor_id', null)->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+            $stocks = ProductStockHistory::whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
 
             $date_from = $request->date_from;
             $date_to = $request->date_to;
         }
         if (empty($request->reason) && (empty($request->date_from) || empty($request->date_to))) {
-            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->where('vendor_id', null)->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+            $stocks = ProductStockHistory::orderBy('created_at', 'desc')->with('product', 'product.variation', 'created_by', 'created_by.adder', 'size')->get();
+        }
+
+        if (!Auth::user()->vendor) {
+            $stocks = $stocks->where('vendor_id', null);
+        } else {
+            $stocks = $stocks->where('vendor_id', Auth::user()->vendor->id);
         }
 
         if (auth()->user()->can('stock.history')) {
@@ -304,7 +333,12 @@ class ProductStockHistoryController extends Controller {
 
     public function total_sold_amount(Request $request) {
         if (auth()->user()->can('stock.history')) {
-            $orders = Order::orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'order_product.product.variation')->get();
+
+            if (!Auth::user()->vendor) {
+                $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'order_product.product.variation')->get();
+            } else {
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'order_product.product.variation')->get();
+            }
 
             return view('admin.product.stock.modals.total-sold-amount', [
                 'orders' => $orders,
@@ -316,7 +350,12 @@ class ProductStockHistoryController extends Controller {
 
     public function total_remaining_amount(Request $request) {
         if (auth()->user()->can('stock.history')) {
-            $current_remaining_stock = ProductStock::where('qty', '>', 0)->where('vendor_id', null)->get();
+            if (!Auth::user()->vendor) {
+                $current_remaining_stock = ProductStock::where('qty', '>', 0)->where('vendor_id', null)->get();
+            } else {
+                $current_remaining_stock = ProductStock::where('qty', '>', 0)->where('vendor_id', Auth::user()->vendor->id)->get();
+            }
+
             $cost_remaining = $current_remaining_stock->sum(function ($data) {
                 return $data->production_cost * $data->qty;
             });

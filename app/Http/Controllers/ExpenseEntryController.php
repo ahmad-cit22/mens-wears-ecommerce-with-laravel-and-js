@@ -27,9 +27,16 @@ class ExpenseEntryController extends Controller {
         // return ExpenseEntry::orderBy('created_at', 'desc')->get();
 
         if (auth()->user()->can('expense.view')) {
-            $data = ExpenseEntry::orderBy('date', 'desc')->with('expense', 'bank', 'created_by', 'created_by.adder')->get();
-            $banks = Bank::orderBy('name', 'ASC')->get();
-            $expense_types = Expense::orderBy('type', 'ASC')->get();
+
+            if (!Auth::user()->vendor) {
+                $data = ExpenseEntry::where('vendor_id', null)->orderBy('date', 'desc')->with('expense', 'bank', 'created_by', 'created_by.adder')->get();
+                $banks = Bank::where('vendor_id', null)->orderBy('name', 'ASC')->get();
+                $expense_types = Expense::where('vendor_id', null)->orderBy('type', 'ASC')->get();
+            } else {
+                $data = ExpenseEntry::orderBy('date', 'desc')->where('vendor_id', Auth::user()->vendor->id)->with('expense', 'bank', 'created_by', 'created_by.adder')->get();
+                $banks = Bank::orderBy('name', 'ASC')->where('vendor_id', Auth::user()->vendor->id)->get();
+                $expense_types = Expense::orderBy('type', 'ASC')->where('vendor_id', Auth::user()->vendor->id)->get();
+            }
 
             if ($request->ajax()) {
                 return Datatables::of($data)
@@ -88,7 +95,13 @@ class ExpenseEntryController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('expense.view')) {
-            $banks = Bank::all();
+            if (!Auth::user()->vendor) {
+                $banks = Bank::where('vendor_id', null)->get();
+                $expense_types = Expense::where('vendor_id', null)->orderBy('type', 'ASC')->get();
+            } else {
+                $banks = Bank::where('vendor_id', Auth::user()->vendor->id)->get();
+                $expense_types = Expense::orderBy('type', 'ASC')->where('vendor_id', Auth::user()->vendor->id)->get();
+            }
             if (!empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
@@ -106,6 +119,13 @@ class ExpenseEntryController extends Controller {
                     return $item->bank_id == $bank_id;
                 });
             }
+
+            if (Auth::user()->vendor) {
+                $data = $data->where('vendor_id', Auth::user()->vendor->id);
+            } else {
+                $data = $data->where('vendor_id', null);
+            }
+
 
             if ($request->ajax()) {
 
@@ -154,7 +174,7 @@ class ExpenseEntryController extends Controller {
                     ->rawColumns(['expense_type', 'bank', 'date', 'action'])
                     ->make(true);
             }
-            return view('admin.expense.entry', compact('data', 'banks', 'date_from', 'date_to'));
+            return view('admin.expense.entry', compact('data', 'banks', 'date_from', 'date_to', 'expense_types'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -188,6 +208,9 @@ class ExpenseEntryController extends Controller {
             $expense->amount = $request->amount;
             $expense->date = $request->date;
             $expense->note = $request->note;
+            if (Auth::user()->vendor) {
+                $expense->vendor_id = Auth::user()->vendor->id;
+            }
             $expense->save();
 
             WorkTrackingEntry::create([
@@ -203,6 +226,9 @@ class ExpenseEntryController extends Controller {
                 $transaction->note = $request->note;
                 $transaction->debit = $request->amount;
                 $transaction->date = $request->date;
+                if (Auth::user()->vendor) {
+                    $transaction->vendor_id = Auth::user()->vendor->id;
+                }
                 $transaction->save();
             }
             Alert::toast('New expense listed', 'success');
@@ -225,6 +251,9 @@ class ExpenseEntryController extends Controller {
                 $expense->amount = $request->amount;
                 $expense->date = $request->date;
                 $expense->note = $request->note;
+                if (Auth::user()->vendor) {
+                    $expense->vendor_id = Auth::user()->vendor->id;
+                }
                 $expense->save();
 
                 if ($request->bank_id != '' && $request->bank_id > 0) {
@@ -234,6 +263,9 @@ class ExpenseEntryController extends Controller {
                     $transaction->note = $request->note;
                     $transaction->debit = $request->amount;
                     $transaction->date = $request->date;
+                    if (Auth::user()->vendor) {
+                        $transaction->vendor_id = Auth::user()->vendor->id;
+                    }
                     $transaction->save();
                 }
 

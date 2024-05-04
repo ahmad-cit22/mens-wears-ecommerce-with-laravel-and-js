@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Product extends Model {
     use HasFactory;
@@ -30,7 +31,11 @@ class Product extends Model {
     }
 
     public function variations() {
-        return $this->hasMany(ProductStock::class);
+        if (!Auth::user()->vendor) {
+            return $this->hasMany(ProductStock::class);
+        } else {
+            return $this->hasMany(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
+        }
     }
 
     public function total_stock() {
@@ -45,6 +50,10 @@ class Product extends Model {
 
     public function variation() {
         return $this->hasOne(ProductStock::class);
+        // if (!Auth::user()->vendor) {
+        // } else {
+        //     return $this->hasOne(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
+        // }
     }
 
     public function product_image() {

@@ -121,6 +121,7 @@
                                         <div class="form-group">
                                             <label>Expense Type*</label>
                                             <select class="form-control @error('expense_id') is-invalid @enderror" name="expense_id" required>
+                                                <option value="">Please select expense type</option>
                                                 @foreach ($expense_types as $expense)
                                                     <option value="{{ $expense->id }}">{{ $expense->type }}</option>
                                                 @endforeach

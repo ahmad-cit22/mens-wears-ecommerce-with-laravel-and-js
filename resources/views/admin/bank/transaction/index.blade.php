@@ -120,7 +120,7 @@
                                             <label>Bank</label>
                                             <select class="form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
                                                 <option value="">Please select bank</option>
-                                                @foreach (App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
+                                                @foreach ($banks as $bank)
                                                     <option value="{{ $bank->id }}">{{ $bank->name }}</option>
                                                 @endforeach
                                             </select>

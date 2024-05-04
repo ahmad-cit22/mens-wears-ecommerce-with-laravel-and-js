@@ -19,10 +19,14 @@ class BankTransactionController extends Controller {
      */
     public function index(Request $request) {
         if (auth()->user()->can('bank.index')) {
-            $banks = Bank::all();
-            $data = BankTransaction::orderBy('id', 'DESC')->get();
+            if (!Auth::user()->vendor) {
+                $banks = Bank::where('vendor_id', null)->get();
+                $data = BankTransaction::where('vendor_id', null)->orderBy('id', 'DESC')->get();
+            } else {
+                $banks = Bank::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+                $data = BankTransaction::orderBy('id', 'DESC')->where('vendor_id', Auth::user()->vendor->id)->get();
+            }
             if ($request->ajax()) {
-                $data = BankTransaction::orderBy('id', 'DESC')->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('bank', function ($row) {
@@ -91,6 +95,9 @@ class BankTransactionController extends Controller {
             if ($request->has('other_income')) {
                 $transaction->other_income = $request->other_income;
             }
+            if (Auth::user()->vendor) {
+                $transaction->vendor_id = Auth::user()->vendor->id;
+            }
             $transaction->save();
             Alert::toast('New Transaction created', 'success');
             return back();
@@ -101,8 +108,13 @@ class BankTransactionController extends Controller {
 
     public function search(Request $request) {
         if (auth()->user()->can('bank.index')) {
-            $banks = Bank::all();
-            $data = BankTransaction::orderBy('id', 'DESC')->get();
+            if (!Auth::user()->vendor) {
+                $banks = Bank::where('vendor_id', null)->get();
+                $data = BankTransaction::where('vendor_id', null)->orderBy('id', 'DESC')->get();
+            } else {
+                $banks = Bank::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+                $data = BankTransaction::orderBy('id', 'DESC')->where('vendor_id', Auth::user()->vendor->id)->get();
+            }
             if ($request->ajax()) {
                 if (!empty($request->date_from) && !empty($request->date_to)) {
                     $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
@@ -116,6 +128,11 @@ class BankTransactionController extends Controller {
                     $data = $data->filter(function ($item) use ($bank_id) {
                         return $item->bank_id == $bank_id;
                     });
+                }
+                if (Auth::user()->vendor) {
+                    $data = $data->where('vendor_id', Auth::user()->vendor->id);
+                } else {
+                    $data = $data->where('vendor_id', null);
                 }
 
                 return Datatables::of($data)

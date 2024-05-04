@@ -24,303 +24,605 @@
 
             @if (Auth::user()->type == 1)
                 <!-- Small boxes (Stat box) -->
+                @if (auth()->user()->can('view.admin.dashboard'))
+                    <div class="row">
+
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Total Accumulated Sales </h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('order.all') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $yearly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Current Year Sales</h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $yearly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $yearly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                                <a href="{{ route('order.current.year') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-secondary">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $monthly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Current Month Sales</h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $monthly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $monthly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="{{ route('order.current.month') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $daily_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Today's Sales</h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $daily_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $daily_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                <a href="{{ route('order.today') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+
+
+
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders->filter(function ($order) {
+                                                return $order->order_status_id == 4;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>Completed Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 4) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-secondary">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders->filter(function ($order) {
+                                                return $order->order_status_id == 2;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>Accepted Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 2) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders_not_final->filter(function ($order) {
+                                                return $order->order_status_id == 3;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>In Progress Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 3) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders_not_final->filter(function ($order) {
+                                                return $order->order_status_id == 1;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>Pending Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 1) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+
+
+
+                    <!-- Small boxes (Stat box) -->
+
+                    <!-- /.row -->
+
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders->filter(function ($order) {
+                                                return $order->order_status_id == 5;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>Canceled Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 5) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+
+                    </div>
+                @elseif (Auth::user()->vendor)
                 <div class="row">
 
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3>
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Total Accumulated Sales </h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('order.all') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $yearly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Current Year Sales</h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $yearly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $yearly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                                <a href="{{ route('order.current.year') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-secondary">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $monthly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Current Month Sales</h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $monthly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $monthly_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="{{ route('order.current.month') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $daily_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5;
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h3>
+
+                                    <h4>Today's Sales</h4>
+
+                                    <h5>Retail:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $daily_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source != 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                    <h5>Wholesale:
+                                        {{ env('CURRENCY') .
+                                            ' ' .
+                                            round(
+                                                $daily_orders->filter(function ($order) {
+                                                        return $order->order_status_id != 5 && $order->source == 'Wholesale';
+                                                    })->sum('price'),
+                                            ) }}
+                                    </h5>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                <a href="{{ route('order.today') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+
+
+
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
                                             $orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5;
-                                                })->sum('price'),
+                                                return $order->order_status_id == 4;
+                                            }),
                                         ) }}
-                                </h3>
+                                    </h3>
 
-                                <h4>Total Accumulated Sales </h4>
-
-                                <h5>Retail:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
+                                    <p>Completed Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 4) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-secondary">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
                                             $orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
-                                                })->sum('price'),
+                                                return $order->order_status_id == 2;
+                                            }),
                                         ) }}
-                                </h5>
-                                <h5>Wholesale:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
+                                    </h3>
+
+                                    <p>Accepted Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 2) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders_not_final->filter(function ($order) {
+                                                return $order->order_status_id == 3;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>In Progress Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 3) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
+                                            $orders_not_final->filter(function ($order) {
+                                                return $order->order_status_id == 1;
+                                            }),
+                                        ) }}
+                                    </h3>
+
+                                    <p>Pending Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 1) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+
+
+
+                    <!-- Small boxes (Stat box) -->
+
+                    <!-- /.row -->
+
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>
+                                        {{ count(
                                             $orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
-                                                })->sum('price'),
+                                                return $order->order_status_id == 5;
+                                            }),
                                         ) }}
-                                </h5>
+                                    </h3>
+
+                                    <p>Canceled Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('order.status.filter', 5) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
-                            <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
-                            </div>
-                            <a href="{{ route('order.all') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
+                        <!-- ./col -->
+
                     </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $yearly_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5;
-                                                })->sum('price'),
-                                        ) }}
-                                </h3>
-
-                                <h4>Current Year Sales</h4>
-
-                                <h5>Retail:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $yearly_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
-                                                })->sum('price'),
-                                        ) }}
-                                </h5>
-                                <h5>Wholesale:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $yearly_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
-                                                })->sum('price'),
-                                        ) }}
-                                </h5>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person-add"></i>
-                            </div>
-                            <a href="{{ route('order.current.year') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-secondary">
-                            <div class="inner">
-                                <h3>
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $monthly_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5;
-                                                })->sum('price'),
-                                        ) }}
-                                </h3>
-
-                                <h4>Current Month Sales</h4>
-
-                                <h5>Retail:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $monthly_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
-                                                })->sum('price'),
-                                        ) }}
-                                </h5>
-                                <h5>Wholesale:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $monthly_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
-                                                })->sum('price'),
-                                        ) }}
-                                </h5>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
-                            </div>
-                            <a href="{{ route('order.current.month') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $daily_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5;
-                                                })->sum('price'),
-                                        ) }}
-                                </h3>
-
-                                <h4>Today's Sales</h4>
-
-                                <h5>Retail:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $daily_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source != 'Wholesale';
-                                                })->sum('price'),
-                                        ) }}
-                                </h5>
-                                <h5>Wholesale:
-                                    {{ env('CURRENCY') .
-                                        ' ' .
-                                        round(
-                                            $daily_orders->filter(function ($order) {
-                                                    return $order->order_status_id != 5 && $order->source == 'Wholesale';
-                                                })->sum('price'),
-                                        ) }}
-                                </h5>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-bag"></i>
-                            </div>
-                            <a href="{{ route('order.today') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                </div>
-                <!-- /.row -->
-
-
-
-                <!-- Small boxes (Stat box) -->
-                <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3>
-                                    {{ count(
-                                        $orders->filter(function ($order) {
-                                            return $order->order_status_id == 4;
-                                        }),
-                                    ) }}
-                                </h3>
-
-                                <p>Completed Orders</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-bag"></i>
-                            </div>
-                            <a href="{{ route('order.status.filter', 4) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-secondary">
-                            <div class="inner">
-                                <h3>
-                                    {{ count(
-                                        $orders->filter(function ($order) {
-                                            return $order->order_status_id == 2;
-                                        }),
-                                    ) }}
-                                </h3>
-
-                                <p>Accepted Orders</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
-                            </div>
-                            <a href="{{ route('order.status.filter', 2) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>
-                                    {{ count(
-                                        $orders_not_final->filter(function ($order) {
-                                            return $order->order_status_id == 3;
-                                        }),
-                                    ) }}
-                                </h3>
-
-                                <p>In Progress Orders</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person-add"></i>
-                            </div>
-                            <a href="{{ route('order.status.filter', 3) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>
-                                    {{ count(
-                                        $orders_not_final->filter(function ($order) {
-                                            return $order->order_status_id == 1;
-                                        }),
-                                    ) }}
-                                </h3>
-
-                                <p>Pending Orders</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
-                            </div>
-                            <a href="{{ route('order.status.filter', 1) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                </div>
-                <!-- /.row -->
-
-
-
-                <!-- Small boxes (Stat box) -->
-
-                <!-- /.row -->
-
-                <!-- Small boxes (Stat box) -->
-                <div class="row">
-
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>
-                                    {{ count(
-                                        $orders->filter(function ($order) {
-                                            return $order->order_status_id == 5;
-                                        }),
-                                    ) }}
-                                </h3>
-
-                                <p>Canceled Orders</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
-                            </div>
-                            <a href="{{ route('order.status.filter', 5) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-
-                </div>
+                @else
+                    <p>Welcome To Dashboard!</p>
+                @endif
                 <!-- /.row -->
             @endif
 

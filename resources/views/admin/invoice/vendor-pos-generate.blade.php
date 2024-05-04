@@ -10,7 +10,7 @@
         #invoice-POS {
             padding: 2mm;
             margin: 0 auto;
-            width: 44mm;
+            width: 46mm;
             background: #FFF;
         }
 
@@ -115,17 +115,15 @@
 
         /* @page {
             size: 10in 9in;
-        }*/
-        /* @page {
-            size: 70px;
         }
         @media print {
 
 
 
+            html,
             body {
-                width: 70px !important;
-                height: 80px !important;
+                width: 10in !important;
+                height: 9in !important;
             }
 
             .info {
@@ -141,7 +139,8 @@
 
         <center id="top">
             <div class="logo">
-                <img src="{{ asset('images/website/black-logo.jpeg') }}" alt="logo" width="100%;">
+                <img src="{{ asset('images/website/black-logo.jpeg') }}" alt="logo" width="70%;">
+                <p class="text-center" style="margin-top: 0 !important">Intense Quality</p>
             </div>
             <div class="info">
                 <!--<h2>Go By Fabrifest</h2>-->
@@ -153,17 +152,14 @@
         <div id="mid">
             <div class="info">
                 <p>
-                    Order ID : <b>{{ $order->code }}</b><br>
-                    Name : {{ $order->name }}</br>
-                    Phone : <b>{{ $order->phone }}</b><br>
-                    @if ($order->email)
-                        Email : {{ $order->email }} <br>
-                    @endif
-                    Address : {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}</br>
-                    @if ($order->courier_name)
-                        Courier Name: {{ $order->courier_name }}<br>
-                    @endif
                     Date : {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</br>
+                    Invoice No. : <b>{{ $order->code }}</b><br>
+                    Sales Person : <b>{{ $order->sold_by }}</b><br><br>
+                    Customer Name : {{ $order->name }} </br>
+                    Phone No. : <b>{{ $order->phone }}</b><br>
+                    @if ($order->membership_card_no)
+                        Membership Card No. : {{ $order->membership_card_no }} <br>
+                    @endif
 
                 </p>
             </div>
@@ -176,13 +172,16 @@
                 <table>
                     <tr class="tabletitle">
                         <td class="item">
-                            <h2>Item</h2>
+                            <h2>Item & Code</h2>
+                        </td>
+                        <td class="Hours text-center">
+                            <h2>Size</h2>
                         </td>
                         <td class="Hours">
                             <h2>Qty</h2>
                         </td>
                         <td class="Rate">
-                            <h2>Price</h2>
+                            <h2>Amount</h2>
                         </td>
                     </tr>
 
@@ -197,7 +196,10 @@
                         @endphp
                         <tr class="service">
                             <td class="tableitem">
-                                <p class="itemtext">{{ $product->product->title }}{{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}</p>
+                                <p class="itemtext">{{ $product->product->title }}</p>
+                            </td>
+                            <td class="tableitem">
+                                <p class="itemtext">{{ isset($product->size_id) ? $product->size->title : '' }}</p>
                             </td>
                             <td class="tableitem">
                                 <p class="itemtext">{{ $product->qty }}</p>
@@ -217,33 +219,16 @@
                             </td>
                         </tr>
                     @endforeach
-                    @if ($order->source == 'Wholesale')
-                        <tr class="tabletitle">
-                            <td align="right">Total Qty:</td>
-                            <td>{{ $total_qty }}</td>
-                            <td></td>
-                        </tr>
-                    @endif
 
-
-
-                    <tr class="tabletitle">
-
-                        <td class="Rate" colspan="2" style="text-align: center;">
-                            <h2>Shipping Charge</h2>
-                        </td>
-                        <td class="payment">
-                            <h2>{{ env('CURRENCY') }}{{ $order->delivery_charge }}</h2>
-                        </td>
-                    </tr>
-                    @if ($order->advance)
+                    @if ($order->extra_charge)
                         <tr class="tabletitle">
 
                             <td class="Rate" colspan="2" style="text-align: center;">
-                                <h2>Advanced (-)</h2>
+                                <h2>Extra Charge ({{ $order->extra_charge_type }})</h2>
                             </td>
+                            <td></td>
                             <td class="payment">
-                                <h2>{{ env('CURRENCY') }}{{ $order->advance }}</h2>
+                                <h2>{{ env('CURRENCY') }}{{ $order->extra_charge }}</h2>
                             </td>
                         </tr>
                     @endif
@@ -253,6 +238,7 @@
                             <td class="Rate" colspan="2" style="text-align: center;">
                                 <h2>Discount (-)</h2>
                             </td>
+                            <td></td>
                             <td class="payment">
                                 <h2>&#2547; {{ $order->discount_amount }}</h2>
                             </td>
@@ -264,44 +250,84 @@
                             <td class="Rate" colspan="2" style="text-align: center;">
                                 <h2>COD (-)</h2>
                             </td>
+                            <td></td>
                             <td class="payment">
                                 <h2>&#2547; {{ $order->cod }}</h2>
                             </td>
                         </tr>
                     @endif
-                    @if ($order->points_redeemed)
+                    {{-- @if ($order->points_redeemed)
                         <tr class="tabletitle">
 
                             <td class="Rate" colspan="2" style="text-align: center;">
                                 <h2>Points Redeemed (-)</h2>
                             </td>
+                            <td></td>
                             <td class="payment">
                                 <h2>{{ $order->points_redeemed }}</h2>
                             </td>
                         </tr>
-                    @endif
+                    @endif --}}
                     @if ($order->membership_discount)
                         <tr class="tabletitle">
 
                             <td class="Rate" colspan="2" style="text-align: center;">
                                 <h2>Membership Discount (-)</h2>
                             </td>
+                            <td></td>
                             <td class="payment">
-                                <h2>&#2547; {{ $order->membership_discount }}</h2>
+                                <h2>&#2547; {{ $order->membership_discount + $order->points_redeemed }}</h2>
                             </td>
                         </tr>
                     @endif
 
                     <tr class="tabletitle">
+
+                        <td class="Rate" colspan="2" style="text-align: center;">
+                            <h2>VAT (Incl.)</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>&#2547; {{ round(($order->price * $business->vat) / 100, 2) }}</h2>
+                        </td>
+                    </tr>
+
+                    <tr class="tabletitle" style="background: #d8d8d8">
                         <td class="Rate" colspan="2" style="text-align: center;">
                             <h2>Total Payable</h2>
                         </td>
+                        <td></td>
                         <td class="payment">
-                            <h2>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</h2>
+                            <h2>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance + $order->extra_charge) }}</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle" style="background: #d8d8d8">
+                        <td class="Rate" colspan="2" style="text-align: center;">
+                            <h2>Paid</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>&#2547; {{ round($order->paid_amount) }}</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle" style="background: #d8d8d8">
+                        <td class="Rate" colspan="2" style="text-align: center;">
+                            <h2>Change</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>&#2547; {{ round($order->change_amount) }}</h2>
                         </td>
                     </tr>
 
                 </table>
+                <div class="info">
+                    <p>
+                        Payment Method : {{ $order->payment_method }}</br>
+                        Received Membership Point : {{ $order->points_received }}<br>
+                        Total Membership Point : {{ $order->customer->member->current_points }}<br>
+                    </p>
+                </div>
             </div>
             <!--End Table-->
 

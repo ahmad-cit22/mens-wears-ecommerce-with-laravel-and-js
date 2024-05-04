@@ -20,6 +20,7 @@ class CreateBankContrasTable extends Migration
             $table->double('amount')->nullable();
             $table->text('note')->nullable();
             $table->date('date')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

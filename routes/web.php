@@ -610,6 +610,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/income-statement-search', [App\Http\Controllers\ReportController::class, 'income_statement_search'])->name('incomestatement.search');
         Route::get('/balance-sheet', [App\Http\Controllers\ReportController::class, 'balance_sheet'])->name('balancesheet');
         Route::get('/owners-equity', [App\Http\Controllers\ReportController::class, 'owners_equity'])->name('ownersequity');
+        Route::get('/income-statement-vendor/{id}', [App\Http\Controllers\ReportController::class, 'income_statement_vendor'])->name('incomestatement.vendor');
     });
 
     // Partners Routes

@@ -58,11 +58,7 @@
                         </form>
                         <hr>
                     </div>
-                    @if (!auth()->user()->vendor)
-                        <h3 class="text-center">GO BY FABRIFEST</h3>
-                    @else
-                        <h3 class="text-center">GO BY FABRIFEST - {{ auth()->user()->vendor->name }}</h3>
-                    @endif
+                    <h3 class="text-center">GO BY FABRIFEST - {{ $vendor->name }}</h3>
                     <hr>
                     @if (Route::currentRouteName() == 'report.incomestatement')
                         <h3 class="text-center">INCOME STATEMENT FOR {{ date('M') }}, {{ date('Y') }}</h3>
@@ -84,38 +80,20 @@
                         </thead>
                         <tbody>
                             <tr>
-                                @if (!auth()->user()->vendor)
-                                    <td>Retail Sells</td>
-                                @else
-                                    <td>Sells</td>
-                                @endif
+                                <td>Sells</td>
                                 <td class="text-success font-weight-bold">{{ env('CURRENCY') }}{{ round($retail_order_amount) }}</td>
                                 <td></td>
                             </tr>
-                            @if (!auth()->user()->vendor)
-                                <tr>
-                                    <td>Wholesale Sells</td>
-                                    <td class="text-success font-weight-bold">{{ env('CURRENCY') }}{{ round($wholesale_order_amount) }}</td>
-                                    <td></td>
-                                </tr>
-                            @endif
                             <tr>
                                 <td>Total VAT</td>
                                 <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($vat_amount) }}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Cost of good sold (Retail)</td>
+                                <td>Cost of good sold</td>
                                 <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($retail_production_cost, 2) }}</td>
                                 <td></td>
                             </tr>
-                            @if (!auth()->user()->vendor)
-                                <tr>
-                                    <td>Cost of good sold (Wholesale)</td>
-                                    <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($wholesale_production_cost, 2) }}</td>
-                                    <td></td>
-                                </tr>
-                            @endif
                             <tr>
                                 <th>Gross Profit</th>
                                 <th></th>
@@ -169,80 +147,16 @@
                                 <th></th>
                                 <th><span class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) }}</span></th>
                             </tr>
-                            @php
-                                $total_share = 0;
-                            @endphp
-                            @if (auth()->user()->vendor)
-                                <tr>
-                                    <th>{{ $result >= 0 ? 'Profit' : 'Loss' }} Share to Main Business</th>
-                                    <th></th>
-                                    <th><span class="text-{{ $result >= 0 ? 'danger' : 'success' }}">{{ env('CURRENCY') }}{{ round(abs($result * (auth()->user()->vendor->profit_percentage / 100))) }}</span></th>
-                                </tr>
-                            @endif
-                            @if (!auth()->user()->vendor)
-                                <tr>
-                                    <th colspan="3">Profits/Loss from Vendors</th>
-                                </tr>
-                                {{-- <tr>{{ $expenses->sum('amount') }}</tr> --}}
-                                @foreach ($vendors as $vendor)
-                                    @php
-                                        $sum = 0;
-                                        $vendor_name = '';
-                                        $vendor_orders = $vendor->orders_report;
-                                        $vendor_order_amount = $vendor->orders_report->sum('price');
-                                        $vendor_other_income = $vendor->other_incomes_report->sum('credit');
-                                        $vendor_expense_amount = $vendor->expense_entries_reports->sum('amount');
-                                        $vendor_vat_amount = $vendor->vat_entries_reports->sum('vat_amount');
-                                        $vendor_production_cost = 0;
-
-                                        foreach ($vendor_orders as $order) {
-                                            $vendor_production_cost += $order->order_product->sum(function ($t) {
-                                                $qty = $t->qty - $t->return_qty;
-                                                return $t->production_cost * $qty;
-                                            });
-                                        }
-
-                                        $vendor_result = $vendor_order_amount + $vendor_other_income - $vendor_expense_amount - $vendor_vat_amount - $vendor_production_cost;
-                                        $share = $vendor_result * ($vendor->profit_percentage / 100);
-
-                                        // if ($vendor_result >= 0) {
-                                        //     $total_share += $share;
-                                        // } else {
-                                        // }
-                                        $total_share += $share;
-
-                                    @endphp
-                                    {{-- @if ($expense->expense_id == $type->id)
-                                        @php
-                                            $sum += $expense->amount;
-                                            $vendor_name = $expense->expense->type;
-                                        @endphp
-                                    @endif --}}
-                                    {{-- @if ($sum > 0) --}}
-                                    <tr>
-                                        <th>{{ $vendor->name }}</th>
-                                        <th></th>
-                                        <th class="text-{{ $vendor_result >= 0 ? 'success' : 'danger' }}">{{ $vendor_result >= 0 ? 'Profit Share: ' : 'Loss Share: ' }}{{ env('CURRENCY') }}{{ round($share) }}</th>
-                                    </tr>
-                                    {{-- @endif --}}
-                                @endforeach
-                                <tr>
-                                    <th>Total Share</th>
-                                    <th></th>
-                                    <th class="text-{{ $total_share >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($total_share) }}</th>
-                                </tr>
-                                <tr>
-                                    <th>Final {{ $result + $total_share >= 0 ? 'Profit' : 'Loss' }}</th>
-                                    <th></th>
-                                    <th><span class="text-{{ $result + $total_share >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result + $total_share) }}</span></th>
-                                </tr>
-                            @else
-                                <tr>
-                                    <th>Final {{ $result >= 0 ? 'Profit' : 'Loss' }}</th>
-                                    <th></th>
-                                    <th><span class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) - round($result * (auth()->user()->vendor->profit_percentage / 100)) }}</span></th>
-                                </tr>
-                            @endif
+                            <tr>
+                                <th>{{ $result >= 0 ? 'Profit' : 'Loss' }} Share to Main Business</th>
+                                <th></th>
+                                <th><span class="text-{{ $result >= 0 ? 'danger' : 'success' }}">{{ env('CURRENCY') }}{{ round(abs($result * ($vendor->profit_percentage / 100))) }}</span></th>
+                            </tr>
+                            <tr>
+                                <th>Final {{ $result >= 0 ? 'Profit' : 'Loss' }}</th>
+                                <th></th>
+                                <th><span class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) - round($result * ($vendor->profit_percentage / 100)) }}</span></th>
+                            </tr>
                         </tbody>
                         <tfoot>
 

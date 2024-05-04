@@ -36,7 +36,7 @@ class OrderController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 0)->get();
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 0)->take(2000)->get();
             if ($request->ajax()) {
                 $data = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 0)->get();
                 return Datatables::of($data)
@@ -84,7 +84,7 @@ class OrderController extends Controller {
         if (auth()->user()->can('sell.index')) {
             $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             if ($request->ajax()) {
-                $data = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(1000)->get();
+                $data = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(2000)->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -181,7 +181,7 @@ class OrderController extends Controller {
             if ($all != 0) {
                 $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->get();
             } else {
-                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(500)->get();
+                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(1000)->get();
             }
 
             $categories = Category::all();
@@ -214,7 +214,7 @@ class OrderController extends Controller {
                     'status',
                     'created_by',
                     'vat_entry'
-                )->latest()->take(500)->get();
+                )->latest()->take(1000)->get();
             }
             $categories = Category::all();
 
@@ -233,8 +233,12 @@ class OrderController extends Controller {
      */
     public function vat_calculate($id) {
         if (auth()->user()->can('order.edit')) {
-            $order = Order::where('vendor_id', null)->with('order_product')->find($id);
-            $sold_amount = $order->sold_amount();
+            if (!Auth::user()->vendor) {
+                $order = Order::where('vendor_id', null)->with('order_product')->find($id);
+            } else {
+                $order = Order::where('vendor_id', Auth::user()->vendor->id)->with('order_product')->find($id);
+            }
+            $sold_amount = $order->price;
             $vat = Setting::first()->vat;
             $vat_amount = ($sold_amount * $vat) / 100;
 
@@ -244,6 +248,9 @@ class OrderController extends Controller {
                 $vat_entry->order_id = $order->id;
                 $vat_entry->is_paid = 0;
                 $vat_entry->vat_amount = $vat_amount;
+                if (Auth::user()->vendor) {
+                    $vat_entry->vendor_id = Auth::user()->vendor->id;
+                }
                 $vat_entry->save();
                 Alert::toast('Vat Entry created successfully!', 'success');
                 return back();
@@ -763,7 +770,7 @@ class OrderController extends Controller {
             if ($all != 0) {
                 $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale');
             } else {
-                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->take(500);
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->take(1000);
             }
 
             $categories = Category::all();
@@ -947,7 +954,7 @@ class OrderController extends Controller {
             if ($all != 0) {
                 $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5);
             } else {
-                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->take(500);
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->take(1000);
             }
 
             $categories = Category::all();
@@ -994,7 +1001,7 @@ class OrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->get();
             $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
             $couriers = CourierName::all();
 
@@ -1147,20 +1154,13 @@ class OrderController extends Controller {
                 $order->courier_name = $request->courier_name;
                 $order->refer_code = $request->refer_code;
                 if ($request->refer_code) {
-                    if ($order->source != 'Website') {
-                        $order->order_status_id = 8;
-                    }
-                    $order->save();
-
-                    Alert::toast('Courier Info Saved', 'success');
-                } else {
-                    if ($order->source != 'Website') {
-                        $order->order_status_id = 7;
-                    }
-                    $order->save();
-
-                    Alert::toast('Courier Info Saved', 'success');
+                    // if ($order->source != 'Website') {
+                    $order->order_status_id = 8;
+                    // }
                 }
+                $order->save();
+
+                Alert::toast('Courier Info Saved', 'success');
 
                 return back();
             } else {
@@ -1375,8 +1375,14 @@ class OrderController extends Controller {
                 $order->is_final = 1;
                 $order->save();
 
+                WorkTrackingEntry::create([
+                    'order_id' => $order->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'convert_sell'
+                ]);
+
                 Alert::toast('Sell Updated!', 'success');
-                return redirect()->route('order.index');
+                return back();
             } else {
                 Alert::toast('Something went wrong!', 'error');
                 return back();
@@ -1421,7 +1427,7 @@ class OrderController extends Controller {
                 'order' => $order
             ];
 
-            $mpdf->WriteHTML(view('admin.invoice.pos-generate', $data));
+            $mpdf->WriteHTML(view('admin.invoice.generate', $data));
             $mpdf->Output($order->code . '.pdf', 'I');
         } else {
             Alert::toast('Invoice Not Found!', 'error');
@@ -1432,7 +1438,12 @@ class OrderController extends Controller {
     public function generate_pos_invoice($id) {
         $order = Order::find($id);
         if (!is_null($order)) {
-            return view('admin.invoice.pos-generate', compact('order'));
+            if (!Auth::user()->vendor) {
+                return view('admin.invoice.pos-generate', compact('order'));
+            } else {
+                return view('admin.invoice.vendor-pos-generate', compact('order'));
+            }
+
         } else {
             Alert::toast('Invoice Not Found!', 'error');
             return back();

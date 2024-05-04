@@ -58,10 +58,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @hasrole([1, 9])
+                                        @hasrole([1])
                                             {{-- @can('brand.edit') --}}
                                             <a href="#editModal{{ $vendor->id }}" class="btn btn-primary" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
                                             <a href="#deleteModal{{ $vendor->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                            <a href="{{ route('report.incomestatement.vendor', $vendor->id) }}" class="btn btn-info" title="View Report"><i class="fas fa-eye"></i></a>
                                             {{-- @endcan --}}
                                         @endhasrole
                                     </td>

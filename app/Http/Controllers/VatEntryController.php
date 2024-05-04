@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\VatEntry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class VatEntryController extends Controller {
@@ -13,7 +14,11 @@ class VatEntryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $vat_entries = VatEntry::with('order')->latest()->get();
+        if (!Auth::user()->vendor) {
+            $vat_entries = VatEntry::where('vendor_id', null)->with('order')->latest()->get();
+        } else {
+            $vat_entries = VatEntry::where('vendor_id', Auth::user()->vendor->id)->with('order')->latest()->get();
+        }
         $total_outstanding = $vat_entries->where('is_paid', 0)->sum('vat_amount');
         $total_paid = $vat_entries->where('is_paid', 1)->sum('vat_amount');
         $status = '';
@@ -29,7 +34,11 @@ class VatEntryController extends Controller {
     }
 
     public function search(Request $request) {
-        $vat_entries = VatEntry::with('order')->latest()->get();
+        if (!Auth::user()->vendor) {
+            $vat_entries = VatEntry::where('vendor_id', null)->with('order')->latest()->get();
+        } else {
+            $vat_entries = VatEntry::where('vendor_id', Auth::user()->vendor->id)->with('order')->latest()->get();
+        }
         $total_outstanding = 0;
         $total_paid = 0;
         $status = '';
@@ -63,6 +72,12 @@ class VatEntryController extends Controller {
                 $date_to = $request->date_to;
             }
 
+            if (Auth::user()->vendor) {
+                $vat_entries = $vat_entries->where('vendor_id', Auth::user()->vendor->id);
+            } else {
+                $vat_entries = $vat_entries->where('vendor_id', null);
+            }
+
             $total_outstanding = $vat_entries->where('is_paid', 0)->sum('vat_amount');
             $total_paid = $vat_entries->where('is_paid', 1)->sum('vat_amount');
 
@@ -71,55 +86,6 @@ class VatEntryController extends Controller {
             abort(403, 'Unauthorized action.');
         }
     }
-
-    // public function create() {
-    //     if (auth()->user()->can('business_bkash_number.index')) {
-    //         $bkash_nums = BkashNumber::all();
-    //         $bkash_purposes = BkashRecordPurpose::all();
-
-    //         return view('admin.bkash-panel.create', compact('bkash_nums', 'bkash_purposes'));
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
-
-    // /**
-    //  * Store a newly created resource in storage.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function store(Request $request) {
-    //     if (auth()->user()->can('business_bkash_number.index')) {
-    //         $validatedData = $request->validate([
-    //             'status' => 'required|not_in:0',
-    //             'tr_type' => 'required|not_in:0',
-    //             'amount' => 'required',
-    //             'tr_purpose_id' => 'required|not_in:0',
-    //             'last_digit' => 'required',
-    //         ]);
-
-    //         $bkash_record = new BkashRecord;
-    //         $bkash_record->status = $request->status;
-    //         $bkash_record->tr_type = $request->tr_type;
-    //         $bkash_record->amount = $request->amount;
-    //         $bkash_record->tr_purpose_id = $request->tr_purpose_id;
-    //         $bkash_record->last_digit = $request->last_digit;
-    //         $bkash_record->comments = $request->comments;
-    //         $bkash_record->save();
-
-    //         WorkTrackingEntry::create([
-    //             'bkash_record_id' => $bkash_record->id,
-    //             'user_id' => Auth::id(),
-    //             'work_name' => 'bkash_record'
-    //         ]);
-    //         Alert::toast('New Bkash Record Added!', 'success');
-    //         // return redirect()->route('bkash_panel.create');
-    //         return back();
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
 
     /**
      * Mark the vat entry as paid.

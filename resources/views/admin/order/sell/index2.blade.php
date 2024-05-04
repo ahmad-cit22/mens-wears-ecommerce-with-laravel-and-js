@@ -175,22 +175,24 @@
                             @foreach ($orders as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td><b>{{ $item->code }}</b></td>
+                                    <td><b>
+                                            <a class="" href="{{ route('order.edit', $item->id) }}"><span class="bigFont badge badge-info">{{ $item->code }}</span></a>
+                                        </b></td>
                                     <td><b>{{ $item->name }}</b></td>
                                     <td width="6%" style="font-size: 12px !important;"><b>{{ $item->phone }}</b></td>
                                     <td>
-                                        <p class="m-0">Sub Total: <b>{{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></p>
-                                        <p class="m-0">Delivery Charge: <b>{{ $item->delivery_charge }}/- </b></p>
+                                        <span class="m-0">Sub Total: <b>{{ round($item->price + $item->discount_amount + $item->cod) }}/- </b></span> <br>
+                                        <span class="m-0">Delivery Charge: <b>{{ $item->delivery_charge }}/- </b></span><br>
                                         @if ($item->discount_amount)
-                                            <p class="m-0">Discount: <b>{{ $item->discount_amount }}/- </b></p>
+                                            <span class="m-0">Discount: <b>{{ $item->discount_amount }}/- </b></span><br>
                                         @endif
                                         @if ($item->advance)
-                                            <p class="m-0">Advance: <b>{{ $item->advance }}/- </b></p>
+                                            <span class="m-0">Advance: <b>{{ $item->advance }}/- </b></span><br>
                                         @endif
                                         @if ($item->cod)
-                                            <p class="m-0">COD: <b>{{ $item->cod }}/- </b></p>
+                                            <span class="m-0">COD: <b>{{ $item->cod }}/- </b></span><br>
                                         @endif
-                                        <p class="m-0">Total Payable: <b>{{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></p>
+                                        <span class="m-0">Total Payable: <b>{{ round($item->price + $item->delivery_charge - $item->advance) }}/- </b></span>
                                     </td>
                                     <td>
                                         @foreach ($item->order_product as $key => $order_product)

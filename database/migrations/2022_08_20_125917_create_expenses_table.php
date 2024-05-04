@@ -16,6 +16,7 @@ class CreateExpensesTable extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->string('type');
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -37,6 +37,8 @@ class Order extends Model {
             $qty = $t->qty - $t->return_qty;
             return $t->price * $qty;
         });
+
+        $amount = $amount - $this->discount_amount - $this->points_redeemed - $this->membership_discount;
         return $amount ? $amount : 0;
     }
 
@@ -66,6 +68,10 @@ class Order extends Model {
 
     public function apply_cod_by() {
         return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'apply_cod')->latest()->with('adder');
+    }
+
+    public function convert_sell_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'convert_sell')->latest()->with('adder');
     }
 
     public function vendor() {

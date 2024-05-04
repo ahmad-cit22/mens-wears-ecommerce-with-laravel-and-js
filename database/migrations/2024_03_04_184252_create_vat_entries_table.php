@@ -18,6 +18,7 @@ class CreateVatEntriesTable extends Migration {
             // $table->string('status')->default('OUT STANDING')->comment('OUT STANDING, PAID');
             $table->integer('is_paid')->nullable()->comment('0 = OUT STANDING, 1 = PAID');
             $table->float('vat_amount');
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -36,14 +36,14 @@ class VendorOrderController extends Controller {
     //     $date_to = '';
 
     //     if (auth()->user()->can('order.index')) {
-    //         $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('is_final', 0)->get();
+    //         $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 0)->get();
     //         if ($request->ajax()) {
-    //             $data = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('is_final', 0)->get();
+    //             $data = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 0)->get();
     //             return Datatables::of($data)
     //                 // ->addIndexColumn()
     //                 ->addColumn('code', function ($row) {
 
-    //                     $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+    //                     $code = '<a href="' . route('vendor_sell.edit', $row->id) . '">' . $row->code . '</a>';
 
     //                     return $code;
     //                 })
@@ -62,7 +62,7 @@ class VendorOrderController extends Controller {
     //                 ->addColumn('action', function ($row) {
 
     //                     $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-    //                       <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+    //                       <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
 
     //                     return $btn;
     //                 })
@@ -82,14 +82,14 @@ class VendorOrderController extends Controller {
         $courier_name = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             if ($request->ajax()) {
-                $data = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(1000)->get();
+                $data = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(1000)->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
 
-                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+                        $code = '<a href="' . route('vendor_sell.edit', $row->id) . '">' . $row->code . '</a>';
 
                         return $code;
                     })
@@ -128,15 +128,26 @@ class VendorOrderController extends Controller {
                         return $data;
                     })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
-                        if ($row->price > 0) {
-                            $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
+                        if (!Auth::user()->vendor) {
+                            if ($row->price > 0) {
+                                $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
                                <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
                           <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
-                        } else {
-                            $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
+                            } else {
+                                $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
                                <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+                            }
+                        } else {
+                            if ($row->price > 0) {
+                                $btn = '<a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
+                            } else {
+                                $btn = '<a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+                            }
                         }
 
                         return $btn;
@@ -162,9 +173,9 @@ class VendorOrderController extends Controller {
         $courier_name = '';
         if (auth()->user()->can('sell.index')) {
             if ($all != 0) {
-                $orders = Order::where('vendor_id', '!=', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->get();
             } else {
-                $orders = Order::where('vendor_id', '!=', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(500)->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(500)->get();
             }
 
             $categories = Category::all();
@@ -184,7 +195,7 @@ class VendorOrderController extends Controller {
      */
     public function vat_calculate($id) {
         if (auth()->user()->can('order.edit')) {
-            $order = Order::where('vendor_id', '!=', null)->with('order_product')->find($id);
+            $order = Order::where('vendor_id', Auth::user()->vendor->id)->with('order_product')->find($id);
             $sold_amount = $order->sold_amount();
             $vat = Setting::first()->vat;
             $vat_amount = ($sold_amount * $vat) / 100;
@@ -213,7 +224,7 @@ class VendorOrderController extends Controller {
         $order_status_id = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
             $categories = Category::all();
             return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));
         } else {
@@ -227,13 +238,13 @@ class VendorOrderController extends Controller {
         $order_status_id = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $order_status_id)
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $order_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
                 $date_from = $request->date_from;
@@ -243,19 +254,19 @@ class VendorOrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::where('vendor_id', '!=', null)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
             }
 
             // 2nd step filter
@@ -278,85 +289,9 @@ class VendorOrderController extends Controller {
         }
     }
 
-    public function wholesale_index(Request $request) {
-        $date_from = '';
-        $date_to = '';
-        $order_status_id = '';
-        $courier_name = '';
-
-        if (auth()->user()->can('wholesale.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('source', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
-            if ($request->ajax()) {
-                $data = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('source', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(1000)->get();
-                return Datatables::of($data)
-                    // ->addIndexColumn()
-                    ->addColumn('code', function ($row) {
-
-                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
-
-                        return $code;
-                    })
-                    ->addColumn('status', function ($row) {
-
-                        if ($row->is_return == 1) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned</span>';
-                        } elseif ($row->is_return == 2) {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span> <br> <span class="badge badge-danger">Returned Partially</span>';
-                        } else {
-                            $data = '<span class="badge badge-' . $row->status->color . '">' . $row->status->title . '</span>';
-                        }
-
-                        return $data;
-                    })
-                    ->addColumn('cod', function ($row) {
-
-                        $data = $row->cod;
-
-                        return env('CURRENCY') . $data;
-                    })
-                    ->addColumn('date', function ($row) {
-
-                        $data = Carbon::parse($row->created_at)->format('d M, Y g:iA');
-
-                        return $data;
-                    })
-                    ->addColumn('created_by', function ($row) {
-
-                        if ($row->created_by) {
-                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
-                        } else {
-                            $data = '--';
-                        }
-
-                        return $data;
-                    })->escapeColumns('created_by')
-                    ->addColumn('action', function ($row) {
-                        if ($row->price > 0) {
-                            $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                          <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
-                        } else {
-                            $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-                               <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
-                        }
-
-                        return $btn;
-                    })
-                    ->rawColumns(['code', 'status', 'date', 'action'])
-                    ->make(true);
-            }
-            $categories = Category::all();
-            return view('admin.order.sell.wholesale', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
-    }
-
     public function all_orders() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
             return view('admin.order.all-orders', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -365,7 +300,7 @@ class VendorOrderController extends Controller {
 
     public function current_year() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
             return view('admin.order.current-year', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -374,7 +309,7 @@ class VendorOrderController extends Controller {
 
     public function current_month() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->whereMonth('created_at', Carbon::now()->month)->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->whereMonth('created_at', Carbon::now()->month)->get();
             return view('admin.order.current-month', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -383,7 +318,7 @@ class VendorOrderController extends Controller {
 
     public function today() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->whereDate('created_at', Carbon::today())->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->whereDate('created_at', Carbon::today())->get();
             return view('admin.order.today', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -394,7 +329,7 @@ class VendorOrderController extends Controller {
         $customer = User::find($id);
 
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->where('customer_id', $id)->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('customer_id', $id)->get();
             return view('admin.order.orders_customer', compact('orders', 'customer'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -413,7 +348,7 @@ class VendorOrderController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $order_status_id)
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $order_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
 
                 $date_from = $request->date_from;
@@ -423,19 +358,19 @@ class VendorOrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::where('vendor_id', '!=', null)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             }
 
             // 2nd step filter
@@ -462,7 +397,7 @@ class VendorOrderController extends Controller {
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
 
-                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+                        $code = '<a href="' . route('vendor_sell.edit', $row->id) . '">' . $row->code . '</a>';
 
                         return $code;
                     })
@@ -498,12 +433,12 @@ class VendorOrderController extends Controller {
                         if ($row->price > 0) {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
                                <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
                           <a href="' . route('order.return', $row->id) . '" class="btn btn-danger" title="Product Return"><i class="fas fa-undo"></i></a>';
                         } else {
                             $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
                                <a href="' . route('order.invoice.pos.generate', $row->id) . '" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
                         }
 
                         return $btn;
@@ -530,7 +465,7 @@ class VendorOrderController extends Controller {
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $order_status_id)
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $order_status_id)
                     ->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
 
                 $date_from = $request->date_from;
@@ -540,19 +475,19 @@ class VendorOrderController extends Controller {
 
                 $order_status_id = $request->order_status_id;
 
-                $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $order_status_id)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             }
             if (empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
                 $order_status_id = $request->order_status_id;
-                $orders = Order::where('vendor_id', '!=', null)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->whereBetween('created_at', [$start_date, $end_date])->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
 
                 $date_from = $request->date_from;
                 $date_to = $request->date_to;
             }
             if (empty($request->order_status_id) && (empty($request->date_from) || empty($request->date_to))) {
-                $orders = Order::where('vendor_id', '!=', null)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             }
 
             // 2nd step filter
@@ -593,7 +528,7 @@ class VendorOrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->where('vendor_id', Auth::user()->vendor->id)->get();
             $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
             $couriers = CourierName::all();
 
@@ -902,14 +837,14 @@ class VendorOrderController extends Controller {
 
     public function orders_by_status(Request $request, $id) {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', '!=', null)->where('order_status_id', $id)->orderBy('id', 'DESC')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $id)->orderBy('id', 'DESC')->get();
             if ($request->ajax()) {
-                $data = Order::where('vendor_id', '!=', null)->where('order_status_id', $id)->orderBy('id', 'DESC')->where('is_final', 0)->get();
+                $data = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $id)->orderBy('id', 'DESC')->where('is_final', 0)->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
 
-                        $code = '<a href="' . route('order.edit', $row->id) . '">' . $row->code . '</a>';
+                        $code = '<a href="' . route('vendor_sell.edit', $row->id) . '">' . $row->code . '</a>';
 
                         return $code;
                     })
@@ -928,7 +863,7 @@ class VendorOrderController extends Controller {
                     ->addColumn('action', function ($row) {
 
                         $btn = '<a href="' . route('order.invoice.generate', $row->id) . '" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
-                          <a href="' . route('order.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
+                          <a href="' . route('vendor_sell.edit', $row->id) . '" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>';
 
                         return $btn;
                     })

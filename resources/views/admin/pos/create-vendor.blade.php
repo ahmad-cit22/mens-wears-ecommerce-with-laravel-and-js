@@ -355,6 +355,9 @@
                                 </div>
                                 <div class="resulttable-pos">
                                     <div class="input-group">
+                                        <input type="text" class="form-control mb-3" placeholder="Sales Person Name" name="sold_by" id="sold_by">
+                                    </div>
+                                    <div class="input-group">
                                         <input type="number" class="form-control" placeholder="Discount Amount" id="discount_amount" value="{{ $fos_order != null ? $fos_order->discount_amount : old('discount_amount') }}" onblur="apply_discount()">
                                     </div>
 
@@ -438,6 +441,29 @@
                                                     TOTAL
                                                 </th>
                                                 <td class="border-0 justify-content-end d-flex text-primary font-size-base">{{ env('CURRENCY') }}<span id="total_amount">{{ Cart::subtotal() - $discount }}</span></td>
+                                            </tr>
+
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="">
+                                                    Paying Amount
+                                                </th>
+                                                <td>
+                                                    <div class="input-group" style="">
+                                                        <input type="number" class="form-control" placeholder="Now Paying Amount" name="paid_amount" value="{{ old('paid_amount') }}">
+                                                    </div>
+                                                    <span class="text-danger font-weight-bold fs-6"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="">
+                                                    Payment Method
+                                                </th>
+                                                <td>
+                                                    <div class="input-group" style="">
+                                                        <input type="text" class="form-control" placeholder="Cash/Bkash/Visa Card etc." value="{{ old('payment_method') }}" name="payment_method">
+                                                    </div>
+                                                    <span class="text-danger font-weight-bold fs-6"></span>
+                                                </td>
                                             </tr>
 
                                         </tbody>

@@ -20,6 +20,7 @@ class CreateBankTransactionsTable extends Migration {
             $table->text('note')->nullable();
             $table->date('date')->nullable();
             $table->integer('other_income')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

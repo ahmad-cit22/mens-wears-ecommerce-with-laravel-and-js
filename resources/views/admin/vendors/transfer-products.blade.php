@@ -80,12 +80,12 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Discount Amount</label>
                                     <input type="number" name="number[]" class="form-control  @error('number') is-invalid @enderror" placeholder="Add Discount">
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="col-md-3">
                                 <div class="row align-items-end">
@@ -208,12 +208,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Discount Amount</label>
-                                        <input type="number" name="number[]" class="form-control  @error('number') is-invalid @enderror" placeholder="Add Discount">
-                                    </div>
-                                </div>
+
 
                                 <div class="col-md-3">
                                     <div class="row align-items-end">
@@ -325,12 +320,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>Discount Amount</label>
-                                            <input type="number" name="number[]" class="form-control  @error('number') is-invalid @enderror" placeholder="Add Discount">
-                                        </div>
-                                    </div>
+
 
                                     <div class="col-md-3">
                                         <div class="row align-items-end">
@@ -399,3 +389,16 @@
         });
     </script>
 @endsection
+
+{{-- <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Discount Amount</label>
+                                        <input type="number" name="number[]" class="form-control  @error('number') is-invalid @enderror" placeholder="Add Discount">
+                                    </div>
+                                </div>
+<div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Discount Amount</label>
+                                            <input type="number" name="number[]" class="form-control  @error('number') is-invalid @enderror" placeholder="Add Discount">
+                                        </div>
+                                    </div> --}}
