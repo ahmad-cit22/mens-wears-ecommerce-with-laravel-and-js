@@ -4,15 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAccessoryAmountsTable extends Migration
-{
+class CreateAccessoryAmountsTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('accessory_amounts', function (Blueprint $table) {
             $table->id();
             $table->integer('accessory_id');
@@ -20,6 +18,7 @@ class CreateAccessoryAmountsTable extends Migration
             $table->double('credit')->nullable();
             $table->double('debit')->nullable();
             $table->string('note')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,8 +28,7 @@ class CreateAccessoryAmountsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('accessory_amounts');
     }
 }

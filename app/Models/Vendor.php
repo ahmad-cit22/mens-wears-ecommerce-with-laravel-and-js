@@ -20,7 +20,7 @@ class Vendor extends Model {
     }
 
     public function vendor_products() {
-        return $this->hasMany(VendorProduct::class);
+        return $this->hasMany(VendorProduct::class)->where('is_active', 1)->where('is_approved', 1);
     }
 
     public function orders() {

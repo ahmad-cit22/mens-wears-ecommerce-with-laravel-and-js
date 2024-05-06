@@ -194,6 +194,9 @@ class ProductStockHistoryController extends Controller {
 
                         $data = '<b>' . $row->note . '</b>';
 
+                        if (!$row->is_approved) {
+                            return $data . '<span class="ml-3 badge badge-warning">Pending</span>';
+                        }
                         return $data;
                     })
                     ->addColumn('created_by', function ($row) {

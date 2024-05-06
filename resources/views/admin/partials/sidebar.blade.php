@@ -769,6 +769,38 @@
                         @endif
                     @endif
 
+                    @if (auth()->user()->vendor)
+                        @if (auth()->user()->can('report.owners'))
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-list"></i>
+                                    <p>
+                                        Transfer Products
+                                        <i class="fas fa-angle-right right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('vendor.transfer_products_main') }}" class="nav-link">
+                                            <i class="nav-icon fas fa-list"></i>
+                                            <p>
+                                                Transfer to Main Business
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('vendor.transfer_products_vendor') }}" class="nav-link">
+                                            <i class="nav-icon fas fa-list"></i>
+                                            <p>
+                                                Transfer to Vendors
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+                    @endif
+
                     @if (!auth()->user()->vendor)
                         @if (auth()->user()->can('report.owners'))
                             <li class="nav-item">
@@ -810,15 +842,16 @@
                                 </a>
                             </li>
                         @endif
-                        @if (auth()->user()->can('setting.accessory'))
-                            <li class="nav-item">
-                                <a href="{{ route('accessory.index') }}" class="nav-link">
-                                    <i class="nav-icon fas fa-tools"></i>
-                                    <p>Accessories</p>
-                                </a>
-                            </li>
-                        @endif
-
+                    @endif
+                    @if (auth()->user()->can('setting.accessory'))
+                        <li class="nav-item">
+                            <a href="{{ route('accessory.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <p>Accessories</p>
+                            </a>
+                        </li>
+                    @endif
+                    @if (!auth()->user()->vendor)
                         @if (auth()->user()->can('setting.business_settings') || auth()->user()->can('setting.asset') || auth()->user()->can('setting.accessory') || auth()->user()->can('page.index'))
                             <li class="nav-item">
                                 <a href="#" class="nav-link">

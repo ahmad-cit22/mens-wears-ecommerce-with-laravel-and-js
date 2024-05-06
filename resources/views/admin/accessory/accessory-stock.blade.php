@@ -21,7 +21,7 @@
 	<div class="container-fluid">
 		<div class="card">
               <div class="card-header">
-                
+
                 <form action="{{ route('accessorystock.search') }}" method="get">
                   @csrf
                   <div class="row">
@@ -105,9 +105,9 @@
 	                  </tr>
                   </thead>
                   <tbody>
-	                  
+
                   </tbody>
-                  
+
                 </table>
               </div>
               <!-- /.card-body -->
@@ -127,13 +127,13 @@
         <form action="{{ route('accessorystock.store') }}" method="POST">
           @csrf
           <div class="row">
-            
+
             <div class="col-md-6">
               <div class="form-group">
                 <label>Accessory*</label>
                 <select class="select2 form-control @error('accessory_id') is-invalid @enderror" name="accessory_id" required>
                   <option value="">Please select accessory</option>
-                  @foreach(App\Models\Accessory::orderBy('name', 'ASC')->get() as $accessory)
+                  @foreach($accessories as $accessory)
                   <option value="{{ $accessory->id }}">{{ $accessory->name }}</option>
                   @endforeach
                 </select>
@@ -149,7 +149,7 @@
                 <label>Bank*</label>
                 <select class="select2 form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
                   <option value="">Please select bank</option>
-                  @foreach(App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
+                  @foreach($banks as $bank) 
                   <option value="{{ $bank->id }}">{{ $bank->name }}</option>
                   @endforeach
                 </select>
@@ -182,7 +182,7 @@
                 @enderror
               </div>
             </div>
-            
+
           </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success">Save</button>
@@ -191,7 +191,7 @@
     </div>
   </div>
 </div>
-            
+
 	</div>
 </section>
 @endsection
@@ -201,7 +201,7 @@
 
 <script type="text/javascript">
   $(function () {
-    
+
     var table = $('#data-table').DataTable({
         processing: true,
         serverSide: true,
@@ -216,7 +216,7 @@
             {data: 'date', orderable: false, searchable: true},
         ]
     });
-    
+
   });
 </script>
 @endsection

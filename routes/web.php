@@ -637,5 +637,10 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::post('/destroy/{id}', [App\Http\Controllers\VendorController::class, 'destroy'])->name('destroy');
         Route::get('/transfer-products', [App\Http\Controllers\VendorController::class, 'transfer_products'])->name('transfer_products');
         Route::post('/transfer-products-store', [App\Http\Controllers\VendorController::class, 'transfer_products_store'])->name('transfer_products.store');
+        Route::post('/transfer-products-approve/{id}', [App\Http\Controllers\VendorController::class, 'transfer_products_approve'])->name('transfer_products.approve');
+        Route::get('/transfer-products-main', [App\Http\Controllers\VendorController::class, 'transfer_products_main'])->name('transfer_products_main');
+        Route::post('/transfer-products-main-store', [App\Http\Controllers\VendorController::class, 'transfer_products_main_store'])->name('transfer_products.main.store');
+        Route::get('/transfer-products-vendor', [App\Http\Controllers\VendorController::class, 'transfer_products_vendor'])->name('transfer_products_vendor');
+        Route::post('/transfer-products-vendor-store', [App\Http\Controllers\VendorController::class, 'transfer_products_vendor_store'])->name('transfer_products.vendor.store');
     });
 });

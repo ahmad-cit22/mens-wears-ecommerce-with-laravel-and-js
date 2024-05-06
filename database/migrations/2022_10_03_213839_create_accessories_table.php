@@ -17,6 +17,7 @@ class CreateAccessoriesTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('min_quantity')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

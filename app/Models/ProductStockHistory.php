@@ -21,11 +21,16 @@ class ProductStockHistory extends Model {
         return $this->hasOne(WorkTrackingEntry::class, 'product_stock_history_id', 'id')->where(function ($query) {
             $query->where('work_name', 'add_stock')
                 ->orWhere('work_name', 'damage_product')
+                ->orWhere('work_name', 'transfer_from_vendor')
                 ->orWhere('work_name', 'transfer_to_vendor');
         })->latest()->with('adder');
     }
 
     public function vendor() {
         return $this->belongsTo(Vendor::class);
+    }
+
+    public function receiver() {
+        return $this->belongsTo(Vendor::class, 'receiver_id');
     }
 }

@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Product Transfer to Vendors</h1>
+                    <h1 class="m-0">Product Transfer to Main Business</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -21,11 +21,12 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <form id="stockForm" action="{{ route('vendor.transfer_products.store') }}" method="POST">
+                    <form id="stockForm" action="{{ route('vendor.transfer_products.main.store') }}" method="POST">
                         @csrf
                         <div class="row" id="barcodeContainer">
                             <div class="col-md-3">
-                                <div class="form-group">
+                                <h4>Send Transfer Request</h4>
+                                {{-- <div class="form-group">
                                     <label>Vendor/Display Center*</label>
                                     <select class="select2 form-control  @error('vendor_id') is-invalid @enderror" name="vendor_id" id="vendor_id" required>
                                         <option value="">---- Select ----</option>
@@ -40,7 +41,7 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-6">
                             </div>
@@ -115,53 +116,35 @@
                 </div>
                 <!-- /.card-header -->
                 @include('admin.partials.page_search')
-                <div class="card-body table-responsive">
-                    <h4>Transfer Requests from Vendors</h4>
+                {{-- <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>S.N</th>
-                                <th>From</th>
-                                <th>To</th>
                                 <th>Product</th>
                                 <th>Size</th>
                                 <th>Qty</th>
                                 <th>Note</th>
-                                <th>Remarks</th>
+                                <th>Created By</th>
                                 <th>Date</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($stocks as $stock)
-                                <tr>
-                                    <td>{{ $loop->index }}</td>
-                                    <td>{{ $stock->vendor->name }}</td>
-                                    <td>{{ $stock->receiver ? $stock->receiver->name : '--' }}</td>
-                                    <td>{{ $stock->product->title }}</td>
-                                    <td>{{ $stock->size->title }}</td>
-                                    <td>{{ $stock->qty }}</td>
-                                    <td>{{ $stock->note }}</td>
-                                    <td>{{ $stock->remarks }}</td>
-                                    <td>{{ Carbon\Carbon::parse($stock->created_at)->format('d M, Y g:iA') }}</td>
-                                    <td>
-                                        @if ($stock->is_approved)
-                                            <span class="badge badge-success">Approved</span>
-                                        @else
-                                            <form action="{{ route('vendor.transfer_products.approve', $stock->id) }}" method="POST">
-                                                @csrf
-                                                <select name="status" onchange="changeStatus(this, {{ $stock->id }})" class="form-select @error('status')is-invalid @enderror" required>
-                                                    <option value="0" selected>Not Approved</option>
-                                                    <option value="1">Approved</option>
-                                                </select>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>S.N</th>
+                                <th>Product</th>
+                                <th>Size</th>
+                                <th>Qty</th>
+                                <th>Note</th>
+                                <th>Created By</th>
+                                <th>Date</th>
+                            </tr>
+                        </tfoot>
                     </table>
-                </div>
+                </div> --}}
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -172,25 +155,6 @@
 @endsection
 
 @section('scripts')
-    <script>
-        function changeStatus(selectElement, id) {
-            let formElement = selectElement.parentNode;
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Change the status only if you are sure about it!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, proceed.'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    formElement.submit();
-                }
-            });
-        }
-    </script>
     <script>
         var rowIdx = 2;
 

@@ -19,6 +19,7 @@ class CreateVendorProductsTable extends Migration
             $table->foreignId('vendor_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(1);
             $table->integer('discount')->nullable();
+            $table->boolean('is_approved')->default(1);
             $table->timestamps();
         });
     }

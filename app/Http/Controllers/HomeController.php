@@ -30,7 +30,7 @@ class HomeController extends Controller {
         if (Auth::user()->type == 1) {
             if (!Auth::user()->vendor) {
                 $orders = Order::where('vendor_id', null)->where('is_final', 1)->get();
-                $orders_not_final = Order::where('vendor_id', null)->all();
+                $orders_not_final = Order::where('vendor_id', null)->get();
                 $yearly_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->get();
                 $monthly_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
                     ->get();
