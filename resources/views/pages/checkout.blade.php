@@ -161,7 +161,7 @@
                                                 </ul>
                                             </div>
                                             @php
-                                                $member = Auth::user()->member;
+                                                $member = Auth::user() ? Auth::user()->member : null;
                                             @endphp
                                             @if ($member)
                                                 @php

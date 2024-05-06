@@ -367,15 +367,15 @@ class PosController extends Controller {
 
                 $order->price = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount;
 
-                $order->points_redeemed = $redeem_points_amount;
-                $user->member->current_points -= $redeem_points_amount;
-                $user->member->current_points += round(Cart::subtotal() * ($user->member->card->point_percentage / 100));
-                $user->member->save();
-
                 if ($member_discount_rate) {
+                    $order->points_redeemed = $redeem_points_amount;
+                    $user->member->current_points -= $redeem_points_amount;
+                    $user->member->current_points += round(Cart::subtotal() * ($user->member->card->point_percentage / 100));
+                    $user->member->save();
+
                     $order->discount_rate = $member_discount_rate;
+                    $order->membership_discount = $member_discount_amount;
                 }
-                $order->membership_discount = $member_discount_amount;
 
                 $order->shipping_address = $request->shipping_address;
                 $order->district_id = $request->district_id;

@@ -31,10 +31,14 @@ class Product extends Model {
     }
 
     public function variations() {
-        if (!Auth::user()->vendor) {
-            return $this->hasMany(ProductStock::class);
+        if (Auth::user()) {
+            if (!Auth::user()->vendor) {
+                return $this->hasMany(ProductStock::class);
+            } else {
+                return $this->hasMany(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
+            }
         } else {
-            return $this->hasMany(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
+            return $this->hasMany(ProductStock::class);
         }
     }
 

@@ -61,9 +61,11 @@
                                 <th>Brand</th>
                                 <th>Type</th>
                                 <th>Stock</th>
-                                {{-- <th>Status</th>
-                                <th>Created By</th>
-                                <th>Action</th> --}}
+                                @if (!auth()->user()->vendor)
+                                    <th>Status</th>
+                                    <th>Created By</th>
+                                    <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -92,22 +94,24 @@
                                             @endforeach
                                         @endif
                                     </td>
-                                    {{-- <td><span class="badge badge-{{ $product->is_active == 1 ? 'success' : 'danger' }}">{{ $product->is_active == 1 ? 'Active' : 'Inactive' }}</span></td>
-                                    <td>
-                                        @if ($product->created_by)
-                                            <a href="{{ route('user.edit', $product->created_by->user_id) }}">{{ $product->created_by->adder->name }}</a>
-                                        @else
-                                            --
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @can('product.edit')
-                                            <a href="{{ route('product.edit', $product->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
-                                        @endcan
-                                        @can('product.delete')
-                                            <a href="#deleteModal{{ $product->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
-                                        @endcan
-                                    </td> --}}
+                                    @if (!auth()->user()->vendor)
+                                        <td><span class="badge badge-{{ $product->is_active == 1 ? 'success' : 'danger' }}">{{ $product->is_active == 1 ? 'Active' : 'Inactive' }}</span></td>
+                                        <td>
+                                            @if ($product->created_by)
+                                                <a href="{{ route('user.edit', $product->created_by->user_id) }}">{{ $product->created_by->adder->name }}</a>
+                                            @else
+                                                --
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @can('product.edit')
+                                                <a href="{{ route('product.edit', $product->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                            @endcan
+                                            @can('product.delete')
+                                                <a href="#deleteModal{{ $product->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                            @endcan
+                                        </td>
+                                    @endif
                                 </tr>
                                 <!-- Delete product Modal -->
                                 <div class="modal fade" id="deleteModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -141,9 +145,11 @@
                                 <th>Category</th>
                                 <th>Brand</th>
                                 <th>Type</th>
-                                {{-- <th>Status</th>
-                                <th>Created By</th>
-                                <th>Action</th> --}}
+                                @if (!auth()->user()->vendor)
+                                    <th>Status</th>
+                                    <th>Created By</th>
+                                    <th>Action</th>
+                                @endif
                             </tr>
                         </tfoot>
                     </table>

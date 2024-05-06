@@ -410,7 +410,7 @@ class PageController extends Controller {
         $member_discount_amount = $request->member_discount_amount;
         $redeem_points_amount = $request->redeem_points_amount;
 
-        $member = Auth::user()->member;
+        $member = Auth::user() ? Auth::user()->member : null;
         if ($member) {
             $order->membership_discount = $member_discount_amount;
 
