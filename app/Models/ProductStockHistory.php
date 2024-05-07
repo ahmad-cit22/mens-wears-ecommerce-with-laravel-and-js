@@ -23,7 +23,10 @@ class ProductStockHistory extends Model {
                 ->orWhere('work_name', 'damage_product')
                 ->orWhere('work_name', 'transfer_from_vendor')
                 ->orWhere('work_name', 'transfer_to_vendor')
-                ->orWhere('work_name', 'order_return');
+                ->orWhere('work_name', 'order_return')
+                ->orWhere('work_name', 'order_cancel')
+                ->orWhere('work_name', 'order_products_change')
+                ->orWhere('work_name', 'order_products_add');
         })->latest()->with('adder');
     }
 

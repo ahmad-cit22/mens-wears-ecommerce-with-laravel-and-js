@@ -1001,7 +1001,7 @@ class OrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
             $couriers = CourierName::all();
 
@@ -1087,6 +1087,13 @@ class OrderController extends Controller {
                             $history->remarks = 'Order Code - ' . $order->code;
                             $history->note = "Order Cancel";
                             $history->save();
+
+                            WorkTrackingEntry::create([
+                                'order_id' => $order->id,
+                                'product_stock_history_id' => $history->id,
+                                'user_id' => Auth::id(),
+                                'work_name' => 'order_cancel'
+                            ]);
                         }
                         $order->is_final = 0;
                     }
@@ -1299,6 +1306,13 @@ class OrderController extends Controller {
             $history->remarks = 'Order Code - ' . $order->code;
             $history->note = "Order Products Change";
             $history->save();
+
+            WorkTrackingEntry::create([
+                'order_id' => $order->id,
+                'product_stock_history_id' => $history->id,
+                'user_id' => Auth::id(),
+                'work_name' => 'order_products_change'
+            ]);
         }
 
         $old_order_products->delete();
@@ -1339,6 +1353,13 @@ class OrderController extends Controller {
                 $history->note = "Order Products Added";
 
                 $history->save();
+
+                WorkTrackingEntry::create([
+                    'order_id' => $order->id,
+                    'product_stock_history_id' => $history->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'order_products_add'
+                ]);
             }
         }
 
@@ -1443,7 +1464,6 @@ class OrderController extends Controller {
             } else {
                 return view('admin.invoice.vendor-pos-generate', compact('order'));
             }
-
         } else {
             Alert::toast('Invoice Not Found!', 'error');
             return back();

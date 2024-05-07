@@ -160,6 +160,10 @@
                                             Returned By: <strong class="ml-1"><a href="{{ route('user.edit', $order->order_returned_by->user_id) }}">{{ $order->order_returned_by->adder->name }}</a> ({{ $order->order_returned_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
                                         @endif
 
+                                        @if ($order->order_canceled_by)
+                                            Canceled By: <strong class="ml-1"><a href="{{ route('user.edit', $order->order_canceled_by->user_id) }}">{{ $order->order_canceled_by->adder->name }}</a> ({{ $order->order_canceled_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
+                                        @endif
+
                                         @if ($order->add_loss_by)
                                             Loss Added By: <strong class="ml-1"><a href="{{ route('user.edit', $order->add_loss_by->user_id) }}">{{ $order->add_loss_by->adder->name }}</a> ({{ $order->add_loss_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
                                         @endif
@@ -475,7 +479,7 @@
                                                                     <select name="product[]" class="select2 select-down" id="" style="width: 90% !important;">
                                                                         @foreach ($products as $product)
                                                                             @if (!is_null($product) && $product->product->is_active)
-                                                                                <option value="{{ $product->id }}" {{ $product->product->id == $order_product->product->id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                                <option value="{{ $product->id }}" {{ $product->product_id == $order_product->product_id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
                                                                             @endif
                                                                         @endforeach
                                                                     </select>

@@ -492,6 +492,7 @@ class FacebookOrderController extends Controller {
                 $order->bkash_num = $request->bkash_num;
                 $order->bkash_business_id = $request->bkash_business_id;
                 $order->bkash_amount = $request->bkash_amount;
+                $order->advance = $request->bkash_amount;
 
                 $order->save();
 

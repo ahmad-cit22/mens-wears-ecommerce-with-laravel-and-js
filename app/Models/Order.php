@@ -62,6 +62,10 @@ class Order extends Model {
         return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'order_return')->latest()->with('adder');
     }
 
+    public function order_canceled_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'order_cancel')->latest()->with('adder');
+    }
+
     public function add_loss_by() {
         return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'add_loss')->latest()->with('adder');
     }
