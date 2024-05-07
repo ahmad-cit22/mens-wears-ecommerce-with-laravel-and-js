@@ -13,8 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
 
-class BkashRecordController extends Controller
-{
+class BkashRecordController extends Controller {
     public function index(Request $request) {
         $bkash_business_id = '';
         $date_from = '';
@@ -55,7 +54,7 @@ class BkashRecordController extends Controller
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -85,6 +84,8 @@ class BkashRecordController extends Controller
         $recharge = 0;
         $current_balance = 0;
         $bkash_number = null;
+        $start_date = '';
+        $end_date = '';
 
         if (auth()->user()->can('business_bkash_number.index')) {
             if (!empty($request->bkash_business_id) && !empty($request->date_from) && !empty($request->date_to)) {
@@ -137,7 +138,7 @@ class BkashRecordController extends Controller
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -148,7 +149,7 @@ class BkashRecordController extends Controller
                     ->make(true);
             }
 
-            if ($bkash_business_id != '' && $date_from == '') {
+            if ($bkash_business_id != '' && ($date_from == '' || $date_to == '')) {
                 $bkash_number = BkashNumber::find($bkash_business_id);
                 $cash_in = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'CASH IN')->sum('amount');
                 $cash_out = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'CASH OUT')->sum('amount');
@@ -156,13 +157,16 @@ class BkashRecordController extends Controller
                 $payments = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'PAYMENTS')->sum('amount');
                 $recharge = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'RECHARGE')->sum('amount');
                 $current_balance = $bkash_number->current_balance();
-            } else {
+            } elseif ($bkash_business_id != '' && $date_from != '' && $date_to != '') {
+                $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $date_from . ' 00:00:00');
+                $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $date_to . ' 23:59:59');
+
                 $bkash_number = BkashNumber::find($bkash_business_id);
-                $cash_in = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'CASH IN')->sum('amount');
-                $cash_out = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'CASH OUT')->sum('amount');
-                $send_money = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'SEND MONEY')->sum('amount');
-                $payments = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'PAYMENTS')->sum('amount');
-                $recharge = BkashRecord::where('bkash_business_id', $bkash_business_id)->where('tr_type', 'RECHARGE')->sum('amount');
+                $cash_in = BkashRecord::where('bkash_business_id', $bkash_business_id)->whereBetween('created_at', [$start_date, $end_date])->where('tr_type', 'CASH IN')->sum('amount');
+                $cash_out = BkashRecord::where('bkash_business_id', $bkash_business_id)->whereBetween('created_at', [$start_date, $end_date])->where('tr_type', 'CASH OUT')->sum('amount');
+                $send_money = BkashRecord::where('bkash_business_id', $bkash_business_id)->whereBetween('created_at', [$start_date, $end_date])->where('tr_type', 'SEND MONEY')->sum('amount');
+                $payments = BkashRecord::where('bkash_business_id', $bkash_business_id)->whereBetween('created_at', [$start_date, $end_date])->where('tr_type', 'PAYMENTS')->sum('amount');
+                $recharge = BkashRecord::where('bkash_business_id', $bkash_business_id)->whereBetween('created_at', [$start_date, $end_date])->where('tr_type', 'RECHARGE')->sum('amount');
                 $current_balance = $bkash_number->current_balance();
             }
             return view('admin.bkash-panel.index', compact('bkash_records', 'bkash_nums', 'bkash_purposes', 'bkash_business_id', 'date_from', 'date_to', 'current_balance', 'cash_in', 'cash_out', 'send_money', 'payments', 'recharge', 'bkash_number'));

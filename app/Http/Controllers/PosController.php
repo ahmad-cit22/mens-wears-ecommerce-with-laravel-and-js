@@ -163,14 +163,14 @@ class PosController extends Controller {
             if (Cart::content()->count() <= 0) {
                 return back()->with('errMsg', 'Please select products correctly!');
             }
+            if ($request->phone == null) {
+                return back()->with('errMsg', 'You must add customer phone number!');
+            }
 
             $order = new Order;
 
             if ($request->customer_id == 0) {
                 if (!User::where('phone', $request->phone)->exists()) {
-                    if ($request->name == null || $request->phone == null) {
-                        return back()->with('errMsg', 'You must add customer name & phone number!');
-                    }
 
                     $user = new User;
                     $user->name       = $request->name;

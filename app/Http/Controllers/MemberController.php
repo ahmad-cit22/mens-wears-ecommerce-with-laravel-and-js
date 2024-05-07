@@ -7,6 +7,7 @@ use App\Models\MembershipCard;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -103,7 +104,7 @@ class MemberController extends Controller {
                     ->rawColumns(['date', 'status', 'purchase', 'discount_rate', 'action'])
                     ->make(true);
             }
-            $customers = User::where('type', 2)->latest()->get();
+            $customers = User::where('type', 2)->with('member')->latest()->get();
             $cards = MembershipCard::all();
 
             return view('admin.membership.index', compact('members', 'customers', 'cards'));
@@ -158,7 +159,7 @@ class MemberController extends Controller {
 
     public function create() {
         if (auth()->user()->can('membership.cards')) {
-            $customers = User::where('type', 2)->latest()->get();
+            $customers = User::where('type', 2)->with('member')->latest()->get();
             $cards = MembershipCard::all();
 
             return view('admin.membership.create', compact('customers', 'cards'));
@@ -176,19 +177,39 @@ class MemberController extends Controller {
     public function store(Request $request) {
         if (auth()->user()->can('membership.update')) {
             $validatedData = $request->validate([
-                'user_id' => 'required|not_in:0',
+                'user_id' => 'required',
                 'membership_card_id' => 'required|not_in:0',
                 'card_number' => 'required',
             ]);
 
-            $customer = User::find($request->user_id);
+            if ($request->user_id == 0) {
+                if (!User::where('phone', $request->phone)->exists()) {
+                    if ($request->name == null || $request->phone == null) {
+                        return back()->with('errMsg', 'You must add customer name & phone number!');
+                    }
+
+                    $user = new User;
+                    $user->name       = $request->name;
+                    $user->phone      = $request->phone;
+                    $user->address    = $request->address;
+                    $user->password   = Hash::make(12345678);
+                    $user->save();
+
+                    $customer = $user;
+                } else {
+                    $customer = User::where('phone', $request->phone)->first();
+                }
+            } else {
+                $customer = User::find($request->user_id);
+            }
+
             $total_purchase_amount = $customer->orders ? $customer->orders->sum('price') : null;
 
             $point_percentage = MembershipCard::find($request->membership_card_id)->point_percentage;
 
             // store a new member
             $member = new Member;
-            $member->user_id = $request->user_id;
+            $member->user_id = $customer->id;
             $member->membership_card_id = $request->membership_card_id;
             $member->card_number = $request->card_number;
 

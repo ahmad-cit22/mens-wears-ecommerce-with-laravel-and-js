@@ -225,7 +225,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Customer Name <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}" required>
+                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
                                                     </fieldset>
                                                     {{-- @error('name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
