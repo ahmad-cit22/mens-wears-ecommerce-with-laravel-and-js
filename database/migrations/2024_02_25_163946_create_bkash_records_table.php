@@ -20,7 +20,7 @@ class CreateBkashRecordsTable extends Migration
             $table->integer('tr_purpose_id');
             $table->float('amount');
             $table->longText('comments')->nullable();
-            $table->integer('last_digit')->nullable();
+            $table->string('last_digit')->nullable();
             $table->integer('order_sheet_id')->nullable();
             $table->timestamps();
         });
