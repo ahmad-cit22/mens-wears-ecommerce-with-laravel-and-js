@@ -458,9 +458,27 @@
                                                 <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="">
                                                     Payment Method
                                                 </th>
-                                                <td>
+                                                <td class="border-0">
                                                     <div class="input-group" style="">
-                                                        <input type="text" class="form-control" placeholder="Cash/Bkash/Visa Card etc." value="{{ old('payment_method') }}" name="payment_method">
+                                                        <select name="payment_method" class="form-control select2">
+                                                            <option value="0">-- Select Payment Method --</option>
+                                                            <option value="CASH">CASH</option>
+                                                            <option value="CARD">CARD</option>
+                                                            <option value="BKASH">BKASH</option>
+                                                            <option value="NOGOD">NOGOD</option>
+                                                            <option value="ROCKET">ROCKET</option>
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger font-weight-bold fs-6"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="">
+                                                    Transaction ID
+                                                </th>
+                                                <td class="border-0">
+                                                    <div class="input-group" style="">
+                                                        <input type="text" class="form-control" placeholder="Transaction ID" value="{{ old('transaction_id') }}" name="transaction_id">
                                                     </div>
                                                     <span class="text-danger font-weight-bold fs-6"></span>
                                                 </td>

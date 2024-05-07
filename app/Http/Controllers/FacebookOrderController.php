@@ -99,7 +99,7 @@ class FacebookOrderController extends Controller {
             foreach ($carts as $cart) {
                 Cart::remove($cart->rowId);
             }
-            
+
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
@@ -455,9 +455,6 @@ class FacebookOrderController extends Controller {
                 $order->phone = $request->phone;
                 $order->whatsapp_num = $request->whatsapp_num;
                 $order->shipping_address = $request->shipping_address;
-                $order->bkash_num = $request->bkash_num;
-                $order->bkash_business_id = $request->bkash_business_id;
-                $order->bkash_amount = $request->bkash_amount;
                 $order->source = $request->source;
                 $order->courier_id = $request->courier_id;
                 $order->order_status_id = $request->order_status_id;
@@ -466,6 +463,36 @@ class FacebookOrderController extends Controller {
                 $order->remarks = $request->remarks;
                 $order->advance = $request->advance;
                 $order->discount_amount = $request->discount_amount;
+                $order->save();
+
+                Alert::toast('Order Sheet Info Updated!', 'success');
+                return back();
+            } else {
+                Alert::toast('Something went wrong !', 'error');
+                return back();
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function bkash_info_update(Request $request, $id) {
+
+        $request->validate([
+            'bkash_business_id'  => 'required|not_in:0',
+            'bkash_num' => 'required',
+            'bkash_purpose_id'  => 'required|not_in:0',
+            'bkash_amount'    => 'required',
+        ]);
+
+        if (auth()->user()->can('order.edit')) {
+            $order = FacebookOrder::find($id);
+            if (!is_null($order)) {
+
+                $order->bkash_num = $request->bkash_num;
+                $order->bkash_business_id = $request->bkash_business_id;
+                $order->bkash_amount = $request->bkash_amount;
+
                 $order->save();
 
                 if (BkashRecord::where('order_sheet_id', $order->id)->exists()) {
@@ -501,7 +528,7 @@ class FacebookOrderController extends Controller {
                     ]);
                 }
 
-                Alert::toast('Order Sheet Info Updated!', 'success');
+                Alert::toast('Bkash Transaction Info Updated!', 'success');
                 return back();
             } else {
                 Alert::toast('Something went wrong !', 'error');

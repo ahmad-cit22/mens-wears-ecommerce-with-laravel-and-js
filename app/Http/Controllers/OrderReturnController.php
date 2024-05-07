@@ -113,6 +113,7 @@ class OrderReturnController extends Controller {
 
                 WorkTrackingEntry::create([
                     'order_id' => $request->order_id,
+                    'product_stock_history_id' => $history->id,
                     'user_id' => Auth::id(),
                     'work_name' => 'order_return'
                 ]);

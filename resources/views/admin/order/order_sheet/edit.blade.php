@@ -35,9 +35,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
 
 
                     <!-- Main content -->
@@ -247,11 +247,27 @@
                                     </div>
                                 </div>
 
+
+                                </address>
+                            </div>
+                            <div class="row justify-content-end">
+                                <button type="submit" class="mr-2 mb-3 btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+
+                        <form action="{{ route('fos.bkash_info.update', $order->id) }}" method="POST">
+                            @csrf
+                            <div class="invoice p-3 mb-3">
                                 <div class="row mt-5 p-3" style="border: 1px solid rgba(255, 162, 0, 0.417); border-radius: 20px; background: rgba(255, 153, 0, 0.07);">
                                     <div class="col-md-4">
                                         <label class="text-body">Bkash Number (Customer)</label>
                                         <fieldset class="form-group mb-3">
                                             <input type="text" name="bkash_num" class="form-control" placeholder="Enter Customer Bkash Number" value="{{ $order->bkash_num }}">
+                                            @error('bkash_num')
+                                                <span class="invalid-feedback" role="alert" style="display: block;">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </fieldset>
                                     </div>
                                     <div class="col-md-4">
@@ -263,12 +279,22 @@
                                                     <option value="{{ $num->id }}" {{ $order->bkash_business_id == $num->id ? 'selected' : '' }}>{{ $num->number . ' (' . $num->name . ')' }}</option>
                                                 @endforeach
                                             </select>
+                                            @error('bkash_business_id')
+                                                <span class="invalid-feedback" role="alert" style="display: block;">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="text-body">Bkash Amount</label>
                                         <fieldset class="form-group mb-3">
                                             <input type="number" name="bkash_amount" class="form-control" placeholder="Enter Bkash Amount" value="{{ $order->bkash_amount }}">
+                                            @error('bkash_amount')
+                                                <span class="invalid-feedback" role="alert" style="display: block;">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </fieldset>
                                     </div>
                                     <div class="col-md-6">
@@ -284,6 +310,11 @@
                                                     @endif
                                                 @endforeach
                                             </select>
+                                            @error('bkash_purpose_id')
+                                                <span class="invalid-feedback" role="alert" style="display: block;">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -294,10 +325,9 @@
                                         </fieldset>
                                     </div>
                                 </div>
-                                </address>
-                            </div>
-                            <div class="row justify-content-end">
-                                <button type="submit" class="mr-2 mb-3 btn btn-primary">Save Changes</button>
+                                <div class="mt-3 row justify-content-end">
+                                    <button type="submit" class="mr-2 mb-3 btn btn-primary">Save Changes</button>
+                                </div>
                             </div>
                         </form>
                         <!-- /.col -->
@@ -435,11 +465,11 @@
 
                     <!-- this row will not appear when printing -->
                     <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div> -->
                 </div>
                 <!-- /.invoice -->
             </div>

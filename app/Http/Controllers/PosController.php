@@ -218,12 +218,12 @@ class PosController extends Controller {
                 $member_discount_rate = $request->member_discount_rate;
                 $member_discount_amount = $request->member_discount_amount;
                 $redeem_points_amount = $request->redeem_points_amount;
-                $points_received = round(($order->price + $extra_charge) * ($user->member->card->point_percentage / 100));
 
                 $order->price = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount;
 
 
                 if ($member_discount_rate) {
+                    $points_received = round((Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount) * ($user->member->card->point_percentage / 100));
                     $order->points_redeemed = $redeem_points_amount;
                     $order->points_received = $points_received;
                     $user->member->current_points -= $redeem_points_amount;
@@ -249,8 +249,9 @@ class PosController extends Controller {
                 $order->source = 'Vendor';
                 $order->sold_by = $request->sold_by;
                 $order->paid_amount = $request->paid_amount;
-                $order->change_amount = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount + $order->extra_charge - $request->paid_amount;
+                $order->change_amount = $request->paid_amount - Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount + $order->extra_charge;
                 $order->payment_method = $request->payment_method;
+                $order->transaction_id = $request->transaction_id;
 
                 $order->order_status_id = 4;
                 $order->is_final = 1;
@@ -368,9 +369,10 @@ class PosController extends Controller {
                 $order->price = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount;
 
                 if ($member_discount_rate) {
+                    $points_received = round((Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount) * ($user->member->card->point_percentage / 100));
                     $order->points_redeemed = $redeem_points_amount;
                     $user->member->current_points -= $redeem_points_amount;
-                    $user->member->current_points += round(Cart::subtotal() * ($user->member->card->point_percentage / 100));
+                    $user->member->current_points += $points_received;
                     $user->member->save();
 
                     $order->discount_rate = $member_discount_rate;

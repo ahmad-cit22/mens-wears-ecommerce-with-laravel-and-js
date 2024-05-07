@@ -324,8 +324,13 @@
                 <div class="info">
                     <p>
                         Payment Method : {{ $order->payment_method }}</br>
-                        Received Membership Point : {{ $order->points_received }}<br>
-                        Total Membership Point : {{ $order->customer->member->current_points }}<br>
+                        @if ($order->transaction_id)
+                            Transaction ID : {{ $order->transaction_id }}</br>
+                        @endif
+                        @if ($order->customer->member)
+                            Received Membership Point : {{ $order->points_received }}<br>
+                            Total Membership Point : {{ $order->customer->member->current_points }}<br>
+                        @endif
                     </p>
                 </div>
             </div>

@@ -401,6 +401,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
 
         Route::get('/edit/{id}', [App\Http\Controllers\FacebookOrderController::class, 'edit'])->name('edit');
         Route::post('/order-info-update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'order_info_update'])->name('order_info.update');
+        Route::post('/bkash-info-update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'bkash_info_update'])->name('bkash_info.update');
         Route::post('/order-products-update/{id}', [App\Http\Controllers\FacebookOrderController::class, 'order_products_update'])->name('order_products.update');
         Route::post('/destroy/{id}', [App\Http\Controllers\FacebookOrderController::class, 'destroy'])->name('destroy');
 
@@ -642,5 +643,6 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::post('/transfer-products-main-store', [App\Http\Controllers\VendorController::class, 'transfer_products_main_store'])->name('transfer_products.main.store');
         Route::get('/transfer-products-vendor', [App\Http\Controllers\VendorController::class, 'transfer_products_vendor'])->name('transfer_products_vendor');
         Route::post('/transfer-products-vendor-store', [App\Http\Controllers\VendorController::class, 'transfer_products_vendor_store'])->name('transfer_products.vendor.store');
+        Route::get('/vendor-transactions/{id}', [App\Http\Controllers\VendorController::class, 'vendor_transactions'])->name('vendor_transactions');
     });
 });
