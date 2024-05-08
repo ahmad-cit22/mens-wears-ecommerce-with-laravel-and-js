@@ -126,6 +126,16 @@
         /* @page {
             size: 10in 9in;
         }*/
+        html,
+        body {
+            /* width: 80mm !important; */
+            /* margin: 0 !important; */
+            font-family: sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
         @media print {
 
 
@@ -134,6 +144,7 @@
             body {
                 /* width: 80mm !important; */
                 /* margin: 0 !important; */
+                font-family: sans-serif;
             }
         }
     </style>
@@ -298,7 +309,7 @@
                         </td>
                     </tr>
 
-                    <tr class="tabletitle" style="background: #d8d8d8">
+                    <tr class="tabletitle">
                         <td class="item" colspan="2" style="text-align: center;">
                             <h2>Total Payable</h2>
                         </td>
@@ -307,7 +318,7 @@
                             <h2>&#2547; {{ round($order->price + $order->delivery_charge - $order->wallet_amount - $order->advance + $order->extra_charge) }}</h2>
                         </td>
                     </tr>
-                    <tr class="tabletitle" style="background: #d8d8d8">
+                    <tr class="tabletitle">
                         <td class="item" colspan="2" style="text-align: center;">
                             <h2>Paid</h2>
                         </td>
@@ -316,7 +327,7 @@
                             <h2>&#2547; {{ round($order->paid_amount) }}</h2>
                         </td>
                     </tr>
-                    <tr class="tabletitle" style="background: #d8d8d8">
+                    <tr class="tabletitle">
                         <td class="item" colspan="2" style="text-align: center;">
                             <h2>Change</h2>
                         </td>
@@ -329,7 +340,9 @@
                 </table>
                 <div class="info">
                     <p>
-                        Payment Method : {{ $order->payment_method }}</br>
+                        @if ($order->payment_method)
+                            Payment Method : {{ $order->payment_method }}</br>
+                        @endif
                         @if ($order->transaction_id)
                             Transaction ID : {{ $order->transaction_id }}</br>
                         @endif

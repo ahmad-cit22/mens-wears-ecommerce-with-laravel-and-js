@@ -307,6 +307,7 @@ class PosController extends Controller {
 
                 Session::forget('coupon_discount');
                 return redirect()->route('order.invoice.pos.generate', $order->id);
+                // return redirect()->route('pos.create', 'none');
             } else {
                 abort(403, 'Unauthorized action.');
             }

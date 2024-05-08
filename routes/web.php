@@ -370,6 +370,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         // routes for membershipcard
         Route::get('/cards', [App\Http\Controllers\MembershipCardController::class, 'cards'])->name('cards');
         Route::post('/card/update/{id}', [App\Http\Controllers\MembershipCardController::class, 'card_update'])->name('card.update');
+        Route::post('/card/store', [App\Http\Controllers\MembershipCardController::class, 'card_store'])->name('card.store');
 
         // routes for membership
         Route::get('/', [App\Http\Controllers\MemberController::class, 'index'])->name('index');

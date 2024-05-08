@@ -22,89 +22,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="container-fluid">
-                {{-- bkash_panel.store --}}
-                {{-- <form id="add-form" class="mb-4" action="{{ route('bkash_panel.store') }}" method="POST" style="display: none;">
-                    @csrf
-                    <div class="row">
-                        <div class="p-4 invoice col-10 m-auto" style="border-radius: 10px">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <div class="selectmain">
-                                        <label class="text-dark d-flex">Business Bkash Number *</label>
-                                        <select name="bkash_business_id" class="select2 select-down" id="bkash_business_id" style="width: 100% !important;" required>
-                                            <option value="0">--- Select an Option ---</option>
-                                            @foreach ($bkash_nums as $num)
-                                                <option value="{{ $num->id }}">{{ $num->number . ' (' . $num->name . ')' }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('bkash_business_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="selectmain">
-                                        <label class="text-dark d-flex">Transaction Type *</label>
-                                        <select name="tr_type" class="select2 select-down" id="tr_type" style="width: 100% !important;" required>
-                                            <option value="0">--- Select an Option ---</option>
-                                            <option value="CASH IN">CASH IN</option>
-                                            <option value="CASH OUT">CASH OUT</option>
-                                            <option value="SEND MONEY">SEND MONEY</option>
-                                            <option value="PAYMENTS">PAYMENTS</option>
-                                            <option value="RECHARGE">RECHARGE</option>
-                                        </select>
-                                        @error('tr_type')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="text-body">Amount *</label>
-                                    <fieldset class="form-group mb-3">
-                                        <input type="number" name="amount" class="form-control" placeholder="Enter Bkash Amount" required>
-                                    </fieldset>
-                                    @error('amount')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="selectmain">
-                                        <label class="text-dark d-flex">Purpose/Reason *</label>
-                                        <select name="tr_purpose_id" class="select2 select-down" id="tr_purpose_id" style="width: 100% !important;" required>
-                                            <option value="0">--- Select an Option ---</option>
-                                            @foreach ($bkash_purposes as $purpose)
-                                                <option value="{{ $purpose->id }}">{{ $purpose->title }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('tr_purpose_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="text-body">Last Digits (Min: 4) *</label>
-                                    <fieldset class="form-group mb-3">
-                                        <input type="text" name="last_digit" class="form-control" placeholder="Enter Last Digits (Min: 4) of Customer Bkash Number" required>
-                                    </fieldset>
-                                    @error('last_digit')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="text-body">Note/Comments
-                                    </label>
-                                    <fieldset class="form-group">
-                                        <textarea name="comments" id="comments" class="form-control" placeholder="Add Notes/Comments about Bkash Transaction"></textarea>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <div class="row justify-content-end">
-                                <button class="btn btn-danger mr-2" id="hide-add-form-btn" type="button" style="display: none">Hide Form</button>
-                                <button type="submit" class="mr-2 btn btn-primary">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form> --}}
+                <a href="#create-card" class="btn btn-primary" data-toggle="modal" title="Create"><i class="fas fa-plus mr-2"></i>Create New Card</a>
             </div>
             <div class="card">
 
@@ -208,6 +126,66 @@
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
+
+            <!-- create Modal -->
+            <div class="modal fade" id="create-card" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Create New Card</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('membership.card.store') }}" method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="card_status">Card Status</label>
+                                    <input type="text" name="card_status" placeholder="Enter Card Status" class="form-control" required>
+
+                                    @error('card_status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="discount_rate">Discount Rate (%)</label>
+                                    <input type="number" name="discount_rate" placeholder="Enter Discount Rate" class="form-control" required>
+
+                                    @error('discount_rate')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="min_purchase">Minimum Purchase</label>
+                                    <input type="number" name="min_purchase" placeholder="Enter Minimum Purchase" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="point_percentage">Point Percentage for Discount</label>
+                                    <input type="number" name="point_percentage" placeholder="Enter Point Percentage" class="form-control" required>
+
+                                    @error('point_percentage')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="min_point">Minimum Points for Discount</label>
+                                    <input type="number" name="min_point" placeholder="Enter Minimum Points" class="form-control" required>
+
+                                    @error('min_point')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ml-1 mr-2">Confirm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
         </div>
