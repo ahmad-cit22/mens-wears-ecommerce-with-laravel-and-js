@@ -555,9 +555,7 @@ class PageController extends Controller {
         if (!is_null($customer)) {
             $validatedData = $request->validate([
                 'name' => 'required|max:255',
-                'phone' => 'required|max:255|unique:users,phone,' . $customer->id,
-                'address' => 'required',
-                'image' => 'nullable|image',
+                'phone' => 'required|unique:users,phone,' . $customer->id,
             ]);
             $customer->name = $request->name;
             $customer->phone = $request->phone;
@@ -573,7 +571,7 @@ class PageController extends Controller {
             }
 
             $customer->save();
-            Alert::success('Profile Updated!', '');
+            Alert::success('Customer Profile Updated!', '');
             return back();
         } else {
             Alert::error('Something went wrong!', '');

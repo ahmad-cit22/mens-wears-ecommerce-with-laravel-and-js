@@ -163,13 +163,13 @@ class PosController extends Controller {
             if (Cart::content()->count() <= 0) {
                 return back()->with('errMsg', 'Please select products correctly!');
             }
-            if ($request->phone == null) {
-                return back()->with('errMsg', 'You must add customer phone number!');
-            }
 
             $order = new Order;
 
             if ($request->customer_id == 0) {
+                if ($request->phone == null) {
+                    return back()->with('errMsg', 'You must add customer phone number!');
+                }
                 if (!User::where('phone', $request->phone)->exists()) {
 
                     $user = new User;
@@ -193,6 +193,10 @@ class PosController extends Controller {
                     $order->phone = $user->phone;
                 }
             } else {
+                // if ($request->sold_by == null) {
+                //     return back()->with('errMsg', 'You must add customer phone number!');
+                // }
+
                 $user = User::find($request->customer_id);
                 $order->customer_id = $user->id;
                 $order->name = $user->name;
@@ -221,7 +225,6 @@ class PosController extends Controller {
 
                 $order->price = Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount;
 
-
                 if ($member_discount_rate) {
                     $points_received = round((Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount) * ($user->member->card->point_percentage / 100));
                     $order->points_redeemed = $redeem_points_amount;
@@ -247,7 +250,7 @@ class PosController extends Controller {
                 }
 
                 $order->source = 'Vendor';
-                $order->sold_by = $request->sold_by;
+                $order->sold_by = $request->sold_by ?? Auth::user()->name;
                 $order->paid_amount = $request->paid_amount;
                 $order->change_amount = $request->paid_amount - Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount + $order->extra_charge;
                 $order->payment_method = $request->payment_method;
@@ -303,7 +306,7 @@ class PosController extends Controller {
                 Alert::toast('One Sell Added', 'success');
 
                 Session::forget('coupon_discount');
-                return redirect()->route('pos.create', 'none');
+                return redirect()->route('order.invoice.pos.generate', $order->id);
             } else {
                 abort(403, 'Unauthorized action.');
             }

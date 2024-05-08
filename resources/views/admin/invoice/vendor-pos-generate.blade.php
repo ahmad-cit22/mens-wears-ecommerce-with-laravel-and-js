@@ -10,7 +10,7 @@
         #invoice-POS {
             padding: 2mm;
             margin: 0 auto;
-            width: 46mm;
+            width: 70mm;
             background: #FFF;
         }
 
@@ -83,8 +83,14 @@
         }
 
         td {
+            text-align: center !important;
             //padding: 5px 0 5px 15px;
             //border: 1px solid #EEE
+        }
+
+        .payment {
+            text-align: right !important;
+            padding-right: 20px;
         }
 
         .tabletitle {
@@ -98,7 +104,11 @@
         }
 
         .item {
-            width: 24mm;
+            width: 25mm;
+        }
+
+        .item-code {
+            width: 35mm;
         }
 
         .itemtext {
@@ -115,21 +125,17 @@
 
         /* @page {
             size: 10in 9in;
-        }
+        }*/
         @media print {
 
 
 
             html,
             body {
-                width: 10in !important;
-                height: 9in !important;
+                /* width: 80mm !important; */
+                /* margin: 0 !important; */
             }
-
-            .info {
-                color: rgb(52, 1, 153) !important;
-            }
-        } */
+        }
     </style>
 </head>
 
@@ -171,16 +177,16 @@
             <div id="table">
                 <table>
                     <tr class="tabletitle">
-                        <td class="item">
+                        <td class="item-code">
                             <h2>Item & Code</h2>
                         </td>
-                        <td class="Hours text-center">
+                        <td class="item text-center">
                             <h2>Size</h2>
                         </td>
-                        <td class="Hours">
+                        <td class="item">
                             <h2>Qty</h2>
                         </td>
-                        <td class="Rate">
+                        <td class="item payment">
                             <h2>Amount</h2>
                         </td>
                     </tr>
@@ -195,16 +201,16 @@
                             }
                         @endphp
                         <tr class="service">
-                            <td class="tableitem">
+                            <td class="item">
                                 <p class="itemtext">{{ $product->product->title }}</p>
                             </td>
-                            <td class="tableitem">
+                            <td class="item">
                                 <p class="itemtext">{{ isset($product->size_id) ? $product->size->title : '' }}</p>
                             </td>
-                            <td class="tableitem">
+                            <td class="item">
                                 <p class="itemtext">{{ $product->qty }}</p>
                             </td>
-                            <td class="tableitem">
+                            <td class="item payment">
                                 <p class="itemtext">
                                     @if ($order->source == 'Wholesale')
                                         &#2547; {{ $product->product->variation->wholesale_price }}
@@ -223,7 +229,7 @@
                     @if ($order->extra_charge)
                         <tr class="tabletitle">
 
-                            <td class="Rate" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="2" style="text-align: center;">
                                 <h2>Extra Charge ({{ $order->extra_charge_type }})</h2>
                             </td>
                             <td></td>
@@ -235,7 +241,7 @@
                     @if ($order->discount_amount)
                         <tr class="tabletitle">
 
-                            <td class="Rate" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="2" style="text-align: center;">
                                 <h2>Discount (-)</h2>
                             </td>
                             <td></td>
@@ -247,7 +253,7 @@
                     @if ($order->cod)
                         <tr class="tabletitle">
 
-                            <td class="Rate" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="2" style="text-align: center;">
                                 <h2>COD (-)</h2>
                             </td>
                             <td></td>
@@ -259,7 +265,7 @@
                     {{-- @if ($order->points_redeemed)
                         <tr class="tabletitle">
 
-                            <td class="Rate" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="2" style="text-align: center;">
                                 <h2>Points Redeemed (-)</h2>
                             </td>
                             <td></td>
@@ -271,7 +277,7 @@
                     @if ($order->membership_discount)
                         <tr class="tabletitle">
 
-                            <td class="Rate" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="2" style="text-align: center;">
                                 <h2>Membership Discount (-)</h2>
                             </td>
                             <td></td>
@@ -283,7 +289,7 @@
 
                     <tr class="tabletitle">
 
-                        <td class="Rate" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="2" style="text-align: center;">
                             <h2>VAT (Incl.)</h2>
                         </td>
                         <td></td>
@@ -293,7 +299,7 @@
                     </tr>
 
                     <tr class="tabletitle" style="background: #d8d8d8">
-                        <td class="Rate" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="2" style="text-align: center;">
                             <h2>Total Payable</h2>
                         </td>
                         <td></td>
@@ -302,7 +308,7 @@
                         </td>
                     </tr>
                     <tr class="tabletitle" style="background: #d8d8d8">
-                        <td class="Rate" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="2" style="text-align: center;">
                             <h2>Paid</h2>
                         </td>
                         <td></td>
@@ -311,7 +317,7 @@
                         </td>
                     </tr>
                     <tr class="tabletitle" style="background: #d8d8d8">
-                        <td class="Rate" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="2" style="text-align: center;">
                             <h2>Change</h2>
                         </td>
                         <td></td>
@@ -357,7 +363,9 @@
         <!--End InvoiceBot-->
     </div>
     <!--End Invoice-->
-
+    <script>
+        window.print();
+    </script>
 </body>
 
 </html>

@@ -111,13 +111,14 @@
                                         </form>
                                     </td>
                                     <td>
-                                        @if (Auth::id() == 1)
+                                        @hasrole(1)
+                                            <a href="#editModal{{ $customer->id }}" class="btn btn-primary" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
                                             <a href="#deleteModal{{ $customer->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
-                                        @endif
+                                        @endhasrole
                                     </td>
                                 </tr>
                                 <!-- Modal -->
-                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                {{-- <div class="modal fade" id="exampleModalCenter{{ $customer->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <form action="{{ route('customer.password.change.admin', $customer->id) }}" method="POST">
@@ -138,6 +139,50 @@
                                                         <label>Password *</label>
                                                         <input type="text" name="password" class="form-control @error('password') is-invalid @enderror">
                                                         @error('password')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                                <div class="modal fade" id="editModal{{ $customer->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <form action="{{ route('customer.account.update', $customer->id) }}" method="POST">
+                                                @csrf
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Update Customer Profile - {{ $customer->name }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+
+
+                                                <div class="modal-body">
+                                                    {{-- <div class="form-group">
+                                                        <p>Phone: {{ $customer->phone }}</p>
+                                                    </div> --}}
+                                                    <div class="form-group">
+                                                        <label>Name</label>
+                                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ $customer->name }}">
+                                                        @error('name')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Phone</label>
+                                                        <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ $customer->phone }}">
+                                                        @error('phone')
                                                             <span class="invalid-feedback" role="alert">
                                                                 <strong>{{ $message }}</strong>
                                                             </span>
@@ -197,7 +242,7 @@
                     $total = $customers->total();
                     $currentPage = $customers->currentPage();
                     $perPage = $customers->perPage();
-                    
+
                     $from = ($currentPage - 1) * $perPage + 1;
                     $to = min($currentPage * $perPage, $total);
                 @endphp
@@ -218,6 +263,25 @@
 @endsection
 
 @section('scripts')
+    @error('name')
+        <script>
+            Swal.fire(
+                'Oops!',
+                "{{ $message }}",
+                'error'
+            );
+        </script>
+    @enderror
+    @error('phone')
+        <script>
+            Swal.fire(
+                'Oops!',
+                "{{ $message }}",
+                'error'
+            );
+        </script>
+    @enderror
+
     <script>
         function changeStatus(selectElement, id) {
             let formElement = selectElement.parentNode;
