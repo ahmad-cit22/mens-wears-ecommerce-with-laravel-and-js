@@ -58,6 +58,8 @@ class VendorController extends Controller {
             $validatedData = $request->validate([
                 'name' => 'required',
                 'user_id' => 'required|not_in:0',
+                'branch_name' => 'required',
+                'branch_address' => 'required',
                 'invested_amount' => 'required',
                 'profit_percentage' => 'required',
             ]);
@@ -66,6 +68,8 @@ class VendorController extends Controller {
             $vendor = new Vendor;
             $vendor->name = $request->name;
             $vendor->user_id = $request->user_id;
+            $vendor->branch_name = $request->branch_name;
+            $vendor->branch_address = $request->branch_address;
             $vendor->invested_amount = $request->invested_amount;
             $vendor->opening_balance = $request->invested_amount;
             $vendor->profit_percentage = $request->profit_percentage;
@@ -118,6 +122,8 @@ class VendorController extends Controller {
             if ($vendor) {
                 $validatedData = $request->validate([
                     'name' => 'required',
+                    'branch_name' => 'required',
+                    'branch_address' => 'required',
                     'user_id' => 'required|not_in:0',
                     'profit_percentage' => 'required',
                 ]);

@@ -60,7 +60,7 @@
                                 <div class="col-md-4">
                                     <label class="text-body">Amount *</label>
                                     <fieldset class="form-group mb-3">
-                                        <input type="number" name="amount" class="form-control" placeholder="Enter Bkash Amount" required>
+                                        <input type="number" name="amount" step="0.001" class="form-control" placeholder="Enter Bkash Amount" required>
                                     </fieldset>
                                     @error('amount')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -108,7 +108,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row justify-content-end">
-                        <button class="btn btn-info btn-sm mb-3 mr-2 " id="show-add-form-btn" type="button">Show Form</button>
+                        <button class="btn btn-info btn-sm mb-3 mr-2 " id="show-add-form-btn" type="button">Show Create Form</button>
                     </div>
                     {{-- bkash_panel.search --}}
                     <form action="{{ route('bkash_panel.search') }}" method="get">

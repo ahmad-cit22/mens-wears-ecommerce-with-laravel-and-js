@@ -31,6 +31,8 @@
                             <tr>
                                 <th>S.N</th>
                                 <th>Vendor Name</th>
+                                <th>Branch Name</th>
+                                <th>Branch Address</th>
                                 <th>Owner Name</th>
                                 <th>Opening Balance</th>
                                 <th>Total Invested</th>
@@ -44,6 +46,8 @@
                                 <tr>
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ $vendor->name }}</td>
+                                    <td>{{ $vendor->branch_name }}</td>
+                                    <td>{{ $vendor->branch_address }}</td>
                                     <td>
                                         <a href="{{ route('user.edit', $vendor->user_id) }}">{{ $vendor->user->name }}</a>
                                     </td>
@@ -60,9 +64,9 @@
                                     <td>
                                         @hasrole([1])
                                             {{-- @can('brand.edit') --}}
-                                            <a href="#editModal{{ $vendor->id }}" class="btn btn-primary" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
-                                            <a href="#deleteModal{{ $vendor->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
-                                            <a href="{{ route('report.incomestatement.vendor', $vendor->id) }}" class="btn btn-info" title="View Report"><i class="fas fa-eye"></i></a>
+                                            <a href="#editModal{{ $vendor->id }}" class="btn btn-primary btn-sm" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
+                                            <a href="#deleteModal{{ $vendor->id }}" class="btn btn-danger btn-sm" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                            <a href="{{ route('report.incomestatement.vendor', $vendor->id) }}" class="btn btn-info btn-sm" title="View Report"><i class="fas fa-eye"></i></a>
                                             {{-- <a href="{{ route('vendor.vendor_transaction', $vendor->id) }}" class="btn btn-secondary" title="View Transactions"><i class="fas fa-dollar-sign"></i></a> --}}
                                             {{-- @endcan --}}
                                         @endhasrole
@@ -88,8 +92,30 @@
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label>Vendor/Display Center Name *</label>
-                                                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" Value="{{ $vendor->name }}" required>
+                                                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ $vendor->name }}" required>
                                                                 @error('name')
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label>Branch Name *</label>
+                                                                <input type="text" name="branch_name" class="form-control @error('branch_name') is-invalid @enderror" value="{{ $vendor->branch_name }}" placeholder="Branch Name" required>
+                                                                @error('branch_name')
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label>Branch Address *</label>
+                                                                <input type="text" name="branch_address" class="form-control @error('branch_address') is-invalid @enderror" value="{{ $vendor->branch_address }}" placeholder="Branch Address" required>
+                                                                @error('branch_address')
                                                                     <span class="invalid-feedback" role="alert">
                                                                         <strong>{{ $message }}</strong>
                                                                     </span>
@@ -187,6 +213,8 @@
                     <tr>
                         <th>S.N</th>
                         <th>Vendor Name</th>
+                        <th>Branch Name</th>
+                        <th>Branch Address</th>
                         <th>Owner Name</th>
                         <th>Opening Balance</th>
                         <th>Total Invested</th>
@@ -221,6 +249,28 @@
                                         <label>Vendor/Display Center Name *</label>
                                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Vendor/Display Center Name" required>
                                         @error('name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Branch Name *</label>
+                                        <input type="text" name="branch_name" class="form-control @error('branch_name') is-invalid @enderror" placeholder="Branch Name" required>
+                                        @error('branch_name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Branch Address *</label>
+                                        <input type="text" name="branch_address" class="form-control @error('branch_address') is-invalid @enderror" placeholder="Branch Address" required>
+                                        @error('branch_address')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

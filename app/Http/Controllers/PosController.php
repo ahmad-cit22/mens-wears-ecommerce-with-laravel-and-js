@@ -72,10 +72,10 @@ class PosController extends Controller {
 
             // return DNS1D::getBarcodeSVG('1005', 'C39');
             if (Auth::user()->vendor) {
-                $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('vendor_id', Auth::user()->vendor->id)->get();
+                $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->where('vendor_id', Auth::user()->vendor->id)->get();
                 return view('admin.pos.create-vendor', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
             } else {
-                $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('vendor_id', null)->get();
+                $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->where('vendor_id', null)->get();
                 return view('admin.pos.create', compact('products', 'categories', 'brands', 'customers', 'districts', 'carts', 'fos_order', 'couriers'));
             }
         } else {

@@ -65,7 +65,7 @@
                                     <div class="col-md-4">
                                         <label class="text-body">Amount *</label>
                                         <fieldset class="form-group mb-3">
-                                            <input type="number" name="amount" class="form-control" placeholder="Enter Bkash Amount" required>
+                                            <input type="number" step="0.001" name="amount" class="form-control" placeholder="Enter Bkash Amount" required>
                                         </fieldset>
                                         @error('amount')
                                             <div class="invalid-feedback">{{ $message }}</div>

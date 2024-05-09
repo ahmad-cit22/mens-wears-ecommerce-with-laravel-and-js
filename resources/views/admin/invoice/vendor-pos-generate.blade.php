@@ -94,13 +94,16 @@
         }
 
         .tabletitle {
-            //padding: 5px;
+            /* //padding: 5px; */
             font-size: .7em;
             background: #EEE;
+            border: 1px dotted #6d6d6d;
+            /* border-right: 0px !important;
+            border-left: 0px !important; */
         }
 
         .service {
-            border-bottom: 1px solid #EEE;
+            /* border-bottom: 1px solid #EEE; */
         }
 
         .item {
@@ -170,6 +173,8 @@
             <div class="info">
                 <p>
                     Date : {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</br>
+                    Branch : {{ $order->vendor->branch_name }}</br>
+                    Branch Address: {{ $order->vendor->branch_address }}</br>
                     Invoice No. : <b>{{ $order->code }}</b><br>
                     Sales Person : <b>{{ $order->sold_by }}</b><br><br>
                     Customer Name : {{ $order->name }} </br>
@@ -197,50 +202,57 @@
                         <td class="item">
                             <h2>Qty</h2>
                         </td>
+                        <td class="item">
+                            <h2>Price</h2>
+                        </td>
                         <td class="item payment">
                             <h2>Amount</h2>
                         </td>
                     </tr>
 
                     @php
-                        $total_qty = 0;
+                        $total_price = 0;
                     @endphp
                     @foreach ($order->order_product as $product)
                         @php
-                            if ($order->source == 'Wholesale') {
-                                $total_qty += $product->qty;
-                            }
+                            $total_price += $product->product->variation->price * $product->qty;
                         @endphp
                         <tr class="service">
-                            <td class="item">
+                            <td class="item" style="width: 30% !important">
                                 <p class="itemtext">{{ $product->product->title }}</p>
                             </td>
-                            <td class="item">
-                                <p class="itemtext">{{ isset($product->size_id) ? $product->size->title : '' }}</p>
+                            <td class="item" style="width: 11% !important">
+                                <p class="itemtext">{{ isset($product->size_id) ? $product->size->title : '-' }}</p>
+                            </td>
+                            <td class="item" style="width: 11% !important">
+                                <p class="itemtext">{{ $product->qty }}</p>
                             </td>
                             <td class="item">
-                                <p class="itemtext">{{ $product->qty }}</p>
+                                <p class="itemtext">{{ $product->product->variation->price }} x {{ $product->qty }}</p>
                             </td>
                             <td class="item payment">
                                 <p class="itemtext">
-                                    @if ($order->source == 'Wholesale')
-                                        &#2547; {{ $product->product->variation->wholesale_price }}
-                                    @else
-                                        @if ($product->product->variation->discount_price != null && $order->source == 'Website')
-                                            &#2547; {{ $product->product->variation->discount_price * $product->qty }} <small>(Discounted)</small>
-                                        @else
-                                            &#2547; {{ $product->product->variation->price * $product->qty }}
-                                        @endif
-                                    @endif
+                                    &#2547; {{ $product->product->variation->price * $product->qty }}
                                 </p>
                             </td>
                         </tr>
                     @endforeach
 
+                    <tr class="tabletitle">
+
+                        <td class="item" colspan="3" style="text-align: center;">
+                            <h2>Total Price</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>{{ env('CURRENCY') }}{{ $total_price }}</h2>
+                        </td>
+                    </tr>
+
                     @if ($order->extra_charge)
                         <tr class="tabletitle">
 
-                            <td class="item" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="3" style="text-align: center;">
                                 <h2>Extra Charge ({{ $order->extra_charge_type }})</h2>
                             </td>
                             <td></td>
@@ -252,7 +264,7 @@
                     @if ($order->discount_amount)
                         <tr class="tabletitle">
 
-                            <td class="item" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="3" style="text-align: center;">
                                 <h2>Discount (-)</h2>
                             </td>
                             <td></td>
@@ -264,7 +276,7 @@
                     @if ($order->cod)
                         <tr class="tabletitle">
 
-                            <td class="item" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="3" style="text-align: center;">
                                 <h2>COD (-)</h2>
                             </td>
                             <td></td>
@@ -273,22 +285,10 @@
                             </td>
                         </tr>
                     @endif
-                    {{-- @if ($order->points_redeemed)
-                        <tr class="tabletitle">
-
-                            <td class="item" colspan="2" style="text-align: center;">
-                                <h2>Points Redeemed (-)</h2>
-                            </td>
-                            <td></td>
-                            <td class="payment">
-                                <h2>{{ $order->points_redeemed }}</h2>
-                            </td>
-                        </tr>
-                    @endif --}}
                     @if ($order->membership_discount)
                         <tr class="tabletitle">
 
-                            <td class="item" colspan="2" style="text-align: center;">
+                            <td class="item" colspan="3" style="text-align: center;">
                                 <h2>Membership Discount (-)</h2>
                             </td>
                             <td></td>
@@ -300,7 +300,7 @@
 
                     <tr class="tabletitle">
 
-                        <td class="item" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="3" style="text-align: center;">
                             <h2>VAT (Incl.)</h2>
                         </td>
                         <td></td>
@@ -310,7 +310,7 @@
                     </tr>
 
                     <tr class="tabletitle">
-                        <td class="item" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="3" style="text-align: center;">
                             <h2>Total Payable</h2>
                         </td>
                         <td></td>
@@ -319,7 +319,7 @@
                         </td>
                     </tr>
                     <tr class="tabletitle">
-                        <td class="item" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="3" style="text-align: center;">
                             <h2>Paid</h2>
                         </td>
                         <td></td>
@@ -328,7 +328,7 @@
                         </td>
                     </tr>
                     <tr class="tabletitle">
-                        <td class="item" colspan="2" style="text-align: center;">
+                        <td class="item" colspan="3" style="text-align: center;">
                             <h2>Change</h2>
                         </td>
                         <td></td>
@@ -336,22 +336,62 @@
                             <h2>&#2547; {{ round($order->change_amount) }}</h2>
                         </td>
                     </tr>
+                    @if ($order->payment_method)
+                        <tr class="tabletitle" style="font-size: 11px !important; padding-top: 15px !important;">
+                            <td class="item" colspan="3" style="text-align: center;">
+                                <h2>Payment Method</h2>
+                            </td>
+                            <td></td>
+                            <td class="payment">
+                                <h2>{{ $order->payment_method }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+
+                    @if ($order->transaction_id)
+                        <tr class="tabletitle" style="font-size: 11px !important;">
+                            <td class="item" colspan="3" style="text-align: center;">
+                                <h2>Transaction ID</h2>
+                            </td>
+                            <td></td>
+                            <td class="payment">
+                                <h2>{{ $order->transaction_id }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+                    @if ($order->customer->member)
+                        <tr class="tabletitle" style="font-size: 11px !important;">
+                            <td class="item" colspan="3" style="text-align: center;">
+                                <h2>Received Membership Point</h2>
+                            </td>
+                            <td></td>
+                            <td class="payment">
+                                <h2>{{ $order->points_received }}</h2>
+                            </td>
+                        </tr>
+                        <tr class="tabletitle" style="font-size: 11px !important;">
+                            <td class="item" colspan="3" style="text-align: center;">
+                                <h2>Total Membership Point</h2>
+                            </td>
+                            <td></td>
+                            <td class="payment">
+                                <h2>{{ $order->customer->member->current_points }}</h2>
+                            </td>
+                        </tr>
+                    @endif
+
+                    <tr class="tabletitle" style="font-size: 13px !important;">
+                        <td class="item" colspan="5" style="text-align: center;">
+                            <h2>Exchange and Refund policy</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle" style="font-size: 13px !important;">
+                        <td class="item" colspan="5" style="text-align: center;">
+                            <p style="font-style: italic">Sold items cannot be refunded. But can be exchanged within 7 days with invoice and product hang tag.</p>
+                        </td>
+                    </tr>
 
                 </table>
-                <div class="info">
-                    <p>
-                        @if ($order->payment_method)
-                            Payment Method : {{ $order->payment_method }}</br>
-                        @endif
-                        @if ($order->transaction_id)
-                            Transaction ID : {{ $order->transaction_id }}</br>
-                        @endif
-                        @if ($order->customer->member)
-                            Received Membership Point : {{ $order->points_received }}<br>
-                            Total Membership Point : {{ $order->customer->member->current_points }}<br>
-                        @endif
-                    </p>
-                </div>
             </div>
             <!--End Table-->
 
@@ -364,7 +404,7 @@
             @endif --}}
 
             <div id="legalcopy">
-                <p class="legal"><strong>Thank you for your shopping!</strong>
+                <p class="legal"><strong>Thank you for your shopping at Go By Fabrifest!</strong>
                 </p>
             </div>
         </div>
@@ -377,7 +417,7 @@
     </div>
     <!--End Invoice-->
     <script>
-        window.print();
+        // window.print();
     </script>
 </body>
 
