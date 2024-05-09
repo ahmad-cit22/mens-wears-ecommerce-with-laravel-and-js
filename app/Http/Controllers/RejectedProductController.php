@@ -20,8 +20,7 @@ use Alert;
 use Carbon\Carbon;
 use DataTables;
 
-class RejectedProductController extends Controller
-{
+class RejectedProductController extends Controller {
     public function add_view(Request $request) {
         if (auth()->user()->can('damage.view')) {
             $products = Product::orderBy('created_at', 'desc')->get();
@@ -31,7 +30,7 @@ class RejectedProductController extends Controller
             abort(403, 'Unauthorized action.');
         }
     }
-    
+
     public function index(Request $request) {
         if (auth()->user()->can('damage.view')) {
             if ($request->ajax()) {
@@ -58,7 +57,7 @@ class RejectedProductController extends Controller
                     ->addColumn('created_by', function ($row) {
 
                         if ($row->created_by) {
-                           $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' .$row->created_by->adder->name . '</a>';
+                            $data = '<a href="' . route('user.edit', $row->created_by->user_id) . '">' . $row->created_by->adder->name . '</a>';
                         } else {
                             $data = '--';
                         }
@@ -113,7 +112,7 @@ class RejectedProductController extends Controller
             $history->qty = $qty;
             $history->remarks = 'Reject Product History ID - ' . $reject->id;
             $history->note = "Reject Product";
-                
+
             $history->save();
 
             $reject_stock = RejectedProductStock::where('product_id', $product_id)->where('size_id', $size_id);
@@ -128,10 +127,10 @@ class RejectedProductController extends Controller
                 $reject_stock->qty = $qty;
                 $reject_stock->save();
             }
-            
+
             if ($request->has('is_transfer')) {
                 $expense = new ExpenseEntry;
-                $expense->expense_id = 18;
+                $expense->expense_id = 23;
                 $expense->bank_id = $request->bank_id;
                 $expense->amount = $stock->production_cost * $qty;
                 $expense->date = Carbon::today();
@@ -149,16 +148,16 @@ class RejectedProductController extends Controller
                 }
 
                 WorkTrackingEntry::create([
-                        'rejected_product_id' => $reject->id,
-                        'expense_entry_id' => $expense->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'reject_product'
+                    'rejected_product_id' => $reject->id,
+                    'expense_entry_id' => $expense->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'reject_product'
                 ]);
             } else {
                 WorkTrackingEntry::create([
-                        'rejected_product_id' => $reject->id,
-                        'user_id' => Auth::id(),
-                        'work_name' => 'reject_product'
+                    'rejected_product_id' => $reject->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'reject_product'
                 ]);
             }
 
@@ -173,7 +172,7 @@ class RejectedProductController extends Controller
         if (auth()->user()->can('damage.view')) {
             $reject_stocks  = RejectedProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             if ($request->ajax()) {
-                return Datatables::of($reject_stocks )
+                return Datatables::of($reject_stocks)
                     ->addIndexColumn()
                     ->addColumn('product', function ($row) {
                         if ($row->product != null) {
@@ -199,7 +198,7 @@ class RejectedProductController extends Controller
     public function product_out_form(Request $request) {
         if (auth()->user()->can('damage.view')) {
             $reject_stocks = RejectedProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
-            
+
             return view('admin.product.reject.out', compact('reject_stocks'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -225,7 +224,7 @@ class RejectedProductController extends Controller
             $reject_out->note = $request->note;
             $reject_out->price = $request->price;
             $reject_out->save();
-            
+
             $reject_stock = RejectedProductStock::where('product_id', $product_id)->where('size_id', $size_id)->first();
             $reject_stock->qty -= $qty;
             $reject_stock->save();
@@ -238,7 +237,7 @@ class RejectedProductController extends Controller
             $reject->note = $request->note;
             $reject->date = Carbon::today();
             $reject->save();
-            
+
             if ($request->has('is_others_income')) {
                 $transaction = new BankTransaction;
                 $transaction->bank_id = $request->bank_id;
@@ -249,13 +248,13 @@ class RejectedProductController extends Controller
                     $transaction->other_income = 1;
                 }
                 $transaction->save();
-            } 
-            
+            }
+
             WorkTrackingEntry::create([
                 'rejected_product_id' => $reject->id,
                 'user_id' => Auth::id(),
                 'work_name' => 'reject_product_out'
-            ]);  
+            ]);
 
             Alert::toast('Reject Product Out Done!', 'success');
             return back();

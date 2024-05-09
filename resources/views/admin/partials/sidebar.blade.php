@@ -567,54 +567,53 @@
                                         </a>
                                     </li>
                                 @endif
-
-                                @if (!auth()->user()->vendor)
-                                    @if (auth()->user()->can('damage.view'))
-                                        <li class="nav-item">
-                                            <a href="#" class="nav-link">
-                                                <i class="nav-icon fas fa-times-circle"></i>
-                                                <p>
-                                                    Reject Panel
-                                                    <i class="fas fa-angle-right right"></i>
-                                                </p>
-                                            </a>
-                                            <ul class="nav nav-treeview">
-                                                <li class="nav-item">
-                                                    <a href="{{ route('reject.add.view') }}" class="nav-link">
-                                                        <i class="fas fa-angle-right"></i>
-                                                        <p>Transfer to Reject List</p>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{ route('reject.index') }}" class="nav-link">
-                                                        <i class="fas fa-angle-right"></i>
-                                                        <p>Reject Products History</p>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{ route('reject.stock') }}" class="nav-link">
-                                                        <i class="fas fa-angle-right"></i>
-                                                        <p>Reject Products Stock</p>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{ route('reject.product.out.form') }}" class="nav-link">
-                                                        <i class="fas fa-angle-right"></i>
-                                                        <p>Reject Product Out</p>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{ route('reject.product.out.list') }}" class="nav-link">
-                                                        <i class="fas fa-angle-right"></i>
-                                                        <p>Reject Product Out List</p>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    @endif
-                                @endif
                             </ul>
                         </li>
+                    @endif
+                    @if (!auth()->user()->vendor)
+                        @if (auth()->user()->can('damage.view'))
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-times-circle"></i>
+                                    <p>
+                                        Reject Panel
+                                        <i class="fas fa-angle-right right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('reject.add.view') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Transfer to Reject List</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('reject.index') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Reject Products History</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('reject.stock') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Reject Products Stock</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('reject.product.out.form') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Reject Product Out</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('reject.product.out.list') }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Reject Product Out List</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
                     @endif
 
                     @if (auth()->user()->can('expense.index') || auth()->user()->can('expense.view'))
