@@ -236,7 +236,7 @@
                                                 <div class="col-md-6">
                                                     <label class="text-body">Phone <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}" required>
+                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
                                                         <span id="err-phone" class="invalid-feedback"></span>
                                                         {{-- @error('phone')
                                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -613,14 +613,14 @@
             if (customer_id == '0') {
                 $('#new-customer-form').show();
 
-                $("#name").prop('required', true);
-                $("#phone").prop('required', true);
+                // $("#name").prop('required', true);
+                // $("#phone").prop('required', true);
 
             } else {
                 $('#new-customer-form').hide();
 
-                $("#name").prop('required', false);
-                $("#phone").prop('required', false);
+                // $("#name").prop('required', false);
+                // $("#phone").prop('required', false);
 
                 var url = "{{ route('pos.check.membership') }}";
                 // alert(url);
