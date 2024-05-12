@@ -449,7 +449,7 @@
                                                 </th>
                                                 <td>
                                                     <div class="input-group" style="">
-                                                        <input type="number" class="form-control" placeholder="Now Paying Amount" name="paid_amount" value="{{ old('paid_amount') }}" required>
+                                                        <input type="number" class="form-control" placeholder="Now Paying Amount" name="paid_amount" value="{{ old('paid_amount') }}">
                                                     </div>
                                                     <span class="text-danger font-weight-bold fs-6"></span>
                                                 </td>
@@ -460,7 +460,7 @@
                                                 </th>
                                                 <td class="border-0">
                                                     <div class="input-group" style="">
-                                                        <select name="payment_method" class="form-control select2" required>
+                                                        <select name="payment_method" class="form-control select2">
                                                             <option value="0">-- Select Payment Method --</option>
                                                             <option value="CASH">CASH</option>
                                                             <option value="CARD">CARD</option>

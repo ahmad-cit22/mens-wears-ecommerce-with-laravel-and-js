@@ -141,9 +141,11 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('index') }}" class="nav-link" target="_blank"><i class="fas fa-home"></i> Visit Website</a>
-                </li>
+                @if (!auth()->user()->vendor)
+                    <li class="nav-item d-none d-sm-inline-block">
+                        <a href="{{ route('index') }}" class="nav-link" target="_blank"><i class="fas fa-home"></i> Visit Website</a>
+                    </li>
+                @endif
                 <li class="nav-item ml-2">
                     <a class="nav-link btn btn-sm btn-danger" href="{{ route('cache.clear') }}">
                         <i class="far fa-trash-alt mr-2"></i>Clear Cache

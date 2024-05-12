@@ -167,8 +167,8 @@ class PosController extends Controller {
             $order = new Order;
 
             if ($request->customer_id == 0) {
-                if ($request->phone == null) {
-                    return back()->with('errMsg', 'You must add customer phone number!');
+                if ($request->phone == null || $request->paid_amount == null || $request->payment_method == 0) {
+                    return back()->with('errMsg', 'You must add customer phone number, paying amount and payment method!');
                 }
                 if (!User::where('phone', $request->phone)->exists()) {
 
