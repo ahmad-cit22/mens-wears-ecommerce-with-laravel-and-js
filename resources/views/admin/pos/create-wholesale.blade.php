@@ -151,7 +151,7 @@
                     <h3 class="text-center alert alert-success">Wholesale</h3>
                 </div>
             </div>
-            <form action="{{ route('pos.wholesale.store') }}" method="POST">
+            <form id="order-submit-form" action="{{ route('pos.wholesale.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-xl-4 order-xl-first order-last">

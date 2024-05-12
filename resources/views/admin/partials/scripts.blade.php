@@ -64,6 +64,14 @@
 </script>
 
 <script>
+    $('#order-submit-form').on('submit', function(e) {
+        if ($("#barcode").val().length > 0) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+<script>
     var editor_config = {
         path_absolute: "/",
         selector: 'textarea.tinymce',

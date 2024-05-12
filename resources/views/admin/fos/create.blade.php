@@ -135,7 +135,7 @@
     </header>
     <div class="contentPOS">
         <div class="container-fluid">
-            <form action="{{ route('fos.store') }}" method="POST">
+            <form id="order-submit-form" action="{{ route('fos.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-xl-4 order-xl-first order-last">
