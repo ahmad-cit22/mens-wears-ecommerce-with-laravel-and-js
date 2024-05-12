@@ -297,7 +297,7 @@
                                 </ul>
                             </li>
                         @endif
-
+                        @endif
                         @if (auth()->user()->can('order.index') || auth()->user()->can('order.view'))
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
@@ -310,12 +310,17 @@
                                 <ul class="nav nav-treeview">
                                     @if (auth()->user()->can('order.index'))
                                         <li class="nav-item">
+@if (!auth()->user()->vendor)
                                             <a href="{{ route('order.index') }}" class="nav-link">
+                                                @else
+<a href="{{ route('vendor_sell.all') }}" class="nav-link">
+                                                @endif
                                                 <i class="fas fa-angle-right"></i>
                                                 <p>All Orders</p>
                                             </a>
                                         </li>
                                     @endif
+@if (!auth()->user()->vendor)
                                     @if (auth()->user()->can('order.view'))
                                         @foreach (App\Models\OrderStatus::all() as $status)
                                             <li class="nav-item">
@@ -332,10 +337,11 @@
                                             </a>
                                         </li>
                                     @endif
+                                    @endif
                                 </ul>
                             </li>
                         @endif
-                    @endif
+
 
                     @if (auth()->user()->can('pos.create') || auth()->user()->can('wholesale.create') || auth()->user()->can('sell.index') || auth()->user()->can('order.return') || auth()->user()->can('wholesale.index'))
                         <li class="nav-item">

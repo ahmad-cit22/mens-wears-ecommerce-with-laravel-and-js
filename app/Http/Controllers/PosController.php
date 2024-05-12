@@ -252,7 +252,7 @@ class PosController extends Controller {
                 $order->source = 'Vendor';
                 $order->sold_by = $request->sold_by ?? Auth::user()->name;
                 $order->paid_amount = $request->paid_amount;
-                $order->change_amount = $request->paid_amount - Cart::subtotal() - $discount - $member_discount_amount - $redeem_points_amount + $order->extra_charge;
+                $order->change_amount = $request->paid_amount - Cart::subtotal() + $discount + $member_discount_amount + $redeem_points_amount - $order->extra_charge;
                 $order->payment_method = $request->payment_method;
                 $order->transaction_id = $request->transaction_id;
 

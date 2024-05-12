@@ -528,7 +528,7 @@ class VendorOrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->where('vendor_id', Auth::user()->vendor->id)->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('vendor_id', Auth::user()->vendor->id)->get();
             $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
             $couriers = CourierName::all();
 

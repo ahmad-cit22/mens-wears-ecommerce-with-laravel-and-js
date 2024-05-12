@@ -1076,24 +1076,46 @@ class OrderController extends Controller {
                     if ($order->is_final == 1) {
                         $order_products = $order->order_product;
                         foreach ($order_products as $product) {
-                            $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
-                            $stock->qty += $product->qty;
-                            $stock->save();
+                            if ($order->vendor_id) {
+                                $stock = ProductStock::where('product_id', $product->product_id)->where('vendor_id', $order->vendor_id)->where('size_id', $product->size_id)->first();
+                                $stock->qty += $product->qty;
+                                $stock->save();
 
-                            $history = new ProductStockHistory;
-                            $history->product_id = $product->product_id;
-                            $history->size_id = $product->size_id;
-                            $history->qty = $product->qty;
-                            $history->remarks = 'Order Code - ' . $order->code;
-                            $history->note = "Order Cancel";
-                            $history->save();
+                                $history = new ProductStockHistory;
+                                $history->product_id = $product->product_id;
+                                $history->size_id = $product->size_id;
+                                $history->qty = $product->qty;
+                                $history->remarks = 'Order Code - ' . $order->code;
+                                $history->note = "Order Cancel";
+                                $history->vendor_id = $order->vendor_id;
+                                $history->save();
 
-                            WorkTrackingEntry::create([
-                                'order_id' => $order->id,
-                                'product_stock_history_id' => $history->id,
-                                'user_id' => Auth::id(),
-                                'work_name' => 'order_cancel'
-                            ]);
+                                WorkTrackingEntry::create([
+                                    'order_id' => $order->id,
+                                    'product_stock_history_id' => $history->id,
+                                    'user_id' => Auth::id(),
+                                    'work_name' => 'order_cancel'
+                                ]);
+                            } else {
+                                $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
+                                $stock->qty += $product->qty;
+                                $stock->save();
+
+                                $history = new ProductStockHistory;
+                                $history->product_id = $product->product_id;
+                                $history->size_id = $product->size_id;
+                                $history->qty = $product->qty;
+                                $history->remarks = 'Order Code - ' . $order->code;
+                                $history->note = "Order Cancel";
+                                $history->save();
+
+                                WorkTrackingEntry::create([
+                                    'order_id' => $order->id,
+                                    'product_stock_history_id' => $history->id,
+                                    'user_id' => Auth::id(),
+                                    'work_name' => 'order_cancel'
+                                ]);
+                            }
                         }
                         $order->is_final = 0;
                     }
@@ -1295,17 +1317,33 @@ class OrderController extends Controller {
         // delete the old order products
         $old_order_products = OrderProduct::where('order_id', $id);
         foreach ($old_order_products->get() as $product) {
-            $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
-            $stock->qty += $product->qty;
-            $stock->save();
+            if (!$order->vendor_id) {
+                $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->first();
+                $stock->qty += $product->qty;
+                $stock->save();
 
-            $history = new ProductStockHistory;
-            $history->product_id = $product->product_id;
-            $history->size_id = $product->size_id;
-            $history->qty = $product->qty;
-            $history->remarks = 'Order Code - ' . $order->code;
-            $history->note = "Order Products Change";
-            $history->save();
+                $history = new ProductStockHistory;
+                $history->product_id = $product->product_id;
+                $history->size_id = $product->size_id;
+                $history->qty = $product->qty;
+                $history->remarks = 'Order Code - ' . $order->code;
+                $history->note = "Order Products Change";
+
+                $history->save();
+            } else {
+                $stock = ProductStock::where('product_id', $product->product_id)->where('size_id', $product->size_id)->where('vendor_id', $order->vendor_id)->first();
+                $stock->qty += $product->qty;
+                $stock->save();
+
+                $history = new ProductStockHistory;
+                $history->product_id = $product->product_id;
+                $history->size_id = $product->size_id;
+                $history->qty = $product->qty;
+                $history->remarks = 'Order Code - ' . $order->code;
+                $history->note = "Order Products Change";
+                $history->vendor_id = $order->vendor_id;
+                $history->save();
+            }
 
             WorkTrackingEntry::create([
                 'order_id' => $order->id,
@@ -1317,7 +1355,10 @@ class OrderController extends Controller {
 
         $old_order_products->delete();
 
-        $order->price = $new_total - $discount;
+        $order->price = $new_total - $discount - $order->member_discount_amount - $order->redeem_points_amount;
+        if ($order->vendor_id) {
+            $order->change_amount = $order->paid_amount - $new_total + $discount + $order->membership_discount + $order->points_redeemed - $order->extra_charge;
+        }
         $order->save();
         $percentage = ($discount / $new_total) * 100;
 
@@ -1351,7 +1392,9 @@ class OrderController extends Controller {
                 $history->qty = $order_product->qty;
                 $history->remarks = 'Order Code - ' . $order->code;
                 $history->note = "Order Products Added";
-
+                if ($order->vendor_id) {
+                    $history->vendor_id = $order->vendor_id;
+                }
                 $history->save();
 
                 WorkTrackingEntry::create([
