@@ -321,10 +321,10 @@ class PosController extends Controller {
             $order = new Order;
 
             if ($request->customer_id == 0) {
+                if ($request->name == null || $request->phone == null) {
+                    return back()->with('errMsg', 'You must add customer name & phone number!');
+                }
                 if (!User::where('phone', $request->phone)->exists()) {
-                    if ($request->name == null || $request->phone == null) {
-                        return back()->with('errMsg', 'You must add customer name & phone number!');
-                    }
 
                     $user = new User;
                     $user->name       = $request->name;
@@ -352,6 +352,13 @@ class PosController extends Controller {
                 $order->name = $user->name;
                 $order->email = $user->email;
                 $order->phone = $user->phone;
+            }
+
+            if ($request->shipping_address == null) {
+                return back()->with('errMsg', 'You must add shipping address!');
+            }
+            if ($request->district_id == 0 || $request->area_id == 0) {
+                return back()->with('errMsg', 'You must select a valid district & area!');
             }
 
             if (auth()->user()->can('order.create')) {

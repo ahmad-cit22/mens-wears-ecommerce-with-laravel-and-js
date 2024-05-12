@@ -225,7 +225,7 @@
                                                 <div class="col-md-12">
                                                     <label class="text-body">Customer Name <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}" @if ($fos_order == null) required @endif>
+                                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Customer Name" value="{{ old('name') }}">
                                                     </fieldset>
                                                     {{-- @error('name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -242,7 +242,7 @@
                                                 <div class="col-md-6">
                                                     <label class="text-body">Phone <span class="text-danger">*</span></label>
                                                     <fieldset class="form-group mb-3">
-                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}" @if ($fos_order == null) required @endif>
+                                                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Phone Number" value="{{ old('phone') }}">
                                                         <span id="err-phone" class="invalid-feedback"></span>
                                                         {{-- @error('phone')
                                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -255,7 +255,7 @@
                                             <div class="col-md-6">
                                                 <label class="text-body">Address <span class="text-danger">*</span></label>
                                                 <fieldset class="form-group mb-3">
-                                                    <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ $fos_order != null ? $fos_order->shipping_address : old('shipping_address') }}" required>
+                                                    <input type="text" class="form-control " placeholder="Enter Address" name="shipping_address" value="{{ $fos_order != null ? $fos_order->shipping_address : old('shipping_address') }}">
                                                 </fieldset>
                                             </div>
                                             <div class="col-md-6">
@@ -289,8 +289,8 @@
                                     <div class="row colorfull-select">
                                         <div class="selectmain col-md-6">
                                             <label class="text-dark d-flex">District <span class="text-danger">*</span></label>
-                                            <select name="district_id" class="select2 select-down" id="district_id" required>
-                                                <option value="">--- Select ---</option>
+                                            <select name="district_id" class="select2 select-down" id="district_id">
+                                                <option value="0">--- Please Select A District ---</option>
                                                 @foreach ($districts as $district)
                                                     <option value="{{ $district->id }}">{{ $district->name }}</option>
                                                 @endforeach
@@ -298,7 +298,8 @@
                                         </div>
                                         <div class="selectmain col-md-6">
                                             <label class="text-dark d-flex">Area <span class="text-danger">*</span></label>
-                                            <select name="area_id" class="select2 select-down" id="areas" required>
+                                            <select name="area_id" class="select2 select-down" id="areas">
+                                                <option value="0">--- Please Select an Area ---</option>
                                                 <!-- <option value="">Please Select an Area</option> -->
                                             </select>
                                         </div>
@@ -760,14 +761,14 @@
             if (customer_id == '0') {
                 $('#new-customer-form').show();
 
-                $("#name").prop('required', true);
-                $("#phone").prop('required', true);
+                // $("#name").prop('required', true);
+                // $("#phone").prop('required', true);
 
             } else {
                 $('#new-customer-form').hide();
 
-                $("#name").prop('required', false);
-                $("#phone").prop('required', false);
+                // $("#name").prop('required', false);
+                // $("#phone").prop('required', false);
 
                 var url = "{{ route('pos.check.membership') }}";
                 // alert(url);
@@ -869,7 +870,7 @@
             if (district_id == '') {
                 district_id = -1;
             }
-            var option = "<option value=''>Please Select an Area</option>";
+            var option = "<option value='0'>Please Select an Area</option>";
             var url = "{{ url('/') }}";
             $.get(url + "/get-area/" + district_id, function(data) {
                 data = JSON.parse(data);
