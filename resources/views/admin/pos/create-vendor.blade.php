@@ -183,7 +183,7 @@
                             <div class="product-items">
                                 <div class="row" id="product_filtered">
                                     @foreach ($products as $product)
-                                        @if (!is_null($product) && $product->product->vendor_product->is_active && $product->qty > 0)
+                                        @if (!is_null($product) && $product->product->vendor_product->is_active)
                                             <div class="col-xl-4 col-lg-2 col-md-3 col-sm-4 col-6">
                                                 <div class="productCard">
                                                     <a onclick="add_cart({{ $product->id }})" style="cursor: pointer;">

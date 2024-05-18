@@ -80,7 +80,7 @@ class FacebookOrderController extends Controller {
                 Cart::remove($cart->rowId);
             }
 
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->where('qty', '>', 0)->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -100,7 +100,7 @@ class FacebookOrderController extends Controller {
                 Cart::remove($cart->rowId);
             }
 
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->where('qty', '>', 0)->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -645,7 +645,7 @@ class FacebookOrderController extends Controller {
         }
 
         $products = $products->pluck('id')->toArray();
-        $products = ProductStock::whereIn('product_id', $products)->where('qty', '>=', 0)->orderBy('id', 'DESC')->get();
+        $products = ProductStock::whereIn('product_id', $products)->with('product', 'size')->where('qty', '>', 0)->orderBy('id', 'DESC')->get();
 
         if (count($products) > 0) {
             foreach ($products as $product) {

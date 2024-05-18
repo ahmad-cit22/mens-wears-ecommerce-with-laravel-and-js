@@ -33,13 +33,17 @@ class Product extends Model {
     public function variations() {
         if (Auth::user()) {
             if (!Auth::user()->vendor) {
-                return $this->hasMany(ProductStock::class);
+                return $this->hasMany(ProductStock::class)->where('vendor_id', null);
             } else {
                 return $this->hasMany(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
             }
         } else {
             return $this->hasMany(ProductStock::class);
         }
+    }
+
+    public function variations_website() {
+        return $this->hasMany(ProductStock::class)->where('vendor_id', null);
     }
 
     public function total_stock() {
@@ -54,9 +58,14 @@ class Product extends Model {
 
     public function variation() {
         return $this->hasOne(ProductStock::class);
-        // if (!Auth::user()->vendor) {
+        // if (Auth::user()) {
+        //     if (!Auth::user()->vendor) {
+        //         return $this->hasOne(ProductStock::class)->where('vendor_id', null);
+        //     } else {
+        //         return $this->hasOne(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
+        //     }
         // } else {
-        //     return $this->hasOne(ProductStock::class)->where('vendor_id', Auth::user()->vendor->id);
+        //     return $this->hasOne(ProductStock::class);
         // }
     }
 

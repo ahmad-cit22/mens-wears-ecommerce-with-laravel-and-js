@@ -224,7 +224,7 @@ class VendorOrderController extends Controller {
         $order_status_id = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->with('order_product', 'order_product.product')->get();
             $categories = Category::all();
             return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));
         } else {
@@ -238,7 +238,7 @@ class VendorOrderController extends Controller {
         $order_status_id = '';
 
         if (auth()->user()->can('sell.index')) {
-            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->get();
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->where('is_final', 1)->get();
             if (!empty($request->order_status_id) && !empty($request->date_from) && !empty($request->date_to)) {
                 $start_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_from . ' 00:00:00');
                 $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $request->date_to . ' 23:59:59');
@@ -280,7 +280,7 @@ class VendorOrderController extends Controller {
                 $orders = $orders->where('district_id', $request->district_id);
             }
 
-            $orders = $orders->where('is_final', 1)->where('source', '!=', 'Wholesale');
+            $orders = $orders->where('is_final', 1);
 
             $categories = Category::all();
             return view('admin.order.sell.sell-report', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id'));

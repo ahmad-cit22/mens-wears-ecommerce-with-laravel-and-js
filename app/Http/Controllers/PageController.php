@@ -130,9 +130,9 @@ class PageController extends Controller {
             }
         } else {
             if ($product->is_offer == 1) {
-                $product_details .= env('CURRENCY') . $product->variations->where('discount_price', $product->variations->min('discount_price'))->first()->discount_price;
+                $product_details .= env('CURRENCY') . $product->variations_website->where('discount_price', $product->variations_website->min('discount_price'))->first()->discount_price;
             } else {
-                $product_details .= env('CURRENCY') . $product->variations->where('price', $product->variations->min('price'))->first()->price;
+                $product_details .= env('CURRENCY') . $product->variations_website->where('price', $product->variations_website->min('price'))->first()->price;
             }
         }
         $product_details .= '</h3>
@@ -144,7 +144,7 @@ class PageController extends Controller {
             $product_details .= '<div class="size_variation">
                                             <label>Size: </label>
                                             <div style="width: 100%;">';
-            foreach ($product->variations as $variation) {
+            foreach ($product->variations_website as $variation) {
 
                 $product_details .= view('pages.partials.api-variation', compact('variation'));
             }
@@ -228,21 +228,24 @@ class PageController extends Controller {
     }
 
     public function search(Request $request) {
-        $query = $request->get('search');
-        $filterResult = Product::where('title', 'LIKE', '%' . $query . '%')
-            ->orWhere('description', 'LIKE', '%' . $query . '%')
+        $search = $request->get('search');
+        $filterResult = Product::where(function ($query) use ($search) {
+            $query->where('title', 'LIKE', '%' . $search . '%')
+                ->orWhere('description', 'LIKE', '%' . $search . '%');
+        })
             ->where('is_active', 1)
             ->pluck('title');
-        // $filterResult = Product::where('title', 'LIKE', '%'. $query. '%')
-        // ->orWhere('description', 'LIKE', '%'. $query. '%')
-        // ->where('is_active', 1)
-        // ->get();
+
         return $filterResult;
     }
 
     public function search_result(Request $request) {
-        $query = $request->search;
-        $products = Product::where('is_active', 1)->where('title', 'LIKE', '%' . $query . '%')->orWhere('description', 'LIKE', '%' . $query . '%')->paginate(20);
+        $search = $request->search;
+        $products = Product::where('is_active', 1)
+            ->where(function ($query) use ($search) {
+                $query->where('title', 'LIKE', '%' . $search . '%')
+                    ->orWhere('description', 'LIKE', '%' . $search . '%');
+            })->paginate(20);
         return view('pages.search-result', compact('products'));
     }
 
@@ -254,7 +257,11 @@ class PageController extends Controller {
 
     public function category_products($id, $slug) {
         $category = Category::find($id);
-        $products = Product::where('category_id', $id)->orWhere('sub_category_id', $id)->where('is_active', 1)->orderBy('id', 'DESC')->paginate(16);
+        $products = Product::where(function ($query) use ($id) {
+            $query->where('category_id', $id)
+                ->orWhere('sub_category_id', $id);
+        })
+            ->where('is_active', 1)->orderBy('id', 'DESC')->paginate(16);
         if (!is_null($category)) {
             return view('pages.category-product', compact('category', 'products'));
         } else {

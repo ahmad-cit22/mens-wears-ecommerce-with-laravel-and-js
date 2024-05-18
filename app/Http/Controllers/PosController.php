@@ -113,7 +113,7 @@ class PosController extends Controller {
             }
             $carts = Cart::content();
             $couriers = CourierName::all();
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('qty', '>', 0)->where('vendor_id', null)->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -631,9 +631,9 @@ class PosController extends Controller {
         $products = $products->pluck('id')->toArray();
 
         if ($is_vendor == 1) {
-            $products = ProductStock::whereIn('product_id', $products)->where('qty', '>=', 0)->where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+            $products = ProductStock::whereIn('product_id', $products)->where('qty', '>', 0)->with('product', 'size')->where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
         } else {
-            $products = ProductStock::whereIn('product_id', $products)->where('qty', '>=', 0)->orderBy('id', 'DESC')->where('vendor_id', null)->get();
+            $products = ProductStock::whereIn('product_id', $products)->where('qty', '>', 0)->with('product', 'size')->orderBy('id', 'DESC')->where('vendor_id', null)->get();
         }
 
         if (count($products) > 0) {

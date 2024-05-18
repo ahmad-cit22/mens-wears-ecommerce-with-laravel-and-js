@@ -23,7 +23,11 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function boot() {
         view()->composer('*', function ($view) {
-            $view->with('settings', Setting::find(1));
+            $excludedViews = ['admin.pos.partials.product', 'admin.fos.partials.product'];
+
+            if (!in_array($view->getName(), $excludedViews)) {
+                $view->with('settings', Setting::find(1));
+            }
         });
 
         Paginator::useBootstrap();

@@ -36,53 +36,60 @@
                       </div>
                       <div class="col-lg-5">
                           <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
-                          <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
+                          @if (!auth()->user()->vendor)
+                              <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
+                          @endif
                       </div>
                   </div>
                   <hr>
                   <div class="card-header p-4">
-                      <form action="{{ route('sell.report_search') }}" method="get">
-                          @csrf
-                          <div class="row">
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label>Date From</label>
-                                      <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
-                                      @error('date_from')
-                                          <span class="invalid-feedback" role="alert">
-                                              <strong>{{ $message }}</strong>
-                                          </span>
-                                      @enderror
-                                  </div>
+                      @if (!auth()->user()->vendor)
+                          <form action="{{ route('sell.report_search') }}" method="get">
+                          @else
+                              <form action="{{ route('vendor_sell.report_search') }}" method="get">
+                      @endif
+                      @csrf
+                      <div class="row">
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label>Date From</label>
+                                  <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
+                                  @error('date_from')
+                                      <span class="invalid-feedback" role="alert">
+                                          <strong>{{ $message }}</strong>
+                                      </span>
+                                  @enderror
                               </div>
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label>Date To</label>
-                                      <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
-                                      @error('date_to')
-                                          <span class="invalid-feedback" role="alert">
-                                              <strong>{{ $message }}</strong>
-                                          </span>
-                                      @enderror
-                                  </div>
+                          </div>
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label>Date To</label>
+                                  <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
+                                  @error('date_to')
+                                      <span class="invalid-feedback" role="alert">
+                                          <strong>{{ $message }}</strong>
+                                      </span>
+                                  @enderror
                               </div>
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label>Status</label>
-                                      <select name="order_status_id" class="select2 form-control @error('order_status_id') is-invalid @enderror">
-                                          <option value="">Please Select a Status (Optional)</option>
-                                          @foreach (App\Models\OrderStatus::where('is_active', 1)->get() as $status)
-                                              <option value="{{ $status->id }}" {{ $order_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
-                                          @endforeach
+                          </div>
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label>Status</label>
+                                  <select name="order_status_id" class="select2 form-control @error('order_status_id') is-invalid @enderror">
+                                      <option value="">Please Select a Status (Optional)</option>
+                                      @foreach (App\Models\OrderStatus::where('is_active', 1)->get() as $status)
+                                          <option value="{{ $status->id }}" {{ $order_status_id == $status->id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                      @endforeach
 
-                                      </select>
-                                      @error('order_status_id')
-                                          <span class="invalid-feedback" role="alert">
-                                              <strong>{{ $message }}</strong>
-                                          </span>
-                                      @enderror
-                                  </div>
+                                  </select>
+                                  @error('order_status_id')
+                                      <span class="invalid-feedback" role="alert">
+                                          <strong>{{ $message }}</strong>
+                                      </span>
+                                  @enderror
                               </div>
+                          </div>
+                          @if (!auth()->user()->vendor)
                               <div class="col-md-4">
                                   <div class="form-group">
                                       <label>District</label>
@@ -115,13 +122,14 @@
                                       @enderror
                                   </div>
                               </div>
-                              <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label style="color: #fff;">.</label>
-                                      <button type="submit" class="form-control btn  btn-primary">Search</button>
-                                  </div>
+                          @endif
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label style="color: #fff;">.</label>
+                                  <button type="submit" class="form-control btn  btn-primary">Search</button>
                               </div>
                           </div>
+                      </div>
                       </form>
                   </div>
                   <div class="row mt-5 categoryCardBox">
@@ -176,7 +184,11 @@
                   </div>
                   <div class="row mt-5">
                       <div class="col-2 m-auto">
-                          <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary">Go to Sell List</a>
+                          @if (!auth()->user()->vendor)
+                              <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary">Go to Sell List</a>
+                          @else
+                              <a href="{{ route('vendor_sell.index') }}" class="btn btn-info bg-primary">Go to Sell List</a>
+                          @endif
                       </div>
                   </div>
               </div>
@@ -185,7 +197,7 @@
   @endsection
 
   @section('scripts')
-      <script> 
+      <script>
           $('#district_id').change(function() {
               var district_id = $(this).val();
               if (district_id == '') {
