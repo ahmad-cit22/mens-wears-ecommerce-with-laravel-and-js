@@ -5,13 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Current Year Orders</h1>
+                    <h1 class="m-0">Yesterday's Orders</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
-
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">order</li>
+                        <li class="breadcrumb-item active">Order</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -80,9 +79,8 @@
                     </div>
                 @endif
                 <!-- /.card-header -->
-                @include('admin.partials.page_search')
                 <div class="card-body table-responsive">
-                    <table id="data-table" class="table table-bordered table-hover">
+                    <table id="example1" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>S.N</th>
@@ -165,7 +163,7 @@
 @section('scripts')
     <script>
         $(function() {
-            $("#data-table").DataTable({
+            $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,

@@ -598,16 +598,6 @@ class PosController extends Controller {
 
         $product_filtered = '';
 
-        // if ($is_vendor == 1) {
-        //     $vendor = Vendor::where('user_id', Auth::id())->first();
-        //     $vendor_products = VendorProduct::where('vendor_id', $vendor->id)->pluck('product_id')->toArray();
-        //     if ($product_name != '') {
-        //         $products = Product::whereIn('id', $vendor_products)->where('title', 'LIKE', '%' . $product_name . '%')->orWhere('description', 'LIKE', '%' . $product_name . '%');
-        //     } else {
-        //         $products = Product::whereIn('id', $vendor_products)->orderBy('id', 'DESC');
-        //     }
-        // } else {
-        // }
         if ($product_name != '') {
             $products = Product::where('title', 'LIKE', '%' . $product_name . '%')->orWhere('description', 'LIKE', '%' . $product_name . '%');
         } else {

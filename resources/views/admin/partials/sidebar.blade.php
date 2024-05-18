@@ -260,7 +260,7 @@
                             </li>
                         @endif
 
-                        @if (auth()->user()->can('business_bkash_number.index'))
+                        @if (auth()->user()->can('bkash_panel.index'))
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-money-bill-alt"></i>

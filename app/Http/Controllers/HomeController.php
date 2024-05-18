@@ -35,6 +35,7 @@ class HomeController extends Controller {
                 $monthly_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
                     ->get();
                 $daily_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereDate('created_at', Carbon::today())->get();
+                $yesterday_orders = Order::where('vendor_id', null)->where('is_final', 1)->whereDate('created_at', Carbon::yesterday())->get();
             } else {
                 $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->get();
                 $orders_not_final = Order::where('vendor_id', Auth::user()->vendor->id)->get();
@@ -42,8 +43,9 @@ class HomeController extends Controller {
                 $monthly_orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)
                     ->get();
                 $daily_orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->whereDate('created_at', Carbon::today())->get();
+                $yesterday_orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->whereDate('created_at', Carbon::yesterday())->get();
             }
-            return view('admin.index', compact('orders', 'orders_not_final', 'yearly_orders', 'monthly_orders', 'daily_orders'));
+            return view('admin.index', compact('orders', 'orders_not_final', 'yearly_orders', 'monthly_orders', 'daily_orders', 'yesterday_orders'));
         } else if (Auth::user()->type == 2) {
             return redirect()->route('customer.account');
         } else {

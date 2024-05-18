@@ -80,7 +80,7 @@ class FacebookOrderController extends Controller {
                 Cart::remove($cart->rowId);
             }
 
-            $products = ProductStock::orderBy('id', 'DESC')->where('qty', '>', 0)->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->where('vendor_id', null)->where('qty', '>', 0)->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -100,7 +100,7 @@ class FacebookOrderController extends Controller {
                 Cart::remove($cart->rowId);
             }
 
-            $products = ProductStock::orderBy('id', 'DESC')->where('qty', '>', 0)->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->where('vendor_id', null)->where('qty', '>', 0)->with('product', 'size')->get();
             $categories = Category::orderBy('title', 'ASC')->get();
             $brands = Brand::orderBy('title', 'ASC')->get();
             $customers = User::where('type', 2)->orderBy('name', 'ASC')->get();
@@ -409,7 +409,7 @@ class FacebookOrderController extends Controller {
      */
     public function edit($id) {
         if (auth()->user()->can('order.edit')) {
-            $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
+            $products = ProductStock::orderBy('id', 'DESC')->where('vendor_id', null)->with('product', 'size')->get();
             $order = FacebookOrder::where('id', $id)->with('status', 'special_status', 'order_product', 'order_product.product', 'courier', 'bkash_business', 'bkash_record', 'customer', 'created_by')->first();
             $couriers = CourierName::all();
             $statuses = FacebookOrderStatus::where('is_active', 1)->get();
@@ -625,6 +625,7 @@ class FacebookOrderController extends Controller {
         $product_name = $request->product_name;
         $category_id = $request->category_id;
         $brand_id = $request->brand_id;
+        $is_vendor = $request->is_vendor;
 
         $product_filtered = '';
 
@@ -644,8 +645,17 @@ class FacebookOrderController extends Controller {
             $products = $products->where('brand_id', $brand_id)->get();
         }
 
+        // if ($is_vendor == 1) {
+        //     $products = $products->where('is_vendor', 1);
+        // }
+
         $products = $products->pluck('id')->toArray();
-        $products = ProductStock::whereIn('product_id', $products)->with('product', 'size')->where('qty', '>', 0)->orderBy('id', 'DESC')->get();
+
+        if ($is_vendor == 1) {
+            $products = ProductStock::whereIn('product_id', $products)->where('qty', '>', 0)->with('product', 'size')->where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->get();
+        } else {
+            $products = ProductStock::whereIn('product_id', $products)->where('qty', '>', 0)->with('product', 'size')->orderBy('id', 'DESC')->where('vendor_id', null)->get();
+        }
 
         if (count($products) > 0) {
             foreach ($products as $product) {

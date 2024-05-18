@@ -412,7 +412,7 @@ class OrderController extends Controller {
 
     public function all_orders() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->get();
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->with('order_product')->get();
             return view('admin.order.all-orders', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -421,7 +421,7 @@ class OrderController extends Controller {
 
     public function current_year() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->whereYear('created_at', Carbon::now()->year)->get();
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->with('order_product')->whereYear('created_at', Carbon::now()->year)->get();
             return view('admin.order.current-year', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -430,7 +430,7 @@ class OrderController extends Controller {
 
     public function current_month() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->whereMonth('created_at', Carbon::now()->month)->get();
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->with('order_product')->whereMonth('created_at', Carbon::now()->month)->get();
             return view('admin.order.current-month', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
@@ -439,8 +439,17 @@ class OrderController extends Controller {
 
     public function today() {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->whereDate('created_at', Carbon::today())->get();
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->with('order_product')->whereDate('created_at', Carbon::today())->get();
             return view('admin.order.today', compact('orders'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function yesterday() {
+        if (auth()->user()->can('order.index')) {
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->with('order_product')->whereDate('created_at', Carbon::yesterday())->get();
+            return view('admin.order.yesterday', compact('orders'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -1515,10 +1524,14 @@ class OrderController extends Controller {
 
     public function orders_by_status(Request $request, $id) {
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->where('order_status_id', $id)->orderBy('id', 'DESC')->get();
+            if (!Auth::user()->vendor) {
+                $orders = Order::where('vendor_id', null)->where('order_status_id', $id)->orderBy('id', 'DESC')->get();
+            } else {
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('order_status_id', $id)->orderBy('id', 'DESC')->get();
+            }
+
             if ($request->ajax()) {
-                $data = Order::where('vendor_id', null)->where('order_status_id', $id)->orderBy('id', 'DESC')->where('is_final', 0)->get();
-                return Datatables::of($data)
+                return Datatables::of($orders)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
 

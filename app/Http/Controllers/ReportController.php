@@ -111,7 +111,7 @@ class ReportController extends Controller {
                 $expenses = $expenses->where('vendor_id', null);
                 $vat_entries = $vat_entries->where('vendor_id', null);
                 $expense_types = Expense::orderBy('type', 'ASC')->where('vendor_id', null)->get();
-                $vendors = Vendor::orderBy('name', 'ASC')->where('is_active', 1)->with('orders', 'orders.order_products', 'vat_entries', 'expense_types', 'expense_entries', 'bank_transactions')->get();
+                $vendors = Vendor::orderBy('name', 'ASC')->where('is_active', 1)->with('orders', 'orders.order_product', 'vat_entries', 'expense_types', 'expense_entries', 'bank_transactions')->get();
             } else {
                 $orders = $orders->where('vendor_id', Auth::user()->vendor->id);
                 $other_income = $other_income->where('vendor_id', Auth::user()->vendor->id);

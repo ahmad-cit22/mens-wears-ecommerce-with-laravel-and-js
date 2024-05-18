@@ -325,6 +325,15 @@ class VendorOrderController extends Controller {
         }
     }
 
+    public function yesterday() {
+        if (auth()->user()->can('order.index')) {
+            $orders = Order::where('vendor_id', Auth::user()->vendor->id)->orderBy('id', 'DESC')->whereDate('created_at', Carbon::yesterday())->get();
+            return view('admin.order.yesterday', compact('orders'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function customer_orders($id) {
         $customer = User::find($id);
 

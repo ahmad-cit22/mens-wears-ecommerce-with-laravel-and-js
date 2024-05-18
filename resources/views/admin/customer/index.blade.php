@@ -111,9 +111,11 @@
                                         </form>
                                     </td>
                                     <td>
+                                        @if (auth()->user()->can('customer.edit'))
+                                            <a href="#editModal{{ $customer->id }}" class="btn btn-primary btn-sm" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
+                                        @endif
                                         @hasrole(1)
-                                            <a href="#editModal{{ $customer->id }}" class="btn btn-primary" data-toggle="modal" title="Edit"><i class="fas fa-edit"></i></a>
-                                            <a href="#deleteModal{{ $customer->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                            <a href="#deleteModal{{ $customer->id }}" class="btn btn-danger btn-sm" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
                                         @endhasrole
                                     </td>
                                 </tr>

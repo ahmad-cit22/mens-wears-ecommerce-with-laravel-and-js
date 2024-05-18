@@ -263,6 +263,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/current-year', [App\Http\Controllers\OrderController::class, 'current_year'])->name('current.year');
         Route::get('/current-month', [App\Http\Controllers\OrderController::class, 'current_month'])->name('current.month');
         Route::get('/today', [App\Http\Controllers\OrderController::class, 'today'])->name('today');
+        Route::get('/yesterday', [App\Http\Controllers\OrderController::class, 'yesterday'])->name('yesterday');
         Route::get('/search', [App\Http\Controllers\OrderController::class, 'search'])->name('search');
         Route::get('/search/export', [App\Http\Controllers\OrderController::class, 'search_export'])->name('search.export');
         Route::get('/customer-orders/{id}', [App\Http\Controllers\OrderController::class, 'customer_orders'])->name('customer.orders');
@@ -315,6 +316,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/current-year', [App\Http\Controllers\VendorOrderController::class, 'current_year'])->name('current.year');
         Route::get('/current-month', [App\Http\Controllers\VendorOrderController::class, 'current_month'])->name('current.month');
         Route::get('/today', [App\Http\Controllers\VendorOrderController::class, 'today'])->name('today');
+        Route::get('/yesterday', [App\Http\Controllers\VendorOrderController::class, 'yesterday'])->name('yesterday');
         Route::get('/customer-orders/{id}', [App\Http\Controllers\VendorOrderController::class, 'customer_orders'])->name('customer.orders');
     });
 
