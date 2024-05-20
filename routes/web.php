@@ -278,6 +278,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/wholesale-export-excel/{all}', [App\Http\Controllers\OrderController::class, 'wholesale_export_excel2'])->name('wholesale.export.excel');
         Route::get('/search', [App\Http\Controllers\OrderController::class, 'sell_search'])->name('search');
         Route::get('/search-export/{all}', [App\Http\Controllers\OrderController::class, 'sell_search_export'])->name('search.export');
+        Route::get('/search-table/{all}', [App\Http\Controllers\OrderController::class, 'search_table'])->name('export.excel.search_table');
         Route::get('/report_search', [App\Http\Controllers\OrderController::class, 'report_search'])->name('report_search');
         Route::get('/wholesale-search', [App\Http\Controllers\OrderController::class, 'wholesale_search'])->name('wholesale.search');
         Route::get('/wholesale-search-export/{all}', [App\Http\Controllers\OrderController::class, 'wholesale_search_export'])->name('wholesale.search.export');

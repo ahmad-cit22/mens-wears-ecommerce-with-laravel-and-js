@@ -36,7 +36,7 @@ class OrderController extends Controller {
         $date_to = '';
 
         if (auth()->user()->can('order.index')) {
-            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 0)->take(2000)->get();
+            $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 0)->take(4000)->get();
             if ($request->ajax()) {
                 $data = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 0)->get();
                 return Datatables::of($data)
@@ -84,7 +84,7 @@ class OrderController extends Controller {
         if (auth()->user()->can('sell.index')) {
             $orders = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->get();
             if ($request->ajax()) {
-                $data = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(2000)->get();
+                $data = Order::where('vendor_id', null)->orderBy('id', 'DESC')->where('is_final', 1)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->take(3000)->get();
                 return Datatables::of($data)
                     // ->addIndexColumn()
                     ->addColumn('code', function ($row) {
@@ -177,16 +177,17 @@ class OrderController extends Controller {
         $date_to = '';
         $order_status_id = '';
         $courier_name = '';
+        // return $all;
         if (auth()->user()->can('sell.index')) {
             if ($all != 0) {
-                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->get();
+                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->paginate(10);
             } else {
-                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(1000)->get();
+                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'created_by.adder', 'vat_entry')->latest()->take(1000)->get();
             }
 
             $categories = Category::all();
 
-            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
+            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name', 'all'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -779,11 +780,38 @@ class OrderController extends Controller {
             if ($all != 0) {
                 $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale');
             } else {
-                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->take(1000);
+                $orders = $orders->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->take(2000);
             }
 
             $categories = Category::all();
-            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
+            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name', 'all'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    public function search_table(Request $request, $all) {
+
+        $date_from = '';
+        $date_to = '';
+        $order_status_id = '';
+        $courier_name = '';
+        $search_code = $request->search_code;
+        $search_phone = $request->search_phone;
+
+        if (auth()->user()->can('product.index')) {
+            if (!Auth::user()->vendor) {
+                $orders = Order::where('phone', 'like', '%' . $search_phone . '%')->where('code', 'like', '%' . $search_code . '%')->where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->paginate(10);
+            } else {
+                $orders = Order::where('phone', 'like', '%' . $search_phone . '%')->where('code', 'like', '%' . $search_code . '%')->where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->paginate(10);
+            }
+
+            $categories = Category::all();
+
+            if (count($orders) > 0) {
+                return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name', 'all'));
+            }
+            return back()->with('error', 'No results Found');
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -1051,7 +1079,7 @@ class OrderController extends Controller {
                 }
                 $order->delete();
                 Alert::toast('Order deleted successfully!', 'success');
-                return redirect()->route('order.index');
+                return back();
             } else {
                 Alert::toast('Something went wrong !', 'error');
                 return back();

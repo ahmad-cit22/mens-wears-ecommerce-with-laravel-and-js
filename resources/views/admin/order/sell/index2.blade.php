@@ -6,7 +6,15 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Sells<a href="{{ route('sell.export.excel', 1) }}" class="ml-3 btn btn-primary btn-sm" style="">View All</a></h1>
+                    <h1 class="m-0">All Sells
+                        @if (!$all)
+                            @if (!auth()->user()->vendor)
+                                <a href="{{ route('sell.export.excel', 1) }}" class="ml-3 btn btn-primary btn-sm" style="">View All</a>
+                            @else
+                                <a href="{{ route('vendor_sell.export.excel', 1) }}" class="ml-3 btn btn-primary btn-sm" style="">View All</a>
+                            @endif
+                        @endif
+                    </h1>
                     {{-- <div class="row justify-content-end"> --}}
 
                     {{-- </div> --}}
@@ -14,7 +22,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">sell</li>
+                        <li class="breadcrumb-item active">all-sell</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -25,24 +33,26 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
-                            <h3 class="text-success">Total Sold Amount :
-                                {{ round(
-                                    $orders->filter(function ($order) {
-                                            return $order->order_status_id != 5 && $order->is_return != 1;
-                                        })->sum('price'),
-                                ) }} TK
-                            </h3>
-                            <h5 class="text-" style="color: #e97900">Total Sells Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} (Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</h5>
-                            <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
+                    @if (!$all)
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <h3>Total Sells Confirmed : {{ count($orders->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('order_status_id', '==', 4)) }})</h3>
+                                <h3 class="text-success">Total Sold Amount :
+                                    {{ round(
+                                        $orders->filter(function ($order) {
+                                                return $order->order_status_id != 5 && $order->is_return != 1;
+                                            })->sum('price'),
+                                    ) }} TK
+                                </h3>
+                                <h5 class="text-" style="color: #e97900">Total Sells Returned : {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', '!=', 0)) }} (Fully: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 1)) }}, Partially: {{ count($orders->where('order_status_id', '!=', 5)->where('is_return', 2)) }})</h5>
+                                <h5 class="text-danger mt-3">Total Orders Cancelled : {{ count($orders->where('order_status_id', '==', 5)) }}</h5>
+                            </div>
+                            <div class="col-lg-5">
+                                <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
+                                <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
+                            </div>
                         </div>
-                        <div class="col-lg-5">
-                            <h4>Total Sells From POS : {{ count($orders->where('source', 'Offline')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Offline')->where('order_status_id', '==', 4)) }})</h4>
-                            <h4>Total Sells From Website : {{ count($orders->where('source', 'Website')->where('order_status_id', '!=', 5)) }} (Completed: {{ count($orders->where('source', 'Website')->where('order_status_id', '==', 4)) }})</h4>
-                        </div>
-                    </div>
+                    @endif
                     <hr>
                     <form action="{{ route('sell.search.export', 0) }}" method="get">
                         @csrf
@@ -150,6 +160,36 @@
                         <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
                     </a>
                 </p> --}}
+                @if ($all)
+                    <div class="row mt-3">
+                        <div class="col-lg-2">
+                        </div>
+
+                        <div class="col-lg-8">
+                            <form class="row" action="{{ route('sell.export.excel.search_table', 1) }}" method="get" role="search">
+                                <input type="text" placeholder="Search with order code.." name="search_code" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
+                                <input type="text" placeholder="Search with order phone.." name="search_phone" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
+                                <button type="submit" class="col-md-1 btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                            </form>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <form class="row" action="{{ route('sell.export.excel', 1) }}" method="get" role="search">
+                                <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="text-right mr-4 mt-2">
+                        @if (!auth()->user()->vendor)
+                            <a href="{{ route('sell.export.excel', 1) }}">
+                            @else
+                                <a href="{{ route('vendor_sell.export.excel', 1) }}">
+                        @endif
+                        <i class="fas fa-reply fa-sm mr-1"></i> Reset Results
+                        </a>
+                    </p>
+                @endif
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
                         <thead>
@@ -169,15 +209,18 @@
                                     <th>VAT</th>
                                 @endif
                                 <th>Created By</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td><b>
+                                    <td>
+                                        <b>
                                             <a class="" href="{{ route('order.edit', $item->id) }}"><span class="bigFont badge badge-info">{{ $item->code }}</span></a>
-                                        </b></td>
+                                        </b>
+                                    </td>
                                     <td><b>{{ $item->name }}</b></td>
                                     <td width="6%" style="font-size: 12px !important;"><b>{{ $item->phone }}</b></td>
                                     <td>
@@ -237,7 +280,40 @@
                                             --
                                         @endif
                                     </td>
+                                    <td>
+                                        <a href="{{ route('order.invoice.generate', $item->id) }}" class="btn btn-secondary" title="Download Invoice"><i class="fas fa-download"></i></a>
+                                        <a href="{{ route('order.invoice.pos.generate', $item->id) }}" class="btn btn-success" title="Print Invoice"><i class="fas fa-print"></i></a>
+                                        <a href="{{ route('order.edit', $item->id) }}" class="btn btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                        @hasrole(1)
+                                            <a href="#deleteModal{{ $item->id }}" class="btn btn-danger" data-toggle="modal" title="Delete"><i class="fas fa-trash"></i></a>
+                                        @endhasrole
+                                    </td>
                                 </tr>
+                                @hasrole(1)
+                                    <!-- Delete order Modal -->
+                                    <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Are tou sure you want to delete ?</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('order.destroy', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-danger">Permanent Delete</button>
+                                                    </form>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endhasrole
                                 @if ($item->is_return != 1 && !$item->vat_entry)
                                     <!-- vat_entry_confirm Modal -->
                                     <div class="modal fade" id="vat-entry{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -267,6 +343,22 @@
 
                     </table>
                 </div>
+                @if ($all)
+                    @php
+                        $total = $orders->total();
+                        $currentPage = $orders->currentPage();
+                        $perPage = $orders->perPage();
+
+                        $from = ($currentPage - 1) * $perPage + 1;
+                        $to = min($currentPage * $perPage, $total);
+
+                    @endphp
+
+                    <p class="ml-4">
+                        Showing {{ $from }} to {{ $to }} of {{ $total }} entries
+                    </p>
+                    <div class="row justify-content-center">{{ $orders->withQueryString()->links() }}</div>
+                @endif
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -341,38 +433,40 @@
 
         // });
 
-        $(function() {
-            $("#data-table").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": [
+        @if (!$all)
+            $(function() {
+                $("#data-table").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "buttons": [
 
-                    {
-                        extend: 'excel',
-                        footer: 'true',
-                        text: 'Excel',
-                    },
-
-                    {
-                        extend: 'pdf',
-                        footer: 'true',
-                        text: 'PDF',
-                        orientation: 'landscape',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6],
-                            // rows:
+                        {
+                            extend: 'excel',
+                            footer: 'true',
+                            text: 'Excel',
                         },
-                        // customize: function(doc) {
-                        //     doc.defaultStyle.font = "nikosh";
-                        // }
-                    },
 
-                    'print',
-                ]
-            }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
+                        {
+                            extend: 'pdf',
+                            footer: 'true',
+                            text: 'PDF',
+                            orientation: 'landscape',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6],
+                                // rows:
+                            },
+                            // customize: function(doc) {
+                            //     doc.defaultStyle.font = "nikosh";
+                            // }
+                        },
 
-        });
+                        'print',
+                    ]
+                }).buttons().container().appendTo('#data-table_wrapper .col-md-6:eq(0)');
+
+            });
+        @endif
 
         // $(document).ready(function() {
         //     var table = $('#example').DataTable();

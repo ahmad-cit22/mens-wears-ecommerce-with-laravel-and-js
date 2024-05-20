@@ -63,6 +63,26 @@
     });
 </script>
 
+@if (Session::has('error'))
+    <script>
+        Swal.fire(
+            'Oops!',
+            "{{ session('error') }}",
+            'error'
+        );
+    </script>
+@endif
+
+@if (Session::has('success'))
+    <script>
+        Swal.fire(
+            'Done!',
+            "{{ session('success') }}",
+            'success'
+        );
+    </script>
+@endif
+
 <script>
     $('#order-submit-form').on('submit', function(e) {
         if ($("#barcode").val().length > 0) {

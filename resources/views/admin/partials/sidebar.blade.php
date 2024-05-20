@@ -378,6 +378,12 @@
                                             </a>
                                         </li>
                                         <li class="nav-item">
+                                            <a href="{{ route('vendor_sell.export.excel', 1) }}" class="nav-link">
+                                                <i class="fas fa-angle-right"></i>
+                                                <p>Sell List (All)</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a href="{{ route('vendor_sell.export.excel', 0) }}" class="nav-link">
                                                 <i class="fas fa-angle-right"></i>
                                                 <p>Export to Excel (Retail)</p>
@@ -385,7 +391,7 @@
                                         </li>
                                     @endif
 
-                                    {{-- @if (auth()->user()->can('order.return'))
+                                    {{-- @if (auth()->user()->can('order.return')) 
                                     <li class="nav-item">
                                         <a href="{{ route('sellreturn.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
@@ -427,6 +433,12 @@
                                             <a href="{{ route('sell.index') }}" class="nav-link">
                                                 <i class="fas fa-angle-right"></i>
                                                 <p>Sell List</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('sell.export.excel', 1) }}" class="nav-link">
+                                                <i class="fas fa-angle-right"></i>
+                                                <p>Sell List (All)</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
