@@ -165,20 +165,37 @@
                         <div class="col-lg-2">
                         </div>
 
-                        <div class="col-lg-8">
-                            <form class="row" action="{{ route('sell.export.excel.search_table', 1) }}" method="get" role="search">
-                                <input type="text" placeholder="Search with order code.." name="search_code" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
-                                <input type="text" placeholder="Search with order phone.." name="search_phone" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
-                                <button type="submit" class="col-md-1 btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
-                            </form>
-                        </div>
+                        @if (!auth()->user()->vendor)
+                            <div class="col-lg-8">
+                                <form class="row" action="{{ route('sell.export.excel.search_table', 1) }}" method="get" role="search">
+                                    <input type="text" placeholder="Search with order code.." name="search_code" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
+                                    <input type="text" placeholder="Search with order phone.." name="search_phone" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
+                                    <button type="submit" class="col-md-1 btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                                </form>
+                            </div>
 
-                        <div class="col-lg-2">
-                            <form class="row" action="{{ route('sell.export.excel', 1) }}" method="get" role="search">
-                                <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
-                            </form>
-                        </div>
+                            <div class="col-lg-2">
+                                <form class="row" action="{{ route('sell.export.excel', 1) }}" method="get" role="search">
+                                    <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
+                                </form>
+                            </div>
+                        @else
+                            <div class="col-lg-8">
+                                <form class="row" action="{{ route('sell.export.excel.search_table', 1) }}" method="get" role="search">
+                                    <input type="text" placeholder="Search with order code.." name="search_code" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
+                                    <input type="text" placeholder="Search with order phone.." name="search_phone" class="col-md-5 form-control" style="width: 70%; margin-right: 10px">
+                                    <button type="submit" class="col-md-1 btn btn-primary"><i class="fa fa-search fa-sm"></i></button>
+                                </form>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <form class="row" action="{{ route('vendor_sell.export.excel', 1) }}" method="get" role="search">
+                                    <input type="number" placeholder="Go to page.." name="page" class="form-control" style="width: 70%; margin-right: 10px">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-location-arrow fa-sm"></i></button>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                     <p class="text-right mr-4 mt-2">
                         @if (!auth()->user()->vendor)

@@ -38,6 +38,10 @@ class PosController extends Controller {
         if (auth()->user()->can('pos.create')) {
             $fos_order = null;
 
+            if (Session::has('coupon_discount')) {
+                Session::forget('coupon_discount');
+            }
+
             $carts = Cart::content();
             foreach ($carts as $cart) {
                 Cart::remove($cart->rowId);
@@ -45,6 +49,11 @@ class PosController extends Controller {
 
             if (FacebookOrder::where('id', $id)->exists()) {
                 $fos_order = FacebookOrder::with('order_product', 'order_product.product')->where('id', $id)->get()->first();
+
+                $amount = $fos_order->discount_amount;
+                if ($amount) {
+                    session(['coupon_discount' => $amount]);
+                }
 
                 foreach ($fos_order->order_product as $product) {
                     Cart::add([
@@ -87,6 +96,11 @@ class PosController extends Controller {
 
         $fos_order = null;
         if (auth()->user()->can('wholesale.create')) {
+
+            if (Session::has('coupon_discount')) {
+                Session::forget('coupon_discount');
+            }
+
             $carts = Cart::content();
             foreach ($carts as $cart) {
                 Cart::remove($cart->rowId);
@@ -94,6 +108,11 @@ class PosController extends Controller {
 
             if (FacebookOrder::where('id', $id)->exists()) {
                 $fos_order = FacebookOrder::with('order_product', 'order_product.product')->where('id', $id)->get()->first();
+
+                $amount = $fos_order->discount_amount;
+                if ($amount) {
+                    session(['coupon_discount' => $amount]);
+                }
 
                 foreach ($fos_order->order_product as $product) {
                     Cart::add([

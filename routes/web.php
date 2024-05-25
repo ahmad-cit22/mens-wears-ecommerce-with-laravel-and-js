@@ -233,6 +233,8 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
         Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('index');
         Route::get('/export-excel', [App\Http\Controllers\OrderController::class, 'order_export_excel2'])->name('export.excel');
         Route::get('/status/{id}', [App\Http\Controllers\OrderController::class, 'orders_by_status'])->name('status.filter');
+        // Route::get('/paid-list', [App\Http\Controllers\OrderController::class, 'paid_list'])->name('paid.list');
+        // Route::get('/unpaid-list', [App\Http\Controllers\OrderController::class, 'unpaid_list'])->name('unpaid.list');
         //Route::get('/create', [App\Http\Controllers\OrderController::class, 'create'])->name('create');
         Route::post('/stote', [App\Http\Controllers\OrderController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [App\Http\Controllers\OrderController::class, 'edit'])->name('edit');

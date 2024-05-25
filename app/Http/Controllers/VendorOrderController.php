@@ -173,14 +173,14 @@ class VendorOrderController extends Controller {
         $courier_name = '';
         if (auth()->user()->can('sell.index')) {
             if ($all != 0) {
-                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->paginate(10);
             } else {
-                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(500)->get();
+                $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->take(1000)->get();
             }
 
             $categories = Category::all();
 
-            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
+            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name', 'all'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -523,11 +523,12 @@ class VendorOrderController extends Controller {
             }
 
             $categories = Category::all();
-            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name'));
+            return view('admin.order.sell.index2', compact('orders', 'categories', 'date_from', 'date_to', 'order_status_id', 'courier_name', 'all'));
         } else {
             abort(403, 'Unauthorized action.');
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.

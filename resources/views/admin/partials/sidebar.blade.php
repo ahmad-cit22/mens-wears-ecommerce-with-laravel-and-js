@@ -297,30 +297,30 @@
                                 </ul>
                             </li>
                         @endif
-                        @endif
-                        @if (auth()->user()->can('order.index') || auth()->user()->can('order.view'))
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-plus-square"></i>
-                                    <p>
-                                        Orders
-                                        <i class="fas fa-angle-right right"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    @if (auth()->user()->can('order.index'))
-                                        <li class="nav-item">
-@if (!auth()->user()->vendor)
+                    @endif
+                    @if (auth()->user()->can('order.index') || auth()->user()->can('order.view'))
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-plus-square"></i>
+                                <p>
+                                    Orders
+                                    <i class="fas fa-angle-right right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @if (auth()->user()->can('order.index'))
+                                    <li class="nav-item">
+                                        @if (!auth()->user()->vendor)
                                             <a href="{{ route('order.index') }}" class="nav-link">
-                                                @else
-<a href="{{ route('vendor_sell.all') }}" class="nav-link">
-                                                @endif
-                                                <i class="fas fa-angle-right"></i>
-                                                <p>All Orders</p>
-                                            </a>
-                                        </li>
-                                    @endif
-@if (!auth()->user()->vendor)
+                                            @else
+                                                <a href="{{ route('vendor_sell.all') }}" class="nav-link">
+                                        @endif
+                                        <i class="fas fa-angle-right"></i>
+                                        <p>All Orders</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (!auth()->user()->vendor)
                                     @if (auth()->user()->can('order.view'))
                                         @foreach (App\Models\OrderStatus::all() as $status)
                                             <li class="nav-item">
@@ -336,11 +336,23 @@
                                                 <p>Export to Excel</p>
                                             </a>
                                         </li>
+                                        {{-- <li class="nav-item">
+                                            <a href="" class="nav-link">
+                                                <i class="fas fa-angle-right"></i>
+                                                <p>Paid</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="" class="nav-link">
+                                                <i class="fas fa-angle-right"></i>
+                                                <p>Unpaid</p>
+                                            </a>
+                                        </li> --}}
                                     @endif
-                                    @endif
-                                </ul>
-                            </li>
-                        @endif
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
 
                     @if (auth()->user()->can('pos.create') || auth()->user()->can('wholesale.create') || auth()->user()->can('sell.index') || auth()->user()->can('order.return') || auth()->user()->can('wholesale.index'))
@@ -391,7 +403,7 @@
                                         </li>
                                     @endif
 
-                                    {{-- @if (auth()->user()->can('order.return')) 
+                                    {{-- @if (auth()->user()->can('order.return'))
                                     <li class="nav-item">
                                         <a href="{{ route('sellreturn.index') }}" class="nav-link">
                                             <i class="fas fa-angle-right"></i>
