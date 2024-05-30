@@ -601,7 +601,7 @@
                         </li>
                     @endif
                     @if (!auth()->user()->vendor)
-                        @if (auth()->user()->can('damage.view'))
+                        @if (auth()->user()->can('reject.index'))
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-times-circle"></i>
@@ -831,7 +831,7 @@
                     @endif
 
                     @if (!auth()->user()->vendor)
-                        @if (auth()->user()->can('report.owners'))
+                        @if (auth()->user()->can('vendors.index') || auth()->user()->can('vendors.transfer_products'))
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-users"></i>
@@ -849,14 +849,16 @@
                                             </p>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a href="{{ route('vendor.transfer_products') }}" class="nav-link">
-                                            <i class="nav-icon fas fa-list"></i>
-                                            <p>
-                                                Transfer Products
-                                            </p>
-                                        </a>
-                                    </li>
+                                    @if (auth()->user()->can('vendors.transfer_products'))
+                                        <li class="nav-item">
+                                            <a href="{{ route('vendor.transfer_products') }}" class="nav-link">
+                                                <i class="nav-icon fas fa-list"></i>
+                                                <p>
+                                                    Transfer Products
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </li>
                         @endif

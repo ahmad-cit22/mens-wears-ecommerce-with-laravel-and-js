@@ -17,7 +17,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class VendorController extends Controller {
     public function index() {
-        if (auth()->user()->can('report.owners')) {
+        if (auth()->user()->can('vendors.index')) {
             $vendors = Vendor::with('user', 'transactions')->get();
             $users = User::where('type', 1)->orderBy('name', 'ASC')->get();
 
@@ -54,7 +54,7 @@ class VendorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        if (auth()->user()->can('report.owners')) {
+        if (auth()->user()->can('vendors.index')) {
             $validatedData = $request->validate([
                 'name' => 'required',
                 'user_id' => 'required|not_in:0',
@@ -117,7 +117,7 @@ class VendorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        if (auth()->user()->can('report.owners')) {
+        if (auth()->user()->can('vendors.index')) {
             $vendor = Vendor::find($id);
             if ($vendor) {
                 $validatedData = $request->validate([
@@ -147,7 +147,7 @@ class VendorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        if (auth()->user()->can('report.owners')) {
+        if (auth()->user()->can('vendors.index')) {
             $vendor = Vendor::find($id);
             if (!is_null($vendor)) {
                 $vendor->delete();
@@ -163,7 +163,7 @@ class VendorController extends Controller {
     }
 
     public function transfer_products() {
-        if (auth()->user()->can('report.owners')) {
+        if (auth()->user()->can('vendors.transfer_products')) {
             $vendors = Vendor::with('user', 'transactions')->get();
             $products = Product::orderBy('id', 'DESC')->get();
 
@@ -177,7 +177,7 @@ class VendorController extends Controller {
 
     public function transfer_products_store(Request $request) {
         // return $request->all();
-        if (auth()->user()->can('report.owners')) {
+        if (auth()->user()->can('vendors.transfer_products')) {
 
             $products_id = $request->product_id;
             $size_id = $request->size_id;
@@ -267,7 +267,7 @@ class VendorController extends Controller {
     }
 
     public function transfer_products_main() {
-        if (auth()->user()->can('report.owners')) {
+        if (1) {
             $vendors = null;
             $vendor_products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('vendor_id', Auth::user()->vendor->id)->where('qty', '>', 0)->pluck('product_id')->toArray();
             $products = Product::whereIn('id', $vendor_products)->orderBy('id', 'DESC')->get();
@@ -280,7 +280,7 @@ class VendorController extends Controller {
 
     public function transfer_products_main_store(Request $request) {
         // return $request->all();
-        if (auth()->user()->can('report.owners')) {
+        if (1) {
             $products_id = $request->product_id;
             $size_id = $request->size_id;
             $qty = $request->qty;
@@ -334,7 +334,7 @@ class VendorController extends Controller {
 
     public function transfer_products_vendor_store(Request $request) {
         // return $request->all();
-        if (auth()->user()->can('report.owners')) {
+        if (1) {
             $products_id = $request->product_id;
             $size_id = $request->size_id;
             $qty = $request->qty;

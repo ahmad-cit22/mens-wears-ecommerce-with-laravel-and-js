@@ -22,7 +22,7 @@ use DataTables;
 
 class RejectedProductController extends Controller {
     public function add_view(Request $request) {
-        if (auth()->user()->can('damage.view')) {
+        if (auth()->user()->can('reject.index')) {
             $products = Product::orderBy('created_at', 'desc')->get();
 
             return view('admin.product.reject.add', compact('products'));
@@ -32,7 +32,7 @@ class RejectedProductController extends Controller {
     }
 
     public function index(Request $request) {
-        if (auth()->user()->can('damage.view')) {
+        if (auth()->user()->can('reject.index')) {
             if ($request->ajax()) {
                 $reject_products = RejectedProduct::orderBy('created_at', 'desc')->get();
                 return Datatables::of($reject_products)
@@ -169,7 +169,7 @@ class RejectedProductController extends Controller {
     }
 
     public function stock(Request $request) {
-        if (auth()->user()->can('damage.view')) {
+        if (auth()->user()->can('reject.index')) {
             $reject_stocks  = RejectedProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             if ($request->ajax()) {
                 return Datatables::of($reject_stocks)
@@ -196,7 +196,7 @@ class RejectedProductController extends Controller {
     }
 
     public function product_out_form(Request $request) {
-        if (auth()->user()->can('damage.view')) {
+        if (auth()->user()->can('reject.index')) {
             $reject_stocks = RejectedProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
 
             return view('admin.product.reject.out', compact('reject_stocks'));
@@ -264,7 +264,7 @@ class RejectedProductController extends Controller {
     }
 
     public function product_out_list(Request $request) {
-        if (auth()->user()->can('damage.view')) {
+        if (auth()->user()->can('reject.index')) {
             if ($request->ajax()) {
                 $reject_product_outs = RejectedProductSell::orderBy('created_at', 'desc')->get();
                 return Datatables::of($reject_product_outs)
