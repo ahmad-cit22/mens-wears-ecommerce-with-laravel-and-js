@@ -27,17 +27,6 @@ class VendorController extends Controller {
         }
     }
 
-    // public function vendor_transactions() {
-    //     if (auth()->user()->can('report.owners')) {
-    //         $vendors = Vendor::with('user', 'transactions')->get();
-    //         $users = User::where('type', 1)->orderBy('name', 'ASC')->get();
-
-    //         return view('admin.vendors.index', compact('vendors', 'users'));
-    //     } else {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-    // }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -321,7 +310,7 @@ class VendorController extends Controller {
 
 
     public function transfer_products_vendor() {
-        if (auth()->user()->can('report.owners')) {
+        if (1) {
             $vendors = Vendor::with('user', 'transactions')->get();
             $vendor_products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->where('vendor_id', Auth::user()->vendor->id)->where('qty', '>', 0)->pluck('product_id')->toArray();
             $products = Product::whereIn('id', $vendor_products)->orderBy('id', 'DESC')->get();

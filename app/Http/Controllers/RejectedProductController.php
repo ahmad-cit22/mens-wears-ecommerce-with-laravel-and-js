@@ -83,7 +83,7 @@ class RejectedProductController extends Controller {
     }
 
     public function store(Request $request) {
-        if (auth()->user()->can('damage.store')) {
+        if (auth()->user()->can('reject.index')) {
             $validatedData = $request->validate([
                 'product_id' => 'required|numeric',
                 'size_id' => 'required|numeric',
@@ -206,7 +206,7 @@ class RejectedProductController extends Controller {
     }
 
     public function product_out_store(Request $request) {
-        if (auth()->user()->can('damage.store')) {
+        if (auth()->user()->can('reject.index')) {
             $validatedData = $request->validate([
                 'product_id' => 'required|numeric',
                 'size_id' => 'required|numeric',
