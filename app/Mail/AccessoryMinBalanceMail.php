@@ -34,7 +34,7 @@ class AccessoryMinBalanceMail extends Mailable
         $business = Setting::find(1);
         $accessory = $this->data;
         return $this->subject('Accessory Balance Minimum Level Warning!')
-                ->from('no-reply@gobyfabrifest.com', env('APP_NAME'))
+                ->from('mail@gobyfabrifest.com', env('APP_NAME'))
                 ->to($business->email)
                 ->view('pages.emails.accessory-min-balance', compact('accessory'));
     }

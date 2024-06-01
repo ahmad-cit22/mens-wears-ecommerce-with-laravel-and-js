@@ -35,7 +35,7 @@ class OrderMail extends Mailable
         $order = $this->order;
         $pdf = PDF::loadView('admin.invoice.generate', compact('order'));
         return $this->subject('Congratulations! Your order has been placed.')
-                ->from('no-reply@gobyfabrifest.com', env('APP_NAME'))
+                ->from('mail@gobyfabrifest.com', env('APP_NAME'))
                 ->to($order->email, $order->name)
                 ->view('pages.emails.order-confirm', compact('order'))
                 ->attachData($pdf->output(), 'invoice.pdf', [
