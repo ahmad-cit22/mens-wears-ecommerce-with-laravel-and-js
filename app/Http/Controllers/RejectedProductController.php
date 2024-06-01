@@ -17,6 +17,7 @@ use Auth;
 use PDF;
 use Session;
 use Alert;
+use App\Models\Size;
 use Carbon\Carbon;
 use DataTables;
 
@@ -24,8 +25,9 @@ class RejectedProductController extends Controller {
     public function add_view(Request $request) {
         if (auth()->user()->can('reject.index')) {
             $products = Product::orderBy('created_at', 'desc')->get();
+            $sizes = Size::all();
 
-            return view('admin.product.reject.add', compact('products'));
+            return view('admin.product.reject.add', compact('products', 'sizes'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -34,11 +36,15 @@ class RejectedProductController extends Controller {
     public function index(Request $request) {
         if (auth()->user()->can('reject.index')) {
             if ($request->ajax()) {
-                $reject_products = RejectedProduct::orderBy('created_at', 'desc')->get();
+                $reject_products = RejectedProduct::orderBy('created_at', 'desc')->with('product', 'created_by', 'created_by.adder', 'size')->get();
                 return Datatables::of($reject_products)
                     // ->addIndexColumn()
                     ->addColumn('product', function ($row) {
-                        return $title = optional($row->product)->title;
+                        if ($row->is_transfer == 1) {
+                            return $title = optional($row->product)->title . '  <span class="badge badge-info">Transferred</span>';
+                        } else {
+                            return $title = optional($row->product)->title;
+                        }
                     })
                     ->addColumn('size_id', function ($row) {
                         $title = optional($row->size)->title;
@@ -75,8 +81,9 @@ class RejectedProductController extends Controller {
             }
 
             $products = Product::orderBy('created_at', 'desc')->get();
+            $sizes = Size::all();
 
-            return view('admin.product.reject.index', compact('products'));
+            return view('admin.product.reject.index', compact('products', 'sizes'));
         } else {
             abort(403, 'Unauthorized action.');
         }
@@ -100,6 +107,9 @@ class RejectedProductController extends Controller {
             $reject->qty = $qty;
             $reject->note = $request->note;
             $reject->date = Carbon::today();
+            if ($request->has('is_transfer')) {
+                $reject->is_transfer = 1;
+            }
             $reject->save();
 
             $stock = ProductStock::where('product_id', $product_id)->where('size_id', $size_id)->first();
@@ -266,7 +276,7 @@ class RejectedProductController extends Controller {
     public function product_out_list(Request $request) {
         if (auth()->user()->can('reject.index')) {
             if ($request->ajax()) {
-                $reject_product_outs = RejectedProductSell::orderBy('created_at', 'desc')->get();
+                $reject_product_outs = RejectedProductSell::orderBy('created_at', 'desc')->with('product', 'size')->get();
                 return Datatables::of($reject_product_outs)
                     // ->addIndexColumn()
                     ->addColumn('product', function ($row) {

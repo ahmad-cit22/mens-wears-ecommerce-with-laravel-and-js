@@ -22,6 +22,7 @@ class CreateRejectedProductsTable extends Migration
             $table->double('qty');
             $table->string('note')->nullable();
             $table->date('date')->nullable();
+            $table->boolean('is_transfer')->default(0);
             $table->timestamps();
         });
     }
