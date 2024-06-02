@@ -58,9 +58,9 @@
                                     <label>Size*</label>
                                     <select class="select2 form-control" name="size_id" id="size_id" required>
                                         <option value="">---- Select Size ----</option>
-                                        @foreach ($sizes as $size)
+                                        {{-- @foreach ($sizes as $size)
                                             <option value="{{ $size->id }}">{{ $size->title }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -169,23 +169,23 @@
 
 @section('scripts')
     <script>
-        // $('#product_id').change(function() {
-        //     var product_id = $(this).val();
-        //     if (product_id == '') {
-        //         product_id = -1;
-        //     }
-        //     var option = "";
-        //     var url = "{{ url('/') }}";
+        $('#product_id').change(function() {
+            var product_id = $(this).val();
+            if (product_id == '') {
+                product_id = -1;
+            }
+            var option = "";
+            var url = "{{ url('/') }}";
 
-        //     $.get(url + "/get-size/" + product_id, function(data) {
-        //         data = JSON.parse(data);
-        //         data.forEach(function(element) {
-        //             option += "<option value='" + element.id + "'>" + element.title + "</option>";
-        //         });
-        //         $('#size_id').html(option);
-        //     });
+            $.get(url + "/get-size/" + product_id, function(data) {
+                data = JSON.parse(data);
+                data.forEach(function(element) {
+                    option += "<option value='" + element.id + "'>" + element.title + "</option>";
+                });
+                $('#size_id').html(option);
+            });
 
-        // });
+        });
 
         $('#is_transfer_label').click(function() {
             if ($('#is_transfer').is(':checked')) {
