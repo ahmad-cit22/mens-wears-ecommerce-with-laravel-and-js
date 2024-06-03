@@ -76,8 +76,10 @@ class ExpenseEntryController extends Controller {
                         return $data;
                     })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
-                        $btn = '<a href="#editModal' . $row->id . '" class="btn btn-primary" data-toggle="modal" title="Edit Entry"><i class="fas fa-edit"></i></a>
-                          <a href="#deleteModal' . $row->id . '" class="btn btn-danger" data-toggle="modal" title="Delete Entry"><i class="fas fa-trash"></i></a>';
+                        $btn = '<button class="btn btn-primary btn-sm edit-expense" data-id="' .  $row->id . '" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit"><i class="fas fa-edit"></i></button>
+                          <button class="btn btn-danger btn-sm delete-expense" data-id="' .  $row->id . '" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete"><i class="fas fa-trash"></i></button>';
+
+
 
                         return $btn;
                     })
@@ -238,6 +240,22 @@ class ExpenseEntryController extends Controller {
         }
     }
 
+    public function edit_modal($id) {
+        if (!Auth::user()->vendor) {
+            return view('admin.expense.modals.edit', [
+                'expense' => ExpenseEntry::find($id),
+                'banks' => Bank::where('vendor_id', null)->orderBy('name', 'ASC')->get(),
+                'expense_types' => Expense::where('vendor_id', null)->orderBy('type', 'ASC')->get()
+            ]);
+        } else {
+            return view('admin.expense.modals.edit', [
+                'expense' => ExpenseEntry::find($id),
+                'banks' => Bank::where('vendor_id', Auth::user()->vendor->id)->orderBy('name', 'ASC')->get(),
+                'expense_types' => Expense::where('vendor_id', Auth::user()->vendor->id)->orderBy('type', 'ASC')->get()
+            ]);
+        }
+    }
+
     public function loss_store(Request $request) {
         if (auth()->user()->can('expense.create') || auth()->user()->can('add.loss')) {
             $validatedData = $request->validate([
@@ -302,30 +320,20 @@ class ExpenseEntryController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ExpenseEntry  $expenseEntry
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ExpenseEntry $expenseEntry) {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\ExpenseEntry  $expenseEntry
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request) {
         if (auth()->user()->can('expense.edit')) {
             $this->validate($request, [
                 'expense_id' => 'required|integer',
                 'amount' => 'required|numeric',
             ]);
 
-            $expense = ExpenseEntry::find($id);
+            $expense = ExpenseEntry::find($request->id);
 
             if (!is_null($expense)) {
                 $expense->expense_id = $request->expense_id;
@@ -344,10 +352,10 @@ class ExpenseEntryController extends Controller {
                     $transaction->save();
                 }
                 Alert::toast('Expense Entry has been updated!', 'success');
-                return redirect()->route('expenseentry.index');
+                return response()->json(['success' => true]);
             } else {
                 Alert::toast('Expense Entry Not Found!', 'warning');
-                return redirect()->route('expenseentry.index');
+                return response()->json(['error' => true]);
             }
         } else {
             abort(403, 'Unauthorized action.');

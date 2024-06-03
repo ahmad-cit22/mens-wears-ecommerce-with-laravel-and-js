@@ -191,123 +191,33 @@
                 </div>
             </div>
 
-            @foreach ($data as $entry)
-                <!-- Edit expense Modal -->
-                <div class="modal fade" id="editModal{{ $entry->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!-- Edit expense Modal -->
+            <div class="modal fade" id="editExpense" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <form id="expenseentry-update-form" action="" method="POST">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Edit Entry
+                                    Edit Expense Entry
                                 </h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <form action="{{ route('expenseentry.update', $entry->id) }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Expense Type*</label>
-                                                <select class="form-control @error('expense_id') is-invalid @enderror" name="expense_id" required>
-                                                    @foreach ($expense_types as $expense)
-                                                        <option value="{{ $expense->id }}" {{ $expense->id == $entry->expense_id ? 'selected' : '' }}>{{ $expense->type }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('expense_id')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Bank*</label>
-                                                <select class="form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
-                                                    <option value="">Please select relevant bank</option>
-                                                    @foreach ($banks as $bank)
-                                                        <option value="{{ $bank->id }}" {{ $bank->id == $entry->bank_id ? 'selected' : '' }}>{{ $bank->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('bank_id')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Amount*</label>
-                                                <input type="number" name="amount" class="form-control @error('amount') is-invalid @enderror" value="{{ $entry->amount }}" required>
-                                                @error('amount')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Date</label>
-                                                <input type="date" name="date" class="form-control @error('date') is-invalid @enderror" value="{{ $entry->date }}">
-                                                @error('date')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Note</label>
-                                                <input type="text" name="note" class="form-control @error('note') is-invalid @enderror" value="{{ $entry->note }}">
-                                                @error('note')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </form>
-                            </div>
-                            </form>
 
-                        </div>
-                        <div class="modal-footer">
-                        </div>
-                    </div>
-                </div>
-                <!-- Delete expense Modal -->
-                <div class="modal fade" id="deleteModal{{ $entry->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete this entry?</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body" align="right">
-                                <form action="{{ route('expenseentry.destroy', $entry->id) }}" method="POST">
-                                    @csrf
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-danger">Permanent Delete</button>
-                                </form>
+                            <div class="modal-body">
 
                             </div>
                             <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </div>
+
                     </div>
-                </div>
-            @endforeach
+                </form>
+            </div>
+        </div>
 
         </div>
     </section>
@@ -353,6 +263,81 @@
                 ]
             });
 
+
+
+        });
+    </script>
+
+    <script>
+        $('body').on('click', '.edit-expense', function() {
+            let id = $(this).data('id');
+            let url = "{{ route('expenseentry.edit', ':id') }}";
+            url = url.replace(':id', id);
+            $.ajax({
+                method: 'get',
+                url: url,
+                success: function(response) {
+                    $('#editExpense').modal('show');
+                    $('#editExpense .modal-body').html(response);
+                }
+            })
+        });
+
+        // document.querySelector('.edit-expense').addEventListener('click', function() {
+        //     alert();
+        // })
+
+        $('#expenseentry-update-form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: "{{ route('expenseentry.update') }}",
+                data: new FormData(this),
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else if (response.error) {
+                        Swal.fire(
+                            'Sorry',
+                            "Unauthorized access!",
+                            'error',
+                        )
+                    } else {
+                        let errors = response.errors;
+                        let errorsHtml = '<ul class="m-0 mt-2 fw-light">';
+                        $.each(errors, function(key, value) {
+                            errorsHtml += '<li class= "fw-bold">' + value + '</li>';
+                        });
+                        errorsHtml += '</ul>';
+                        $('#edit-expense-form .error').html(errorsHtml);
+                        $('#edit-expense-form .error').show();
+
+                    }
+                }
+            });
+        });
+
+        $('body').on('click', '.delete-expense', function() {
+            let id = $(this).data('id');
+            let url = "{{ route('expenseentry.destroy', ':id') }}";
+            url = url.replace(':id', id);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
         });
     </script>
 @endsection
