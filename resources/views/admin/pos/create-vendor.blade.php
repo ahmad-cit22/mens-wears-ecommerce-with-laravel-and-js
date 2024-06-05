@@ -445,11 +445,23 @@
 
                                             <tr class="d-flex align-items-center justify-content-between">
                                                 <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="">
-                                                    Paying Amount
+                                                    Paying Amount (Cash)
                                                 </th>
                                                 <td>
                                                     <div class="input-group" style="">
                                                         <input type="number" class="form-control" placeholder="Now Paying Amount" name="paid_amount" value="{{ old('paid_amount') }}">
+                                                    </div>
+                                                    <span class="text-danger font-weight-bold fs-6"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="d-flex align-items-center justify-content-between">
+                                                <th class="border-0 font-size-h5 mb-0 font-size-bold text-dark" style="">
+                                                    Paying Amount (Online)
+                                                </th>
+                                                
+                                                <td>
+                                                    <div class="input-group" style="">
+                                                        <input type="number" class="form-control" placeholder="Now Paying Amount (Online)" name="paid_amount_online" value="{{ old('paid_amount_online') }}">
                                                     </div>
                                                     <span class="text-danger font-weight-bold fs-6"></span>
                                                 </td>
@@ -462,7 +474,6 @@
                                                     <div class="input-group" style="">
                                                         <select name="payment_method" class="form-control select2">
                                                             <option value="0">-- Select Payment Method --</option>
-                                                            <option value="CASH">CASH</option>
                                                             <option value="CARD">CARD</option>
                                                             <option value="BKASH">BKASH</option>
                                                             <option value="NOGOD">NOGOD</option>

@@ -320,13 +320,24 @@
                     </tr>
                     <tr class="tabletitle">
                         <td class="item" colspan="3" style="text-align: center;">
-                            <h2>Paid</h2>
+                            <h2>Paid (Via Cash)</h2>
                         </td>
                         <td></td>
                         <td class="payment">
                             <h2>&#2547; {{ round($order->paid_amount) }}</h2>
                         </td>
                     </tr>
+                    @if ($order->paid_amount_online)
+                        <tr class="tabletitle">
+                            <td class="item" colspan="3" style="text-align: center;">
+                                <h2>Paid (Via Online)</h2>
+                            </td>
+                            <td></td>
+                            <td class="payment">
+                                <h2>&#2547; {{ round($order->paid_amount_online) }}</h2>
+                            </td>
+                        </tr>
+                    @endif
                     <tr class="tabletitle">
                         <td class="item" colspan="3" style="text-align: center;">
                             <h2>Change</h2>

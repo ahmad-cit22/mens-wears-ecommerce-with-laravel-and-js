@@ -222,8 +222,22 @@
         </table>
     </div>
 
-    @if ($order->payment_method != null)
+    {{-- @if ($order->payment_method != null)
         <p><b>Payment Method:</b>&nbsp;&nbsp; {{ $order->payment_method }}</p>
+    @endif --}}
+
+    @if ($order->vendor_id)
+        <p><b>Payment Method:</b>&nbsp;&nbsp;
+            @if ($order->payment_method)
+                @if ($order->paid_amount > 0)
+                    Cash + {{ $order->payment_method }}
+                @else
+                    {{ $order->payment_method }}
+                @endif
+            @else
+                Cash</strong>
+            @endif
+        </p>
     @endif
 
     <div style="text-align: center;">
