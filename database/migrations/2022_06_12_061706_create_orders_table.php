@@ -35,6 +35,7 @@ class CreateOrdersTable extends Migration {
             $table->string('payment_method')->nullable();
             $table->string('transaction_id')->nullable();
             $table->integer('paid_amount')->nullable();
+            $table->integer('paid_amount_online')->nullable();
             $table->integer('change_amount')->nullable();
             $table->string('sender_phone')->nullable();
             $table->string('sender_amount')->nullable();
