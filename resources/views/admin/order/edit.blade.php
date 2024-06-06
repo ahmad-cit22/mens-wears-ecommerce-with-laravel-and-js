@@ -484,7 +484,7 @@
                                                         <td>
                                                             @if (auth()->user()->can('update.products') && $order->is_return == 0)
                                                                 <div class="selectmain">
-                                                                    <select name="product[]" class="select2 select-down" id="" style="width: 90% !important;">
+                                                                    <select name="product[]" class="select2 select-down" id="" style="width: 100% !important;">
                                                                         @foreach ($products as $product)
                                                                             @if (!is_null($product))
                                                                                 <option value="{{ $product->id }}" {{ $product->product_id == $order_product->product_id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
@@ -572,7 +572,7 @@
                                                         <td>{{ $k + 2 }}</td>
                                                         <td>
                                                             <div class="selectmain">
-                                                                <select name="product[]" class="select2 select-down" id="" style="width: 90% !important;">
+                                                                <select name="product[]" class="select2 select-down" id="" style="width: 100% !important;">
                                                                     <option value="0"> -- Add another product -- </option>
                                                                     @foreach ($products as $product)
                                                                         @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
