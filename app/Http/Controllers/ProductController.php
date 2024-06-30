@@ -22,19 +22,21 @@ use Intervention\Image\Facades\Image;
 use DNS1D;
 use DNS2D;
 
-class ProductController extends Controller {
+class ProductController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         if (auth()->user()->can('product.index')) {
             if (!Auth::user()->vendor) {
-                $products = Product::orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+                $products = Product::orderBy('created_at', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
             } else {
                 $vendor_products = Auth::user()->vendor->vendor_products->pluck('product_id')->toArray();
-                $products = Product::whereIn('id', $vendor_products)->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+                $products = Product::whereIn('id', $vendor_products)->orderBy('created_at', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
             }
             // return $products;
             return view('admin.product.index', compact('products'));
@@ -43,16 +45,17 @@ class ProductController extends Controller {
         }
     }
 
-    public function product_search(Request $request) {
+    public function product_search(Request $request)
+    {
 
         $search = $request->search;
 
         if (auth()->user()->can('product.index')) {
             if (!Auth::user()->vendor) {
-                $products = Product::where('title', 'like', '%' . $search . '%')->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+                $products = Product::where('title', 'like', '%' . $search . '%')->orderBy('created_at', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
             } else {
                 $vendor_products = Auth::user()->vendor->vendor_products->pluck('product_id')->toArray();
-                $products = Product::whereIn('id', $vendor_products)->where('title', 'like', '%' . $search . '%')->orderBy('id', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
+                $products = Product::whereIn('id', $vendor_products)->where('title', 'like', '%' . $search . '%')->orderBy('created_at', 'DESC')->with('category', 'brand', 'variation', 'variations', 'variations.size', 'product_image', 'ratings')->paginate(10);
             }
 
             if (count($products) > 0) {
@@ -69,7 +72,8 @@ class ProductController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         if (auth()->user()->can('product.index')) {
             $categories = Category::where('parent_id', 0)->orderBy('id', 'DESC')->get();
             $brands = Brand::orderBy('id', 'DESC')->get();
@@ -80,7 +84,8 @@ class ProductController extends Controller {
         }
     }
 
-    public function print_label() {
+    public function print_label()
+    {
         if (auth()->user()->can('product.print_label')) {
             $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->get();
             // return DNS1D::getBarcodeSVG('1005', 'C39');
@@ -91,7 +96,8 @@ class ProductController extends Controller {
         }
     }
 
-    public function print_label_result(Request $request) {
+    public function print_label_result(Request $request)
+    {
         if (auth()->user()->can('product.index')) {
             $product_id = $request->product_id;
             $size_id = $request->size_id;
@@ -107,7 +113,8 @@ class ProductController extends Controller {
         }
     }
 
-    public function generateUniqueCode() {
+    public function generateUniqueCode()
+    {
 
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersNumber = strlen($characters);
@@ -134,7 +141,8 @@ class ProductController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         if (auth()->user()->can('product.create')) {
             $validatedData = $request->validate([
                 'title' => 'required|max:255',
@@ -296,7 +304,8 @@ class ProductController extends Controller {
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product) {
+    public function show(Product $product)
+    {
         //
     }
 
@@ -306,7 +315,8 @@ class ProductController extends Controller {
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         if (auth()->user()->can('product.edit')) {
             $product = Product::find($id);
             if (!is_null($product)) {
@@ -331,7 +341,8 @@ class ProductController extends Controller {
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         if (auth()->user()->can('product.edit')) {
             $product = Product::find($id);
             if (!is_null($product)) {
@@ -472,7 +483,8 @@ class ProductController extends Controller {
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         if (auth()->user()->can('product.delete')) {
             $product = Product::find($id);
             if (!is_null($product)) {
@@ -529,7 +541,8 @@ class ProductController extends Controller {
         }
     }
 
-    public function gallery_destroy($id) {
+    public function gallery_destroy($id)
+    {
         if (auth()->user()->can('product.edit')) {
             $image = ProductImage::find($id);
             if (!is_null($image)) {
@@ -548,7 +561,8 @@ class ProductController extends Controller {
         }
     }
 
-    public function variation_store(Request $request, $id) {
+    public function variation_store(Request $request, $id)
+    {
         if (auth()->user()->can('product.edit')) {
             $product = Product::find($id);
             if (!is_null($product)) {

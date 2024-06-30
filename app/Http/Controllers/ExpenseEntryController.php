@@ -14,13 +14,15 @@ use App\Models\Order;
 use Carbon\Carbon;
 use DataTables;
 
-class ExpenseEntryController extends Controller {
+class ExpenseEntryController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $date_from = '';
         $date_to = '';
 
@@ -92,7 +94,8 @@ class ExpenseEntryController extends Controller {
         }
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $date_from = '';
         $date_to = '';
 
@@ -168,8 +171,8 @@ class ExpenseEntryController extends Controller {
                         return $data;
                     })->escapeColumns('created_by')
                     ->addColumn('action', function ($row) {
-                        $btn = '<a href="#editModal' . $row->id . '" class="btn btn-primary" data-toggle="modal" title="Edit Entry"><i class="fas fa-edit"></i></a>
-                          <a href="#deleteModal' . $row->id . '" class="btn btn-danger" data-toggle="modal" title="Delete Entry"><i class="fas fa-trash"></i></a>';
+                        $btn = '<button class="btn btn-primary btn-sm edit-expense" data-id="' .  $row->id . '" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit"><i class="fas fa-edit"></i></button>
+                          <button class="btn btn-danger btn-sm delete-expense" data-id="' .  $row->id . '" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete"><i class="fas fa-trash"></i></button>';
 
                         return $btn;
                     })
@@ -187,7 +190,8 @@ class ExpenseEntryController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
@@ -197,7 +201,8 @@ class ExpenseEntryController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         if (auth()->user()->can('expense.create')) {
             $validatedData = $request->validate([
                 'expense_id' => 'required|integer',
@@ -240,7 +245,8 @@ class ExpenseEntryController extends Controller {
         }
     }
 
-    public function edit_modal($id) {
+    public function edit_modal($id)
+    {
         if (!Auth::user()->vendor) {
             return view('admin.expense.modals.edit', [
                 'expense' => ExpenseEntry::find($id),
@@ -256,7 +262,8 @@ class ExpenseEntryController extends Controller {
         }
     }
 
-    public function loss_store(Request $request) {
+    public function loss_store(Request $request)
+    {
         if (auth()->user()->can('expense.create') || auth()->user()->can('add.loss')) {
             $validatedData = $request->validate([
                 'amount' => 'required|numeric',
@@ -315,7 +322,8 @@ class ExpenseEntryController extends Controller {
      * @param  \App\Models\ExpenseEntry  $expenseEntry
      * @return \Illuminate\Http\Response
      */
-    public function show(ExpenseEntry $expenseEntry) {
+    public function show(ExpenseEntry $expenseEntry)
+    {
         //
     }
 
@@ -326,7 +334,8 @@ class ExpenseEntryController extends Controller {
      * @param  \App\Models\ExpenseEntry  $expenseEntry
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         if (auth()->user()->can('expense.edit')) {
             $this->validate($request, [
                 'expense_id' => 'required|integer',
@@ -368,7 +377,8 @@ class ExpenseEntryController extends Controller {
      * @param  \App\Models\ExpenseEntry  $expenseEntry
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         if (auth()->user()->can('expense.delete')) {
             $expense = ExpenseEntry::find($id);
 

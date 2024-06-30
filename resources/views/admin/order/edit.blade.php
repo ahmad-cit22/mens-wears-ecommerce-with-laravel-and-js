@@ -156,6 +156,10 @@
                                             Packaged By: <strong class="ml-1"><a href="{{ route('user.edit', $order->packaged_by->user_id) }}">{{ $order->packaged_by->adder->name }}</a> ({{ $order->packaged_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @endif
 
+                                        @if ($order->intransit_by)
+                                            Intransit By: <strong class="ml-1"><a href="{{ route('user.edit', $order->intransit_by->user_id) }}">{{ $order->intransit_by->adder->name }}</a> ({{ $order->intransit_by->created_at->format('d M, Y - g:i A') }})</strong><br>
+                                        @endif
+
                                         @if ($order->convert_sell_by)
                                             Marked Sold By: <strong class="ml-1"><a href="{{ route('user.edit', $order->convert_sell_by->user_id) }}">{{ $order->convert_sell_by->adder->name }}</a> ({{ $order->convert_sell_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @endif

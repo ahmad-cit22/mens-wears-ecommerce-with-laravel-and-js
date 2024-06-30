@@ -54,6 +54,10 @@ class Order extends Model {
         return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'packaging')->latest()->with('adder');
     }
 
+    public function intransit_by() {
+        return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'intransit')->latest()->with('adder');
+    }
+
     public function order_paid_by() {
         return $this->hasOne(WorkTrackingEntry::class, 'order_id', 'id')->where('work_name', 'order_paid')->latest()->with('adder');
     }
