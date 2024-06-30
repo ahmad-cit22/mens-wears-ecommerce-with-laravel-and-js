@@ -189,7 +189,7 @@ class OrderController extends Controller
             if ($all != 0) {
                 $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'vat_entry')->latest()->paginate(10);
             } else {
-                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'created_by.adder', 'vat_entry')->latest()->take(1000)->get();
+                $orders = Order::where('vendor_id', null)->where('is_final', 1)->where('order_status_id', '!=', 5)->where('source', '!=', 'Wholesale')->with('order_product', 'order_product.product', 'status', 'created_by', 'created_by.adder', 'vat_entry')->latest()->take(1500)->get();
             }
 
             $categories = Category::all();

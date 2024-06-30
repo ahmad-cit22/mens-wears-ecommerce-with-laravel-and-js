@@ -13,13 +13,15 @@ use Alert;
 use Auth;
 use Illuminate\Support\Facades\File;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         if (auth()->user()->can('user.index')) {
             $users = User::where('type', 1)->orderBy('name', 'ASC')->get();
             return view('admin.user.index', compact('users'));
@@ -33,7 +35,8 @@ class UserController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         if (auth()->user()->can('user.create')) {
             $roles = Role::all();
             return view('admin.user.create', compact('roles'));
@@ -48,7 +51,8 @@ class UserController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         if (auth()->user()->can('user.create')) {
             $validatedData = $request->validate([
                 'name' => 'required|max:255',
@@ -84,7 +88,8 @@ class UserController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         //
     }
 
@@ -94,7 +99,8 @@ class UserController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         if (auth()->user()->can('user.edit')) {
             $user = User::find($id);
             if (!is_null($user)) {
@@ -116,7 +122,8 @@ class UserController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         if (auth()->user()->can('user.edit')) {
             $user = User::find($id);
             if (!is_null($user)) {
@@ -153,7 +160,8 @@ class UserController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         if (auth()->user()->can('user.delete')) {
             $user = User::find($id);
             if (!is_null($user)) {
@@ -169,7 +177,8 @@ class UserController extends Controller {
         }
     }
 
-    public function customer_index() {
+    public function customer_index()
+    {
         if (auth()->user()->can('customer.list')) {
             $customers = User::where('type', 2)->orderBy('id', 'DESC')->paginate(10);
             return view('admin.customer.index', compact('customers'));
@@ -179,7 +188,39 @@ class UserController extends Controller {
         }
     }
 
-    public function customer_search(Request $request) {
+    public function customer_index_excel($pageNo)
+    {
+        if (auth()->user()->can('customer.list')) {
+            // $customers = User::where('type', 2)->orderBy('id', 'DESC')->with('orders')->take(2000)->get();
+            function getDataForPage($page, $perPage = 1000)
+            {
+                $offset = ($page - 1) * $perPage;
+
+                $customers = User::where('type', 2)
+                    ->orderBy('id', 'DESC')
+                    ->with('orders')
+                    ->skip($offset)
+                    ->take($perPage)
+                    ->get();
+
+                return $customers;
+            }
+
+            $page = $pageNo;
+            $customers = getDataForPage($page);
+            if (count($customers) == 0) {
+                session()->flash('error', 'No more data found!');
+                return back();
+            }
+            return view('admin.customer.index2', compact('customers', 'page'));
+        } else {
+            session()->flash('error', 'Access Denied !');
+            return back();
+        }
+    }
+
+    public function customer_search(Request $request)
+    {
         $search = $request->search;
         $search_phone = $request->search_phone;
 
@@ -191,7 +232,8 @@ class UserController extends Controller {
         return back()->with('error', 'No results Found');
     }
 
-    public function customer_destroy($id) {
+    public function customer_destroy($id)
+    {
         $customer = User::find($id);
         if (!is_null($customer)) {
             if (File::exists('images/user/' . $customer->image)) {
@@ -206,7 +248,8 @@ class UserController extends Controller {
         }
     }
 
-    public function customer_password_change(Request $request, $id) {
+    public function customer_password_change(Request $request, $id)
+    {
         $validatedData = $request->validate([
             'password' => 'required|min:8',
         ]);
@@ -222,7 +265,8 @@ class UserController extends Controller {
         }
     }
 
-    function customer_status_update(Request $request, $id) {
+    function customer_status_update(Request $request, $id)
+    {
         $customer = User::find($id);
 
         $customer->is_active = $request->status;
@@ -232,7 +276,8 @@ class UserController extends Controller {
         return back();
     }
 
-    function customer_type_update(Request $request, $id) {
+    function customer_type_update(Request $request, $id)
+    {
         $customer = User::find($id);
 
         $customer->is_fraud = $request->is_fraud;

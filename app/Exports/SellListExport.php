@@ -11,7 +11,7 @@ class SellListExport implements FromCollection, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
-    */ 
+    */
     // public $data;
 
     // public function __construct($data)
@@ -40,7 +40,7 @@ class SellListExport implements FromCollection, WithHeadings
             'Is Returned',
             'Date',
         ];
-    } 
+    }
     public function collection()
     {
         return DB::table('orders')

@@ -137,6 +137,7 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth']], function () {
     // Customer Routes
     Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
         Route::get('/', [App\Http\Controllers\UserController::class, 'customer_index'])->name('index');
+        Route::get('/excel/{pageNo}', [App\Http\Controllers\UserController::class, 'customer_index_excel'])->name('index.excel');
         Route::get('/search', [App\Http\Controllers\UserController::class, 'customer_search'])->name('search');
         Route::post('/change-password-by-admin/{id}', [App\Http\Controllers\UserController::class, 'customer_password_change'])->name('password.change.admin');
         Route::post('/destroy/{id}', [App\Http\Controllers\UserController::class, 'customer_destroy'])->name('destroy');

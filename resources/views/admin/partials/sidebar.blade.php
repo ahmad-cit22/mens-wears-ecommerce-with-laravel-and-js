@@ -75,6 +75,12 @@
                                             <p>Customers</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('customer.index.excel', 1) }}" class="nav-link">
+                                            <i class="fas fa-angle-right"></i>
+                                            <p>Customers (Excel)</p>
+                                        </a>
+                                    </li>
                                 @endif
                                 @if (!auth()->user()->vendor)
                                     @if (auth()->user()->can('supplier.index'))

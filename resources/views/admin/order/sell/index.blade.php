@@ -159,9 +159,17 @@
                             'orders' => $orders,
                         ]);
                     @endphp --}}
+                    @if (!Auth::user()->vendor)
+                    <a href="{{ route('sell.sell.export') }}">
+                        <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
+                    </a>
+
+                    @else
                     <a href="{{ route('vendor_sell.sell.export') }}">
                         <i class="fas fa-file-export fa-sm mr-1"></i> Export to excel
                     </a>
+
+                    @endif
                 </p>
                 <div class="card-body table-responsive">
                     <table id="data-table" class="table table-bordered table-hover">
