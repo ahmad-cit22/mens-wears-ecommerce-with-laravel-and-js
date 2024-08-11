@@ -29,9 +29,9 @@
             <div class="row">
                 <div class="col-12">
                     <!-- <div class="callout callout-info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h5><i class="fas fa-info"></i> Note:</h5>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <h5><i class="fas fa-info"></i> Note:</h5>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
 
 
                     <!-- Main content -->
@@ -42,30 +42,39 @@
                             <div class="row">
                                 @if ($order->is_final == 0)
                                     <div class="col-12" align="right">
-                                        <a href="#confirmSell{{ $order->id }}" data-toggle="modal" class="btn btn-primary bg-purple"><i class="fas fa-check"></i> Mark as Sold</a>
+                                        <a href="#confirmSell{{ $order->id }}" data-toggle="modal"
+                                            class="btn btn-primary bg-purple"><i class="fas fa-check"></i> Mark as Sold</a>
                                         <hr>
                                     </div>
                                 @endif
                                 <div class="col-11">
                                     <h4>
                                         <img src="{{ asset('images/website/' . $business->footer_logo) }}" width="200">
-                                        <small class="float-right" style="float: right;">Date: {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</small>
+                                        <small class="float-right" style="float: right;">Date:
+                                            {{ Carbon\Carbon::parse($order->created_at)->format('d M Y, g:ia') }}</small>
                                     </h4><br>
                                 </div>
                                 <div class="col-1">
                                     @if ($order->source == 'Wholesale')
-                                        <a href="{{ route('sell.wholesale.index') }}" class="btn btn-info bg-primary float-right mb-2">Wholesale List</a> <br>
+                                        <a href="{{ route('sell.wholesale.index') }}"
+                                            class="btn btn-info bg-primary float-right mb-2">Wholesale List</a> <br>
                                     @else
                                         @if ($order->vendor_id)
-                                            <a href="{{ route('vendor_sell.index') }}" class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
+                                            <a href="{{ route('vendor_sell.index') }}"
+                                                class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
                                         @else
-                                            <a href="{{ route('sell.index') }}" class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
+                                            <a href="{{ route('sell.index') }}"
+                                                class="btn btn-info bg-primary float-right mb-2">Sell List</a> <br>
                                         @endif
                                     @endif
 
                                     <div class="ml-4">
-                                        <a href="{{ route('order.invoice.generate', $order->id) }}" class="btn btn-secondary btn-sm" title="Download Invoice"><i class="fas fa-download"></i></a>
-                                        <a href="{{ route('order.invoice.pos.generate', $order->id) }}" class="btn btn-success btn-sm" title="Print POS Invoice"><i class="fas fa-print"></i></a>
+                                        <a href="{{ route('order.invoice.generate', $order->id) }}"
+                                            class="btn btn-secondary btn-sm" title="Download Invoice"><i
+                                                class="fas fa-download"></i></a>
+                                        <a href="{{ route('order.invoice.pos.generate', $order->id) }}"
+                                            class="btn btn-success btn-sm" title="Print POS Invoice"><i
+                                                class="fas fa-print"></i></a>
                                     </div>
                                 </div>
                                 <br>
@@ -80,7 +89,8 @@
                                     <address>
                                         Name: <strong>{{ $order->name }}</strong>
                                         @if ($order->customer->member)
-                                            <span class="badge badge-info">{{ $order->customer->member->card->card_status }}</span>
+                                            <span
+                                                class="badge badge-info">{{ $order->customer->member->card->card_status }}</span>
                                         @endif <br>
                                         Phone: <strong>{{ $order->phone }}</strong><br>
                                         @if ($order->email != null)
@@ -90,7 +100,8 @@
                                             Other Info: {{ $order->other_info }}<br>
                                         @endif
                                         @if (!$order->vendor_id)
-                                            Shipping Address: {{ $order->shipping_address }}, {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
+                                            Shipping Address: {{ $order->shipping_address }},
+                                            {{ optional($order->area)->name }}, {{ optional($order->district)->name }}<br>
                                             @if ($order->courier_name)
                                                 Courier Name: {{ $order->courier_name }}<br>
                                             @endif
@@ -101,7 +112,8 @@
                                 <div class="col-md-3 invoice-col">
                                     <address>
                                         <div class="mb-1">
-                                            Status: <span class="ml-1 badge badge-{{ $order->status->color }}"> {{ $order->status->title }}</span>
+                                            Status: <span class="ml-1 badge badge-{{ $order->status->color }}">
+                                                {{ $order->status->title }}</span>
                                             @if ($order->is_return == 1)
                                                 <span class="badge badge-danger ml-1">Returned</span>
                                             @elseif ($order->is_return == 2)
@@ -117,7 +129,9 @@
                                         </div>
 
                                         Order Track Number: <strong class="ml-1"># {{ $order->code }}</strong><br>
-                                        Payment Satus: <span class="badge badge-{{ $order->payment_status == 1 ? 'success' : 'danger' }}"> {{ $order->payment_status == 1 ? 'Paid' : 'Not Paid' }}</span><br>
+                                        Payment Satus: <span
+                                            class="badge badge-{{ $order->payment_status == 1 ? 'success' : 'danger' }}">
+                                            {{ $order->payment_status == 1 ? 'Paid' : 'Not Paid' }}</span><br>
                                         @if ($order->vendor_id)
                                             Payment Method:
                                             @if ($order->payment_method)
@@ -143,45 +157,70 @@
                                 <div class="col-md-4 invoice-col">
                                     <address>
                                         Created By: @if ($order->created_by)
-                                            <strong class="ml-1"><a href="{{ route('user.edit', $order->created_by->user_id) }}">{{ $order->created_by->adder->name }}</a> ({{ $order->created_by->created_at->format('d M, Y - g:i A') }})</strong><br>
+                                            <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->created_by->user_id) }}">{{ $order->created_by->adder->name }}</a>
+                                                ({{ $order->created_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @else
                                             N/A <br>
                                         @endif
 
                                         @if ($order->printed_by)
-                                            Printed By: <strong class="ml-1"><a href="{{ route('user.edit', $order->printed_by->user_id) }}">{{ $order->printed_by->adder->name }}</a> ({{ $order->printed_by->created_at->format('d M, Y - g:i A') }})</strong><br>
+                                            Printed By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->printed_by->user_id) }}">{{ $order->printed_by->adder->name }}</a>
+                                                ({{ $order->printed_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @endif
 
                                         @if ($order->packaged_by)
-                                            Packaged By: <strong class="ml-1"><a href="{{ route('user.edit', $order->packaged_by->user_id) }}">{{ $order->packaged_by->adder->name }}</a> ({{ $order->packaged_by->created_at->format('d M, Y - g:i A') }})</strong><br>
+                                            Packaged By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->packaged_by->user_id) }}">{{ $order->packaged_by->adder->name }}</a>
+                                                ({{ $order->packaged_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @endif
 
                                         @if ($order->intransit_by)
-                                            Intransit By: <strong class="ml-1"><a href="{{ route('user.edit', $order->intransit_by->user_id) }}">{{ $order->intransit_by->adder->name }}</a> ({{ $order->intransit_by->created_at->format('d M, Y - g:i A') }})</strong><br>
+                                            Intransit By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->intransit_by->user_id) }}">{{ $order->intransit_by->adder->name }}</a>
+                                                ({{ $order->intransit_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @endif
 
                                         @if ($order->convert_sell_by)
-                                            Marked Sold By: <strong class="ml-1"><a href="{{ route('user.edit', $order->convert_sell_by->user_id) }}">{{ $order->convert_sell_by->adder->name }}</a> ({{ $order->convert_sell_by->created_at->format('d M, Y - g:i A') }})</strong><br>
+                                            Marked Sold By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->convert_sell_by->user_id) }}">{{ $order->convert_sell_by->adder->name }}</a>
+                                                ({{ $order->convert_sell_by->created_at->format('d M, Y - g:i A') }})</strong><br>
                                         @endif
 
                                         @if ($order->order_paid_by)
-                                            Paid By: <strong class="ml-1"><a href="{{ route('user.edit', $order->order_paid_by->user_id) }}">{{ $order->order_paid_by->adder->name }}</a> ({{ $order->order_paid_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
+                                            Paid By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->order_paid_by->user_id) }}">{{ $order->order_paid_by->adder->name }}</a>
+                                                ({{ $order->order_paid_by->created_at->format('d M, Y - g:i A') }})
+                                            </strong><br>
                                         @endif
 
                                         @if ($order->order_returned_by)
-                                            Returned By: <strong class="ml-1"><a href="{{ route('user.edit', $order->order_returned_by->user_id) }}">{{ $order->order_returned_by->adder->name }}</a> ({{ $order->order_returned_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
+                                            Returned By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->order_returned_by->user_id) }}">{{ $order->order_returned_by->adder->name }}</a>
+                                                ({{ $order->order_returned_by->created_at->format('d M, Y - g:i A') }})
+                                            </strong><br>
                                         @endif
 
                                         @if ($order->order_canceled_by)
-                                            Canceled By: <strong class="ml-1"><a href="{{ route('user.edit', $order->order_canceled_by->user_id) }}">{{ $order->order_canceled_by->adder->name }}</a> ({{ $order->order_canceled_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
+                                            Canceled By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->order_canceled_by->user_id) }}">{{ $order->order_canceled_by->adder->name }}</a>
+                                                ({{ $order->order_canceled_by->created_at->format('d M, Y - g:i A') }})
+                                            </strong><br>
                                         @endif
 
                                         @if ($order->add_loss_by)
-                                            Loss Added By: <strong class="ml-1"><a href="{{ route('user.edit', $order->add_loss_by->user_id) }}">{{ $order->add_loss_by->adder->name }}</a> ({{ $order->add_loss_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
+                                            Loss Added By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->add_loss_by->user_id) }}">{{ $order->add_loss_by->adder->name }}</a>
+                                                ({{ $order->add_loss_by->created_at->format('d M, Y - g:i A') }})
+                                            </strong><br>
                                         @endif
 
                                         @if ($order->cod > 0 && $order->apply_cod_by)
-                                            COD Applied By: <strong class="ml-1"><a href="{{ route('user.edit', $order->apply_cod_by->user_id) }}">{{ $order->apply_cod_by->adder->name }}</a> ({{ $order->apply_cod_by->created_at->format('d M, Y - g:i A') }}) </strong><br>
+                                            COD Applied By: <strong class="ml-1"><a
+                                                    href="{{ route('user.edit', $order->apply_cod_by->user_id) }}">{{ $order->apply_cod_by->adder->name }}</a>
+                                                ({{ $order->apply_cod_by->created_at->format('d M, Y - g:i A') }})
+                                            </strong><br>
                                         @endif
                                     </address>
                                 </div>
@@ -190,12 +229,14 @@
                             @if ($order->vendor_id)
                                 <div class="row mt-3">
                                     <div class="col-md-6 border-right align-content-end">
-                                        <form action="{{ route('order.discount_amount.update', $order->id) }}" method="POST">
+                                        <form action="{{ route('order.discount_amount.update', $order->id) }}"
+                                            method="POST">
                                             @csrf
                                             <div class="form-group">
                                                 <label>Discount Amount</label>
                                                 <div class="input-group mb-3">
-                                                    <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount ?? 0 }}">
+                                                    <input type="number" class="form-control" name="discount_amount"
+                                                        value="{{ $order->discount_amount ?? 0 }}">
                                                 </div>
                                                 @error('discount_amount')
                                                     <span class="invalid-feedback" role="alert" style="display: block;">
@@ -206,7 +247,8 @@
                                             <div class="form-group">
                                                 <label>Extra Charge ({{ $order->extra_charge_type }})</label>
                                                 <div class="input-group mb-3">
-                                                    <input type="number" class="form-control" name="extra_charge" value="{{ $order->extra_charge ?? 0 }}">
+                                                    <input type="number" class="form-control" name="extra_charge"
+                                                        value="{{ $order->extra_charge ?? 0 }}">
                                                 </div>
                                                 @error('extra_charge')
                                                     <span class="invalid-feedback" role="alert" style="display: block;">
@@ -218,15 +260,20 @@
                                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </form>
-                                        <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
+                                        <form action="{{ route('order.payment.status.change', $order->id) }}"
+                                            method="POST">
                                             @csrf
                                             <div class="form-group">
                                                 <label>Payment Status</label>
                                                 <select name="payment_status" class="form-control select2">
                                                     @if (auth()->user()->can('order.paid') || 1 == $order->payment_status)
-                                                        <option value="1" {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid</option>
+                                                        <option value="1"
+                                                            {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid
+                                                        </option>
                                                     @endif
-                                                    <option value="0" {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid</option>
+                                                    <option value="0"
+                                                        {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid
+                                                    </option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -242,14 +289,17 @@
                                                 <select name="order_status_id" class="form-control select2">
                                                     @foreach (App\Models\OrderStatus::where('is_active', 1)->orderBy('priority_no', 'ASC')->get() as $status)
                                                         @if (in_array($status->id, [1, 2, 4, 5]))
-                                                            <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                            <option value="{{ $status->id }}"
+                                                                {{ $status->id == $order->order_status_id ? 'selected' : '' }}>
+                                                                {{ $status->title }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label>Reason</label>
-                                                <input type="text" name="note" value="{{ $order->note }}" class="form-control">
+                                                <input type="text" name="note" value="{{ $order->note }}"
+                                                    class="form-control">
                                                 @error('note')
                                                     <span class="invalid-feedback" role="alert" style="display: block;">
                                                         <strong>{{ $message }}</strong>
@@ -259,20 +309,25 @@
                                             <div class="row justify-content-start">
                                                 <div class="col-4">
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        <button type="submit" class="btn btn-primary">Save
+                                                            Changes</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-8 text-right">
                                                     @if (1)
-                                                        <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                                        <a href="#add-loss" class="btn btn-primary bg-purple"
+                                                            data-toggle="modal">Add Loss</a>
                                                     @else
-                                                        <a href="{{ route('order.remove.loss', $order->id) }}" class="btn btn-primary bg-info">Removed Loss</a>
+                                                        <a href="{{ route('order.remove.loss', $order->id) }}"
+                                                            class="btn btn-primary bg-info">Removed Loss</a>
                                                     @endif
                                                     @if ($order->price > 0)
-                                                        <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                        <a href="{{ route('order.return', $order->id) }}"
+                                                            class="btn btn-primary bg-primary">Return Products</a>
                                                     @endif
                                                     @if ($order->discount_amount != null)
-                                                        <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
+                                                        <a href="#remove-discount" data-toggle="modal"
+                                                            class="btn btn-primary bg-danger">Remove Discount</a>
                                                     @endif
                                                 </div>
                                             </div>
@@ -282,8 +337,10 @@
                                         <form action="{{ route('order.apply.cod', $order->id) }}" method="POST">
                                             @csrf
                                             <div class="form-group" align="right">
-                                                <button type="submit" class="btn btn-secondary" name="submit" value="remove">Remove COD</button>
-                                                <button type="submit" class="btn btn-danger" name="submit" value="apply">Apply 1% COD</button>
+                                                <button type="submit" class="btn btn-secondary" name="submit"
+                                                    value="remove">Remove COD</button>
+                                                <button type="submit" class="btn btn-danger" name="submit"
+                                                    value="apply">Apply 1% COD</button>
                                             </div>
                                         </form>
                                     </div>
@@ -291,14 +348,18 @@
                             @else
                                 <div class="row mt-3">
                                     <div class="col-md-6 border-right">
-                                        <form action="{{ route('order.courier_info.store', $order->id) }}" method="POST">
+                                        <form action="{{ route('order.courier_info.store', $order->id) }}"
+                                            method="POST">
                                             @csrf
                                             <div class="form-group">
                                                 <label>Courier Name</label>
-                                                <select name="courier_name" class="form-control select2 select-down" id="courier_name">
+                                                <select name="courier_name" class="form-control select2 select-down"
+                                                    id="courier_name">
                                                     <option value="0"> -- Select Courier Name -- </option>
                                                     @foreach ($couriers as $courier)
-                                                        <option value="{{ $courier->name }}" {{ $order->courier_name == $courier->name ? 'selected' : '' }}>{{ $courier->name }}</option>
+                                                        <option value="{{ $courier->name }}"
+                                                            {{ $order->courier_name == $courier->name ? 'selected' : '' }}>
+                                                            {{ $courier->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -306,10 +367,12 @@
                                                 <div class="form-group">
                                                     <label>Reference Code</label>
                                                     <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" name="refer_code" value="{{ $order->refer_code }}">
+                                                        <input type="text" class="form-control" name="refer_code"
+                                                            value="{{ $order->refer_code }}">
                                                     </div>
                                                     @error('refer_code')
-                                                        <span class="invalid-feedback" role="alert" style="display: block;">
+                                                        <span class="invalid-feedback" role="alert"
+                                                            style="display: block;">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
@@ -321,12 +384,14 @@
                                         </form>
                                     </div>
                                     <div class="col-md-6 border-right align-content-end">
-                                        <form action="{{ route('order.discount_amount.update', $order->id) }}" method="POST">
+                                        <form action="{{ route('order.discount_amount.update', $order->id) }}"
+                                            method="POST">
                                             @csrf
                                             <div class="form-group">
                                                 <label>Discount Amount</label>
                                                 <div class="input-group mb-3">
-                                                    <input type="number" class="form-control" name="discount_amount" value="{{ $order->discount_amount ?? 0 }}">
+                                                    <input type="number" class="form-control" name="discount_amount"
+                                                        value="{{ $order->discount_amount ?? 0 }}">
                                                 </div>
                                                 @error('discount_amount')
                                                     <span class="invalid-feedback" role="alert" style="display: block;">
@@ -342,15 +407,20 @@
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-md-6 border-right">
-                                        <form action="{{ route('order.payment.status.change', $order->id) }}" method="POST">
+                                        <form action="{{ route('order.payment.status.change', $order->id) }}"
+                                            method="POST">
                                             @csrf
                                             <div class="form-group">
                                                 <label>Payment Status</label>
                                                 <select name="payment_status" class="form-control select2">
                                                     @if (auth()->user()->can('order.paid') || 1 == $order->payment_status)
-                                                        <option value="1" {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid</option>
+                                                        <option value="1"
+                                                            {{ $order->payment_status == 1 ? 'selected' : '' }}>Paid
+                                                        </option>
                                                     @endif
-                                                    <option value="0" {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid</option>
+                                                    <option value="0"
+                                                        {{ $order->payment_status == 0 ? 'selected' : '' }}>Not Paid
+                                                    </option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -361,11 +431,40 @@
                                         <form action="{{ route('order.advance.payment', $order->id) }}" method="POST">
                                             @csrf
                                             <div class="form-froup">
+                                                <div class="selectmain">
+                                                    <label class="text-dark d-flex">Business Bkash Number *</label>
+                                                    <select name="bkash_business_id" class="select2 select-down"
+                                                        id="bkash_business_id" style="width: 100% !important;" required>
+                                                        <option value="0">--- Select an Option ---</option>
+                                                        @foreach ($bkash_nums as $num)
+                                                            <option value="{{ $num->id }}">
+                                                                {{ $num->number . ' (' . $num->name . ')' }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('bkash_business_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-froup mt-3">
+                                                <label class="text-body">Last Digits (Min: 4) *</label>
+                                                <fieldset class="form-group mb-3">
+                                                    <input type="text" name="last_digit" class="form-control"
+                                                        placeholder="Enter Last Digits (Min: 4) of Customer Bkash Number"
+                                                        required>
+                                                </fieldset>
+                                                @error('last_digit')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-froup">
                                                 <label>Advance Amount</label>
                                                 <div class="input-group mb-3">
-                                                    <input type="number" class="form-control" name="amount" value="{{ $order->advance }}">
+                                                    <input type="number" class="form-control" name="amount"
+                                                        value="{{ $order->advance }}">
                                                     <div class="input-group-append">
-                                                        <button class="btn btn-outline-primary bg-purple" type="submit">Save payment</button>
+                                                        <button class="btn btn-outline-primary bg-purple"
+                                                            type="submit">Save payment</button>
                                                     </div>
                                                 </div>
                                                 @error('amount')
@@ -384,10 +483,14 @@
                                                 <select name="order_status_id" class="form-control select2">
                                                     @foreach (App\Models\OrderStatus::where('is_active', 1)->orderBy('priority_no', 'ASC')->get() as $status)
                                                         @if (auth()->user()->can('order.change_all_status'))
-                                                            <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                            <option value="{{ $status->id }}"
+                                                                {{ $status->id == $order->order_status_id ? 'selected' : '' }}>
+                                                                {{ $status->title }}</option>
                                                         @else
                                                             @if (in_array($status->priority_no, [1, 3, 7, 10]) || $status->id == $order->order_status_id)
-                                                                <option value="{{ $status->id }}" {{ $status->id == $order->order_status_id ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                                <option value="{{ $status->id }}"
+                                                                    {{ $status->id == $order->order_status_id ? 'selected' : '' }}>
+                                                                    {{ $status->title }}</option>
                                                             @endif
                                                         @endif
                                                     @endforeach
@@ -395,7 +498,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Reason</label>
-                                                <input type="text" name="note" value="{{ $order->note }}" class="form-control">
+                                                <input type="text" name="note" value="{{ $order->note }}"
+                                                    class="form-control">
                                                 @error('note')
                                                     <span class="invalid-feedback" role="alert" style="display: block;">
                                                         <strong>{{ $message }}</strong>
@@ -405,20 +509,25 @@
                                             <div class="row justify-content-start">
                                                 <div class="col-4">
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        <button type="submit" class="btn btn-primary">Save
+                                                            Changes</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-8 text-right">
                                                     @if (1)
-                                                        <a href="#add-loss" class="btn btn-primary bg-purple" data-toggle="modal">Add Loss</a>
+                                                        <a href="#add-loss" class="btn btn-primary bg-purple"
+                                                            data-toggle="modal">Add Loss</a>
                                                     @else
-                                                        <a href="{{ route('order.remove.loss', $order->id) }}" class="btn btn-primary bg-info">Removed Loss</a>
+                                                        <a href="{{ route('order.remove.loss', $order->id) }}"
+                                                            class="btn btn-primary bg-info">Removed Loss</a>
                                                     @endif
                                                     @if ($order->price > 0)
-                                                        <a href="{{ route('order.return', $order->id) }}" class="btn btn-primary bg-primary">Return Products</a>
+                                                        <a href="{{ route('order.return', $order->id) }}"
+                                                            class="btn btn-primary bg-primary">Return Products</a>
                                                     @endif
                                                     @if ($order->discount_amount != null)
-                                                        <a href="#remove-discount" data-toggle="modal" class="btn btn-primary bg-danger">Remove Discount</a>
+                                                        <a href="#remove-discount" data-toggle="modal"
+                                                            class="btn btn-primary bg-danger">Remove Discount</a>
                                                     @endif
                                                 </div>
                                             </div>
@@ -428,8 +537,10 @@
                                         <form action="{{ route('order.apply.cod', $order->id) }}" method="POST">
                                             @csrf
                                             <div class="form-group" align="right">
-                                                <button type="submit" class="btn btn-secondary" name="submit" value="remove">Remove COD</button>
-                                                <button type="submit" class="btn btn-danger" name="submit" value="apply">Apply 1% COD</button>
+                                                <button type="submit" class="btn btn-secondary" name="submit"
+                                                    value="remove">Remove COD</button>
+                                                <button type="submit" class="btn btn-danger" name="submit"
+                                                    value="apply">Apply 1% COD</button>
                                             </div>
                                         </form>
                                     </div>
@@ -437,7 +548,8 @@
                             @endif
 
 
-                            <form id="update-products-form" action="{{ route('order.order_products.update', $order->id) }}" method="POST">
+                            <form id="update-products-form"
+                                action="{{ route('order.order_products.update', $order->id) }}" method="POST">
                                 @csrf
                                 <!-- Table row -->
                                 <div class="row mt-3">
@@ -488,10 +600,17 @@
                                                         <td>
                                                             @if (auth()->user()->can('update.products') && $order->is_return == 0)
                                                                 <div class="selectmain">
-                                                                    <select name="product[]" class="select2 select-down" id="" style="width: 100% !important;">
+                                                                    <select name="product[]" class="select2 select-down"
+                                                                        id="" style="width: 100% !important;">
                                                                         @foreach ($products as $product)
                                                                             @if (!is_null($product))
-                                                                                <option value="{{ $product->id }}" {{ $product->product_id == $order_product->product_id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                                <option value="{{ $product->id }}"
+                                                                                    {{ $product->product_id == $order_product->product_id && $product->size_id == $order_product->size_id ? 'selected' : '' }}>
+                                                                                    {{ $product->product->title }}
+                                                                                    {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
+                                                                                    -
+                                                                                    {{ env('CURRENCY') . $product->price }}
+                                                                                </option>
                                                                             @endif
                                                                         @endforeach
                                                                     </select>
@@ -501,21 +620,32 @@
                                                             @endif
 
                                                             @if ($order_product->return_qty != null)
-                                                                <span class="text-danger ml-2">({{ $order_product->return_qty }} Product(s) Returned)</span>
+                                                                <span
+                                                                    class="text-danger ml-2">({{ $order_product->return_qty }}
+                                                                    Product(s) Returned)</span>
                                                             @endif
                                                         </td>
                                                         @if (!$order->vendor_id)
                                                             <td>
                                                                 @if ($checkedElement == $key + 1)
-                                                                    <input id="order_product_id" type="text" name="order_product_id" value="{{ $order_product->id }}" hidden readonly>
-                                                                    <input id="stock_id" type="text" name="stock_id" value="{{ $order_product->stock()->id }}" hidden readonly>
+                                                                    <input id="order_product_id" type="text"
+                                                                        name="order_product_id"
+                                                                        value="{{ $order_product->id }}" hidden readonly>
+                                                                    <input id="stock_id" type="text" name="stock_id"
+                                                                        value="{{ $order_product->stock()->id }}" hidden
+                                                                        readonly>
 
-                                                                    <input id="barcode" class="form-control" type="text" name="barcode" placeholder="Add Barcode Here" style="width: 55%">
+                                                                    <input id="barcode" class="form-control"
+                                                                        type="text" name="barcode"
+                                                                        placeholder="Add Barcode Here" style="width: 55%">
                                                                 @else
                                                                     @if ($checkedElement == null)
                                                                         Checking Done
                                                                         @php
-                                                                            if ($key + 1 == $order->order_product->count()) {
+                                                                            if (
+                                                                                $key + 1 ==
+                                                                                $order->order_product->count()
+                                                                            ) {
                                                                                 $all_checked = 1;
                                                                             }
                                                                         @endphp
@@ -534,22 +664,30 @@
                                                         @endif
                                                         <td>
                                                             @if ($order->source == 'Wholesale')
-                                                                &#2547; {{ $order_product->product->variation->wholesale_price }}
+                                                                &#2547;
+                                                                {{ $order_product->product->variation->wholesale_price }}
                                                             @else
                                                                 @if ($order_product->product->variation->discount_price != null && $order->source == 'Website')
-                                                                    <s class="text-muted">&#2547; {{ $order_product->product->variation->price }}</s>
-                                                                    &#2547; {{ $order_product->product->variation->discount_price }}
+                                                                    <s class="text-muted">&#2547;
+                                                                        {{ $order_product->product->variation->price }}</s>
+                                                                    &#2547;
+                                                                    {{ $order_product->product->variation->discount_price }}
                                                                 @else
-                                                                    &#2547; {{ $order_product->product->variation->price }}
+                                                                    &#2547;
+                                                                    {{ $order_product->product->variation->price }}
                                                                 @endif
                                                             @endif
                                                         </td>
                                                         <td>
                                                             @if (auth()->user()->can('update.products') && $order->is_return == 0)
                                                                 <fieldset class="form-group mb-3">
-                                                                    <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="{{ $order_product->qty }}" style="width: 60% !important;">
+                                                                    <input type="number" name="qty[]"
+                                                                        class="form-control" placeholder="Enter Quantity"
+                                                                        value="{{ $order_product->qty }}"
+                                                                        style="width: 60% !important;">
                                                                     @if (session('qtyError' . $key))
-                                                                        <span class="invalid-feedback" role="alert" style="display: block;">
+                                                                        <span class="invalid-feedback" role="alert"
+                                                                            style="display: block;">
                                                                             <strong>{{ session('qtyError' . $key) }}</strong>
                                                                         </span>
                                                                     @endif
@@ -560,12 +698,15 @@
                                                         </td>
                                                         <td>
                                                             @if ($order->source == 'Wholesale')
-                                                                &#2547; {{ $order_product->product->variation->wholesale_price * $order_product->qty }}
+                                                                &#2547;
+                                                                {{ $order_product->product->variation->wholesale_price * $order_product->qty }}
                                                             @else
                                                                 @if ($order_product->product->variation->discount_price != null && $order->source == 'Website')
-                                                                    &#2547; {{ $order_product->product->variation->discount_price * $order_product->qty }}
+                                                                    &#2547;
+                                                                    {{ $order_product->product->variation->discount_price * $order_product->qty }}
                                                                 @else
-                                                                    &#2547; {{ $order_product->product->variation->price * $order_product->qty }}
+                                                                    &#2547;
+                                                                    {{ $order_product->product->variation->price * $order_product->qty }}
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -576,11 +717,17 @@
                                                         <td>{{ $k + 2 }}</td>
                                                         <td>
                                                             <div class="selectmain">
-                                                                <select name="product[]" class="select2 select-down" id="" style="width: 100% !important;">
-                                                                    <option value="0"> -- Add another product -- </option>
+                                                                <select name="product[]" class="select2 select-down"
+                                                                    id="" style="width: 100% !important;">
+                                                                    <option value="0"> -- Add another product --
+                                                                    </option>
                                                                     @foreach ($products as $product)
                                                                         @if (!is_null($product) && $product->product->is_active && $product->qty > 0)
-                                                                            <option value="{{ $product->id }}">{{ $product->product->title }} {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }} - {{ env('CURRENCY') . $product->price }}</option>
+                                                                            <option value="{{ $product->id }}">
+                                                                                {{ $product->product->title }}
+                                                                                {{ isset($product->size_id) ? ' - ' . $product->size->title : '' }}
+                                                                                - {{ env('CURRENCY') . $product->price }}
+                                                                            </option>
                                                                         @endif
                                                                     @endforeach
                                                                 </select>
@@ -593,7 +740,9 @@
                                                         <td></td>
                                                         <td>
                                                             <fieldset class="form-group mb-3">
-                                                                <input type="number" name="qty[]" class="form-control" placeholder="Enter Quantity" value="" style="width: 60% !important;">
+                                                                <input type="number" name="qty[]" class="form-control"
+                                                                    placeholder="Enter Quantity" value=""
+                                                                    style="width: 60% !important;">
                                                             </fieldset>
                                                         </td>
                                                         <td></td>
@@ -601,64 +750,82 @@
                                                 @endif
                                                 @if ($order->source == 'Wholesale')
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="5" @else colspan="3" @endif align="right">Total Qty:</td>
+                                                        <td @if (!$order->vendor_id) colspan="5" @else colspan="3" @endif
+                                                            align="right">Total Qty:</td>
                                                         <td colspan=""> {{ $total_qty }}</td>
                                                         <td colspan=""></td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->extra_charge)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Extra Charge:</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">Extra Charge:</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->extra_charge }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->delivery_charge)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Delivery Charge:</td>
-                                                        <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">Delivery Charge:</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->delivery_charge == null ? 0 : $order->delivery_charge }}
+                                                        </td>
                                                     </tr>
                                                 @endif
                                                 <tr>
-                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Discount (-):</td>
-                                                    <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}</td>
+                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                        align="right">Discount (-):</td>
+                                                    <td>{{ env('CURRENCY') }}{{ $order->discount_amount == null ? 0 : $order->discount_amount }}
+                                                    </td>
                                                 </tr>
                                                 @if ($order->cod != 0)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">COD (-):</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">COD (-):</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->cod }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->wallet_amount != null)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Wallet Use:</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">Wallet Use:</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->wallet_amount }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->points_redeemed)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Points Redeemed (-):</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">Points Redeemed (-):</td>
                                                         <td>{{ $order->points_redeemed }}</td>
                                                     </tr>
                                                 @endif
                                                 @if ($order->membership_discount)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Membership Discount (-):</td>
-                                                        <td>{{ env('CURRENCY') }}{{ $order->membership_discount }} ({{ $order->discount_rate }}%) </td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">Membership Discount (-):</td>
+                                                        <td>{{ env('CURRENCY') }}{{ $order->membership_discount }}
+                                                            ({{ $order->discount_rate }}%) </td>
                                                     </tr>
                                                 @endif
                                                 <tr>
-                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Total:</td>
-                                                    <td>&#2547; {{ round($order->price + $order->extra_charge + $order->delivery_charge - $order->wallet_amount) }}</td>
+                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                        align="right">Total:</td>
+                                                    <td>&#2547;
+                                                        {{ round($order->price + $order->extra_charge + $order->delivery_charge - $order->wallet_amount) }}
+                                                    </td>
                                                 </tr>
                                                 @if ($order->advance)
                                                     <tr>
-                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Advanced (-):</td>
+                                                        <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                            align="right">Advanced (-):</td>
                                                         <td>{{ env('CURRENCY') }}{{ $order->advance }}</td>
                                                     </tr>
                                                 @endif
                                                 <tr>
-                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif align="right">Total Payable:</td>
-                                                    <td>&#2547; {{ round($order->price + $order->extra_charge + $order->delivery_charge - $order->wallet_amount - $order->advance) }}</td>
+                                                    <td @if (!$order->vendor_id) colspan="6" @else colspan="4" @endif
+                                                        align="right">Total Payable:</td>
+                                                    <td>&#2547;
+                                                        {{ round($order->price + $order->extra_charge + $order->delivery_charge - $order->wallet_amount - $order->advance) }}
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -668,9 +835,11 @@
                                 </div>
                                 <div class="row justify-content-end">
                                     @if (auth()->user()->can('update.products') && $order->is_return == 0)
-                                        <button id="update-products-btn" type="submit" class="mr-4 my-3 btn btn-primary">Update Products </button>
+                                        <button id="update-products-btn" type="submit"
+                                            class="mr-4 my-3 btn btn-primary">Update Products </button>
                                     @else
-                                        <button disabled type="submit" class="mr-4 my-3 btn btn-primary">Update Products </button>
+                                        <button disabled type="submit" class="mr-4 my-3 btn btn-primary">Update Products
+                                        </button>
                                     @endif
                                 </div>
                             </form>
@@ -680,7 +849,8 @@
                             @if ($all_checked == 1)
                                 @if ($order->status->priority_no < 4)
                                     <div class="row justify-content-center mb-2">
-                                        <a href="{{ route('order.packet_done', $order->id) }}" class="btn btn-primary btn-sm">Packet Done</a>
+                                        <a href="{{ route('order.packet_done', $order->id) }}"
+                                            class="btn btn-primary btn-sm">Packet Done</a>
                                     </div>
                                 @endif
                             @else
@@ -692,11 +862,11 @@
 
                             <!-- this row will not appear when printing -->
                             <!-- <div class="row no-print">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="col-12">
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a href="" class="btn btn-primary float-right" style="margin-right: 5px;"><i class="fas fa-download"></i> Generate PDF</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
@@ -706,7 +876,8 @@
     <!-- /.content -->
 
     <!-- check product Modal -->
-    <div class="modal fade" id="check-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="check-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -723,7 +894,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="confirmSell{{ $order->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="confirmSell{{ $order->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -736,7 +908,8 @@
                     <form action="{{ route('order.convert.sell', $order->id) }}" method="POST">
                         @csrf
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary bg-purple" type="submit"><i class="fas fa-check"></i> Confirm</button>
+                        <button class="btn btn-primary bg-purple" type="submit"><i class="fas fa-check"></i>
+                            Confirm</button>
                     </form>
                 </div>
             </div>
@@ -744,7 +917,8 @@
     </div>
 
     <!-- add loss Modal -->
-    <div class="modal fade" id="add-loss" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="add-loss" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -761,7 +935,9 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label>Date</label>
-                                    <input type="date" name="date" class="form-control @error('date') is-invalid @enderror" value="{{ Carbon\Carbon::parse($order->created_at)->format('Y-m-d') }}" required>
+                                    <input type="date" name="date"
+                                        class="form-control @error('date') is-invalid @enderror"
+                                        value="{{ Carbon\Carbon::parse($order->created_at)->format('Y-m-d') }}" required>
                                     @error('date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -772,7 +948,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Bank*</label>
-                                    <select class="select2 form-control @error('bank_id') is-invalid @enderror" name="bank_id" required>
+                                    <select class="select2 form-control @error('bank_id') is-invalid @enderror"
+                                        name="bank_id" required>
                                         <option value="">Please select relevant bank</option>
                                         @if (!$order->vendor_id)
                                             @foreach (App\Models\Bank::orderBy('name', 'ASC')->get() as $bank)
@@ -794,7 +971,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Amount*</label>
-                                    <input type="text" name="amount" class="form-control @error('amount') is-invalid @enderror" required>
+                                    <input type="text" name="amount"
+                                        class="form-control @error('amount') is-invalid @enderror" required>
                                     @error('amount')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -805,7 +983,8 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Note</label>
-                                    <input type="text" name="note" class="form-control @error('note') is-invalid @enderror">
+                                    <input type="text" name="note"
+                                        class="form-control @error('note') is-invalid @enderror">
                                     @error('note')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -823,7 +1002,8 @@
     </div>
 
     <!-- remove_discount Modal -->
-    <div class="modal fade" id="remove-discount" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="remove-discount" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -834,7 +1014,8 @@
                 </div>
                 <div class="modal-body">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <a href="{{ route('order.remove.discount', $order->id) }}" class="btn btn-primary bg-danger">Confirm</a>
+                    <a href="{{ route('order.remove.discount', $order->id) }}"
+                        class="btn btn-primary bg-danger">Confirm</a>
                 </div>
             </div>
         </div>

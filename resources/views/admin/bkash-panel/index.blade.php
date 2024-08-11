@@ -181,21 +181,21 @@
                                 </tr>
                                 <tr>
                                     <th width="25%">CASH IN</th>
-                                    <td class="text-center font-weight-bold">&#2547; {{ $cash_in }}</td>
+                                    <td class="text-center font-weight-bold">&#2547; {{ number_format($cash_in, 2) }}</td>
                                     <th width="25%">CASH OUT</th>
-                                    <td class="text-center font-weight-bold">&#2547; {{ $cash_out }}</td>
+                                    <td class="text-center font-weight-bold">&#2547; {{ number_format($cash_out, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <th width="25%">SEND MONEY</th>
-                                    <td class="text-center font-weight-bold">&#2547; {{ $send_money }}</td>
+                                    <td class="text-center font-weight-bold">&#2547; {{ number_format($send_money, 2) }}</td>
                                     <th width="25%">PAYMENTS</th>
-                                    <td class="text-center font-weight-bold">&#2547; {{ $payments }}</td>
+                                    <td class="text-center font-weight-bold">&#2547; {{ number_format($payments, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <th width="25%">RECHARGE</th>
-                                    <td class="text-center font-weight-bold">&#2547; {{ $recharge }}</td>
+                                    <td class="text-center font-weight-bold">&#2547; {{ number_format($recharge, 2) }}</td>
                                     <th style="font-size: 20px !important; background: rgba(199, 129, 1, 0.176)" width="25%">CURRENT BALANCE</th>
-                                    <td style="font-size: 20px !important; background: rgba(199, 129, 1, 0.176)" class="text-center font-weight-bold text-{{ $current_balance >= 0 ? 'success' : 'danger' }}">&#2547; {{ $current_balance }}</td>
+                                    <td style="font-size: 20px !important; background: rgba(199, 129, 1, 0.176)" class="text-center font-weight-bold text-{{ $current_balance >= 0 ? 'success' : 'danger' }}">&#2547; {{ number_format($current_balance, 2) }}</td>
                                 </tr>
 
                             </table>

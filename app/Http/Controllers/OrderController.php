@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BkashNumber;
+use App\Models\BkashRecord;
+
 use App\Models\Order;
 use App\Models\ProductStock;
 use App\Models\WorkTrackingEntry;
@@ -1070,9 +1073,10 @@ class OrderController extends Controller
             $products = ProductStock::orderBy('id', 'DESC')->with('product', 'size')->get();
             $order = Order::with('status', 'order_product', 'order_product.product', 'order_product.product.variation', 'order_product.size')->find($id);
             $couriers = CourierName::all();
+            $bkash_nums = BkashNumber::all();
 
             if (!is_null($order)) {
-                return view('admin.order.edit', compact('order', 'couriers', 'products'));
+                return view('admin.order.edit', compact('order', 'couriers', 'products', 'bkash_nums'));
             } else {
                 Alert::toast('Order Not Found', 'error');
                 return back();
@@ -1547,6 +1551,22 @@ class OrderController extends Controller
                 ]);
                 $order->advance = $request->amount;
                 $order->save();
+
+                $bkash_record = new BkashRecord;
+                $bkash_record->bkash_business_id = $request->bkash_business_id;
+                $bkash_record->tr_type = 'CASH IN';
+                $bkash_record->amount = $request->amount;
+                $bkash_record->tr_purpose_id = 1;
+                $bkash_record->last_digit = $request->last_digit;
+                $bkash_record->comments = 'Advance Amount Received. Order Code - ' . $order->code;
+                $bkash_record->save();
+
+                WorkTrackingEntry::create([
+                    'bkash_record_id' => $bkash_record->id,
+                    'user_id' => Auth::id(),
+                    'work_name' => 'bkash_record'
+                ]);
+
                 Alert::toast('Advance Amount Received', 'success');
                 return back();
             } else {
