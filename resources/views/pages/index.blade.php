@@ -33,8 +33,8 @@
         }
 
         /* .featured_category_img {
-                                                    height: 26vw;
-                                                } */
+                                                                                height: 26vw;
+                                                                            } */
 
         @media only screen and (max-width: 767px) {
             /*        .header-small-mobile {*/
@@ -42,8 +42,8 @@
             /*}*/
 
             /* .featured_category_img {
-                                                        height: 36vw;
-                                                    } */
+                                                                                    height: 36vw;
+                                                                                } */
 
             .slider-area {
                 height: 60vw;
@@ -66,44 +66,49 @@
 @endsection
 
 @section('content')
-    <div class="slider-area">
-        <div class="container-fluid p-0">
-            @if ($business->slider_option == 'video')
-                <!-- Background Video -->
-                <div class="video-container">
-                    <div class="video-cta">
-                        <!-- <h2>One is never over-dressed or under-dressed with a Little Black Dress.</h2> -->
-                    </div>
-                    <video autoplay loop muted poster="">
-                        <source src="{{ asset('videos/' . $business->video) }}">
-                    </video>
-                    <!-- <iframe class="yt-video" src="https://www.youtube.com/embed/LXb3EKWsInQ?controls=0&autoplay=1&mute=1&playsinline=1&playlist=LXb3EKWsInQ&loop=1"></iframe> -->
-                    <!-- <iframe class="yt-video" src="https://www.youtube.com/embed/wUXrSvUAkKI?controls=0&autoplay=1&mute=1&playsinline=1&playlist=wUXrSvUAkKI&loop=1" ></iframe> -->
+    @if ($business->slider_option == 'image')
+        <div class="slider-area" style="height: 33vw !important;">
+        @else
+            <div class="slider-area">
+    @endif
+    <div class="container-fluid p-0">
+        @if ($business->slider_option == 'video')
+            <!-- Background Video -->
+            <div class="video-container">
+                <div class="video-cta">
+                    <!-- <h2>One is never over-dressed or under-dressed with a Little Black Dress.</h2> -->
                 </div>
-                <!-- Background Video End -->
-            @endif
-            @if ($business->slider_option == 'image')
-                <!-- Slider Section Start -->
-                <div class="main-slider-active-3 owl-carousel slider-dot-position-3 slider-dot-style-2">
-                    @foreach ($sliders as $slider)
-                        <div class="single-main-slider slider-animated-1 bg-img slider-height-hm11 align-items-center custom-d-flex" style="background-image:url({{ asset('images/slider/' . $slider->image) }});">
-                            <div class="row g-0 width-100-percent">
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="main-slider-content-11-1 text-center">
-                                        <h1 class="animated">{{ $slider->title }} </h1>
-                                        <div class="slider-btn-2 slider-btn-2-border-white">
-                                            <a class="animated" href="{{ $slider->link }}">{{ $slider->button_text }} </a>
-                                        </div>
+                <video autoplay loop muted poster="">
+                    <source src="{{ asset('videos/' . $business->video) }}">
+                </video>
+                <!-- <iframe class="yt-video" src="https://www.youtube.com/embed/LXb3EKWsInQ?controls=0&autoplay=1&mute=1&playsinline=1&playlist=LXb3EKWsInQ&loop=1"></iframe> -->
+                <!-- <iframe class="yt-video" src="https://www.youtube.com/embed/wUXrSvUAkKI?controls=0&autoplay=1&mute=1&playsinline=1&playlist=wUXrSvUAkKI&loop=1" ></iframe> -->
+            </div>
+            <!-- Background Video End -->
+        @endif
+        @if ($business->slider_option == 'image')
+            <!-- Slider Section Start -->
+            <div class="main-slider-active-3 owl-carousel slider-dot-position-3 slider-dot-style-2">
+                @foreach ($sliders as $slider)
+                    <div class="single-main-slider slider-animated-1 bg-img slider-height-hm11 align-items-center custom-d-flex"
+                        style="height: 33vw !important; background-image:url({{ asset('images/slider/' . $slider->image) }});">
+                        <div class="row g-0 width-100-percent">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="main-slider-content-11-1 text-center">
+                                    <h1 class="animated">{{ $slider->title }} </h1>
+                                    <div class="slider-btn-2 slider-btn-2-border-white">
+                                        <a class="animated" href="{{ $slider->link }}">{{ $slider->button_text }} </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    </div>
+                @endforeach
 
-                </div>
-                <!-- Slider Section End -->
-            @endif
-        </div>
+            </div>
+            <!-- Slider Section End -->
+        @endif
+    </div>
     </div>
 
     {{-- Featured Categories --}}
@@ -131,10 +136,15 @@
                         <div class="banner-wrap default-overlay banner-zoom mb-30">
                             @if (count($featured_categories) > 0)
                                 <div class="banner-img">
-                                    <a href="{{ route('category.products', [$category->id, Str::slug($category->title)]) }}"><img class="featured_category_img" src="{{ asset('images/category/' . $category->banner) }}" alt="banner"></a>
+                                    <a
+                                        href="{{ route('category.products', [$category->id, Str::slug($category->title)]) }}"><img
+                                            class="featured_category_img"
+                                            src="{{ asset('images/category/' . $category->banner) }}" alt="banner"></a>
                                 </div>
                                 <div class="banner-content-3">
-                                    <h3><a href="{{ route('category.products', [$category->id, Str::slug($category->title)]) }}">{{ $category->title }}</a></h3>
+                                    <h3><a
+                                            href="{{ route('category.products', [$category->id, Str::slug($category->title)]) }}">{{ $category->title }}</a>
+                                    </h3>
                                 </div>
                             @endif
                         </div>
@@ -199,7 +209,9 @@
                     <div class="col-lg-12 col-md-12">
                         <div class="banner-wrap banner-zoom">
                             <div class="banner-img">
-                                <a href="{{ $trending->type == 'single_product' ? $trending->link : route('trending.products') }}"><img src="{{ asset('images/website/' . $trending->image) }}" alt="banner"></a>
+                                <a
+                                    href="{{ $trending->type == 'single_product' ? $trending->link : route('trending.products') }}"><img
+                                        src="{{ asset('images/website/' . $trending->image) }}" alt="banner"></a>
                             </div>
                         </div>
                     </div>
