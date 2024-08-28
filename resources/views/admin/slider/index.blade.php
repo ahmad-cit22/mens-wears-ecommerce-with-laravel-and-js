@@ -57,7 +57,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Title</label>
                                     <input type="text" name="title"
@@ -68,7 +68,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
                             <!-- <div class="col-md-6">
                       <div class="form-group">
                         <label>Small Description</label>
@@ -80,7 +80,7 @@
     @enderror
                       </div>
                     </div> -->
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Button Text</label>
                                     <input type="text" name="button_text"
@@ -91,7 +91,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Link</label>
@@ -119,9 +119,9 @@
                             <div class="card">
                                 <div class="card-header">
                                     <img src="{{ asset('images/slider/' . $slider->image) }}" width="100%">
-                                    <h3>{{ $slider->title }}</h3>
+                                    {{-- <h3>{{ $slider->title }}</h3> --}}
                                     <a href="{{ $slider->link }}" class="btn btn-info"
-                                        target="_blank">{{ $slider->button_text }}</a>
+                                        target="_blank">Link</a>
                                 </div>
                             </div>
                         </div>

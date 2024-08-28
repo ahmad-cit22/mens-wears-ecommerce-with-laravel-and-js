@@ -33,8 +33,8 @@
         }
 
         /* .featured_category_img {
-                                                                                height: 26vw;
-                                                                            } */
+                                                                                                    height: 26vw;
+                                                                                                } */
 
         @media only screen and (max-width: 767px) {
             /*        .header-small-mobile {*/
@@ -42,8 +42,8 @@
             /*}*/
 
             /* .featured_category_img {
-                                                                                    height: 36vw;
-                                                                                } */
+                                                                                                        height: 36vw;
+                                                                                                    } */
 
             .slider-area {
                 height: 60vw;
@@ -90,19 +90,22 @@
             <!-- Slider Section Start -->
             <div class="main-slider-active-3 owl-carousel slider-dot-position-3 slider-dot-style-2">
                 @foreach ($sliders as $slider)
-                    <div class="single-main-slider slider-animated-1 bg-img slider-height-hm11 align-items-center custom-d-flex"
-                        style="height: 33vw !important; background-image:url({{ asset('images/slider/' . $slider->image) }});">
-                        <div class="row g-0 width-100-percent">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="main-slider-content-11-1 text-center">
-                                    <h1 class="animated">{{ $slider->title }} </h1>
+                    <a class="" href="{{ $slider->link }}">
+                        <div class="single-main-slider slider-animated-1 bg-img slider-height-hm11 align-items-center custom-d-flex"
+                            style="height: 33vw !important; background-image:url({{ asset('images/slider/' . $slider->image) }});">
+                            <div class="row g-0 width-100-percent">
+                                <div class="col-lg-12 col-md-12">
+                                    {{-- <div class="main-slider-content-11-1 text-center">
+                                    <h1 class="animated slider-title">{{ $slider->title }} </h1>
                                     <div class="slider-btn-2 slider-btn-2-border-white">
-                                        <a class="animated" href="{{ $slider->link }}">{{ $slider->button_text }} </a>
+                                        <a class="animated slider-btn-2-custom"
+                                            href="{{ $slider->link }}">{{ $slider->button_text }} </a>
                                     </div>
+                                </div> --}}
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
 
             </div>
