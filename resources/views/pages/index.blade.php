@@ -33,8 +33,8 @@
         }
 
         /* .featured_category_img {
-                                                                                                    height: 26vw;
-                                                                                                } */
+                                                                                                            height: 26vw;
+                                                                                                        } */
 
         @media only screen and (max-width: 767px) {
             /*        .header-small-mobile {*/
@@ -42,8 +42,8 @@
             /*}*/
 
             /* .featured_category_img {
-                                                                                                        height: 36vw;
-                                                                                                    } */
+                                                                                                                height: 36vw;
+                                                                                                            } */
 
             .slider-area {
                 height: 60vw;
@@ -252,22 +252,11 @@
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="service-wrap mb-30 text-center">
                         <div class="service-icon">
-                            <i class="dlicon shopping_delivery"></i>
-                        </div>
-                        <div class="service-content">
-                            <h4>Freeship Wordwide</h4>
-                            <p>In ac hendrerit turpis. Aliquam ultrices dolor dolor, at commodo diam feugiat</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="service-wrap mb-30 text-center">
-                        <div class="service-icon">
                             <i class="dlicon shopping_gift"></i>
                         </div>
                         <div class="service-content">
-                            <h4>Special Offers</h4>
-                            <p>In ac hendrerit turpis. Aliquam ultrices dolor dolor, at commodo diam feugiat</p>
+                            <h4>Premium Quality</h4>
+                            <p>Crafted from high-quality materials for lasting style and comfort.</p>
                         </div>
                     </div>
                 </div>
@@ -277,8 +266,19 @@
                             <i class="dlicon tech-2_l-security"></i>
                         </div>
                         <div class="service-content">
-                            <h4>Order Protection</h4>
-                            <p>In ac hendrerit turpis. Aliquam ultrices dolor dolor, at commodo diam feugiat</p>
+                            <h4>Secure Checkout</h4>
+                            <p>Shop confidently with our safe and secure payment options.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="service-wrap mb-30 text-center">
+                        <div class="service-icon">
+                            <i class="dlicon shopping_delivery"></i>
+                        </div>
+                        <div class="service-content">
+                            <h4>Fast Delivery</h4>
+                            <p>Be ensured of a smooth and timely delivery experience.</p>
                         </div>
                     </div>
                 </div>
@@ -288,8 +288,8 @@
                             <i class="dlicon tech-2_headset"></i>
                         </div>
                         <div class="service-content">
-                            <h4>Professional Support</h4>
-                            <p>In ac hendrerit turpis. Aliquam ultrices dolor dolor, at commodo diam feugiat</p>
+                            <h4>24/7 Support</h4>
+                            <p>Reach out to us anytime for help or answers to your questions.</p>
                         </div>
                     </div>
                 </div>

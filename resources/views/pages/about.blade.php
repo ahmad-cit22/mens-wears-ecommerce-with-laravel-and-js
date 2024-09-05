@@ -29,68 +29,39 @@
             </div>
         </div>
     </div>
-    <div class="about-us-skill pt-50 pb-50 padding-50-row-col">
+    <div class="about-us-skill pt-20 pb-50 padding-50-row-col">
         <div class="container">
             <div class="row">
-                <!-- <div class="col-lg-6">
-                                                                <div class="skill-img default-overlay">
-                                                                    <img src="{{ asset('images/banner/about-01.jpg') }}" alt="banner">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="skill-content">
-                                                                    <h2>Fashion Luxury</h2>
-                                                                    <p>Donec accumsan auctor iaculis. Sed suscipit arcu ligula, at egestas magna molestie a. Proin ac ex maximus, ultrices justo eget, sodal</p>
-                                                                    <div class="skill-bar">
-                                                                        <div class="skill-bar-item">
-                                                                            <span>WEB DEVELOPMENT </span>
-                                                                            <div class="progress">
-                                                                                <div class="progress-bar wow fadeInLeft" data-progress="95%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                    <span class="text-top">95%</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="skill-bar-item">
-                                                                            <span>DESIGN FOR SEO </span>
-                                                                            <div class="progress">
-                                                                                <div class="progress-bar wow fadeInLeft" data-progress="85%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                    <span class="text-top">85%</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="skill-bar-item">
-                                                                            <span>DEDICATED SUPPORT</span>
-                                                                            <div class="progress">
-                                                                                <div class="progress-bar wow fadeInLeft" data-progress="80%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                    <span class="text-top">90%</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="skill-bar-item">
-                                                                            <span>POWERFUL ADMIN INFERFACE</span>
-                                                                            <div class="progress">
-                                                                                <div class="progress-bar wow fadeInLeft" data-progress="99%" data-wow-duration="1.5s" data-wow-delay="1.2s">
-                                                                                    <span class="text-top">90%</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div> -->
                 <div class="col-lg-12 px-3">
-                    <h3>ABOUT US</h3>
                     <p style="text-align: justify">
-                        GO by Fabrifest is a clothing brand for men which produce lifestyle goods with its own designs and Supervision. It's all products are designed by its own designer. And very few quantity are produce for each design. when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-                        Letraset sheets containing Lorem Ipsum passages, and more
-                        recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        "Go By Fabrifest" is a dynamic men’s fashion brand that redefines everyday style with a unique blend
+                        of comfort, quality, and affordability. Specializing in an extensive collection of men's shirts,
+                        t-shirts, and Punjabis, our brand focuses on creating versatile pieces that are perfect for every
+                        occasion. From casual outings to festive celebrations, we offer a diverse range of designs that
+                        capture the essence of modern fashion while ensuring a perfect fit for every customer.
                     </p>
                     <p style="text-align: justify">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
-                        recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        Founded on the principles of innovation and excellence, "Go By Fabrifest" is committed to delivering
+                        high-quality fabrics and detailed craftsmanship. Our designs reflect the latest trends, combining
+                        classic elegance with contemporary flair to appeal to young men who appreciate style and substance.
+                        Every garment is meticulously crafted to offer superior comfort and durability, allowing our
+                        customers to express their individuality with confidence.
                     </p>
                     <p style="text-align: justify">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
-                        recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        Our mission is to provide an exceptional shopping experience that goes beyond just selling clothes.
+                        We believe in creating a seamless and enjoyable journey for our customers, from browsing our
+                        collections online to receiving their orders at their doorstep. With a focus on customer
+                        satisfaction, we offer easy returns, secure payments, and reliable customer service to make fashion
+                        accessible and enjoyable for everyone.
+                    </p>
+                    <p style="text-align: justify">
+                        At "Go By Fabrifest," we are more than just a clothing brand; we are a community of style
+                        enthusiasts who believe in making a statement with every outfit. Whether you are looking for a
+                        classic piece or a trendy new look, we have something for everyone. Explore our collections and
+                        experience the perfect blend of quality, style, and value that defines "Go By Fabrifest."
+
+                        Discover your next favorite outfit at Go By Fabrifest and join us on our journey to redefine men’s
+                        fashion.
                     </p>
                 </div>
             </div>

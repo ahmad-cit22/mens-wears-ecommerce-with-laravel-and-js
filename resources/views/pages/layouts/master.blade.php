@@ -65,7 +65,8 @@
         fbq('init', '6814850821967961');
         fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=6814850821967961&ev=PageView&noscript=1" /></noscript>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=6814850821967961&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
     <meta charset="utf-8">
@@ -93,6 +94,37 @@
             border-radius: 4px;
             font-size: 10px;
         }
+
+        .nav-link {
+            padding: 0 !important;
+        }
+
+        @media only screen and (max-width: 1503px) {
+            .nav-link {
+                font-size: 12px !important;
+            }
+        }
+
+        @media only screen and (max-width: 1305px) {
+            .main-menu li {
+                /* font-size: 12px !important; */
+                padding: 0 8px !important;
+            }
+        }
+
+        @media only screen and (max-width: 1225px) {
+            .main-menu li {
+                padding: 0 5px !important;
+            }
+
+            .nav-link {
+                font-size: 11px !important;
+            }
+
+            .header-right-wrap a {
+                font-size: 14px !important;
+            }
+        }
     </style>
     @yield('style')
 
@@ -100,7 +132,8 @@
 
 <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MSXD3K9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MSXD3K9" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
     <!-- Messenger Chat plugin Code -->
