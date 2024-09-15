@@ -35,7 +35,7 @@
                                     <li><i class="dlicon ui-1_home-simple"></i> {{ $business->address }}</li>
                                     <li><i class="dlicon tech-2_rotate"></i> {{ $business->phone }}</li>
                                     <li><i class="dlicon ui-1_email-83"></i> {{ $business->email }}</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                                 </ul>
                             </div>
                         </div>
-                        
+
                         <div class="footer-column footer-width-29 mb-30">
                             <div class="contact-page-map">
                                 <!-- <div id="contact-map"></div> -->
@@ -75,7 +75,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="copyright-2 text-center">
-                                <p>© {{ date('Y') }} <a href="{{ route('index') }}">{{ $business->name }}</a> All rights reserved.</p>
+                                <p style="font-size: 11px;"> Designed & Developed by <a href="https://www.imbdagency.com/" style="color: red !important;">IMBD Agency Ltd.</a> </p>
+                                <p>© <a href="{{ route('index') }}" style="color: orange !important;">{{ $business->name }}</a>. All rights reserved | {{ date('Y') }} </p>
                             </div>
                         </div>
                     </div>
@@ -101,7 +102,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row g-0" id="product_details_output">
-                            
+
                         </div>
                     </div>
                 </div>
