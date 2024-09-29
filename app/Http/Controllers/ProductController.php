@@ -489,7 +489,6 @@ class ProductController extends Controller
             $product = Product::find($id);
             if (!is_null($product)) {
                 if (!OrderProduct::where('product_id', $id)->exists()) {
-
                     if (File::exists('images/product/' . $product->image)) {
                         File::delete('images/product/' . $product->image);
                     }
@@ -529,6 +528,49 @@ class ProductController extends Controller
                     Alert::toast('Product Deleted!', 'success');
                     return redirect()->route('product.index');
                 } else {
+                    $order_product = OrderProduct::where('product_id', $id)->first();
+
+                    if ($order_product->order->order_status_id == 5 && $order_product->order->is_final == 0) {
+                        if (File::exists('images/product/' . $product->image)) {
+                            File::delete('images/product/' . $product->image);
+                        }
+                        if (File::exists('images/product/pos_images/' . $product->image)) {
+                            File::delete('images/product/pos_images/' . $product->image);
+                        }
+                        if (File::exists('images/product/' . $product->size_chart)) {
+                            File::delete('images/product/' . $product->size_chart);
+                        }
+                        $product_gallery_images = ProductImage::where('product_id', $id)->get();
+
+                        foreach ($product_gallery_images as $key => $gallery_image) {
+                            if (!is_null($gallery_image)) {
+                                if (File::exists('images/product/' . $gallery_image->image)) {
+                                    File::delete('images/product/' . $gallery_image->image);
+                                }
+                                $gallery_image->delete();
+                            }
+                        }
+
+                        if ($product->type == 'single') {
+                            $product_stock = ProductStock::find($product->variation->id);
+
+                            $product_stock->delete();
+                        }
+
+                        if ($product->type == 'variation') {
+                            $exists = ProductStock::where('product_id', $product->id)->get();
+                            if (!is_null($exists)) {
+                                $prodduct_stock = ProductStock::where('product_id', $product->id);
+                                $prodduct_stock->delete();
+                            }
+                        }
+
+                        $product->delete();
+
+                        Alert::toast('Product Deleted!', 'success');
+                        return redirect()->route('product.index');
+                    }
+
                     Alert::toast('Sorry! There is orders containing this product.', 'warning');
                     return back();
                 }
