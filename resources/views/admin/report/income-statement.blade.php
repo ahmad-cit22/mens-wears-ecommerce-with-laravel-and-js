@@ -28,7 +28,9 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Date From</label>
-                                        <input type="date" name="date_from" class="form-control @error('date_from') is-invalid @enderror" @if ($date_from != '') value="{{ $date_from }}" @endif>
+                                        <input type="date" name="date_from"
+                                            class="form-control @error('date_from') is-invalid @enderror"
+                                            @if ($date_from != '') value="{{ $date_from }}" @endif>
                                         @error('date_from')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -39,7 +41,9 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Date To</label>
-                                        <input type="date" name="date_to" class="form-control @error('date_to') is-invalid @enderror" @if ($date_to != '') value="{{ $date_to }}" @endif>
+                                        <input type="date" name="date_to"
+                                            class="form-control @error('date_to') is-invalid @enderror"
+                                            @if ($date_to != '') value="{{ $date_to }}" @endif>
                                         @error('date_to')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -89,30 +93,35 @@
                                 @else
                                     <td>Sells</td>
                                 @endif
-                                <td class="text-success font-weight-bold">{{ env('CURRENCY') }}{{ round($retail_order_amount) }}</td>
+                                <td class="text-success font-weight-bold">
+                                    {{ env('CURRENCY') }}{{ round($retail_order_amount) }}</td>
                                 <td></td>
                             </tr>
                             @if (!auth()->user()->vendor)
                                 <tr>
                                     <td>Wholesale Sells</td>
-                                    <td class="text-success font-weight-bold">{{ env('CURRENCY') }}{{ round($wholesale_order_amount) }}</td>
+                                    <td class="text-success font-weight-bold">
+                                        {{ env('CURRENCY') }}{{ round($wholesale_order_amount) }}</td>
                                     <td></td>
                                 </tr>
                             @endif
                             <tr>
                                 <td>Total VAT</td>
-                                <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($vat_amount) }}</td>
+                                <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($vat_amount) }}
+                                </td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Cost of good sold (Retail)</td>
-                                <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($retail_production_cost, 2) }}</td>
+                                <td class="text-danger font-weight-bold">
+                                    {{ env('CURRENCY') }}{{ round($retail_production_cost, 2) }}</td>
                                 <td></td>
                             </tr>
                             @if (!auth()->user()->vendor)
                                 <tr>
                                     <td>Cost of good sold (Wholesale)</td>
-                                    <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ round($wholesale_production_cost, 2) }}</td>
+                                    <td class="text-danger font-weight-bold">
+                                        {{ env('CURRENCY') }}{{ round($wholesale_production_cost, 2) }}</td>
                                     <td></td>
                                 </tr>
                             @endif
@@ -129,7 +138,8 @@
                             <tr>
                                 <th>Total Profit</th>
                                 <th></th>
-                                <th>{{ env('CURRENCY') }}{{ round($other_income->sum('credit') + $order_amount - $production_cost - $vat_amount) }}</th>
+                                <th>{{ env('CURRENCY') }}{{ round($other_income->sum('credit') + $order_amount - $production_cost - $vat_amount) }}
+                                </th>
                             </tr>
                             <tr>
                                 <th colspan="3">EXPENSE</th>
@@ -151,7 +161,8 @@
                                 @if ($sum > 0)
                                     <tr>
                                         <td>{{ $type_name }}</td>
-                                        <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ $sum }}</td>
+                                        <td class="text-danger font-weight-bold">{{ env('CURRENCY') }}{{ $sum }}
+                                        </td>
                                         <td></td>
                                     </tr>
                                 @endif
@@ -163,11 +174,18 @@
                             </tr>
                             <tr>
                                 @php
-                                    $result = $other_income->sum('credit') + $order_amount - $production_cost - $expenses->sum('amount') - $vat_amount;
+                                    $result =
+                                        $other_income->sum('credit') +
+                                        $order_amount -
+                                        $production_cost -
+                                        $expenses->sum('amount') -
+                                        $vat_amount;
                                 @endphp
                                 <th>Net {{ $result >= 0 ? 'Profit' : 'Loss' }}</th>
                                 <th></th>
-                                <th><span class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) }}</span></th>
+                                <th><span
+                                        class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) }}</span>
+                                </th>
                             </tr>
                             @php
                                 $total_share = 0;
@@ -176,7 +194,9 @@
                                 <tr>
                                     <th>{{ $result >= 0 ? 'Profit' : 'Loss' }} Share to Main Business</th>
                                     <th></th>
-                                    <th><span class="text-{{ $result >= 0 ? 'danger' : 'success' }}">{{ env('CURRENCY') }}{{ round(abs($result * (auth()->user()->vendor->profit_percentage / 100))) }}</span></th>
+                                    <th><span
+                                            class="text-{{ $result >= 0 ? 'danger' : 'success' }}">{{ env('CURRENCY') }}{{ round(abs($result * (auth()->user()->vendor->profit_percentage / 100))) }}</span>
+                                    </th>
                                 </tr>
                             @endif
                             @if (!auth()->user()->vendor)
@@ -186,10 +206,14 @@
                                 {{-- <tr>{{ $expenses->sum('amount') }}</tr> --}}
                                 @foreach ($vendors as $vendor)
                                     @php
+                                        $fromDate =
+                                            Carbon\Carbon::parse($date_from)->startOfDay() ?: Carbon\Carbon::now()->startOfMonth();
+                                        $toDate = Carbon\Carbon::parse($date_to)->endOfDay() ?: Carbon\Carbon::now()->endOfMonth();
+                                        // dd($fromDate . ' - ' . $toDate);
                                         $sum = 0;
                                         $vendor_name = '';
-                                        $vendor_orders = $vendor->orders_report;
-                                        $vendor_order_amount = $vendor->orders_report->sum('price');
+                                        $vendor_orders = $vendor->orders_report($date_from, $date_to);
+                                        $vendor_order_amount = $vendor_orders->sum('price');
                                         $vendor_other_income = $vendor->other_incomes_report->sum('credit');
                                         $vendor_expense_amount = $vendor->expense_entries_reports->sum('amount');
                                         $vendor_vat_amount = $vendor->vat_entries_reports->sum('vat_amount');
@@ -202,7 +226,12 @@
                                             });
                                         }
 
-                                        $vendor_result = $vendor_order_amount + $vendor_other_income - $vendor_expense_amount - $vendor_vat_amount - $vendor_production_cost;
+                                        $vendor_result =
+                                            $vendor_order_amount +
+                                            $vendor_other_income -
+                                            $vendor_expense_amount -
+                                            $vendor_vat_amount -
+                                            $vendor_production_cost;
                                         $share = $vendor_result * ($vendor->profit_percentage / 100);
 
                                         // if ($vendor_result >= 0) {
@@ -222,25 +251,32 @@
                                     <tr>
                                         <th>{{ $vendor->name }}</th>
                                         <th></th>
-                                        <th class="text-{{ $vendor_result >= 0 ? 'success' : 'danger' }}">{{ $vendor_result >= 0 ? 'Profit Share: ' : 'Loss Share: ' }}{{ env('CURRENCY') }}{{ round($share) }}</th>
+                                        <th class="text-{{ $vendor_result >= 0 ? 'success' : 'danger' }}">
+                                            {{ $vendor_result >= 0 ? 'Profit Share: ' : 'Loss Share: ' }}{{ env('CURRENCY') }}{{ round($share) }}
+                                        </th>
                                     </tr>
                                     {{-- @endif --}}
                                 @endforeach
                                 <tr>
                                     <th>Total Share</th>
                                     <th></th>
-                                    <th class="text-{{ $total_share >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($total_share) }}</th>
+                                    <th class="text-{{ $total_share >= 0 ? 'success' : 'danger' }}">
+                                        {{ env('CURRENCY') }}{{ round($total_share) }}</th>
                                 </tr>
                                 <tr>
                                     <th>Final {{ $result + $total_share >= 0 ? 'Profit' : 'Loss' }}</th>
                                     <th></th>
-                                    <th><span class="text-{{ $result + $total_share >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result + $total_share) }}</span></th>
+                                    <th><span
+                                            class="text-{{ $result + $total_share >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result + $total_share) }}</span>
+                                    </th>
                                 </tr>
                             @else
                                 <tr>
                                     <th>Final {{ $result >= 0 ? 'Profit' : 'Loss' }}</th>
                                     <th></th>
-                                    <th><span class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) - round($result * (auth()->user()->vendor->profit_percentage / 100)) }}</span></th>
+                                    <th><span
+                                            class="text-{{ $result >= 0 ? 'success' : 'danger' }}">{{ env('CURRENCY') }}{{ round($result) - round($result * (auth()->user()->vendor->profit_percentage / 100)) }}</span>
+                                    </th>
                                 </tr>
                             @endif
                         </tbody>

@@ -35,7 +35,7 @@ class ReportController extends Controller {
                 $expenses = ExpenseEntry::where('vendor_id', null)->whereMonth('date', Carbon::now()->month)->whereYear('date', Carbon::now()->year)->orderBy('id', 'DESC')->get();
                 $expense_types = Expense::orderBy('type', 'ASC')->where('vendor_id', null)->get();
                 $vat_entries = VatEntry::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->where('vendor_id', null)->with('order')->latest()->get();
-                $vendors = Vendor::orderBy('name', 'ASC')->where('is_active', 1)->with('orders_report', 'orders_report.order_product', 'vat_entries_reports', 'expense_entries_reports', 'other_incomes_report')->get();
+                $vendors = Vendor::orderBy('name', 'ASC')->where('is_active', 1)->with('vat_entries_reports', 'expense_entries_reports', 'other_incomes_report')->get();
             } else {
                 $orders = Order::where('vendor_id', Auth::user()->vendor->id)->where('is_final', 1)->where('order_status_id', '!=', 5)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
                 $other_income = BankTransaction::where('vendor_id', Auth::user()->vendor->id)->where('other_income', 1)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->get();
