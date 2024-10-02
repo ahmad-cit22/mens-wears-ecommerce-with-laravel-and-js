@@ -34,14 +34,14 @@ class Vendor extends Model
 
     public function orders_report($fromDate = null, $toDate = null)
     {
-        $fromDate = Carbon::parse($fromDate)->startOfDay() ?: Carbon::now()->startOfMonth();
-        $toDate = Carbon::parse($toDate)->endOfDay() ?: Carbon::now()->endOfMonth();
+        $fromDate = $fromDate ? Carbon::parse($fromDate)->startOfDay() : Carbon::now()->startOfMonth();
+        $toDate = $toDate ? Carbon::parse($toDate)->endOfDay() : Carbon::now()->endOfMonth();
 
         return $this->hasMany(Order::class)
-        ->where('is_final', 1)
-        ->where('order_status_id', '!=', 5)
-        ->whereDate('created_at', '>=', $fromDate)
-        ->whereDate('created_at', '<=', $toDate)
+            ->where('is_final', 1)
+            ->where('order_status_id', '!=', 5)
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
             ->orderBy('id', 'DESC');
     }
 
@@ -50,11 +50,14 @@ class Vendor extends Model
         return $this->hasMany(VatEntry::class);
     }
 
-    public function vat_entries_reports()
+    public function vat_entries_reports($fromDate = null, $toDate = null)
     {
+        $fromDate = $fromDate ? Carbon::parse($fromDate)->startOfDay() : Carbon::now()->startOfMonth();
+        $toDate = $toDate ? Carbon::parse($toDate)->endOfDay() : Carbon::now()->endOfMonth();
+
         return $this->hasMany(VatEntry::class)
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
             ->orderBy('id', 'DESC');
     }
 
@@ -68,11 +71,14 @@ class Vendor extends Model
         return $this->hasMany(ExpenseEntry::class);
     }
 
-    public function expense_entries_reports()
+    public function expense_entries_reports($fromDate = null, $toDate = null)
     {
+        $fromDate = $fromDate ? Carbon::parse($fromDate)->startOfDay() : Carbon::now()->startOfMonth();
+        $toDate = $toDate ? Carbon::parse($toDate)->endOfDay() : Carbon::now()->endOfMonth();
+
         return $this->hasMany(ExpenseEntry::class)
-            ->whereMonth('date', Carbon::now()->month)
-            ->whereYear('date', Carbon::now()->year)
+            ->whereDate('date', '>=', $fromDate)
+            ->whereDate('date', '<=', $toDate)
             ->orderBy('id', 'DESC');
     }
 
@@ -81,11 +87,14 @@ class Vendor extends Model
         return $this->hasMany(BankTransaction::class);
     }
 
-    public function other_incomes_report()
+    public function other_incomes_report($fromDate = null, $toDate = null)
     {
+        $fromDate = $fromDate ? Carbon::parse($fromDate)->startOfDay() : Carbon::now()->startOfMonth();
+        $toDate = $toDate ? Carbon::parse($toDate)->endOfDay() : Carbon::now()->endOfMonth();
+
         return $this->hasMany(BankTransaction::class)
             ->where('other_income', 1)
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year);
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate);
     }
 }

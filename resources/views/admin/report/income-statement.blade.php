@@ -65,7 +65,7 @@
                     @if (!auth()->user()->vendor)
                         <h3 class="text-center">GO BY FABRIFEST</h3>
                     @else
-                        <h3 class="text-center">GO BY FABRIFEST - {{ auth()->user()->vendor->name }}</h3>
+                        <h3 class="text-center">GO BY FABRIFEST - {{ auth()->user()->vendor->name }} (Vendor)</h3>
                     @endif
                     <hr>
                     @if (Route::currentRouteName() == 'report.incomestatement')
@@ -203,23 +203,18 @@
                                 <tr>
                                     <th colspan="3">Profits/Loss from Vendors</th>
                                 </tr>
-                                {{-- <tr>{{ $expenses->sum('amount') }}</tr> --}}
                                 @foreach ($vendors as $vendor)
                                     @php
-                                        $fromDate =
-                                            Carbon\Carbon::parse($date_from)->startOfDay() ?: Carbon\Carbon::now()->startOfMonth();
-                                        $toDate = Carbon\Carbon::parse($date_to)->endOfDay() ?: Carbon\Carbon::now()->endOfMonth();
-                                        // dd($fromDate . ' - ' . $toDate);
                                         $sum = 0;
                                         $vendor_name = '';
                                         $vendor_orders = $vendor->orders_report($date_from, $date_to);
                                         $vendor_order_amount = $vendor_orders->sum('price');
-                                        $vendor_other_income = $vendor->other_incomes_report->sum('credit');
-                                        $vendor_expense_amount = $vendor->expense_entries_reports->sum('amount');
-                                        $vendor_vat_amount = $vendor->vat_entries_reports->sum('vat_amount');
+                                        $vendor_other_income = $vendor->other_incomes_report($date_from, $date_to)->sum('credit');
+                                        $vendor_expense_amount = $vendor->expense_entries_reports($date_from, $date_to)->sum('amount');
+                                        $vendor_vat_amount = $vendor->vat_entries_reports($date_from, $date_to)->sum('vat_amount');
                                         $vendor_production_cost = 0;
 
-                                        foreach ($vendor_orders as $order) {
+                                        foreach ($vendor_orders->get() as $order) {
                                             $vendor_production_cost += $order->order_product->sum(function ($t) {
                                                 $qty = $t->qty - $t->return_qty;
                                                 return $t->production_cost * $qty;

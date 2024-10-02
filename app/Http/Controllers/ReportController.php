@@ -23,8 +23,10 @@ use App\Models\VatEntry;
 use App\Models\Vendor;
 use Carbon\Carbon;
 
-class ReportController extends Controller {
-    public function income_statement() {
+class ReportController extends Controller
+{
+    public function income_statement()
+    {
         $date_from = '';
         $date_to = '';
 
@@ -82,7 +84,8 @@ class ReportController extends Controller {
         }
     }
 
-    public function income_statement_search(Request $request) {
+    public function income_statement_search(Request $request)
+    {
 
         if (auth()->user()->can('setting.index')) {
             $date_from = '';
@@ -160,7 +163,8 @@ class ReportController extends Controller {
         }
     }
 
-    public function income_statement_vendor($id) {
+    public function income_statement_vendor($id)
+    {
         $date_from = '';
         $date_to = '';
 
@@ -211,7 +215,8 @@ class ReportController extends Controller {
         }
     }
 
-    public function balance_sheet() {
+    public function balance_sheet()
+    {
         if (auth()->user()->can('report.balance_sheet')) {
             $banks = Bank::orderBy('name', 'DESC')->get();
             $accessories = Accessory::orderBY('id', 'DESC')->get();
@@ -237,7 +242,8 @@ class ReportController extends Controller {
         }
     }
 
-    public function owners_equity() {
+    public function owners_equity()
+    {
         if (auth()->user()->can('report.owners')) {
             $banks = Bank::orderBy('name', 'DESC')->get();
             $accessories = Accessory::orderBY('id', 'DESC')->get();

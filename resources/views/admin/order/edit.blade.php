@@ -667,7 +667,7 @@
                                                                 &#2547;
                                                                 {{ $order_product->product->variation->wholesale_price }}
                                                             @else
-                                                                @if ($order_product->product->variation->discount_price != null && $order->source == 'Website')
+                                                                @if ($order_product->product->is_offer == 1 && $order->source == 'Website')
                                                                     <s class="text-muted">&#2547;
                                                                         {{ $order_product->product->variation->price }}</s>
                                                                     &#2547;
