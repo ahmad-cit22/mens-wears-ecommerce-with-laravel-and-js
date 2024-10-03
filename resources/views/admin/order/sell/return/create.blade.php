@@ -189,7 +189,7 @@
                                                         </td>
                                                         <td>{{ $product->qty }}</td>
                                                         <td>
-                                                            <input id="return_qty-{{ $product->id }}" type="number" name="qty[]" class="form-control return_qty" min="1" max="{{ $product->qty - $return_products->sum('qty') }}">
+                                                            <input id="return_qty-{{ $product->id }}" type="number" name="qty[]" class="form-control return_qty" min="1" max="{{ $product->qty }}">
                                                             <span class="text-danger">{{ $return_products->sum('qty') }} Product(s) Returned</span>
 
                                                             <input type="hidden" name="product_id[]" value="{{ $product->product_id }}">
