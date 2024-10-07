@@ -386,6 +386,10 @@ class PageController extends Controller {
     }
 
     public function order_create(Request $request) {
+        if (Cart::content()->count() == 0) {
+            return redirect()->route('products')->with('error', 'Your cart is empty! Please add some products');
+        }
+
         $order = new Order;
         $order->code = $this->generateUniqueCode();
         if (Auth::user()) {

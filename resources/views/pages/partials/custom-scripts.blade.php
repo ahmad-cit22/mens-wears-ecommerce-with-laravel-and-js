@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
   function view_product_details(product_id) {
-  
+
     url = "{{ route('api.product.details') }}";
     var product_id = product_id;
     $.ajax({
@@ -18,7 +18,7 @@
         },
         success:function(response){
           $('#product_details_output').html(response.product_details);
-         
+
         }
     });
   }
@@ -34,7 +34,7 @@
     }
 
     // alert(product_id + '--' + qty + '--' + size_id + '--' + type);
-    
+
     if (size_id == '' && type == 'variation') {
       toastr.options = {
             "positionClass": "toast-top-right"
@@ -57,7 +57,7 @@
             $('#cart_sidebar').html(response.cart_sidebar);
             $('.added_to_cart_' + product_id).addClass('added_to_cart');
             $('.added_to_cart_' + product_id).text('Added To Cart');
-            
+
             toastr.options = {
               "positionClass": "toast-top-right"
             }
@@ -78,8 +78,8 @@
             product_id:product_id,_token: '{{csrf_token()}}',
         },
         success:function(response){
-          
-          
+
+
           toastr.options = {
             "positionClass": "toast-top-right"
           }
@@ -96,7 +96,7 @@
           }
           else{
             toastr.warning('You are not logged in!');
-            
+
           }
         }
     });
@@ -125,3 +125,14 @@
 
   })
 </script>
+
+@if (session('error'))
+
+    <script>
+        toastr.options = {
+            "positionClass": "toast-top-right"
+        }
+        toastr.error('{{ session('error') }}');
+    </script>
+
+@endif

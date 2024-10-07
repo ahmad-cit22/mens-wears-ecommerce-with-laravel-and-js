@@ -314,8 +314,8 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
-                    let redeem_points = $('#redeem_points_amount').val();
-                    let membership_discount = $('#member_discount_amount').val();
+                    let redeem_points = $('#redeem_points_amount').val() ? $('#redeem_points_amount').val() : 0;
+                    let membership_discount = $('#member_discount_amount').val() ? $('#member_discount_amount').val() : 0;
 
                     $('#shipping_charge_label').html(response);
                     $('#total').html(parseInt(subtotal) + parseInt(response) - parseInt(membership_discount) - parseInt(redeem_points));
