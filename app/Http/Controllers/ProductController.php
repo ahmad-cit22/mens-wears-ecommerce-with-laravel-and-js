@@ -433,7 +433,7 @@ class ProductController extends Controller
                     $i = 0;
                     foreach ($request->sizes as $size) {
                         $exists = ProductStock::where('id', '!=', $request->variation_ids[$i])->where('product_id', $product->id)->where('size_id', $size)->first();
-                        if (is_null($exists)) {
+                        if (!is_null($exists)) {
                             $prodduct_stock = ProductStock::find($request->variation_ids[$i]);
                             $prodduct_stock->size_id = $request->sizes[$i];
                             $prodduct_stock->production_cost = $request->production_costs[$i];
@@ -444,7 +444,7 @@ class ProductController extends Controller
                         }
 
 
-                        $i += 1;
+                        $i++;
                     }
                 }
                 // check if any gallery image then save
